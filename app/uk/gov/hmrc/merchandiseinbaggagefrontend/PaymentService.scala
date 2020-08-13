@@ -5,10 +5,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend
 
-import scala.concurrent.Future
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 trait PaymentService {
 
-  def makePayment(doGet: String => Future[String], url: String): Future[String] = doGet(url)
+  def makePayment(doGet: HttpClient, url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    doGet.POST(s"http://localhost:9662$url", "")
 
 }
