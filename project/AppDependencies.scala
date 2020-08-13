@@ -17,6 +17,7 @@ object AppDependencies {
     "org.jsoup"               %  "jsoup"                    % "1.10.2"                % Test,
     "com.typesafe.play"       %% "play-test"                % current                 % Test,
     "com.vladsch.flexmark"    %  "flexmark-all"             % "0.35.10"               % "test, it",
-    "org.scalatestplus.play"  %% "scalatestplus-play"       % "4.0.3"                 % "test, it"
+    "org.scalatestplus.play"  %% "scalatestplus-play"       % "4.0.3"                 % "test, it",
+    "com.github.tomakehurst"  % "wiremock-standalone"       % "2.27.1"                % Test
   )
 }
