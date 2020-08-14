@@ -3,7 +3,7 @@
  *
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
+package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import org.scalatest.BeforeAndAfterEach
