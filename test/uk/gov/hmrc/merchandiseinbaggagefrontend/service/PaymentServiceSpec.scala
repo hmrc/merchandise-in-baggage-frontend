@@ -5,14 +5,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.service
 
-import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, okJson, post, urlPathEqualTo}
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlPathEqualTo, _}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.{BaseSpec, BaseSpecWithWireMock}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{ChargeReference, MerchandiseDetails, PaymentRequest, TaxToPayInPence, TraderDetails}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.PaymentService
 
 import scala.concurrent.Await
