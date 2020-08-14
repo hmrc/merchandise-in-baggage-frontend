@@ -9,8 +9,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlPath
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.PaymentService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.{BaseSpec, BaseSpecWithWireMock}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.PaymentService
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global

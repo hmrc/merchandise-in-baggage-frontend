@@ -3,7 +3,7 @@
  *
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend
+package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.PaymentServiceConf
