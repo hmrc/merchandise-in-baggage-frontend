@@ -29,7 +29,6 @@ trait BaseSpecWithWireMock extends BaseSpecWithApplication {
   }
 
   override def afterEach: Unit = {
-    println(s"${paymentMockServer.baseUrl()} =====")
     paymentMockServer.stop()
   }
 }
