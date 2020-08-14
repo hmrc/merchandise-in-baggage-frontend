@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PaymentService {
 
-  def makePayment(doGet: HttpClient, url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    doGet.POST(s"http://localhost:9662$url", "")
+  def makePayment(httpClient: HttpClient, url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient.POST(s"http://localhost:9662$url", "")
 
 }
