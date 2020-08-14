@@ -26,13 +26,11 @@ class PaymentServiceSpec extends BaseSpec with BaseSpecWithWireMock with Eventua
     paymentMockServer.stubFor(post(urlPathEqualTo(paymentUrl))
       .willReturn(aResponse().withStatus(200)))
 
-    val client = app.injector.instanceOf[HttpClient]
-    val stubbedGet = client
+    val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
-      val response = Await.result(makePayment(stubbedGet, paymentUrl), 5.seconds)
+      val response = Await.result(makePayment(httpClient, paymentUrl), 5.seconds)
       response.status mustBe 200
     }
   }
-
 }
