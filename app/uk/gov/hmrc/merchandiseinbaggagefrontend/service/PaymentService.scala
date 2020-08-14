@@ -12,6 +12,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait PaymentService extends PaymentServiceConf {
 
-  def makePayment(httpClient: HttpClient, url: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
-    httpClient.POST(s"$paymentBaseUri$url", "")
+  def makePayment(httpClient: HttpClient)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    httpClient.POST(s"$paymentBaseUri${paymentServiceConf.url.value}", "")
 }

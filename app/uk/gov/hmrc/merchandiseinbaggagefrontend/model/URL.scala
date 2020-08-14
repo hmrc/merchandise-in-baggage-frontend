@@ -5,4 +5,4 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model
 
-case class URL(value: String)
+case class URL(value: String) extends AnyVal

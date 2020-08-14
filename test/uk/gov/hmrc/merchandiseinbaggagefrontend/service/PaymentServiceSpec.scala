@@ -22,14 +22,14 @@ class PaymentServiceSpec extends BaseSpec with BaseSpecWithWireMock with Eventua
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
 
   "send a payment request to payment service" in new PaymentService {
-    val paymentUrl = s"/payment"
+    val paymentUrl = s"/${paymentServiceConf.url.value}"
     paymentMockServer.stubFor(post(urlPathEqualTo(paymentUrl))
       .willReturn(aResponse().withStatus(200)))
 
     val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
-      val response = Await.result(makePayment(httpClient, paymentUrl), 5.seconds)
+      val response = Await.result(makePayment(httpClient), 5.seconds)
       response.status mustBe 200
     }
   }

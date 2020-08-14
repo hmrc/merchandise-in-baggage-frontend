@@ -7,7 +7,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.config
 
 import javax.inject.Singleton
 import pureconfig.ConfigSource
-import pureconfig.generic.auto._ // Do not remove this
+import pureconfig.generic.auto._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.URL // Do not remove this
 
 @Singleton
 class AppConfig() extends PaymentServiceConf {
@@ -19,7 +20,7 @@ class AppConfig() extends PaymentServiceConf {
 trait PaymentServiceConf {
   lazy val paymentServiceConf: PaymentServiceConfiguration = ConfigSource.default.at("payment").loadOrThrow[PaymentServiceConfiguration]
   import paymentServiceConf._
-  lazy val paymentBaseUri = s"$protocol://$host:$port"
+  lazy val paymentBaseUri = s"$protocol://$host:$port/"
 }
 
-case class PaymentServiceConfiguration(protocol: String, port: Int, host: String)
+case class PaymentServiceConfiguration(protocol: String, port: Int, host: String, url: URL)
