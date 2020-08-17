@@ -16,4 +16,13 @@ object ValueClassFormat {
       },
       Writes[A](a => JsString(fromAToString(a)))
     )
+
+  def formatDouble[A: Format](fromNumberToA: Long => A)(fromAToLong: A => Long) =
+    Format[A](
+      Reads[A] {
+        case JsNumber(n) => JsSuccess(fromNumberToA(n.toLong))
+        case unknown     => JsError(s"JsString value expected, got: $unknown")
+      },
+      Writes[A](a => JsNumber(fromAToLong(a)))
+    )
 }

@@ -22,7 +22,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneAppPerSuite {
 
 trait BaseSpecWithWireMock extends BaseSpecWithApplication {
 
-  val paymentMockServer = new WireMockServer(9662)
+  val paymentMockServer = new WireMockServer(9057)
 
   override def beforeEach: Unit = {
     paymentMockServer.start()

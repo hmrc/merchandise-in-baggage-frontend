@@ -9,14 +9,14 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 
-case class ChargeReference(value: String)
-object ChargeReference {
-  implicit val format: Format[ChargeReference] = ValueClassFormat.format(value => ChargeReference.apply(value))(_.value)
+case class MibReference(value: String)
+object MibReference {
+  implicit val format: Format[MibReference] = ValueClassFormat.format(value => MibReference.apply(value))(_.value)
 }
 
-case class TaxToPayInPence(value: Int)
-object TaxToPayInPence {
-  implicit val format: Format[TaxToPayInPence] = ValueClassFormat.format(value => TaxToPayInPence.apply(value.toInt))(_.value.toString)
+case class AmountInPence(value: Long)
+object AmountInPence {
+  implicit val format: Format[AmountInPence] = ValueClassFormat.formatDouble(value => AmountInPence.apply(value))(_.value)
 }
 
 case class TraderDetails(value: String)
@@ -29,7 +29,8 @@ object MerchandiseDetails {
   implicit val format: Format[MerchandiseDetails] = ValueClassFormat.format(value => MerchandiseDetails.apply(value))(_.value)
 }
 
-case class PaymentRequest(chargeReference: ChargeReference, taxToPayInPence: TaxToPayInPence, traderDetails: TraderDetails, merchandiseDetails: MerchandiseDetails)
+case class PaymentRequest(mibReference: MibReference, amountInPence: AmountInPence, vatAmountInPence: AmountInPence,
+                          dutyAmountInPence: AmountInPence, traderDetails: TraderDetails, merchandiseDetails: MerchandiseDetails)
 object PaymentRequest {
   implicit val format: Format[PaymentRequest] = Json.format[PaymentRequest]
 }
