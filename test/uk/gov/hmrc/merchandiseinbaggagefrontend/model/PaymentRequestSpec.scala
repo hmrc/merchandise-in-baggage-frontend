@@ -7,6 +7,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PaymentRequest, TraderDetails}
 
 class PaymentRequestSpec extends BaseSpec {
 
@@ -24,5 +25,4 @@ class PaymentRequestSpec extends BaseSpec {
 
     Json.toJson(paymentRequest) mustBe Json.parse(actual)
   }
-
 }

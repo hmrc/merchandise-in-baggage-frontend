@@ -9,9 +9,10 @@ import com.github.tomakehurst.wiremock.client.WireMock.{aResponse, post, urlPath
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, BaseSpecWithWireMock}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, JourneyId, MerchandiseDetails, MibReference, PayApiResponse, PaymentRequest, TraderDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.PaymentService
 
 import scala.concurrent.Await
@@ -33,17 +34,29 @@ class PaymentServiceSpec extends BaseSpec with BaseSpecWithWireMock with Eventua
       TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
       MerchandiseDetails("Parts and technical crew for the forest moon")
     )
+
+    val journeyId = """"5f3bc55b220100c2207edc69""""
+    val redirectUrl = """"http://localhost:9056/pay/initiate-journey?traceId=53661661""""
+    val stubbedResponse = s"""{"journeyId":"5f3bc55b220100c2207edc69","nextUrl":$redirectUrl}"""
+
     paymentMockServer
       .stubFor(post(urlPathEqualTo(paymentUrl))
       .withRequestBody(equalToJson(Json.toJson(body).toString, true, false))
-      .willReturn(aResponse().withStatus(201))
+      .willReturn(okJson(stubbedResponse).withStatus(201))
     )
 
     val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
-      val response = Await.result(makePayment(httpClient, body), 5.seconds)
+      val response: HttpResponse = Await.result(makePayment(httpClient, body), 5.seconds)
       response.status mustBe 201
+      response.body mustBe stubbedResponse
     }
+  }
+
+  "extract redirect url from pay-api http response" in new PaymentService {
+    val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
+
+    extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))
   }
 }
