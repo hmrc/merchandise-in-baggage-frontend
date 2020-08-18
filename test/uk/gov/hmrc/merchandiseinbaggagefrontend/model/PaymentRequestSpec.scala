@@ -22,7 +22,6 @@ class PaymentRequestSpec extends BaseSpec {
 
     val actual = Json.toJson(paymentRequest).toString
 
-    println(actual)
     Json.toJson(paymentRequest) mustBe Json.parse(actual)
   }
 
