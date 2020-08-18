@@ -1,0 +1,18 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+
+@this(layout: Layout, button: components.button)
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some("merchandise-in-baggage-frontend")) {
+    <h1 class="govuk-heading-xl">merchandise-in-baggage-frontend payment</h1>
+    <p class="govuk-body">@{messages("payment.p1")}</p>
+
+    @button(messages("payment.button"), href = Some("/merchandise-in-baggage-frontend/process-payment"), classes = Some("govuk-button"))
+}

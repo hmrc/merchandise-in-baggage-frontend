@@ -7,8 +7,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.config
 
 import javax.inject.Singleton
 import pureconfig.ConfigSource
-import pureconfig.generic.auto._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.URL // Do not remove this
+import pureconfig.generic.auto._ // Do not remove this
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.URL
 
 @Singleton
 class AppConfig() extends PaymentServiceConf {
