@@ -38,4 +38,20 @@ class PaymentControllerSpec extends BaseSpecWithApplication {
 
     contentAsString(controller.onSubmit()(getRequest)) mustBe stubbedApiResponse
   }
+
+  "on submit will return error page if call to pay-api fails" in {
+    val controller = new PaymentController(component, view, httpClient) {
+      override def makePayment(httpClient: HttpClient, requestBody: PayApitRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+        Future.failed(new Exception("Something wrong"))
+    }
+
+    val getRequest = buildGet(routes.PaymentController.onSubmit().url)
+    val eventualResult = controller.onSubmit()(getRequest)
+
+    status(eventualResult) mustBe 500
+    contentAsString(eventualResult) mustBe errorHandlerTemplate(
+      "Sorry, we are experiencing technical difficulties - 500",
+      "Sorry, we’re experiencing technical difficulties",
+      "Please try again in a few minutes.")(getRequest, messages(getRequest), appConfig).toString
+  }
 }
