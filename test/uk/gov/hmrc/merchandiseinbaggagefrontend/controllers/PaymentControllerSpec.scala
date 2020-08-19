@@ -27,7 +27,7 @@ class PaymentControllerSpec extends BaseSpecWithApplication {
     contentAsString(controller.onPageLoad(getRequest)) mustBe view()(getRequest, messages(getRequest), appConfig).toString
   }
 
-  "on submit will trigger a call to pay-api" in {
+  "on submit will trigger a call to pay-api and render the response" in {
     val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
     val controller = new PaymentController(component, view, httpClient) {
       override def makePayment(httpClient: HttpClient, requestBody: PayApitRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
