@@ -14,5 +14,5 @@
     <h1 class="govuk-heading-xl">merchandise-in-baggage-frontend payment</h1>
     <p class="govuk-body">@{messages("payment.p1")}</p>
 
-    @button(messages("payment.button"), href = Some("/merchandise-in-baggage-frontend/process-payment"), classes = Some("govuk-button"))
+    @button(messages("payment.button"), href = Some(PaymentController.onSubmit().url), classes = Some("govuk-button"))
 }

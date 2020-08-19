@@ -29,8 +29,8 @@ object MerchandiseDetails {
   implicit val format: Format[MerchandiseDetails] = ValueClassFormat.format(value => MerchandiseDetails.apply(value))(_.value)
 }
 
-case class PaymentRequest(mibReference: MibReference, amountInPence: AmountInPence, vatAmountInPence: AmountInPence,
+case class PayApitRequest(mibReference: MibReference, amountInPence: AmountInPence, vatAmountInPence: AmountInPence,
                           dutyAmountInPence: AmountInPence, traderDetails: TraderDetails, merchandiseDetails: MerchandiseDetails)
-object PaymentRequest {
-  implicit val format: Format[PaymentRequest] = Json.format[PaymentRequest]
+object PayApitRequest {
+  implicit val format: Format[PayApitRequest] = Json.format[PayApitRequest]
 }

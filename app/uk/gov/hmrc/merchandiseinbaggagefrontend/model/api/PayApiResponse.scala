@@ -6,7 +6,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.URL
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 case class JourneyId(value: String)

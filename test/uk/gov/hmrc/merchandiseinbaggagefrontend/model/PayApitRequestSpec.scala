@@ -7,12 +7,12 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PaymentRequest, TraderDetails}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PayApitRequest, TraderDetails}
 
-class PaymentRequestSpec extends BaseSpec {
+class PayApitRequestSpec extends BaseSpec {
 
   "Serialise/Deserialise from/to json to PaymentRequest" in {
-    val paymentRequest = PaymentRequest(
+    val paymentRequest = PayApitRequest(
       MibReference("MIBI1234567890"),
       AmountInPence(1),
       AmountInPence(2),
