@@ -27,7 +27,7 @@ class PaymentController @Inject()(
     Future.successful(Ok(paymentPage()))
   }
 
-  def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
+  def   onSubmit(): Action[AnyContent] = Action.async { implicit request =>
     //TODO hard coded data for now
     val body = PayApitRequest(
       MibReference("MIBI1234567890"),
