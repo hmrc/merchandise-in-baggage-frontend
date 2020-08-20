@@ -1,3 +1,8 @@
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ */
+
 package uk.gov.hmrc.merchandiseinbaggagefrontend.views
 
 import play.api.i18n.Messages

@@ -1,0 +1,10 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(govukButton: GovukButton)
+
+@(msg: String, href: Option[String] = None, classes: Option[String] = None)(implicit messages: Messages)
+
+@govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse("")))
