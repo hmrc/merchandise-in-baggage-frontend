@@ -5,20 +5,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.mvc.MessagesControllerComponents
+import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithApplication
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApitRequest
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.{ErrorTemplate, PaymentPage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentControllerSpec extends BaseSpecWithApplication {
 
-  val view = app.injector.instanceOf[PaymentPage]
-  val httpClient = app.injector.instanceOf[HttpClient]
-  val controller = new PaymentController(component, view, httpClient)
+  private lazy val view = app.injector.instanceOf[PaymentPage]
+  private lazy val httpClient = app.injector.instanceOf[HttpClient]
+  private lazy val component = app.injector.instanceOf[MessagesControllerComponents]
+  private lazy val errorHandlerTemplate = app.injector.instanceOf[ErrorTemplate]
+  private lazy val messagesApi = app.injector.instanceOf[MessagesApi]
+
+  private implicit lazy val errorHandler: ErrorHandler = app.injector.instanceOf[ErrorHandler]
+  private implicit lazy val appConfig: AppConfig = new AppConfig()
+
+  private def messages[A](fakeRequest: FakeRequest[A]): Messages = messagesApi.preferred(fakeRequest)
 
   "on page load will render PaymentPage template" in {
     val controller = new PaymentController(component, view, httpClient)
