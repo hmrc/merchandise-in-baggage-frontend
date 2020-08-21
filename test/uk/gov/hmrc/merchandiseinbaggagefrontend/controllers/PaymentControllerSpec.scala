@@ -46,8 +46,10 @@ class PaymentControllerSpec extends BaseSpecWithApplication {
     }
 
     val getRequest = buildGet(routes.PaymentController.onSubmit().url)
+    val eventualResult = controller.onSubmit()(getRequest)
 
-    contentAsString(controller.onSubmit()(getRequest)) mustBe stubbedApiResponse
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some("http://host")
   }
 
   "on submit will return error page if call to pay-api fails" in {
