@@ -18,7 +18,7 @@ class AppConfig() extends PaymentServiceConf {
 }
 
 trait PaymentServiceConf {
-  lazy val paymentServiceConf: PaymentServiceConfiguration = ConfigSource.default.at("payment").loadOrThrow[PaymentServiceConfiguration]
+  lazy val paymentServiceConf: PaymentServiceConfiguration = ConfigSource.default.at("microservice.services.payment").loadOrThrow[PaymentServiceConfiguration]
   import paymentServiceConf._
   lazy val paymentBaseUri = s"$protocol://$host:$port/"
 }
