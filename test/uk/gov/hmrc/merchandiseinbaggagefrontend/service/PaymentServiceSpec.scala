@@ -3,7 +3,7 @@
  *
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import org.scalatest.concurrent.Eventually
@@ -12,7 +12,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.PaymentService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, BaseSpecWithWireMock, CoreTestData}
 
 import scala.concurrent.Await
@@ -21,24 +20,24 @@ import scala.concurrent.duration._
 
 class PaymentServiceSpec extends BaseSpec with BaseSpecWithWireMock with Eventually with CoreTestData {
 
-  implicit val hc = HeaderCarrier()
+  private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
 
   "send a payment request to payment service adding a generated session id to the header" in new PaymentService {
-    val stubbedSessionId = generateSessionId
+    private val sessionId = generateSessionId
     override def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier =
-      hc.withExtraHeaders(HeaderNames.xSessionId -> stubbedSessionId)
+      hc.withExtraHeaders(HeaderNames.xSessionId -> sessionId)
 
     val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
 
     paymentMockServer
       .stubFor(post(urlPathEqualTo(s"/${paymentServiceConf.url.value}"))
       .withRequestBody(equalToJson(Json.toJson(payApiRequest).toString, true, false))
-      .withHeader(HeaderNames.xSessionId, containing(stubbedSessionId))
+      .withHeader(HeaderNames.xSessionId, containing(sessionId))
       .willReturn(okJson(stubbedResponse).withStatus(201))
     )
 
-    val httpClient = app.injector.instanceOf[HttpClient]
+    private val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
       val response: HttpResponse = Await.result(makePayment(httpClient, payApiRequest), 5.seconds)

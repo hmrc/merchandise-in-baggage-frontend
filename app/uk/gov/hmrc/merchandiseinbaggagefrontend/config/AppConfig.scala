@@ -7,12 +7,12 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.config
 
 import javax.inject.Singleton
 import pureconfig.ConfigSource
-import pureconfig.generic.auto._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL // Do not remove this
+import pureconfig.generic.auto._ // Do not remove this
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
 
 @Singleton
 class AppConfig() extends PaymentServiceConf {
-  private val configSource: String => ConfigSource = ConfigSource.default.at _
+  private val configSource: String => ConfigSource = ConfigSource.default.at
 
   lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
 }
