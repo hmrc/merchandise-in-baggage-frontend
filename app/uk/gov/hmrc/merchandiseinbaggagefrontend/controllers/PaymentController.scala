@@ -37,7 +37,7 @@ class PaymentController @Inject()(
       TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
       MerchandiseDetails("Parts and technical crew for the forest moon")
     )
-    makePayment(httpClient, body).map(response => Ok(response.body))
+    makePayment(httpClient, body).map { response => Redirect(extractUrl(response).nextUrl.value) }
       .recoverWith {
         case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
