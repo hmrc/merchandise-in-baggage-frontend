@@ -7,3 +7,5 @@ GET        /assets/*file            controllers.Assets.versioned(path = "/public
 
 GET        /payment                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 GET        /process-payment         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
+
+GET        /check-your-answers      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.checkYourAnswers

@@ -12,3 +12,5 @@ footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
 payment.button = Pay now
+
+check-your-answers.title = Check your answers before making your declaration
