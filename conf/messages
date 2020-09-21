@@ -13,4 +13,6 @@ footer.govukHelp.url = https://www.gov.uk/help
 
 payment.button = Pay now
 
+trader-eori.title = What is your EORI number?
+trader-journey.title = What your journey details?
 check-your-answers.title = Check your answers before making your declaration

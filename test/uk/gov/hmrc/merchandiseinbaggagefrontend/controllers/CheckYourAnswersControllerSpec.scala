@@ -13,9 +13,9 @@ class CheckYourAnswersControllerSpec extends BaseSpecWithApplication {
 
   "checkYourAnswers" should {
     "render the page" in {
-      val getRequest = buildGet(routes.CheckYourAnswersController.checkYourAnswers().url)
+      val getRequest = buildGet(routes.CheckYourAnswersController.onPageLoad().url)
 
-      val eventualResponse = controller.checkYourAnswers(getRequest)
+      val eventualResponse = controller.onPageLoad(getRequest)
       status(eventualResponse) mustBe 200
       contentAsString(eventualResponse) must include("Check your answers before making your declaration")
     }
