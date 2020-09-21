@@ -11,13 +11,13 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class CheckYourAnswersController @Inject()(mcc: MessagesControllerComponents, page: CheckYourAnswersPage)
                                           (implicit val ec: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) {
 
-  val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(page()))
+  val onPageLoad: Action[AnyContent] = Action { implicit request =>
+    Ok(page())
   }
 }

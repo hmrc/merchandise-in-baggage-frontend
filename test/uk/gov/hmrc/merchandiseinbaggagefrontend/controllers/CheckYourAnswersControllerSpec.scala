@@ -11,7 +11,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithApplication
 class CheckYourAnswersControllerSpec extends BaseSpecWithApplication {
   private lazy val controller = app.injector.instanceOf[CheckYourAnswersController]
 
-  "checkYourAnswers" should {
+  "onPageLoad" should {
     "render the page" in {
       val getRequest = buildGet(routes.CheckYourAnswersController.onPageLoad().url)
 

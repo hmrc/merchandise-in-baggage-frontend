@@ -9,5 +9,6 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("check-your-answers.title"))) {
+@layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
+ <h1 class="govuk-heading-l" id="main-message">@messages("checkYourAnswers.title")</h1>
 }
