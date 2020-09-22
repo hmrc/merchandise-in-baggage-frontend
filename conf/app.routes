@@ -1,9 +1,29 @@
 # microservice specific routes
 
-->         /govuk-frontend          govuk.Routes
-->         /hmrc-frontend           hmrcfrontend.Routes
+->         /govuk-frontend               govuk.Routes
+->         /hmrc-frontend                hmrcfrontend.Routes
 
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+GET        /assets/*file                 controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /payment                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
-GET        /process-payment         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
+GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
+GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
+
+GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.start
+GET        /import-export                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.importExport
+GET        /multiple-countries-eu-check  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.multipleCountriesEuCheck
+GET        /goods-excise                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsExcise
+GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.valueWeightOfGoods
+GET        /goods-type                   uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsType
+GET        /goods-category               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsCategory
+GET        /goods-details-where          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsDetailsWhere
+GET        /goods-details-cost           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsDetailsCost
+GET        /goods-review                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsReview
+GET        /calculation                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.calculation
+GET        /trader-agent                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderAgent
+GET        /trader-details               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderDetails
+GET        /trader-address               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderAddress
+GET        /trader-address-list          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderAddressList
+GET        /trader-eori                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderEori
+GET        /trader-journey               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderJourney
+
+GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad

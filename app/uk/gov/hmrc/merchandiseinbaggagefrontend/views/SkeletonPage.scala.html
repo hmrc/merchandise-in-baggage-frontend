@@ -1,0 +1,17 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import play.api.mvc.Call
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+
+@this(layout: Layout, val button: components.button)
+
+@(titleMessageKey: String, next: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages(titleMessageKey))) {
+ <h1 class="govuk-heading-l" id="main-message">@messages(titleMessageKey)</h1>
+
+ @button(messages("next.button"), href = Some(next.url), classes = Some("govuk-button"))
+}
