@@ -4,11 +4,82 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Declaration
 
 @this(layout: Layout)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
- <h1 class="govuk-heading-l" id="main-message">@messages("checkYourAnswers.title")</h1>
+ <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+
+ @for(goods <- declaration.goods) {
+   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.item")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.typeOfGoods</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.priceOfGoods</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.taxDue</dd>
+    </div>
+   </dl>
+  }
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.name")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.name</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.address")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.address</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+  </div>
+ </dl>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.journeyDetails")</h2>
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.placeOfArrival")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.placeOfArrival</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.dateOfArrival</dd>
+  </div>
+ </dl>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.sendDeclaration")</h2>
+
+ <p>@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
+
+ <ul class="govuk-list govuk-list--bullet">
+  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
+  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
+ </ul>
+
+ <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+   <span class="govuk-warning-text__assistive">@messages("checkYourAnswers.sendDeclaration.warning")</span>
+   @messages("checkYourAnswers.sendDeclaration.warning.message")
+  </strong>
+ </div>
 }

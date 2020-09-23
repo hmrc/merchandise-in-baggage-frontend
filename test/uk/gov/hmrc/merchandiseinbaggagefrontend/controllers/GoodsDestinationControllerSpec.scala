@@ -15,18 +15,18 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
 class GoodsDestinationControllerSpec extends BaseSpecWithApplication {
 
-  lazy val route: String = routes.GoodsDestinationController.onPageLoad().url
+  private lazy val route = routes.GoodsDestinationController.onPageLoad().url
 
-  val formProvider = new GoodsDestinationFormProvider()
-  val form = formProvider()
+  private val formProvider = new GoodsDestinationFormProvider()
+  private val form = formProvider()
 
-  val getRequest: FakeRequest[AnyContentAsEmpty.type] =
+  private val getRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, route).withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  val view = injector.instanceOf[GoodsDestinationView]
+  private lazy val view = injector.instanceOf[GoodsDestinationView]
 
-  val controller = new GoodsDestinationController(controllerComponents, formProvider, view)
+  private lazy val controller = new GoodsDestinationController(controllerComponents, formProvider, view)
 
   "GoodsDestinationController" must {
 
@@ -43,6 +43,8 @@ class GoodsDestinationControllerSpec extends BaseSpecWithApplication {
       val request = FakeRequest(POST, route).withCSRFToken
         .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
         .withFormUrlEncodedBody(("value", "ni"))
+
+      form.bindFromRequest()(request)
 
       val result = controller.onSubmit()(request)
 
