@@ -19,22 +19,20 @@ payment.button = Pay now
 next.button = Next
 
 start.title = Declaring merchandise in your baggage
-importExport.title = What do you need to declare?
-multipleCountriesEuCheck.title = Where are the goods coming from?
-goodsExcise.title = Are you bringing in excise or restricted goods?
-valueWeightOfGoods.title = Is the total value of the goods over £873 or 1000kg?
-goodsType.title = Enter the detail of each individual item
-goodsCategory.title = Which rate of VAT do the goods fit into?
-goodsDetailsWhere.title = In which country did you purchase the goods?
-goodsDetailsCost.title = How much did you pay for the goods?
-goodsReview.title = Review your goods
-calculation.title = Tax due on these goods
-traderAgent.title = Are you a customs agent?
-traderDetails.title = What is the name of carrying the goods?
-traderAddress.title = What is your address?
-traderAddressList.title = Select your address
-traderEori.title = What is your EORI number?
-traderJourney.title = What your journey details?
+selectDeclarationType.title = What do you need to declare?
+exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
+valueWeightOfGoods.title = Is the total value of the goods over £1500 or 1000kg?
+searchGoods.title = What goods are you bringing into the UK?
+searchGoodsCountry.title = In what country did you buy the x?
+purchaseDetails.title = How much did you pay for the x?
+reviewGoods.title = Review your goods
+taxCalculation.title = Tax due on these goods £x
+customsAgent.title = Are you a customs agent?
+traderDetails.title = Enter the name of the person carrying the goods
+enterTraderAddress.title = Find your address
+selectTraderAddress.title = Select your address
+enterEoriNumber.title = What is your EORI number?
+traderJourneyDetails.title = Journey Details
 checkYourAnswers.title = Check your answers before making your declaration
 
 
