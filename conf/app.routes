@@ -9,7 +9,6 @@ GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
 GET        /select-declaration-type      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectDeclarationType
-GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.exciseAndRestrictedGoods
 GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.valueWeightOfGoods
 GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.searchGoods
 GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.searchGoodsCountry
@@ -26,8 +25,15 @@ GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefronten
 # Start
 GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onPageLoad()
 
+# ExciseAndRestrictedGoods
+GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad()
+POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onSubmit()
+
 # GoodsDestination
 GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad()
 POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onSubmit()
+
+# CannotUseService
+GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad()
 
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad

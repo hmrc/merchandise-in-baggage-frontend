@@ -24,6 +24,23 @@ trait Formatters {
       Map(key -> value)
   }
 
+  private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String): Formatter[Boolean] =
+    new Formatter[Boolean] {
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right.flatMap {
+          case "true" => Right(true)
+          case "false" => Right(false)
+          case _ => Left(Seq(FormError(key, invalidKey)))
+        }
+
+      def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
+
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
 

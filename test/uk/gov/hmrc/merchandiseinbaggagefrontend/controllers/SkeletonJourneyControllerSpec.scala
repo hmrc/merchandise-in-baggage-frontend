@@ -19,16 +19,7 @@ class SkeletonJourneyControllerSpec extends BaseSpecWithApplication {
       val title = "What do you need to declare?"
       val getRequest = buildGet(routes.SkeletonJourneyController.selectDeclarationType().url)
 
-      ensure(controller.selectDeclarationType(getRequest), title, routes.SkeletonJourneyController.exciseAndRestrictedGoods())
-    }
-  }
-
-  "exciseAndRestrictedGoods" should {
-    "render the page" in {
-      val title = "Are you bringing in excise goods or restricted goods?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.exciseAndRestrictedGoods().url)
-
-      ensure(controller.exciseAndRestrictedGoods(getRequest), title, routes.GoodsDestinationController.onPageLoad())
+      ensure(controller.selectDeclarationType(getRequest), title, routes.ExciseAndRestrictedGoodsController.onPageLoad())
     }
   }
 

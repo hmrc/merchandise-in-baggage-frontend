@@ -1,0 +1,37 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components.inputRadio
+
+@this(inputRadio: inputRadio)
+
+@(      form: Form[_],
+        legend: String,
+        legendAsHeading: Boolean = true,
+        hintKey: Option[String] = None,
+        classes: String = "govuk-fieldset__legend--xl",
+        inline: Boolean = false
+)(implicit messages: Messages)
+
+@inputRadio(
+    form = form,
+    legend = legend,
+    legendAsHeading = legendAsHeading,
+    hintKey = hintKey,
+    classes = classes,
+    inline = inline,
+    items = Seq(
+        RadioItem(
+            value = Some(true.toString),
+            content = Text(messages("site.yes")),
+            checked = form("value").value.contains(true.toString)
+        ),
+        RadioItem(
+            value = Some(false.toString),
+            content = Text(messages("site.no")),
+            checked = form("value").value.contains(false.toString)
+        )
+    )
+)

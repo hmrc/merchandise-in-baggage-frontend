@@ -1,0 +1,23 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components
+
+@this(
+layout: Layout,
+h1: components.h1,
+p: components.p,
+link: components.link
+)
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("cannotUseService.title"))) {
+    @h1("cannotUseService.heading")
+
+    @p(Html(messages("cannotUseService.p1")))
+
+    @link(messages("cannotUseService.href"), "cannotUseService.a")
+}
