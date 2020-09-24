@@ -1,0 +1,32 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this(govukRadios: GovukRadios)
+
+@(      form: Form[_],
+        legend: String,
+        items: Seq[RadioItem],
+        legendAsHeading: Boolean = true,
+        hintKey: Option[String] = None,
+        classes: String = "govuk-fieldset__legend--xl",
+        inline: Boolean = false
+)(implicit messages: Messages)
+
+@govukRadios(Radios(
+    classes = if(inline) "govuk-radios--inline" else "",
+    name = "value",
+    fieldset = Some(Fieldset(
+        legend = Some(Legend(
+            content = Text(messages(legend)),
+            isPageHeading = legendAsHeading,
+            classes = classes
+        ))
+    )),
+    hint = hintKey.map { hint => Hint(
+        content = Text(messages(hint))
+    )},
+    items = items,
+    errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+))

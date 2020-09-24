@@ -11,6 +11,10 @@ footer.termsConditions.url = /help/terms-and-conditions
 footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
+error.summary.title = There is a problem
+
+site.continue = Continue
+
 payment.button = Pay now
 next.button = Next
 
@@ -32,3 +36,11 @@ traderAddressList.title = Select your address
 traderEori.title = What is your EORI number?
 traderJourney.title = What your journey details?
 checkYourAnswers.title = Check your answers before making your declaration
+
+
+# GoodsDestination
+goodsDestination.title = Where in the UK are the goods going?
+goodsDestination.heading = Where in the UK are the goods going?
+goodsDestination.ni = Northern Ireland
+goodsDestination.gb = England, Wales or Scotland
+goodsDestination.error.required = Select one of the options below

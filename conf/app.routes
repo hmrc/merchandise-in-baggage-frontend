@@ -26,4 +26,8 @@ GET        /trader-address-list          uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /trader-eori                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderEori
 GET        /trader-journey               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderJourney
 
+# GoodsDestination
+GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad()
+POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onSubmit()
+
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
