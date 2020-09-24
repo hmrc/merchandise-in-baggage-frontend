@@ -33,7 +33,7 @@ class GoodsDestinationController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => BadRequest(view(formWithErrors)),
-        value => Ok
+        value => Redirect(routes.SkeletonJourneyController.valueWeightOfGoods())
       )
   }
 

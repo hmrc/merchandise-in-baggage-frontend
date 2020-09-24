@@ -23,70 +23,62 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents, pag
   extends FrontendController(mcc) {
 
   val start: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"start.title", routes.SkeletonJourneyController.importExport()))
+    Ok(page(s"start.title", routes.SkeletonJourneyController.selectDeclarationType()))
   }
 
-  val importExport: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"importExport.title", routes.SkeletonJourneyController.multipleCountriesEuCheck()))
+  val selectDeclarationType: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"selectDeclarationType.title", routes.SkeletonJourneyController.exciseAndRestrictedGoods()))
   }
 
-  val multipleCountriesEuCheck: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"multipleCountriesEuCheck.title", routes.SkeletonJourneyController.goodsExcise()))
-  }
-
-  val goodsExcise: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsExcise.title", routes.SkeletonJourneyController.valueWeightOfGoods()))
+  val exciseAndRestrictedGoods: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"exciseAndRestrictedGoods.title", routes.GoodsDestinationController.onPageLoad()))
   }
 
   val valueWeightOfGoods: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"valueWeightOfGoods.title", routes.SkeletonJourneyController.goodsType()))
+    Ok(page(s"valueWeightOfGoods.title", routes.SkeletonJourneyController.searchGoods()))
   }
 
-  val goodsType: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsType.title", routes.SkeletonJourneyController.goodsCategory()))
+  val searchGoods: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"searchGoods.title", routes.SkeletonJourneyController.searchGoodsCountry()))
   }
 
-  val goodsCategory: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsCategory.title", routes.SkeletonJourneyController.goodsDetailsWhere()))
+  val searchGoodsCountry: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"searchGoodsCountry.title", routes.SkeletonJourneyController.purchaseDetails()))
   }
 
-  val goodsDetailsWhere: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsDetailsWhere.title", routes.SkeletonJourneyController.goodsDetailsCost()))
+  val purchaseDetails: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"purchaseDetails.title", routes.SkeletonJourneyController.reviewGoods()))
   }
 
-  val goodsDetailsCost: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsDetailsCost.title", routes.SkeletonJourneyController.goodsReview()))
+  val reviewGoods: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"reviewGoods.title", routes.SkeletonJourneyController.taxCalculation()))
   }
 
-  val goodsReview: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"goodsReview.title", routes.SkeletonJourneyController.calculation()))
+  val taxCalculation: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"taxCalculation.title", routes.SkeletonJourneyController.customsAgent()))
   }
 
-  val calculation: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"calculation.title", routes.SkeletonJourneyController.traderAgent()))
-  }
-
-  val traderAgent: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderAgent.title", routes.SkeletonJourneyController.traderDetails()))
+  val customsAgent: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"customsAgent.title", routes.SkeletonJourneyController.traderDetails()))
   }
 
   val traderDetails: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderDetails.title", routes.SkeletonJourneyController.traderAddress()))
+    Ok(page(s"traderDetails.title", routes.SkeletonJourneyController.enterTraderAddress()))
   }
 
-  val traderAddress: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderAddress.title", routes.SkeletonJourneyController.traderAddressList()))
+  val enterTraderAddress: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"enterTraderAddress.title", routes.SkeletonJourneyController.selectTraderAddress()))
   }
 
-  val traderAddressList: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderAddressList.title", routes.SkeletonJourneyController.traderEori()))
+  val selectTraderAddress: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"selectTraderAddress.title", routes.SkeletonJourneyController.enterEoriNumber()))
   }
 
-  val traderEori: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderEori.title", routes.SkeletonJourneyController.traderJourney()))
+  val enterEoriNumber: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"enterEoriNumber.title", routes.SkeletonJourneyController.traderJourneyDetails()))
   }
 
-  val traderJourney: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"traderJourney.title", routes.CheckYourAnswersController.onPageLoad()))
+  val traderJourneyDetails: Action[AnyContent] = Action { implicit request =>
+    Ok(page(s"traderJourneyDetails.title", routes.CheckYourAnswersController.onPageLoad()))
   }
 }

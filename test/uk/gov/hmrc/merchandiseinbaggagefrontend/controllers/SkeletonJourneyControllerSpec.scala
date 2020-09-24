@@ -19,151 +19,133 @@ class SkeletonJourneyControllerSpec extends BaseSpecWithApplication {
       val title = "Declaring merchandise in your baggage"
       val getRequest = buildGet(routes.SkeletonJourneyController.start().url)
 
-      ensure(controller.start(getRequest), title, routes.SkeletonJourneyController.importExport())
+      ensure(controller.start(getRequest), title, routes.SkeletonJourneyController.selectDeclarationType())
     }
   }
 
-  "importExport" should {
+  "selectDeclarationType" should {
     "render the page" in {
       val title = "What do you need to declare?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.importExport().url)
+      val getRequest = buildGet(routes.SkeletonJourneyController.selectDeclarationType().url)
 
-      ensure(controller.importExport(getRequest), title, routes.SkeletonJourneyController.multipleCountriesEuCheck())
+      ensure(controller.selectDeclarationType(getRequest), title, routes.SkeletonJourneyController.exciseAndRestrictedGoods())
     }
   }
 
-  "multipleCountriesEuCheck" should {
+  "exciseAndRestrictedGoods" should {
     "render the page" in {
-      val title = "Where are the goods coming from?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.multipleCountriesEuCheck().url)
+      val title = "Are you bringing in excise goods or restricted goods?"
+      val getRequest = buildGet(routes.SkeletonJourneyController.exciseAndRestrictedGoods().url)
 
-      ensure(controller.multipleCountriesEuCheck(getRequest), title, routes.SkeletonJourneyController.goodsExcise())
-    }
-  }
-
-  "goodsExcise" should {
-    "render the page" in {
-      val title = "Are you bringing in excise or restricted goods?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsExcise().url)
-
-      ensure(controller.goodsExcise(getRequest), title, routes.SkeletonJourneyController.valueWeightOfGoods())
+      ensure(controller.exciseAndRestrictedGoods(getRequest), title, routes.GoodsDestinationController.onPageLoad())
     }
   }
 
   "valueWeightOfGoods" should {
     "render the page" in {
-      val title = "Is the total value of the goods over £873 or 1000kg?"
+      val title = "Is the total value of the goods over £1500 or 1000kg?"
       val getRequest = buildGet(routes.SkeletonJourneyController.valueWeightOfGoods().url)
 
-      ensure(controller.valueWeightOfGoods(getRequest), title, routes.SkeletonJourneyController.goodsType())
+      ensure(controller.valueWeightOfGoods(getRequest), title, routes.SkeletonJourneyController.searchGoods())
     }
   }
 
-  "goodsType" should {
+  "searchGoods" should {
     "render the page" in {
-      val title = "Enter the detail of each individual item"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsType().url)
+      val title = "What goods are you bringing into the UK?"
+      val getRequest = buildGet(routes.SkeletonJourneyController.searchGoods().url)
 
-      ensure(controller.goodsType(getRequest), title, routes.SkeletonJourneyController.goodsCategory())
+      ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.searchGoodsCountry())
     }
   }
 
-  "goodsCategory" should {
+  "searchGoodsCountry" should {
     "render the page" in {
-      val title = "Which rate of VAT do the goods fit into?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsCategory().url)
+      val title = "In what country did you buy the x?"
+      val getRequest = buildGet(routes.SkeletonJourneyController.searchGoodsCountry().url)
 
-      ensure(controller.goodsCategory(getRequest), title, routes.SkeletonJourneyController.goodsDetailsWhere())
+      ensure(controller.searchGoodsCountry(getRequest), title, routes.SkeletonJourneyController.purchaseDetails())
     }
   }
 
-  "goodsDetailsWhere" should {
+  "purchaseDetails" should {
     "render the page" in {
-      val title = "In which country did you purchase the goods?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsDetailsWhere().url)
+      val title = "How much did you pay for the x?"
+      val getRequest = buildGet(routes.SkeletonJourneyController.purchaseDetails().url)
 
-      ensure(controller.goodsDetailsWhere(getRequest), title, routes.SkeletonJourneyController.goodsDetailsCost())
+      ensure(controller.purchaseDetails(getRequest), title, routes.SkeletonJourneyController.reviewGoods())
     }
   }
 
-  "goodsDetailsCost" should {
-    "render the page" in {
-      val title = "How much did you pay for the goods?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsDetailsCost().url)
-
-      ensure(controller.goodsDetailsCost(getRequest), title, routes.SkeletonJourneyController.goodsReview())
-    }
-  }
-
-  "goodsReview" should {
+  "reviewGoods" should {
     "render the page" in {
       val title = "Review your goods"
-      val getRequest = buildGet(routes.SkeletonJourneyController.goodsReview().url)
+      val getRequest = buildGet(routes.SkeletonJourneyController.reviewGoods().url)
 
-      ensure(controller.goodsReview(getRequest), title, routes.SkeletonJourneyController.calculation())
+      ensure(controller.reviewGoods(getRequest), title, routes.SkeletonJourneyController.taxCalculation())
     }
   }
 
-  "calculation" should {
+  "taxCalculation" should {
     "render the page" in {
-      val title = "Tax due on these goods"
-      val getRequest = buildGet(routes.SkeletonJourneyController.calculation().url)
+      val title = "Tax due on these goods £x"
+      val getRequest = buildGet(routes.SkeletonJourneyController.taxCalculation().url)
 
-      ensure(controller.calculation(getRequest), title, routes.SkeletonJourneyController.traderAgent())
+      ensure(controller.taxCalculation(getRequest), title, routes.SkeletonJourneyController.customsAgent())
     }
   }
 
-  "traderAgent" should {
+  "customsAgent" should {
     "render the page" in {
       val title = "Are you a customs agent?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderAgent().url)
+      val getRequest = buildGet(routes.SkeletonJourneyController.customsAgent().url)
 
-      ensure(controller.traderAgent(getRequest), title, routes.SkeletonJourneyController.traderDetails())
+      ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.traderDetails())
     }
   }
 
   "traderDetails" should {
     "render the page" in {
-      val title = "What is the name of carrying the goods?"
+      val title = "Enter the name of the person carrying the goods"
       val getRequest = buildGet(routes.SkeletonJourneyController.traderDetails().url)
 
-      ensure(controller.traderDetails(getRequest), title, routes.SkeletonJourneyController.traderAddress())
+      ensure(controller.traderDetails(getRequest), title, routes.SkeletonJourneyController.enterTraderAddress())
     }
   }
 
-  "traderAddress" should {
+  "enterTraderAddress" should {
     "render the page" in {
-      val title = "What is your address?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderAddress().url)
+      val title = "Find your address"
+      val getRequest = buildGet(routes.SkeletonJourneyController.enterTraderAddress().url)
 
-      ensure(controller.traderAddress(getRequest), title, routes.SkeletonJourneyController.traderAddressList())
+      ensure(controller.enterTraderAddress(getRequest), title, routes.SkeletonJourneyController.selectTraderAddress())
     }
   }
 
-  "traderAddressList" should {
+  "selectTraderAddress" should {
     "render the page" in {
       val title = "Select your address"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderAddressList().url)
+      val getRequest = buildGet(routes.SkeletonJourneyController.selectTraderAddress().url)
 
-      ensure(controller.traderAddressList(getRequest), title, routes.SkeletonJourneyController.traderEori())
+      ensure(controller.selectTraderAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
     }
   }
 
-  "traderEori" should {
+  "enterEoriNumber" should {
     "render the page" in {
       val title = "What is your EORI number?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderEori().url)
+      val getRequest = buildGet(routes.SkeletonJourneyController.enterEoriNumber().url)
 
-      ensure(controller.traderEori(getRequest), title, routes.SkeletonJourneyController.traderJourney())
+      ensure(controller.enterEoriNumber(getRequest), title, routes.SkeletonJourneyController.traderJourneyDetails())
     }
   }
 
-  "traderJourney" should {
+  "traderJourneyDetails" should {
     "render the page" in {
-      val title = "What your journey details?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderJourney().url)
+      val title = "Journey Details"
+      val getRequest = buildGet(routes.SkeletonJourneyController.traderJourneyDetails().url)
 
-      ensure(controller.traderJourney(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
+      ensure(controller.traderJourneyDetails(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
     }
   }
 

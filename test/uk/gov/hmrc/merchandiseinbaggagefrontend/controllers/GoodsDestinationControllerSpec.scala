@@ -39,16 +39,15 @@ class GoodsDestinationControllerSpec extends BaseSpecWithApplication {
     }
 
     //TODO assert against redirection/storage when MIBM-77 done
-    "return OK when valid selection submitted" in {
+    "Redirect to /value-weight-of-goods when valid selection submitted" in {
       val request = FakeRequest(POST, route).withCSRFToken
         .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
         .withFormUrlEncodedBody(("value", "ni"))
 
-      val submittedForm = form.bindFromRequest()(request)
-
       val result = controller.onSubmit()(request)
 
-      status(result) mustEqual OK
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).get mustEqual routes.SkeletonJourneyController.valueWeightOfGoods().toString
     }
 
     "return BAD_REQUEST and errors when no selection made" in {
