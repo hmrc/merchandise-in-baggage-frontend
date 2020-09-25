@@ -10,4 +10,7 @@
 # Failing to follow this rule may result in test routes deployed in production.
 
 # Add all the application routes to the prod.routes file
-->         /                          prod.Routes
+GET   /merchandise-in-baggage/test-only/display-declaration-journey  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.displayDeclarationJourneyPage
+POST  /merchandise-in-baggage/test-only/submit-declaration-journey   uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.submitDeclarationJourneyPage
+
+->    /                          prod.Routes

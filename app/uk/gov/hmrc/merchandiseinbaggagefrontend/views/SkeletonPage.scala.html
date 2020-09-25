@@ -11,7 +11,7 @@
 @(titleMessageKey: String, next: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages(titleMessageKey))) {
- <h1 class="govuk-heading-l" id="main-message">@messages(titleMessageKey)</h1>
+ <h1 class="govuk-heading-xl" id="main-message">@messages(titleMessageKey)</h1>
 
  @button(messages("site.continue"), href = Some(next.url))
 }

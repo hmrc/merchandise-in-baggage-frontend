@@ -33,7 +33,6 @@ enterTraderAddress.title = Find your address
 selectTraderAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
 traderJourneyDetails.title = Journey Details
-checkYourAnswers.title = Check your answers before making your declaration
 
 
 # GoodsDestination
@@ -42,3 +41,26 @@ goodsDestination.heading = Where in the UK are the goods going?
 goodsDestination.ni = Northern Ireland
 goodsDestination.gb = England, Wales or Scotland
 goodsDestination.error.required = Select one of the options below
+
+
+checkYourAnswers.title = Check your answers before making your declaration
+checkYourAnswers.detailsOfTheGoods = Details of the goods
+checkYourAnswers.detailsOfTheGoods.item = Item
+checkYourAnswers.detailsOfTheGoods.country = Country
+checkYourAnswers.detailsOfTheGoods.price = Price
+checkYourAnswers.detailsOfTheGoods.taxDue = Tax due
+checkYourAnswers.personalDetails = Personal details
+checkYourAnswers.personalDetails.name = Name
+checkYourAnswers.personalDetails.address = Address
+checkYourAnswers.personalDetails.eori = EORI number
+checkYourAnswers.journeyDetails = Journey details
+checkYourAnswers.journeyDetails.placeOfArrival = Place of arrival
+checkYourAnswers.journeyDetails.dateOfArrival = Date of arrival
+checkYourAnswers.sendDeclaration = Now send your declaration
+checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring them into the UK for trade or business use.
+checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force.
+checkYourAnswers.sendDeclaration.warning = Warning
+checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
+
+
