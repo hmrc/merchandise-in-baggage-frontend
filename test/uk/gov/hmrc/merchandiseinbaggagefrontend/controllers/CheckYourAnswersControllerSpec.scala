@@ -28,7 +28,7 @@ class CheckYourAnswersControllerSpec extends BaseSpecWithApplication with CoreTe
         val eventualResponse = controller.onPageLoad(getRequestWithSessionId)
         val content = contentAsString(eventualResponse)
 
-        status(eventualResponse) mustBe 200
+        status(eventualResponse) mustBe OK
 
         content must include("Check your answers before making your declaration")
 

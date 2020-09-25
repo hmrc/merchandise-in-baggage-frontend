@@ -152,7 +152,7 @@ class SkeletonJourneyControllerSpec extends BaseSpecWithApplication {
   private def ensure(eventualResponse: Future[Result], title: String, call: Call) = {
     val content = contentAsString(eventualResponse)
 
-    status(eventualResponse) mustBe 200
+    status(eventualResponse) mustBe OK
     content must include(title)
     content must include(call.url)
   }

@@ -8,7 +8,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PayApitRequest, TraderDetails}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Address, CurrencyAmount, DeclarationJourney, Eori, GoodsEntry, JourneyDetails, Name, PriceOfGoods, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Address, CurrencyAmount, Declaration, DeclarationJourney, Eori, GoodsEntry, JourneyDetails, Name, PriceOfGoods, SessionId}
 
 trait CoreTestData {
 
@@ -25,15 +25,18 @@ trait CoreTestData {
 
   val startedDeclarationJourney: DeclarationJourney = DeclarationJourney(sessionId)
 
+  val completedGoodsEntry: GoodsEntry =
+    GoodsEntry(
+      "wine",
+      Some("France"),
+      Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), "EUR")),
+      Some(CurrencyAmount(BigDecimal(10.00))))
+
   val completedDeclarationJourney: DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
       goodsEntries = Seq(
-        GoodsEntry(
-          "wine",
-          Some("France"),
-          Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), "EUR")),
-          Some(CurrencyAmount(BigDecimal(10.00)))),
+        completedGoodsEntry,
         GoodsEntry(
           "cheese",
           Some("France"),
@@ -44,4 +47,6 @@ trait CoreTestData {
       maybeEori = Some(Eori("TerrysEori")),
       maybeJourneyDetails = Some(JourneyDetails("Dover", now()))
     )
+
+  val declaration: Declaration = Declaration(completedDeclarationJourney)
 }

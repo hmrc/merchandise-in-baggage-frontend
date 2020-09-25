@@ -17,15 +17,17 @@ import play.api.inject.Injector
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.GET
+import play.api.test.Helpers.{GET, POST}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, MongoConfiguration}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.SessionId
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 
-trait BaseSpec extends AnyWordSpec with Matchers with BeforeAndAfterEach
+trait BaseSpec extends AnyWordSpec with Matchers
 
-trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures{
+trait BaseSpecWithApplication extends BaseSpec
+  with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures with BeforeAndAfterEach {
+
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))
 
@@ -42,6 +44,9 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url).withSession((SessionKeys.sessionId, sessionId.value)).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+
+  def buildPost(url: String): FakeRequest[AnyContentAsEmpty.type] = FakeRequest(POST, url).withCSRFToken
+    .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 }
 
 
