@@ -1,0 +1,10 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@this()
+
+@(msg: String, classes: Option[String] = None)(implicit messages: Messages)
+
+<h4 class="@classes.getOrElse("govuk-heading-s")">@messages(msg)</h4>

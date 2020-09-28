@@ -22,10 +22,6 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents, pag
                                          (implicit val ec: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) {
 
-  val start: Action[AnyContent] = Action { implicit request =>
-    Ok(page(s"start.title", routes.SkeletonJourneyController.selectDeclarationType()))
-  }
-
   val selectDeclarationType: Action[AnyContent] = Action { implicit request =>
     Ok(page(s"selectDeclarationType.title", routes.SkeletonJourneyController.exciseAndRestrictedGoods()))
   }

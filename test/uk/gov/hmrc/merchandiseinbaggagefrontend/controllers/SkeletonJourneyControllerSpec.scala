@@ -14,15 +14,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends BaseSpecWithApplication {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "start" should {
-    "render the page" in {
-      val title = "Declaring merchandise in your baggage"
-      val getRequest = buildGet(routes.SkeletonJourneyController.start().url)
-
-      ensure(controller.start(getRequest), title, routes.SkeletonJourneyController.selectDeclarationType())
-    }
-  }
-
   "selectDeclarationType" should {
     "render the page" in {
       val title = "What do you need to declare?"

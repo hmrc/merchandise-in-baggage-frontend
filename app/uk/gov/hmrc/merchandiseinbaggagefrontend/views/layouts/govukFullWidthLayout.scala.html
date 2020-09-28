@@ -1,0 +1,56 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
+
+@this(
+govukTemplate: GovukTemplate,
+govukHeader: GovukHeader,
+govukFooter: GovukFooter,
+govukBackLink: GovukBackLink
+)
+
+@(
+        pageTitle: Option[String] = None,
+        headBlock: Option[Html] = None,
+        headerBlock: Option[Html] = None,
+        beforeContentBlock: Option[Html] = None,
+        footerBlock: Option[Html] = None,
+        footerItems: Seq[FooterItem] = Seq.empty,
+        bodyEndBlock: Option[Html] = None,
+        scriptsBlock: Option[Html] = None
+)(contentBlock: Html)(implicit messages: Messages)
+
+@headerDefault = {
+@headerBlock.getOrElse {
+    @govukHeader(Header(
+        homepageUrl = Some("https://www.gov.uk/"),
+        serviceName = Some(messages("service.name")),
+        serviceUrl = Some(messages("service.homePageUrl")),
+        containerClasses = None))
+}
+}
+
+@footerDefault = {
+@footerBlock.getOrElse {
+    @govukFooter(new Footer(meta = Some(Meta(items = Some(footerItems)))))
+}
+}
+
+@bodyEndDefault = {
+@bodyEndBlock
+@scriptsBlock
+}
+
+@govukTemplate(
+    htmlLang = Some(messages.lang.code),
+    pageTitle = pageTitle,
+    headBlock = headBlock,
+    headerBlock = headerDefault,
+    beforeContentBlock = beforeContentBlock,
+    footerBlock = footerDefault,
+    mainClasses = Some("govuk-main-wrapper--auto-spacing"),
+    bodyEndBlock = Some(bodyEndDefault)
+)(contentBlock)

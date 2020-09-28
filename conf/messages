@@ -14,11 +14,11 @@ footer.govukHelp.url = https://www.gov.uk/help
 error.summary.title = There is a problem
 
 site.continue = Continue
+site.start = Start now
 
 payment.button = Pay now
 next.button = Next
 
-start.title = Declaring merchandise in your baggage
 selectDeclarationType.title = What do you need to declare?
 exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
 valueWeightOfGoods.title = Is the total value of the goods over £1500 or 1000kg?
@@ -34,6 +34,33 @@ selectTraderAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
 traderJourneyDetails.title = Journey Details
 
+# Start
+start.title = Declaring merchandise in your baggage
+start.heading = Declaring merchandise in your baggage
+start.desc.p = Merchandise in baggage are commercial goods (for trade or business use) where:
+start.desc.li1 = a commercial transport operator does not carry them for you
+start.desc.li2 = you’ve travelled to or from the UK carrying goods in your baggage
+start.cannot.p = You cannot use this service if you are carrying:
+start.cannot.li1 = alcohol, tobacco or fuel
+start.cannot.li2.text = restricted goods
+start.cannot.li2.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+start.can.p = Use this service to:
+start.can.li1 = check the customs duty and VAT due on goods you bring into the UK
+start.can.li2 = declare your goods and make a payment online if you are importing goods to the UK
+start.can.li3 = declare goods you are exporting from the UK
+start.before.p = Before you start you will need to know:
+start.before.li1 = an EORI number that starts with GB at least 48 hours before travelling if your business does not have one already
+start.before.li2 = the price of your goods in the currency used
+start.before.li3 = the quantity or weight of your goods
+start.before.li4 = your payment details if paying by card
+start.p1 = You have 5 days to declare your goods before you travel.
+start.related.h4 = Related content
+start.related.li1.text = Bringing goods into the UK
+start.related.li1.href = #
+start.related.li2.text = Restricted and banned items
+start.related.li2.href = #
+start.related.li3.text = Other ways to declare and pay
+start.related.li3.href = #
 
 # GoodsDestination
 goodsDestination.title = Where in the UK are the goods going?
