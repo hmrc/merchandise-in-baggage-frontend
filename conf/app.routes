@@ -26,8 +26,8 @@ GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onPageLoad()
 
 # ExciseAndRestrictedGoods
-GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad()
-POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onSubmit()
+GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad
+POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onSubmit
 
 # GoodsDestination
 GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad()

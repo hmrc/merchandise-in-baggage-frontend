@@ -1,38 +1,78 @@
 /*
  * Copyright 2020 HM Revenue & Customs
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
 
-class ExciseAndRestrictedGoodsControllerSpec extends BaseSpecWithApplication {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new ExciseAndRestrictedGoodsFormProvider()
   private val form = formProvider()
 
-  private lazy val controller = new ExciseAndRestrictedGoodsController(controllerComponents, formProvider, view)
   private lazy val view = injector.instanceOf[ExciseAndRestrictedGoodsView]
 
-  "onPageLoad" must {
-    "return OK and render the view" in {
-      val request = buildGet(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)
-      val result = controller.onPageLoad()(request)
+  private lazy val controller =
+    new ExciseAndRestrictedGoodsController(
+      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
 
-      status(result) mustEqual OK
-      contentAsString(result) mustEqual
-        view(form)(request, messagesApi.preferred(request), appConfig).toString
+  "onPageLoad" must {
+    val url = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
+    val request = buildGet(url, sessionId)
+
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
+
+    "return OK and render the view" when {
+      "a declaration has been started" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val result = controller.onPageLoad()(request)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(form)(request, messagesApi.preferred(request), appConfig).toString
+      }
+    }
+
+    "return OK and render the view" when {
+      "a declaration has been started and a value saved" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(true)))
+
+        val result = controller.onPageLoad()(request)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(form.fill(true))(request, messagesApi.preferred(request), appConfig).toString
+      }
     }
   }
 
   "onSubmit" must {
-    val postRequest = buildPost(routes.ExciseAndRestrictedGoodsController.onSubmit().url)
+    val url = routes.ExciseAndRestrictedGoodsController.onSubmit().url
+    val postRequest = buildPost(url, sessionId)
+
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /goods-destination" when {
-      "false is submitted" in {
+      "a declaration is started and false is submitted" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
         val request = postRequest.withFormUrlEncodedBody(("value", "false"))
         val result = controller.onSubmit()(request)
 
@@ -42,7 +82,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends BaseSpecWithApplication {
     }
 
     "Redirect to /cannot-use-service" when {
-      "true is submitted" in {
+      "a declaration is started and true is submitted" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
         val request = postRequest.withFormUrlEncodedBody(("value", "true"))
         val result = controller.onSubmit()(request)
 
@@ -53,6 +95,8 @@ class ExciseAndRestrictedGoodsControllerSpec extends BaseSpecWithApplication {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
         val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)
 
