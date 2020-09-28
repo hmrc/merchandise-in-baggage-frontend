@@ -42,7 +42,7 @@
     </div>
     <div class="govuk-summary-list__row">
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
-     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.taxDue</dd>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
     </div>
    </dl>
   }
@@ -56,7 +56,14 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.address")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.address</dd>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">
+     @for(addressLine <- declaration.address.populatedAddressLines) {
+       @addressLine
+       <br>
+     }
+
+     @declaration.address.postCode
+   </dd>
   </div>
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
@@ -73,13 +80,13 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.dateOfArrival</dd>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
   </div>
  </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.sendDeclaration")</h2>
 
- <p>@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
+ <p class="govuk-!-font-size-19">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
  <ul class="govuk-list govuk-list--bullet">
   <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>

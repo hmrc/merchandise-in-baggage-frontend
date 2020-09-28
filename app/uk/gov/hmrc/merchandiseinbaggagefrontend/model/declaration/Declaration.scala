@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.UUID.randomUUID
 
 import play.api.libs.json.{Format, Json, OFormat}
@@ -38,8 +39,16 @@ object CurrencyAmount {
   implicit val format: OFormat[CurrencyAmount] = Json.format[CurrencyAmount]
 }
 
-case class PriceOfGoods(amount: CurrencyAmount, currency: String) {
-  override val toString = s"$amount $currency"
+case class Currency(name: String, code: String) {
+  override val toString = s"$name ($code)"
+}
+
+object Currency {
+  implicit val format: OFormat[Currency] = Json.format[Currency]
+}
+
+case class PriceOfGoods(amount: CurrencyAmount, currency: Currency) {
+  override val toString = s"$amount, $currency"
 }
 
 object PriceOfGoods {
@@ -68,12 +77,7 @@ case class Address(maybeLine1: Option[String],
                    maybeTown: Option[String] = None,
                    maybeCounty: Option[String] = None,
                    postCode: String) {
-
-  override val toString: String = {
-    def lineString(maybeLine: Option[String]) = maybeLine.fold("")(line => s"$line, ")
-
-    s"${lineString(maybeLine1)}${lineString(maybeLine2)}${lineString(maybeTown)}${lineString(maybeCounty)}$postCode"
-  }
+  val populatedAddressLines: Seq[String] = Seq(maybeLine1, maybeLine2, maybeTown, maybeCounty).flatten
 }
 
 object Address {
@@ -90,7 +94,9 @@ object Eori {
   implicit val format: OFormat[Eori] = Json.format[Eori]
 }
 
-case class JourneyDetails(placeOfArrival: String, dateOfArrival: LocalDate)
+case class JourneyDetails(placeOfArrival: String, dateOfArrival: LocalDate) {
+  val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
+}
 
 object JourneyDetails {
   implicit val format: OFormat[JourneyDetails] = Json.format[JourneyDetails]
