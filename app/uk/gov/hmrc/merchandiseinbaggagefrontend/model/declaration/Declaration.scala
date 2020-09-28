@@ -20,6 +20,7 @@ import java.time.LocalDate
 import java.util.UUID.randomUUID
 
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 case class SessionId(value: String)
@@ -102,7 +103,8 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeName: Option[Name] = None,
                               maybeAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
-                              maybeJourneyDetails: Option[JourneyDetails] = None)
+                              maybeJourneyDetails: Option[JourneyDetails] = None,
+                              maybeGoodsDestination: Option[GoodsDestination] = None)
 
 object DeclarationJourney {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
