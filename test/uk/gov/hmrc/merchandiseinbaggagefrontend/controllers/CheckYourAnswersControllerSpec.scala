@@ -1,26 +1,32 @@
 /*
  * Copyright 2020 HM Revenue & Customs
  *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData}
 
-class CheckYourAnswersControllerSpec extends BaseSpecWithApplication with CoreTestData {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[CheckYourAnswersController]
 
-  private val onPageLoadUrl: String = routes.CheckYourAnswersController.onPageLoad().url
-  private val getRequestWithSessionId = buildGet(onPageLoadUrl, sessionId)
-
-  override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
-
-  private def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney) =
-    declarationJourneyRepository.insert(declarationJourney).futureValue
+  private val url: String = routes.CheckYourAnswersController.onPageLoad().url
+  private val getRequestWithSessionId = buildGet(url, sessionId)
 
   "onPageLoad" should {
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
+
     "render the page" when {
       "a declaration has been completed" in {
         givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
@@ -64,31 +70,6 @@ class CheckYourAnswersControllerSpec extends BaseSpecWithApplication with CoreTe
         content must include("I will need to show my declaration and invoices if I am stopped by Border Force.")
         content must include("Warning")
         content must include("If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.")
-      }
-    }
-
-    "error" when {
-      "no session id is set" in {
-        val getRequest = buildGet(onPageLoadUrl)
-        givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-
-        intercept[Exception] {
-          controller.onPageLoad(getRequest).futureValue
-        }.getMessage mustBe "Unable to retrieve declaration journey"
-      }
-
-      "a declaration has not been started" in {
-        intercept[Exception] {
-          controller.onPageLoad(getRequestWithSessionId).futureValue
-        }.getCause.getMessage mustBe "Unable to retrieve declaration journey"
-      }
-
-      "a declaration has not been completed" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-
-        intercept[Exception] {
-          controller.onPageLoad(getRequestWithSessionId).futureValue
-        }.getCause.getMessage.contains( s"incomplete declaration journey") mustBe true
       }
     }
   }

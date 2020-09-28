@@ -13,6 +13,8 @@ footer.govukHelp.url = https://www.gov.uk/help
 
 error.summary.title = There is a problem
 
+site.yes = Yes
+site.no = No
 site.continue = Continue
 site.start = Start now
 
@@ -20,7 +22,6 @@ payment.button = Pay now
 next.button = Next
 
 selectDeclarationType.title = What do you need to declare?
-exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
 valueWeightOfGoods.title = Is the total value of the goods over £1500 or 1000kg?
 searchGoods.title = What goods are you bringing into the UK?
 searchGoodsCountry.title = In what country did you buy the x?
@@ -62,12 +63,30 @@ start.related.li2.href = #
 start.related.li3.text = Other ways to declare and pay
 start.related.li3.href = #
 
+
+# ExciseAndRestrictedGoods
+exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
+exciseAndRestrictedGoods.heading = Are you bringing in excise goods or restricted goods?
+exciseAndRestrictedGoods.hint = Excise goods are alcohol, tobacco, or fuel. You can
+exciseAndRestrictedGoods.hint.a = check if your goods are restricted (opens in new tab or window).
+exciseAndRestrictedGoods.hint.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+exciseAndRestrictedGoods.error.required = Select one of the options below
+
+
 # GoodsDestination
 goodsDestination.title = Where in the UK are the goods going?
 goodsDestination.heading = Where in the UK are the goods going?
 goodsDestination.ni = Northern Ireland
 goodsDestination.gb = England, Wales or Scotland
 goodsDestination.error.required = Select one of the options below
+
+
+# CannotUseService
+cannotUseService.title = You need to submit a full customs declaration
+cannotUseService.heading = You need to submit a full customs declaration
+cannotUseService.p1 = For excise, restricted and goods over the threshold you must make a full custom declaration.
+cannotUseService.a = Make a full custom declaration
+cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 
 checkYourAnswers.title = Check your answers before making your declaration

@@ -17,22 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CannotUseServiceView
 
-class StartControllerSpec extends DeclarationJourneyControllerSpec {
-
-  private lazy val view = injector.instanceOf[StartView]
-  private lazy val controller = new StartController(controllerComponents, view)
-
-  "StartController" must {
-
-    "return OK and correct view for GET" in {
-      val getRequest = buildGet(routes.StartController.onPageLoad().url)
-      val result = controller.onPageLoad()(getRequest)
+class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
+  "onPageLoad" must {
+    "return OK and render the view" in {
+      val view = injector.instanceOf[CannotUseServiceView]
+      val controller = new CannotUseServiceController(controllerComponents, view)
+      val request = buildGet(routes.CannotUseServiceController.onPageLoad().url)
+      val result = controller.onPageLoad()(request)
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view()(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+      contentAsString(result) mustEqual view()(request, messagesApi.preferred(request), appConfig).toString
     }
   }
-
 }

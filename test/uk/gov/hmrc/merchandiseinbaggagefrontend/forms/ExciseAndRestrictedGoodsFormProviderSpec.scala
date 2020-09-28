@@ -16,16 +16,30 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
 
-class GoodsDestinationFormProvider @Inject() extends Mappings {
+class ExciseAndRestrictedGoodsFormProviderSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[GoodsDestination] =
-    Form(
-      "value" -> enumerable[GoodsDestination]("goodsDestination.error.required")
+  val requiredKey = "exciseAndRestrictedGoods.error.required"
+  val invalidKey = "error.boolean"
+
+  val form = new ExciseAndRestrictedGoodsFormProvider()()
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

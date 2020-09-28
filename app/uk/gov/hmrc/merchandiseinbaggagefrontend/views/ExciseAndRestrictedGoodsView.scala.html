@@ -14,30 +14,39 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+@import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 errorSummary: components.errorSummary,
-inputRadio: components.inputRadio,
+h1: components.h1,
+inputYesNo: components.inputYesNo,
 button: components.button
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("goodsDestination.title"))) {
-    @formHelper(action = GoodsDestinationController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+@layout(pageTitle = Some(messages("exciseAndRestrictedGoods.title"))) {
+    @formHelper(action = ExciseAndRestrictedGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
-        @inputRadio(
+        @h1("exciseAndRestrictedGoods.heading")
+
+        <p class="govuk-hint">
+            @messages("exciseAndRestrictedGoods.hint")
+            <a href="@messages("exciseAndRestrictedGoods.hint.href")" class="govuk-link">
+                @messages("exciseAndRestrictedGoods.hint.a")
+            </a>
+        </p>
+
+        @inputYesNo(
             form = form,
-            legend = messages("goodsDestination.heading"),
-            legendAsHeading = true,
-            items = GoodsDestination.options(form)
+            legend = messages("exciseAndRestrictedGoods.heading"),
+            legendAsHeading = false,
+            classes = "govuk-visually-hidden",
         )
 
         @button("site.continue")

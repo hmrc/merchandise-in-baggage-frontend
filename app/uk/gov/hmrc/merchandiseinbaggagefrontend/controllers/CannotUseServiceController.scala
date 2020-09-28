@@ -19,15 +19,18 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Declaration
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CannotUseServiceView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 @Singleton
-class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           page: CheckYourAnswersPage)
-                                          (implicit appConfig: AppConfig) extends DeclarationJourneyController {
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(Declaration(request.declarationJourney)))
+class CannotUseServiceController @Inject()(
+                                          override val controllerComponents: MessagesControllerComponents,
+                                          view: CannotUseServiceView
+                                          )(implicit val appConfig: AppConfig) extends FrontendBaseController {
+
+
+  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+    Ok(view())
   }
+
 }

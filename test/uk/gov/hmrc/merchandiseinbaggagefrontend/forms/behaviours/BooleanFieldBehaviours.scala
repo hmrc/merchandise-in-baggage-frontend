@@ -18,26 +18,28 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours
 
 import play.api.data.{Form, FormError}
 
-class OptionFieldBehaviours extends FieldBehaviours {
+trait BooleanFieldBehaviours extends FieldBehaviours {
 
-  def optionsField[T](form: Form[_], fieldName: String, validValues: Seq[T], invalidError: FormError): Unit = {
+  def booleanField(form: Form[_],
+                   fieldName: String,
+                   invalidError: FormError): Unit = {
 
-    "bind all valid values" in {
-
-      for (value <- validValues) {
-
-        val result = form.bind(Map(fieldName -> value.toString)).apply(fieldName)
-        result.value.value mustEqual value.toString
-      }
+    "bind true" in {
+      val result = form.bind(Map(fieldName -> "true"))
+      result.value.value mustBe true
     }
 
-    "not bind invalid values" in {
+    "bind false" in {
+      val result = form.bind(Map(fieldName -> "false"))
+      result.value.value mustBe false
+    }
 
-      val generator = stringsExceptSpecificValues(validValues.map(_.toString))
+    "not bind non-booleans" in {
 
-      forAll(generator -> "invalidValue") { value =>
-        val result = form.bind(Map(fieldName -> value)).apply(fieldName)
-        result.errors mustEqual Seq(invalidError)
+      forAll(nonBooleans -> "nonBoolean") {
+        nonBoolean =>
+          val result = form.bind(Map(fieldName -> nonBoolean)).apply(fieldName)
+          result.errors mustEqual Seq(invalidError)
       }
     }
   }
