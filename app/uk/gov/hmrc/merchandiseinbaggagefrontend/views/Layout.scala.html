@@ -5,10 +5,10 @@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.FooterLinks
-@import uk.gov.hmrc.govukfrontend.views.Layouts
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.layouts
 
 @this(
-        govukLayout: GovukLayout,
+        govukLayout: layouts.govukFullWidthLayout,
         head: Head
 )
 @(pageTitle: Option[String] = None,

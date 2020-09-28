@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.start
 GET        /select-declaration-type      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectDeclarationType
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.exciseAndRestrictedGoods
 GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.valueWeightOfGoods
@@ -23,6 +22,9 @@ GET        /enter-trader-address         uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /select-trader-address        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectTraderAddress
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
 GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderJourneyDetails
+
+# Start
+GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onPageLoad()
 
 # GoodsDestination
 GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad()

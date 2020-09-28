@@ -46,7 +46,7 @@ class TestOnlyControllerSpec extends BaseSpecWithApplication with CoreTestData{
       val eventualResponse = controller.submitDeclarationJourneyPage(request)
 
       status(eventualResponse) mustBe SEE_OTHER
-      header("Location", eventualResponse) mustBe Some(controllers.routes.SkeletonJourneyController.start().url)
+      header("Location", eventualResponse) mustBe Some(controllers.routes.StartController.onPageLoad().url)
 
       maybePersistedDeclarationJourney mustBe Some(completedDeclarationJourney)
     }

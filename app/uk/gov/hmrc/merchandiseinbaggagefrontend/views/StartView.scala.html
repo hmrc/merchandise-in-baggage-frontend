@@ -1,0 +1,78 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.html.components
+
+@this(
+    layout: Layout,
+    h1: components.h1,
+    h4: components.h4,
+    p: components.p,
+    button: components.button
+)
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("start.title"))) {
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @h1(messages("start.heading"))
+
+            @p(Html(messages("start.desc.p")))
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("start.desc.li1")</li>
+                <li>@messages("start.desc.li2")</li>
+            </ul>
+
+            @p(Html(messages("start.cannot.p")))
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("start.cannot.li1")</li>
+                <li>
+                    <a href="@messages("start.cannot.li2.href")" class="govuk-link">@messages("start.cannot.li2.text")</a>
+                </li>
+            </ul>
+
+            @p(Html(messages("start.can.p")))
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("start.can.li1")</li>
+                <li>@messages("start.can.li2")</li>
+                <li>@messages("start.can.li3")</li>
+            </ul>
+
+            @p(Html(messages("start.before.p")))
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>@messages("start.before.li1")</li>
+                <li>@messages("start.before.li2")</li>
+                <li>@messages("start.before.li3")</li>
+                <li>@messages("start.before.li4")</li>
+            </ul>
+
+            @p(Html(messages("start.p1")))
+
+            @button("site.start", Some("/merchandise-in-baggage/select-declaration-type"))
+
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            @h4(messages("start.related.h4"))
+
+            <ul class="govuk-list govuk-list--spaced">
+                <li>
+                    <a href="@messages("start.related.li1.href")" class="govuk-link">@messages("start.related.li1.text")</a>
+                </li>
+                <li>
+                    <a href="@messages("start.related.li2.href")" class="govuk-link">@messages("start.related.li2.text")</a>
+                </li>
+                <li>
+                    <a href="@messages("start.related.li3.href")" class="govuk-link">@messages("start.related.li3.text")</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+}
