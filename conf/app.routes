@@ -23,6 +23,7 @@ GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefronten
 
 # Start
 GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onPageLoad()
+POST       /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onSubmit()
 
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad

@@ -15,9 +15,11 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
 @this(
     layout: Layout,
+    formHelper: FormWithCSRF,
     h1: components.h1,
     h4: components.h4,
     p: components.p,
@@ -66,7 +68,9 @@
 
             @p(Html(messages("start.p1")))
 
-            @button("site.start", Some("/merchandise-in-baggage/select-declaration-type"))
+            @formHelper(action = StartController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+                @button("site.start")
+            }
 
         </div>
 

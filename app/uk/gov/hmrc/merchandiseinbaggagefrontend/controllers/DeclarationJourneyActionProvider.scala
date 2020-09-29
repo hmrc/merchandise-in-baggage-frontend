@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import com.google.inject.Inject
+import controllers.Assets.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.SessionId
@@ -35,11 +36,13 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
       override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] = {
         def error = throw new RuntimeException("Unable to retrieve declaration journey")
 
-        request.session.get(SessionKeys.sessionId).fold(error){ sessionId =>
-          repo.findBySessionId(SessionId(sessionId)).map{
-            case Some(declarationJourney) => Right(new DeclarationJourneyRequest(declarationJourney, request))
-            case _ => Left(error)
-          }
+        request.session.get(SessionKeys.sessionId) match {
+          case None => Future successful Left(Redirect(routes.StartController.onPageLoad()))
+          case Some(sessionId) =>
+            repo.findBySessionId(SessionId(sessionId)).map{
+              case Some(declarationJourney) => Right(new DeclarationJourneyRequest(declarationJourney, request))
+              case _ => Left(error)
+            }
         }
       }
 
