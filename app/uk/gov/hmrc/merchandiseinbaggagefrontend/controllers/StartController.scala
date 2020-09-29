@@ -18,18 +18,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.SessionKeys.sessionId
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{DeclarationJourney, SessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StartController @Inject()(
-                                 override val controllerComponents: MessagesControllerComponents,
+class StartController @Inject()( override val controllerComponents: MessagesControllerComponents,
                                  repo: DeclarationJourneyRepository,
                                  view: StartView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
 
@@ -37,13 +36,29 @@ class StartController @Inject()(
     Ok(view())
   }
 
-  def onSubmit(): Action[AnyContent] = Action.async {
-    val declarationJourney = DeclarationJourney(sessionId = SessionId())
+  def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
+    def next(sessionId: SessionId) =
+      Redirect(routes.SkeletonJourneyController.selectDeclarationType()).addingToSession((SessionKeys.sessionId, sessionId.value))
 
-    repo.insert(declarationJourney).map { _ =>
-      Redirect(routes.SkeletonJourneyController.selectDeclarationType())
-        .withSession((sessionId, declarationJourney.sessionId.value))
+    def newDeclarationJourney(sessionId: SessionId) = {
+      val declarationJourney = DeclarationJourney(sessionId = sessionId)
+
+      repo.insert(declarationJourney).map { _ =>
+        next(sessionId)
+      }
+    }
+
+    request.session.get(SessionKeys.sessionId) match {
+      case None =>
+        newDeclarationJourney(SessionId())
+
+      case Some(id) =>
+        val sessionId = SessionId(id)
+
+        repo.findBySessionId(sessionId).flatMap{
+          case Some(_) => Future successful next(sessionId)
+          case _ => newDeclarationJourney(sessionId)
+        }
     }
   }
-
 }
