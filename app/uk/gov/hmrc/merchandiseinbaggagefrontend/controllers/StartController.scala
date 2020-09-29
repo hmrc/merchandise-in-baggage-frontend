@@ -18,17 +18,32 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{DeclarationJourney, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StartController @Inject()(
                                  override val controllerComponents: MessagesControllerComponents,
-                                 view: StartView)(implicit val appConfig: AppConfig) extends FrontendBaseController {
+                                 repo: DeclarationJourneyRepository,
+                                 view: StartView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
     Ok(view())
+  }
+
+  def onSubmit(): Action[AnyContent] = Action.async {
+    val declarationJourney = DeclarationJourney(sessionId = SessionId())
+
+    repo.insert(declarationJourney).map { _ =>
+      Redirect(routes.SkeletonJourneyController.selectDeclarationType())
+        .withSession((sessionId, declarationJourney.sessionId.value))
+    }
   }
 
 }

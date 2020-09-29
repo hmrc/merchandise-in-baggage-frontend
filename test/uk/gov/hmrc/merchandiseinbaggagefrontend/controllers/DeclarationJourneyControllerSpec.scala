@@ -20,7 +20,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
-import play.api.test.Helpers.{GET, POST}
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{DeclarationJourney, SessionId}
@@ -52,15 +52,18 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
     declarationJourneyRepository.insert(declarationJourney).futureValue
 
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: DeclarationJourneyController, url: String): Unit = {
-    "error" when {
+    "redirect to /start" when {
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        intercept[Exception] {
-          controller.onPageLoad(buildGet(url)).futureValue
-        }.getMessage mustBe "Unable to retrieve declaration journey"
-      }
+        val result = controller.onPageLoad()(buildGet(url))
 
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.StartController.onPageLoad().url
+      }
+    }
+
+    "error" when {
       "a declaration has not been started" in {
         intercept[Exception] {
           controller.onPageLoad()(buildGet(url, sessionId)).futureValue
@@ -70,18 +73,21 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   }
 
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: DeclarationJourneyUpdateController, url: String): Unit = {
-    "error" when {
+    "redirect to /start" when {
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        intercept[Exception] {
-          controller.onPageLoad(buildPost(url)).futureValue
-        }.getMessage mustBe "Unable to retrieve declaration journey"
-      }
+        val result = controller.onSubmit()(buildPost(url))
 
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.StartController.onPageLoad().url
+      }
+    }
+
+    "error" when {
       "a declaration has not been started" in {
         intercept[Exception] {
-          controller.onPageLoad()(buildPost(url, sessionId)).futureValue
+          controller.onSubmit()(buildPost(url, sessionId)).futureValue
         }.getCause.getMessage mustBe "Unable to retrieve declaration journey"
       }
     }

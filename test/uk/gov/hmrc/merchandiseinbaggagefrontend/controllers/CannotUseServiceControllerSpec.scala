@@ -20,15 +20,23 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CannotUseServiceView
 
 class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
-  "onPageLoad" must {
-    "return OK and render the view" in {
-      val view = injector.instanceOf[CannotUseServiceView]
-      val controller = new CannotUseServiceController(controllerComponents, view)
-      val request = buildGet(routes.CannotUseServiceController.onPageLoad().url)
-      val result = controller.onPageLoad()(request)
+  private val view = injector.instanceOf[CannotUseServiceView]
+  private val actionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
+  private val controller = new CannotUseServiceController(controllerComponents, actionProvider, view)
+  private val url = routes.CannotUseServiceController.onPageLoad().url
 
-      status(result) mustEqual OK
-      contentAsString(result) mustEqual view()(request, messagesApi.preferred(request), appConfig).toString
+  "onPageLoad" must {
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
+
+    "return OK and render the view" when{
+      "a declaration journey has been started" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        val request = buildGet(url, sessionId)
+        val result = controller.onPageLoad()(request)
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view()(request, messagesApi.preferred(request), appConfig).toString
+      }
     }
   }
 }
