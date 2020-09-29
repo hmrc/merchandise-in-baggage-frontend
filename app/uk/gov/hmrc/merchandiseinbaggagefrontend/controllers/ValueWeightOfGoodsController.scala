@@ -54,7 +54,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, dest)),
             value => {
-              repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
+              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoods = Some(value))).map { _ =>
                 if (value) Redirect(routes.CannotUseServiceController.onPageLoad())
                 else Redirect(routes.SkeletonJourneyController.searchGoods())
               }

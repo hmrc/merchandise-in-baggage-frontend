@@ -101,6 +101,9 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.searchGoods().toString
+
+        startedDeclarationJourney.maybeValueWeightOfGoods mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeValueWeightOfGoods mustBe Some(false)
       }
     }
 
