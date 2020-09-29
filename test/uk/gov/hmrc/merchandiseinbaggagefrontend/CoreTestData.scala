@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PayApitRequest, TraderDetails}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Address, CurrencyAmount, Declaration, DeclarationJourney, Eori, GoodsEntry, JourneyDetails, Name, PriceOfGoods, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Address, Currency, CurrencyAmount, Declaration, DeclarationJourney, Eori, GoodsEntry, JourneyDetails, Name, PriceOfGoods, SessionId}
 
 trait CoreTestData {
 
@@ -40,7 +40,7 @@ trait CoreTestData {
     GoodsEntry(
       "wine",
       Some("France"),
-      Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), "EUR")),
+      Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
       Some(CurrencyAmount(BigDecimal(10.00))))
 
   val completedDeclarationJourney: DeclarationJourney =
@@ -52,7 +52,7 @@ trait CoreTestData {
         GoodsEntry(
           "cheese",
           Some("France"),
-          Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), "EUR")),
+          Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
           Some(CurrencyAmount(BigDecimal(20.00))))),
       maybeName = Some(Name("Terry", "Test")),
       maybeAddress = Some(Address("1 Terry Terrace", "Terry Town", "T11 11T")),
