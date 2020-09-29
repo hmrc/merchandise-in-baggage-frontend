@@ -40,7 +40,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.maybeGoodsDestination match {
       case Some(dest) => Ok(
-        view(request.declarationJourney.maybeValueWeightOfGoods.fold(form)(form.fill), dest)
+        view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill), dest)
       )
       case None => Redirect(routes.GoodsDestinationController.onPageLoad())
     }
@@ -54,7 +54,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, dest)),
             value => {
-              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoods = Some(value))).map { _ =>
+              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(value))).map { _ =>
                 if (value) Redirect(routes.CannotUseServiceController.onPageLoad())
                 else Redirect(routes.SkeletonJourneyController.searchGoods())
               }
