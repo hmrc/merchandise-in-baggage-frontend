@@ -80,7 +80,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.valueWeightOfGoods().toString
+        redirectLocation(result).get mustEqual routes.ValueWeightOfGoodsController.onPageLoad().toString
       }
     }
 

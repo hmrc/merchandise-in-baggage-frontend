@@ -33,15 +33,6 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     }
   }
 
-  "valueWeightOfGoods" should {
-    "render the page" in {
-      val title = "Is the total value of the goods over £1500 or 1000kg?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.valueWeightOfGoods().url)
-
-      ensure(controller.valueWeightOfGoods(getRequest), title, routes.SkeletonJourneyController.searchGoods())
-    }
-  }
-
   "searchGoods" should {
     "render the page" in {
       val title = "What goods are you bringing into the UK?"

@@ -49,7 +49,7 @@ class GoodsDestinationController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(value))).map {_ =>
-            Redirect(routes.SkeletonJourneyController.valueWeightOfGoods())
+            Redirect(routes.ValueWeightOfGoodsController.onPageLoad())
           }
       )
   }
