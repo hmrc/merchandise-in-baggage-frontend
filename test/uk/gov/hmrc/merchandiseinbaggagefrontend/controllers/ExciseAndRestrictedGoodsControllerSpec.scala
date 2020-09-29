@@ -78,6 +78,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsDestinationController.onPageLoad().toString
+
+        startedDeclarationJourney.maybeExciseOrRestrictedGoods mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeExciseOrRestrictedGoods mustBe Some(false)
       }
     }
 

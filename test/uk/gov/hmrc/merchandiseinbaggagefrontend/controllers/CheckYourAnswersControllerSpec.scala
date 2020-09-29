@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("Place of arrival")
         content must include("Dover")
         content must include("Date of arrival")
-        content must include("28 Sep 2020")
+        content must include(completedDeclarationJourney.maybeJourneyDetails.get.formattedDateOfArrival)
 
         content must include("Now send your declaration")
         content must include("I understand that:")
