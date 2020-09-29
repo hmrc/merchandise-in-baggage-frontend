@@ -20,17 +20,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CannotUseServiceView
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 @Singleton
-class CannotUseServiceController @Inject()(
-                                          override val controllerComponents: MessagesControllerComponents,
-                                          view: CannotUseServiceView
-                                          )(implicit val appConfig: AppConfig) extends FrontendBaseController {
+class CannotUseServiceController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                           actionProvider: DeclarationJourneyActionProvider,
+                                           view: CannotUseServiceView)(implicit val appConfig: AppConfig)
+  extends DeclarationJourneyController {
 
-
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view())
   }
-
 }

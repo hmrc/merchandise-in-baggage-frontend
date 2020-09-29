@@ -25,110 +25,242 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
   "selectDeclarationType" should {
-    "render the page" in {
-      val title = "What do you need to declare?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.selectDeclarationType().url)
+    val url = routes.SkeletonJourneyController.selectDeclarationType().url
 
-      ensure(controller.selectDeclarationType(getRequest), title, routes.ExciseAndRestrictedGoodsController.onPageLoad())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "What do you need to declare?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.selectDeclarationType(getRequest), title, routes.ExciseAndRestrictedGoodsController.onPageLoad())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.selectDeclarationType(buildGet(url)))
+      }
     }
   }
 
   "searchGoods" should {
-    "render the page" in {
-      val title = "What goods are you bringing into the UK?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.searchGoods().url)
+    val url = routes.SkeletonJourneyController.searchGoods().url
 
-      ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.searchGoodsCountry())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "What goods are you bringing into the UK?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.searchGoodsCountry())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.searchGoods(buildGet(url)))
+      }
     }
   }
 
   "searchGoodsCountry" should {
-    "render the page" in {
-      val title = "In what country did you buy the x?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.searchGoodsCountry().url)
+    val url = routes.SkeletonJourneyController.searchGoodsCountry().url
 
-      ensure(controller.searchGoodsCountry(getRequest), title, routes.SkeletonJourneyController.purchaseDetails())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "In what country did you buy the x?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.searchGoodsCountry(getRequest), title, routes.SkeletonJourneyController.purchaseDetails())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.searchGoodsCountry(buildGet(url)))
+      }
     }
   }
 
   "purchaseDetails" should {
-    "render the page" in {
-      val title = "How much did you pay for the x?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.purchaseDetails().url)
+    val url = routes.SkeletonJourneyController.purchaseDetails().url
 
-      ensure(controller.purchaseDetails(getRequest), title, routes.SkeletonJourneyController.reviewGoods())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "How much did you pay for the x?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.purchaseDetails(getRequest), title, routes.SkeletonJourneyController.reviewGoods())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.purchaseDetails(buildGet(url)))
+      }
     }
   }
 
   "reviewGoods" should {
-    "render the page" in {
-      val title = "Review your goods"
-      val getRequest = buildGet(routes.SkeletonJourneyController.reviewGoods().url)
+    val url = routes.SkeletonJourneyController.reviewGoods().url
 
-      ensure(controller.reviewGoods(getRequest), title, routes.SkeletonJourneyController.taxCalculation())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Review your goods"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.reviewGoods(getRequest), title, routes.SkeletonJourneyController.taxCalculation())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.reviewGoods(buildGet(url)))
+      }
     }
   }
 
   "taxCalculation" should {
-    "render the page" in {
-      val title = "Tax due on these goods £x"
-      val getRequest = buildGet(routes.SkeletonJourneyController.taxCalculation().url)
+    val url = routes.SkeletonJourneyController.taxCalculation().url
 
-      ensure(controller.taxCalculation(getRequest), title, routes.SkeletonJourneyController.customsAgent())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Tax due on these goods £x"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.taxCalculation(getRequest), title, routes.SkeletonJourneyController.customsAgent())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.taxCalculation(buildGet(url)))
+      }
     }
   }
 
   "customsAgent" should {
-    "render the page" in {
-      val title = "Are you a customs agent?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.customsAgent().url)
+    val url = routes.SkeletonJourneyController.customsAgent().url
 
-      ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.traderDetails())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Are you a customs agent?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.traderDetails())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.customsAgent(buildGet(url)))
+      }
     }
   }
 
   "traderDetails" should {
-    "render the page" in {
-      val title = "Enter the name of the person carrying the goods"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderDetails().url)
+    val url = routes.SkeletonJourneyController.traderDetails().url
 
-      ensure(controller.traderDetails(getRequest), title, routes.SkeletonJourneyController.enterTraderAddress())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Enter the name of the person carrying the goods"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.traderDetails(getRequest), title, routes.SkeletonJourneyController.enterTraderAddress())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.traderDetails(buildGet(url)))
+      }
     }
   }
 
   "enterTraderAddress" should {
-    "render the page" in {
-      val title = "Find your address"
-      val getRequest = buildGet(routes.SkeletonJourneyController.enterTraderAddress().url)
+    val url = routes.SkeletonJourneyController.enterTraderAddress().url
 
-      ensure(controller.enterTraderAddress(getRequest), title, routes.SkeletonJourneyController.selectTraderAddress())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Find your address"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.enterTraderAddress(getRequest), title, routes.SkeletonJourneyController.selectTraderAddress())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.enterTraderAddress(buildGet(url)))
+      }
     }
   }
 
   "selectTraderAddress" should {
-    "render the page" in {
-      val title = "Select your address"
-      val getRequest = buildGet(routes.SkeletonJourneyController.selectTraderAddress().url)
+    val url = routes.SkeletonJourneyController.selectTraderAddress().url
 
-      ensure(controller.selectTraderAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Select your address"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.selectTraderAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.selectTraderAddress(buildGet(url)))
+      }
     }
   }
 
   "enterEoriNumber" should {
-    "render the page" in {
-      val title = "What is your EORI number?"
-      val getRequest = buildGet(routes.SkeletonJourneyController.enterEoriNumber().url)
+    val url = routes.SkeletonJourneyController.enterEoriNumber().url
 
-      ensure(controller.enterEoriNumber(getRequest), title, routes.SkeletonJourneyController.traderJourneyDetails())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "What is your EORI number?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.enterEoriNumber(getRequest), title, routes.SkeletonJourneyController.traderJourneyDetails())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.enterEoriNumber(buildGet(url)))
+      }
     }
   }
 
   "traderJourneyDetails" should {
-    "render the page" in {
-      val title = "Journey Details"
-      val getRequest = buildGet(routes.SkeletonJourneyController.traderJourneyDetails().url)
+    val url = routes.SkeletonJourneyController.traderJourneyDetails().url
 
-      ensure(controller.traderJourneyDetails(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Journey Details"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.traderJourneyDetails(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
+      }
+    }
+
+    "redirect to /start" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToStart(controller.traderJourneyDetails(buildGet(url)))
+      }
     }
   }
 
@@ -138,5 +270,10 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     status(eventualResponse) mustBe OK
     content must include(title)
     content must include(call.url)
+  }
+
+  private def ensureRedirectToStart(eventualResponse: Future[Result]) = {
+    status(eventualResponse) mustBe 303
+    redirectLocation(eventualResponse).get mustBe routes.StartController.onPageLoad().url
   }
 }
