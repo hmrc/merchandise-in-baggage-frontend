@@ -22,29 +22,35 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsDestinationController @Inject()(
                                           override val controllerComponents: MessagesControllerComponents,
+                                          actionProvider: DeclarationJourneyActionProvider,
                                           formProvider: GoodsDestinationFormProvider,
+                                          repo: DeclarationJourneyRepository,
                                           view: GoodsDestinationView
-                                          )(implicit val appConfig: AppConfig) extends FrontendBaseController {
+                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val form: Form[GoodsDestination] = formProvider()
 
-  val onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view(form))
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(view(request.declarationJourney.maybeGoodsDestination.fold(form)(form.fill)))
   }
 
-  //TODO implement once session storage has been done under MIBM-77
-  val onSubmit: Action[AnyContent] = Action { implicit request =>
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors)),
-        value => Redirect(routes.SkeletonJourneyController.valueWeightOfGoods())
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        value =>
+          repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(value))).map {_ =>
+            Redirect(routes.ValueWeightOfGoodsController.onPageLoad())
+          }
       )
   }
 

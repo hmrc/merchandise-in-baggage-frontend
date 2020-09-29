@@ -25,6 +25,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
 @Singleton
 class AppConfig() extends PaymentServiceConf with MongoConfiguration {
   lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
+
+  private val serviceIdentifier = "mib"
+
+  private val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
+
+  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
 }
 
 trait PaymentServiceConf {

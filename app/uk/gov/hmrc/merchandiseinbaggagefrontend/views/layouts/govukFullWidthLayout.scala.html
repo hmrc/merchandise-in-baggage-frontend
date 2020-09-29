@@ -15,12 +15,14 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
 
 @this(
 govukTemplate: GovukTemplate,
 govukHeader: GovukHeader,
 govukFooter: GovukFooter,
-govukBackLink: GovukBackLink
+govukBackLink: GovukBackLink,
+phaseBanner: components.phaseBanner,
 )
 
 @(
@@ -32,7 +34,7 @@ govukBackLink: GovukBackLink
         footerItems: Seq[FooterItem] = Seq.empty,
         bodyEndBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None
-)(contentBlock: Html)(implicit messages: Messages)
+)(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig)
 
 @headerDefault = {
 @headerBlock.getOrElse {
@@ -44,6 +46,11 @@ govukBackLink: GovukBackLink
 }
 }
 
+@beforeContentDefault = {
+    @phaseBanner("alpha")
+    @bodyEndBlock.map(x => x)
+}
+
 @footerDefault = {
 @footerBlock.getOrElse {
     @govukFooter(new Footer(meta = Some(Meta(items = Some(footerItems)))))
@@ -51,8 +58,8 @@ govukBackLink: GovukBackLink
 }
 
 @bodyEndDefault = {
-@bodyEndBlock
-@scriptsBlock
+@bodyEndBlock.map(x => x)
+@scriptsBlock.map(x => x)
 }
 
 @govukTemplate(
@@ -60,8 +67,8 @@ govukBackLink: GovukBackLink
     pageTitle = pageTitle,
     headBlock = headBlock,
     headerBlock = headerDefault,
-    beforeContentBlock = beforeContentBlock,
+    beforeContentBlock = Some(beforeContentDefault),
     footerBlock = footerDefault,
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
-    bodyEndBlock = Some(bodyEndDefault)
+    bodyEndBlock = Some(bodyEndDefault),
 )(contentBlock)
