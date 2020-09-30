@@ -18,13 +18,14 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new SearchGoodsCountryFormProvider()
-  private val form = formProvider(appConfig.autocompleteCountries)
+  private val form = formProvider(CountriesService.countries)
 
   private lazy val view = injector.instanceOf[SearchGoodsCountryView]
   private lazy val controller =
@@ -51,13 +52,13 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeSearchGoodsCountry = Some(appConfig.autocompleteCountries.head)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeSearchGoodsCountry = Some(CountriesService.countries.head)))
 
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form.fill(appConfig.autocompleteCountries.head))(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+          view(form.fill(CountriesService.countries.head))(getRequest, messagesApi.preferred(getRequest), appConfig).toString
       }
     }
   }
@@ -80,6 +81,9 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.purchaseDetails().toString
+
+        startedDeclarationJourney.maybeSearchGoodsCountry mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeSearchGoodsCountry mustBe Some("Austria")
       }
     }
 

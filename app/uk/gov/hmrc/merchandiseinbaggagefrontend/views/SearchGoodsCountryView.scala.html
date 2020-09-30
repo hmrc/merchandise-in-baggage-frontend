@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 
 @this(
 layout: Layout,
@@ -63,7 +64,7 @@ button: components.button
             <div class="autocomplete-wrapper country">
                 <select name="value" id="country-auto-complete">
                     <option value="" selected></option>
-                    @for(country <- appConfig.autocompleteCountries) {
+                    @for(country <- CountriesService.countries) {
                         <option value="@country">@country</option>
                     }
                 </select>

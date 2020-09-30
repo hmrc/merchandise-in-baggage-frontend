@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +36,7 @@ class SearchGoodsCountryController @Inject()(
                                               view: SearchGoodsCountryView
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
-  val form: Form[String] = formProvider(appConfig.autocompleteCountries)
+  val form: Form[String] = formProvider(CountriesService.countries)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeSearchGoodsCountry.fold(form)(form.fill)))

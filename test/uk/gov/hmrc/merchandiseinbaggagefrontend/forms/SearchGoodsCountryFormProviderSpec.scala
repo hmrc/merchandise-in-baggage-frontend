@@ -20,12 +20,13 @@ import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 
 class SearchGoodsCountryFormProviderSpec extends BaseSpecWithApplication with FieldBehaviours {
 
   val appConfig = injector.instanceOf[AppConfig]
 
-  val form = new SearchGoodsCountryFormProvider()(appConfig.autocompleteCountries)
+  val form = new SearchGoodsCountryFormProvider()(CountriesService.countries)
 
   ".value" must {
 
