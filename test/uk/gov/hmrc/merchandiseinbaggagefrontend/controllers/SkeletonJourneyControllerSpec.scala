@@ -53,33 +53,13 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.searchGoodsCountry())
+        ensure(controller.searchGoods(getRequest), title, routes.SearchGoodsCountryController.onPageLoad())
       }
     }
 
     "redirect to /start" when {
       "a declaration journey has not been started" in {
         ensureRedirectToStart(controller.searchGoods(buildGet(url)))
-      }
-    }
-  }
-
-  "searchGoodsCountry" should {
-    val url = routes.SkeletonJourneyController.searchGoodsCountry().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "In what country did you buy the x?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.searchGoodsCountry(getRequest), title, routes.SkeletonJourneyController.purchaseDetails())
-      }
-    }
-
-    "redirect to /start" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.searchGoodsCountry(buildGet(url)))
       }
     }
   }

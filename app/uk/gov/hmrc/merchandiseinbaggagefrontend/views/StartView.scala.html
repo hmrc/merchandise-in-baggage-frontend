@@ -28,7 +28,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("start.title"))) {
+@layout(pageTitle = Some(messages("start.title")), fullWidth = true) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @h1(messages("start.heading"))
