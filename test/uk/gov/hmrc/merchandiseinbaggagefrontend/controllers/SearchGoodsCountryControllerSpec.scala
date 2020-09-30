@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
@@ -52,7 +53,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeSearchGoodsCountry = Some(CountriesService.countries.head)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry("test", Some(CountriesService.countries.head), None, None))))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -82,8 +83,8 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.purchaseDetails().toString
 
-        startedDeclarationJourney.maybeSearchGoodsCountry mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeSearchGoodsCountry mustBe Some("Austria")
+        startedDeclarationJourney.goodsEntries.headOption mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeCountryOfPurchase mustBe Some("Austria")
       }
     }
 

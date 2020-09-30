@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Currency, CurrencyAmount, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
@@ -39,7 +40,13 @@ class SearchGoodsCountryController @Inject()(
   val form: Form[String] = formProvider(CountriesService.countries)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeSearchGoodsCountry.fold(form)(form.fill)))
+
+    val preparedForm = request.declarationJourney.goodsEntries.headOption match {
+      case Some(goodsEntry) => goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill)
+      case None => form
+    }
+
+    Ok(view(preparedForm))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -48,7 +55,14 @@ class SearchGoodsCountryController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          repo.upsert(request.declarationJourney.copy(maybeSearchGoodsCountry = Some(value))).map {_ =>
+          repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
+            GoodsEntry(
+              "TODO",
+              Some(value),
+              Some(PriceOfGoods(CurrencyAmount(-1.00), Currency("made up", "ABC"))),
+              Some(CurrencyAmount(-1.00))
+            )
+          ))).map { _ =>
             Redirect(routes.SkeletonJourneyController.purchaseDetails())
           }
       )
