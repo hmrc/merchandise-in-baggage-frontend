@@ -111,7 +111,8 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeEori: Option[Eori] = None,
                               maybeJourneyDetails: Option[JourneyDetails] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
-                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None)
+                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
+                              maybeSearchGoodsCountry: Option[String] = None)
 
 object DeclarationJourney {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]

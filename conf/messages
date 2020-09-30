@@ -28,7 +28,6 @@ next.button = Next
 
 selectDeclarationType.title = What do you need to declare?
 searchGoods.title = What goods are you bringing into the UK?
-searchGoodsCountry.title = In what country did you buy the x?
 purchaseDetails.title = How much did you pay for the x?
 reviewGoods.title = Review your goods
 taxCalculation.title = Tax due on these goods £x
@@ -91,6 +90,13 @@ valueWeightOfGoods.gb.title = Is the total value of the goods over £1500 or 100
 valueWeightOfGoods.ni.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.gb.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.error.required = Select one of the options below
+
+# SearchGoodsCountry
+searchGoodsCountry.title = In what country did you buy the x?
+searchGoodsCountry.heading = In what country did you buy the x?
+searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
+searchGoodsCountry.error.required = Select a country
+searchGoodsCountry.error.invalid = Select a valid country
 
 
 # CannotUseService

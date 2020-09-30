@@ -41,16 +41,8 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
     Ok(page(s"selectDeclarationType.title", routes.ExciseAndRestrictedGoodsController.onPageLoad()))
   }
 
-  val valueWeightOfGoods: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"valueWeightOfGoods.title", routes.SkeletonJourneyController.searchGoods()))
-  }
-
   val searchGoods: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"searchGoods.title", routes.SkeletonJourneyController.searchGoodsCountry()))
-  }
-
-  val searchGoodsCountry: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"searchGoodsCountry.title", routes.SkeletonJourneyController.purchaseDetails()))
+    Ok(page(s"searchGoods.title", routes.SearchGoodsCountryController.onPageLoad()))
   }
 
   val purchaseDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

@@ -26,6 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
 class AppConfig() extends PaymentServiceConf with MongoConfiguration {
   lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
 
+  lazy val autocompleteCountries: List[String] = configSource("autocomplete.countries").loadOrThrow[List[String]]
+
   private val serviceIdentifier = "mib"
 
   private val contactHost = configSource("contact-frontend.host").loadOrThrow[String]

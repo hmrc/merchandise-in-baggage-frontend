@@ -19,18 +19,29 @@
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.layouts
 
 @this(
-        govukLayout: layouts.govukFullWidthLayout,
+        govukLayout: layouts.govukLayout,
+        govukFullWidthLayout: layouts.govukFullWidthLayout,
         head: Head
 )
 @(pageTitle: Option[String] = None,
         headBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+        scriptsBlock: Option[Html] = None,
+    fullWidth: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@govukLayout(
-    pageTitle = pageTitle,
-    headBlock = Some(head(headBlock)),
-    scriptsBlock = scriptsBlock,
-    beforeContentBlock = None,
-    footerItems = FooterLinks()
-)(contentBlock)
+@if(fullWidth) {
+    @govukFullWidthLayout(
+        pageTitle = pageTitle,
+        headBlock = Some(head(headBlock)),
+        scriptsBlock = scriptsBlock,
+        beforeContentBlock = None,
+        footerItems = FooterLinks()
+    )(contentBlock)
+} else {
+    @govukLayout(
+        pageTitle = pageTitle,
+        headBlock = Some(head(headBlock)),
+        scriptsBlock = scriptsBlock,
+        beforeContentBlock = None,
+        footerItems = FooterLinks()
+    )(contentBlock)
+}
