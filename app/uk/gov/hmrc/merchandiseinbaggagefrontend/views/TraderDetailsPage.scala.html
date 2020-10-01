@@ -1,0 +1,42 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Name
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        text: components.inputText,
+        h1: components.h1)
+
+@(form: Form[Name])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("traderDetails.title"))) {
+  @formHelper(action = TraderDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @errorSummary(form.errors)
+    @h1(messages("traderDetails.heading"))
+
+    @text(form = form, formKey = "firstName", messageKeyBase = "traderDetails")
+    @text(form = form, formKey = "lastName", messageKeyBase = "traderDetails")
+
+    @button("site.continue")
+  }
+}

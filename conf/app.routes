@@ -14,7 +14,6 @@ GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.reviewGoods
 GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.taxCalculation
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.customsAgent
-GET        /trader-details               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderDetails
 GET        /enter-trader-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterTraderAddress
 GET        /select-trader-address        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectTraderAddress
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
@@ -41,6 +40,10 @@ POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefronten
 # SearchGoodsCountry
 GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad
 POST       /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit
+
+# TraderDetalis
+GET        /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onPageLoad()
+POST       /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onSubmit()
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

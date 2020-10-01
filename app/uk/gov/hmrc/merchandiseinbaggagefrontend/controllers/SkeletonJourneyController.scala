@@ -58,11 +58,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   }
 
   val customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"customsAgent.title", routes.SkeletonJourneyController.traderDetails()))
-  }
-
-  val traderDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"traderDetails.title", routes.SkeletonJourneyController.enterTraderAddress()))
+    Ok(page(s"customsAgent.title", routes.TraderDetailsController.onPageLoad()))
   }
 
   val enterTraderAddress: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
