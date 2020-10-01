@@ -11,7 +11,6 @@ GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /select-declaration-type      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectDeclarationType
 GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.searchGoods
 GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.purchaseDetails
-GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.reviewGoods
 GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.taxCalculation
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.customsAgent
 GET        /enter-trader-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterTraderAddress
@@ -41,9 +40,13 @@ POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad
 POST       /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit
 
+# ReviewGoods
+GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onPageLoad
+POST       /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onSubmit
+
 # TraderDetalis
-GET        /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onPageLoad()
-POST       /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onSubmit()
+GET        /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onPageLoad
+POST       /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
