@@ -33,9 +33,12 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
         val request = buildGet(url, sessionId)
         val result = controller.onPageLoad()(request)
+        val content = contentAsString(result)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messagesApi.preferred(request), appConfig).toString
+        content must include("You need to submit a full customs declaration")
+        content must include("For excise, restricted and goods over the threshold you must make a full custom declaration.")
+        content must include("https://www.gov.uk/guidance/making-a-full-import-declaration")
       }
     }
   }

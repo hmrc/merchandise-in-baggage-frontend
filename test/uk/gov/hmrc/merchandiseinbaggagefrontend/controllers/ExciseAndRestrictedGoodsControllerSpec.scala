@@ -16,21 +16,33 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new ExciseAndRestrictedGoodsFormProvider()
   private val form = formProvider()
 
-  private lazy val view = injector.instanceOf[ExciseAndRestrictedGoodsView]
-
   private lazy val controller =
     new ExciseAndRestrictedGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[ExciseAndRestrictedGoodsView])
+
+  private def ensureContent(result: Future[Result]) = {
+    val content = contentAsString(result)
+
+    content must include("Are you bringing in excise goods or restricted goods?")
+    content must include("Excise goods are alcohol, tobacco, or fuel. You can")
+    content must include("check if your goods are restricted (opens in new tab or window).")
+    content must include("https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage")
+    content must include("Continue")
+
+    content
+  }
 
   "onPageLoad" must {
     val url = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
@@ -45,8 +57,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form)(request, messagesApi.preferred(request), appConfig).toString
+        ensureContent(result)
       }
     }
 
@@ -57,8 +68,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form.fill(true))(request, messagesApi.preferred(request), appConfig).toString
+        ensureContent(result)
       }
     }
   }
@@ -99,12 +109,12 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        form.bindFromRequest()(postRequest)
 
-        val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(submittedForm)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+        ensureContent(result) must include("Select one of the options below")
       }
     }
   }

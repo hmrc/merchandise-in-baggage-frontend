@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntry
@@ -23,15 +24,25 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new SearchGoodsCountryFormProvider()
   private val form = formProvider(CountriesService.countries)
 
-  private lazy val view = injector.instanceOf[SearchGoodsCountryView]
   private lazy val controller =
     new SearchGoodsCountryController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[SearchGoodsCountryView])
+
+  private def ensureContent(result: Future[Result]) = {
+    val content = contentAsString(result)
+
+    content must include("In what country did you buy the x?")
+    content must include("If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase")
+    content must include("Continue")
+
+    content
+  }
 
   "onPageLoad" must {
     val url = routes.SearchGoodsCountryController.onPageLoad().url
@@ -46,8 +57,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form)(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+        ensureContent(result)
       }
     }
 
@@ -58,8 +68,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form.fill(CountriesService.countries.head))(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+        ensureContent(result)
       }
     }
   }
@@ -91,12 +100,12 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        
-        val submittedForm = form.bindFromRequest()(postRequest)
+        form.bindFromRequest()(postRequest)
+
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(submittedForm)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+        ensureContent(result) must include("Select a country")
       }
     }
   }
