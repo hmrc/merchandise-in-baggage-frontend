@@ -16,22 +16,32 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ValueWeightOfGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new ValueWeightOfGoodsFormProvider()
   private val form = formProvider()
 
-  private lazy val view = injector.instanceOf[ValueWeightOfGoodsView]
-
   private lazy val controller =
     new ValueWeightOfGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[ValueWeightOfGoodsView])
+
+  private def ensureContent(result: Future[Result]) = {
+    val content = contentAsString(result)
+
+    content must include("Is the total value of the goods over")
+    content must include("kilograms (kg)?")
+    content must include("Continue")
+
+    content
+  }
 
   "onPageLoad" must {
     val url = routes.ValueWeightOfGoodsController.onPageLoad().url
@@ -57,8 +67,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form, NorthernIreland)(request, messagesApi.preferred(request), appConfig).toString
+        ensureContent(result) must include("£873 or 1000")
       }
 
       "a declaration has been started with a destination of England, Wales or Scotland" in {
@@ -67,8 +76,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form, EngScoWal)(request, messagesApi.preferred(request), appConfig).toString
+        ensureContent(result) must include("£1500 or 1000")
       }
 
       "a declaration has been started and a value saved" in {
@@ -80,8 +88,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form.fill(true), NorthernIreland)(request, messagesApi.preferred(request), appConfig).toString
+        ensureContent(result)
       }
     }
   }
@@ -122,13 +129,12 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+        form.bindFromRequest()(postRequest)
 
-        val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual
-          view(submittedForm, NorthernIreland)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+        ensureContent(result) must include("Select one of the options below")
       }
     }
   }

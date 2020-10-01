@@ -16,21 +16,34 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new GoodsDestinationFormProvider()
   private val form = formProvider()
 
-  private lazy val view = injector.instanceOf[GoodsDestinationView]
   private lazy val controller =
     new GoodsDestinationController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[GoodsDestinationView])
+
+  private def ensureContent(result: Future[Result]) = {
+    val content = contentAsString(result)
+
+    content must include("Where in the UK are the goods going?")
+    content must include("Northern Ireland")
+    content must include("England, Wales or Scotland")
+    content must include("Continue")
+
+    content
+  }
 
   "onPageLoad" must {
     val url = routes.GoodsDestinationController.onPageLoad().url
@@ -45,8 +58,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form)(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+        ensureContent(result)
       }
     }
 
@@ -57,8 +69,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form.fill(GoodsDestination.values.head))(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+        ensureContent(result)
       }
     }
   }
@@ -73,7 +84,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration is started and a valid selection submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "ni"))
+        val request = postRequest.withFormUrlEncodedBody(("value", NorthernIreland.toString))
 
         form.bindFromRequest()(request)
 
@@ -81,18 +92,19 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ValueWeightOfGoodsController.onPageLoad().toString
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeGoodsDestination mustBe Some(NorthernIreland)
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        
-        val submittedForm = form.bindFromRequest()(postRequest)
+        form.bindFromRequest()(postRequest)
+
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        contentAsString(result) mustEqual view(submittedForm)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+        ensureContent(result) must include("Select one of the options below")
       }
     }
   }

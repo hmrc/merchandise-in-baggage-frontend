@@ -33,9 +33,11 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
     "return OK and correct view for GET" in {
       val getRequest = buildGet(routes.StartController.onPageLoad().url)
       val result = controller.onPageLoad()(getRequest)
+      val content = contentAsString(result)
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view()(getRequest, messagesApi.preferred(getRequest), appConfig).toString
+      content must include("Declaring merchandise in your baggage")
+      content must include("Start now")
     }
   }
 
