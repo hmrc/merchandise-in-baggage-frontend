@@ -65,8 +65,8 @@ object GoodsEntry {
   implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
 }
 
-case class Name(firstName: String, secondName: String) {
-  override val toString: String = s"$firstName $secondName"
+case class Name(firstName: String, lastName: String) {
+  override val toString: String = s"$firstName $lastName"
 }
 
 object Name {

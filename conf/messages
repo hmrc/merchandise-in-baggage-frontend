@@ -32,7 +32,6 @@ purchaseDetails.title = How much did you pay for the x?
 reviewGoods.title = Review your goods
 taxCalculation.title = Tax due on these goods £x
 customsAgent.title = Are you a customs agent?
-traderDetails.title = Enter the name of the person carrying the goods
 enterTraderAddress.title = Find your address
 selectTraderAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
@@ -97,6 +96,13 @@ searchGoodsCountry.heading = In what country did you buy the x?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
 searchGoodsCountry.error.required = Select a country
 searchGoodsCountry.error.invalid = Select a valid country
+
+
+# TraderDetails
+traderDetails.title = Enter the name of the person carrying the goods
+traderDetails.heading = Enter the name of the person carrying the goods
+traderDetails.firstName = First name
+traderDetails.lastName = Last name
 
 
 # CannotUseService

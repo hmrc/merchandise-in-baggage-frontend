@@ -133,33 +133,13 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.traderDetails())
+        ensure(controller.customsAgent(getRequest), title, routes.TraderDetailsController.onPageLoad())
       }
     }
 
     "redirect to /start" when {
       "a declaration journey has not been started" in {
         ensureRedirectToStart(controller.customsAgent(buildGet(url)))
-      }
-    }
-  }
-
-  "traderDetails" should {
-    val url = routes.SkeletonJourneyController.traderDetails().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Enter the name of the person carrying the goods"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.traderDetails(getRequest), title, routes.SkeletonJourneyController.enterTraderAddress())
-      }
-    }
-
-    "redirect to /start" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.traderDetails(buildGet(url)))
       }
     }
   }
