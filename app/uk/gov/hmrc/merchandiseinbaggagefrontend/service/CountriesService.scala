@@ -36,7 +36,6 @@ object CountriesService {
     "Australia",
     "Austria",
     "Azerbaijan",
-    "Bahamas, The",
     "Bahrain",
     "Bangladesh",
     "Barbados",
@@ -145,8 +144,6 @@ object CountriesService {
     "Kazakhstan",
     "Kenya",
     "Kiribati",
-    "Korea, North",
-    "Korea, South",
     "Kuwait",
     "Kyrgyzstan",
     "Laos",
@@ -172,7 +169,7 @@ object CountriesService {
     "Mauritius",
     "Mayotte",
     "Mexico",
-    "Micronesia, Federated States of",
+    "Micronesia",
     "Moldova",
     "Monaco",
     "Mongolia",
@@ -192,6 +189,7 @@ object CountriesService {
     "Nigeria",
     "Niue",
     "Norfolk Island",
+    "North Korea",
     "Northern Mariana Islands",
     "Norway",
     "Oman",
@@ -232,6 +230,7 @@ object CountriesService {
     "Somalia",
     "South Africa",
     "South Georgia and the South Sandwich Islands",
+    "South Korea",
     "Spain",
     "Spratly Islands",
     "Sri Lanka",
@@ -246,6 +245,7 @@ object CountriesService {
     "Tajikistan",
     "Tanzania",
     "Thailand",
+    "The Bahamas",
     "Timor-Leste",
     "Togo",
     "Tokelau",
@@ -275,6 +275,6 @@ object CountriesService {
     "Yemen",
     "Zambia",
     "Zimbabwe"
-  )
+  ).sorted
 
 }
