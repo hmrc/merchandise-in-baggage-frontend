@@ -46,11 +46,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   }
 
   val purchaseDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"purchaseDetails.title", routes.SkeletonJourneyController.reviewGoods()))
-  }
-
-  val reviewGoods: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"reviewGoods.title", routes.SkeletonJourneyController.taxCalculation()))
+    Ok(page(s"purchaseDetails.title", routes.ReviewGoodsController.onPageLoad()))
   }
 
   val taxCalculation: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

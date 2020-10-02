@@ -20,7 +20,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID.randomUUID
 
+import play.api.i18n.Messages
 import play.api.libs.json.{Format, Json, OFormat}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
@@ -119,7 +122,27 @@ object DeclarationJourney {
   val id = "sessionId"
 }
 
-case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: PriceOfGoods, taxDue: CurrencyAmount)
+case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: PriceOfGoods, taxDue: CurrencyAmount) {
+  def toSummaryList(implicit messages: Messages): SummaryList = {
+    val price =
+      s"${priceOfGoods.amount.value.formatted("%.2f")}, ${priceOfGoods.currency.name} (${priceOfGoods.currency.code})"
+
+    SummaryList(Seq(
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.item"))),
+        Value(Text(typeOfGoods))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.country"))),
+        Value(Text(countryOfPurchase))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.price"))),
+        Value(Text(price))
+      )
+    ))
+  }
+}
 
 object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
