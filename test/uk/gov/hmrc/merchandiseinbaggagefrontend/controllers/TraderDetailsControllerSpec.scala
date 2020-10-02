@@ -88,7 +88,7 @@ class TraderDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.selectTraderAddress().toString
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterTraderAddress().toString
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeName mustBe Some(name)
       }
     }
