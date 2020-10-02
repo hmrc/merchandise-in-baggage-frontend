@@ -24,7 +24,12 @@
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
 
- @formHelper(action = PaymentController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+ @helper.form(action = PaymentController.onSubmit()) {
+
+  @helper.CSRF.formField
+  @if(form.hasErrors) {
+    @errorSummary(form.errors)
+  }
 
  <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
 
@@ -49,7 +54,8 @@
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
     </div>
    </dl>
-  }
+   <input id="taxDue" type="hidden" name="taxDue" value="@declaration.goods.map(_.taxDue.value).sum">
+}
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
@@ -104,8 +110,6 @@
    @messages("checkYourAnswers.sendDeclaration.warning.message")
   </strong>
  </div>
-
-  @errorSummary(form.errors)
 
   @button("Pay now")
  }

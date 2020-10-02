@@ -21,6 +21,7 @@ import play.api.mvc._
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -31,27 +32,36 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentController @Inject()(
                                    mcc: MessagesControllerComponents,
                                    paymentPage: PaymentPage,
+                                   formProvider: CheckYourAnswersFormProvider,
                                    httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
   extends FrontendController(mcc) with PaymentConnector {
+
+  private val form = formProvider()
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
-    //TODO hard coded data for now
-    val body = PayApitRequest(
-      MibReference("MIBI1234567890"),
-      AmountInPence(1),
-      AmountInPence(2),
-      AmountInPence(3),
-      TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
-      MerchandiseDetails("Parts and technical crew for the forest moon")
-    )
-    makePayment(httpClient, body).map { response => Redirect(extractUrl(response).nextUrl.value) }
-      .recoverWith {
-        case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-      }
+    def onError(): Future[Result] = Future successful BadRequest("something WRONG")
+
+    form.bindFromRequest().fold(_ => onError(),
+      json => {
+
+        //TODO hard coded data for now
+        val body = PayApitRequest(
+          MibReference("MIBI1234567890"),
+          AmountInPence(json.taxDue),
+          AmountInPence(json.taxDue),
+          AmountInPence(json.taxDue),
+          TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
+          MerchandiseDetails("Parts and technical crew for the forest moon")
+        )
+        makePayment(httpClient, body).map { response => Redirect(extractUrl(response).nextUrl.value) }
+          .recoverWith {
+            case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          }
+      })
   }
 }
 

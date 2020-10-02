@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.Forms._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
 class CheckYourAnswersFormProvider extends Mappings {
@@ -25,11 +26,11 @@ class CheckYourAnswersFormProvider extends Mappings {
   def apply(): Form[Answers] =
     Form(
       mapping(
-        "name" -> text()
+        "taxDue" -> longNumber
       )(Answers.apply)(Answers.unapply)
     )
 
 }
 
 
-case class Answers(foo: String)
+case class Answers(taxDue: Long)
