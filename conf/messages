@@ -37,9 +37,17 @@ selectTraderAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
 traderJourneyDetails.title = Journey Details
 
+
+# Invalid request page
+invalidRequest.title = Invalid request
+invalidRequest.heading = Invalid request
+
+
 # Start
-start.title = Declaring merchandise in your baggage
-start.heading = Declaring merchandise in your baggage
+start.title.export = Declaring goods in your baggage you''re taking out of the UK to sell
+start.heading.export = Declaring goods in your baggage you''re taking out of the UK to sell
+start.title.import = Declaring goods in your baggage you''re bringing to the UK to sell
+start.heading.import = Declaring goods in your baggage you''re bringing to the UK to sell
 start.desc.p = Merchandise in baggage are commercial goods (for trade or business use) where:
 start.desc.li1 = a commercial transport operator does not carry them for you
 start.desc.li2 = you’ve travelled to or from the UK carrying goods in your baggage

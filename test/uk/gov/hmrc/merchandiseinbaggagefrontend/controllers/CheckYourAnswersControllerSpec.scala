@@ -75,5 +75,16 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.")
       }
     }
+
+    "redirect to /invalid-request" when {
+      "the journey is not complete" in {
+        givenADeclarationJourneyIsPersisted(incompleteDeclarationJourney)
+
+        val result = controller.onPageLoad()(buildGet(url))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
+      }
+    }
   }
 }

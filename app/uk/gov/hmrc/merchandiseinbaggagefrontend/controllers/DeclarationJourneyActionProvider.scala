@@ -30,18 +30,19 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner
 
+  val invalidRequest: Result = Redirect(routes.InvalidRequestController.onPageLoad())
+
   def journeyActionRefiner: ActionRefiner[Request, DeclarationJourneyRequest] =
     new ActionRefiner[Request, DeclarationJourneyRequest] {
 
       override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] = {
-        def error = throw new RuntimeException("Unable to retrieve declaration journey")
 
         request.session.get(SessionKeys.sessionId) match {
-          case None => Future successful Left(Redirect(routes.StartController.onPageLoad()))
+          case None => Future successful Left(invalidRequest)
           case Some(sessionId) =>
             repo.findBySessionId(SessionId(sessionId)).map{
               case Some(declarationJourney) => Right(new DeclarationJourneyRequest(declarationJourney, request))
-              case _ => Left(error)
+              case _ => Left(invalidRequest)
             }
         }
       }

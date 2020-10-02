@@ -37,9 +37,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.selectDeclarationType(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.selectDeclarationType(buildGet(url)))
       }
     }
   }
@@ -57,9 +57,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.searchGoods(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.searchGoods(buildGet(url)))
       }
     }
   }
@@ -77,9 +77,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.purchaseDetails(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.purchaseDetails(buildGet(url)))
       }
     }
   }
@@ -97,9 +97,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.taxCalculation(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.taxCalculation(buildGet(url)))
       }
     }
   }
@@ -117,9 +117,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.customsAgent(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.customsAgent(buildGet(url)))
       }
     }
   }
@@ -137,9 +137,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.enterTraderAddress(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.enterTraderAddress(buildGet(url)))
       }
     }
   }
@@ -157,9 +157,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.selectTraderAddress(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.selectTraderAddress(buildGet(url)))
       }
     }
   }
@@ -177,9 +177,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.enterEoriNumber(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.enterEoriNumber(buildGet(url)))
       }
     }
   }
@@ -197,9 +197,9 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToStart(controller.traderJourneyDetails(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.traderJourneyDetails(buildGet(url)))
       }
     }
   }
@@ -212,8 +212,8 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     content must include(call.url)
   }
 
-  private def ensureRedirectToStart(eventualResponse: Future[Result]) = {
+  private def ensureRedirectToInvalidRequestPage(eventualResponse: Future[Result]) = {
     status(eventualResponse) mustBe 303
-    redirectLocation(eventualResponse).get mustBe routes.StartController.onPageLoad().url
+    redirectLocation(eventualResponse).get mustBe routes.InvalidRequestController.onPageLoad().url
   }
 }

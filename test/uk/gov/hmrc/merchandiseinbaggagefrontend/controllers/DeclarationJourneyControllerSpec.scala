@@ -52,43 +52,41 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
     declarationJourneyRepository.insert(declarationJourney).futureValue
 
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: DeclarationJourneyController, url: String): Unit = {
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
         val result = controller.onPageLoad()(buildGet(url))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.StartController.onPageLoad().url
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
-    }
 
-    "error" when {
       "a declaration has not been started" in {
-        intercept[Exception] {
-          controller.onPageLoad()(buildGet(url, sessionId)).futureValue
-        }.getCause.getMessage mustBe "Unable to retrieve declaration journey"
+        val result = controller.onPageLoad()(buildGet(url, sessionId))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
     }
   }
 
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: DeclarationJourneyUpdateController, url: String): Unit = {
-    "redirect to /start" when {
+    "redirect to /invalid-request" when {
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
         val result = controller.onSubmit()(buildPost(url))
 
         status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.StartController.onPageLoad().url
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
-    }
 
-    "error" when {
       "a declaration has not been started" in {
-        intercept[Exception] {
-          controller.onSubmit()(buildPost(url, sessionId)).futureValue
-        }.getCause.getMessage mustBe "Unable to retrieve declaration journey"
+        val result = controller.onSubmit()(buildPost(url, sessionId))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
     }
   }

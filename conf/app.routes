@@ -18,8 +18,14 @@ GET        /select-trader-address        uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
 GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderJourneyDetails
 
+
+# Invalid journey state
+GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvalidRequestController.onPageLoad
+
+
 # Start
-GET        /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onPageLoad
+GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartExport
+GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartImport
 POST       /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onSubmit
 
 # ExciseAndRestrictedGoods
