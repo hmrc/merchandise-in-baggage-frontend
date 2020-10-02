@@ -43,7 +43,7 @@ class TraderDetailsController @Inject()(override val controllerComponents: Messa
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           repo.upsert(request.declarationJourney.copy(maybeName = Some(value))).map { _ =>
-            Redirect(routes.SkeletonJourneyController.selectTraderAddress())
+            Redirect(routes.SkeletonJourneyController.enterTraderAddress())
           }
       )
   }
