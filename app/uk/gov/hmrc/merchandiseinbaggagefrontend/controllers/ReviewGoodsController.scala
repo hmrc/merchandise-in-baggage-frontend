@@ -21,14 +21,13 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Goods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
 @Singleton
 class ReviewGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       actionProvider: DeclarationJourneyActionProvider,
                                       formProvider: ReviewGoodsFormProvider,
-                                      repo: DeclarationJourneyRepository,
                                       view: ReviewGoodsView)
                                      (implicit appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -36,24 +35,23 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
   val form: Form[Boolean] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries match {
+    request.declarationJourney.goodsEntries.map(Goods.apply) match {
       case Seq() => Redirect(routes.SkeletonJourneyController.searchGoods())
       case goods => Ok(view(form, goods))
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries match {
+    request.declarationJourney.goodsEntries.map(Goods.apply) match {
       case Seq() => Redirect(routes.SkeletonJourneyController.searchGoods())
       case goods =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(view(formWithErrors, goods)),
-            value => {
-              if (value) Redirect(routes.SkeletonJourneyController.searchGoods())
+            declareMoreGoods =>
+              if (declareMoreGoods) Redirect(routes.SkeletonJourneyController.searchGoods())
               else Redirect(routes.SkeletonJourneyController.taxCalculation())
-            }
           )
     }
   }

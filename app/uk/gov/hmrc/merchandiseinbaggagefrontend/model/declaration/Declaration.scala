@@ -62,29 +62,7 @@ object PriceOfGoods {
 case class GoodsEntry(typeOfGoods: String,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePriceOfGoods: Option[PriceOfGoods] = None,
-                      maybeTaxDue: Option[CurrencyAmount] = None) {
-  def toSummaryList(implicit messages: Messages) = {
-    val country: String = maybeCountryOfPurchase.getOrElse("-")
-    val price: String = maybePriceOfGoods.fold("-")(pog =>
-      s"${pog.amount.value.formatted("%.2f")}, ${pog.currency.name} (${pog.currency.code})"
-    )
-
-    SummaryList(Seq(
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.item"))),
-        Value(Text(typeOfGoods))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.country"))),
-        Value(Text(country))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.price"))),
-        Value(Text(price))
-      )
-    ))
-  }
-}
+                      maybeTaxDue: Option[CurrencyAmount] = None)
 
 object GoodsEntry {
   implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
@@ -144,7 +122,27 @@ object DeclarationJourney {
   val id = "sessionId"
 }
 
-case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: PriceOfGoods, taxDue: CurrencyAmount)
+case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: PriceOfGoods, taxDue: CurrencyAmount) {
+  def toSummaryList(implicit messages: Messages): SummaryList = {
+    val price =
+      s"${priceOfGoods.amount.value.formatted("%.2f")}, ${priceOfGoods.currency.name} (${priceOfGoods.currency.code})"
+
+    SummaryList(Seq(
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.item"))),
+        Value(Text(typeOfGoods))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.country"))),
+        Value(Text(countryOfPurchase))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.price"))),
+        Value(Text(price))
+      )
+    ))
+  }
+}
 
 object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]

@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Currency, CurrencyAmount, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Currency, CurrencyAmount, Goods, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
@@ -29,14 +29,14 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller =
     new ReviewGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+      controllerComponents, actionBuilder, formProvider, view)
 
   val testGood =
     GoodsEntry(
       "test good",
       Some("Austria"),
       Some(PriceOfGoods(CurrencyAmount(10.00), Currency("test currency", "TST"))),
-      None
+      Some(CurrencyAmount(0.00))
     )
 
   "onPageLoad" must {
@@ -64,7 +64,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, Seq(testGood))(request, messagesApi.preferred(request), appConfig).toString
+          view(form, Seq(Goods(testGood)))(request, messagesApi.preferred(request), appConfig).toString
       }
     }
   }
@@ -108,7 +108,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual
-          view(submittedForm, Seq(testGood))(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+          view(submittedForm, Seq(Goods(testGood)))(postRequest, messagesApi.preferred(postRequest), appConfig).toString
       }
     }
   }
