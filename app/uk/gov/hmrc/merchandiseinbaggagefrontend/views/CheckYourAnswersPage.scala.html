@@ -16,12 +16,16 @@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Declaration
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
-@this(layout: Layout)
+@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
-@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
+
+ @formHelper(action = PaymentController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+
  <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
@@ -100,4 +104,9 @@
    @messages("checkYourAnswers.sendDeclaration.warning.message")
   </strong>
  </div>
+
+  @errorSummary(form.errors)
+
+  @button("Pay now")
+ }
 }
