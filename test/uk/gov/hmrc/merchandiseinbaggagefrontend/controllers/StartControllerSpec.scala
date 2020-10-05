@@ -29,14 +29,26 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val view = injector.instanceOf[StartView]
   private lazy val controller = new StartController(controllerComponents, declarationJourneyRepository, view)
 
-  "onPageLoad" must {
+  "onStartExport" must {
     "return OK and correct view for GET" in {
-      val getRequest = buildGet(routes.StartController.onPageLoad().url)
-      val result = controller.onPageLoad()(getRequest)
+      val getRequest = buildGet(routes.StartController.onStartExport().url)
+      val result = controller.onStartExport()(getRequest)
       val content = contentAsString(result)
 
       status(result) mustEqual OK
-      content must include("Declaring merchandise in your baggage")
+      content must include("Declaring goods in your baggage you&#x27;re taking out of the UK to sell")
+      content must include("Start now")
+    }
+  }
+
+  "onStartImport" must {
+    "return OK and correct view for GET" in {
+      val getRequest = buildGet(routes.StartController.onStartImport().url)
+      val result = controller.onStartImport()(getRequest)
+      val content = contentAsString(result)
+
+      status(result) mustEqual OK
+      content must include("Declaring goods in your baggage you&#x27;re bringing to the UK to sell")
       content must include("Start now")
     }
   }

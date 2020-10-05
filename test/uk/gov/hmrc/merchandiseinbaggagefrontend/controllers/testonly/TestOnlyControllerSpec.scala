@@ -58,7 +58,7 @@ class TestOnlyControllerSpec extends DeclarationJourneyControllerSpec{
       val eventualResponse = controller.submitDeclarationJourneyPage(request)
 
       status(eventualResponse) mustBe SEE_OTHER
-      header("Location", eventualResponse) mustBe Some(controllers.routes.StartController.onPageLoad().url)
+      header("Location", eventualResponse) mustBe Some(controllers.routes.StartController.onStartImport().url)
 
       maybePersistedDeclarationJourney mustBe Some(completedDeclarationJourney)
     }

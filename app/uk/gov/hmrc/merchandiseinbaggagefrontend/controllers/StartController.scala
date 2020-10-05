@@ -32,8 +32,12 @@ class StartController @Inject()( override val controllerComponents: MessagesCont
                                  repo: DeclarationJourneyRepository,
                                  view: StartView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  def onStartExport(): Action[AnyContent] = Action { implicit request =>
+    Ok(view("start.title.export", "start.heading.export"))
+  }
+
+  def onStartImport(): Action[AnyContent] = Action { implicit request =>
+    Ok(view("start.title.import", "start.heading.import"))
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>

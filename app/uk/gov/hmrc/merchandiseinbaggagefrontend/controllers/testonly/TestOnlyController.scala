@@ -73,7 +73,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
       json => {
         Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
           repository.insert(declarationJourney).map { _ =>
-            Redirect(controllers.routes.StartController.onPageLoad())
+            Redirect(controllers.routes.StartController.onStartImport())
               .addingToSession((sessionId, declarationJourney.sessionId.value))
           }
         }

@@ -114,7 +114,23 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeEori: Option[Eori] = None,
                               maybeJourneyDetails: Option[JourneyDetails] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
-                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None)
+                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None) {
+  def toDeclarationIfComplete: Option[Declaration] =
+    for {
+      name <- maybeName
+      address <- maybeAddress
+      eori <- maybeEori
+      journeyDetails <- maybeJourneyDetails
+    } yield
+      Declaration(
+        sessionId,
+        goodsEntries.map(entry => Goods(entry)),
+        name,
+        address,
+        eori,
+        journeyDetails
+      )
+}
 
 object DeclarationJourney {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
@@ -165,21 +181,4 @@ case class Declaration(sessionId: SessionId,
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-
-  def apply(journey: DeclarationJourney): Declaration = (
-    for {
-      name <- journey.maybeName
-      address <- journey.maybeAddress
-      eori <- journey.maybeEori
-      journeyDetails <- journey.maybeJourneyDetails
-    } yield
-      Declaration(
-        journey.sessionId,
-        journey.goodsEntries.map(entry => Goods(entry)),
-        name,
-        address,
-        eori,
-        journeyDetails
-      )
-    ).getOrElse(throw new RuntimeException(s"incomplete declaration journey: [$journey]"))
 }

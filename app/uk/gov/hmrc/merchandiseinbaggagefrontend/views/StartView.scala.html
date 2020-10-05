@@ -26,12 +26,12 @@
     button: components.button
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(titleMessageKey: String, headingMessageKey: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("start.title")), fullWidth = true) {
+@layout(pageTitle = Some(messages(titleMessageKey)), fullWidth = true) {
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @h1(messages("start.heading"))
+            @h1(messages(headingMessageKey))
 
             @p(Html(messages("start.desc.p")))
 

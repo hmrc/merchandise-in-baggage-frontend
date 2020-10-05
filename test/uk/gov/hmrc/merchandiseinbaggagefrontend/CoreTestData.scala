@@ -18,8 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import java.time.LocalDate.now
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{AmountInPence, MerchandiseDetails, MibReference, PayApitRequest, TraderDetails}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Address, Currency, CurrencyAmount, Declaration, DeclarationJourney, Eori, GoodsEntry, JourneyDetails, Name, PriceOfGoods, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 
 trait CoreTestData {
 
@@ -60,5 +60,7 @@ trait CoreTestData {
       maybeJourneyDetails = Some(JourneyDetails("Dover", now()))
     )
 
-  val declaration: Declaration = Declaration(completedDeclarationJourney)
+  val declaration: Declaration = completedDeclarationJourney.toDeclarationIfComplete.get
+
+  val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetails = None)
 }
