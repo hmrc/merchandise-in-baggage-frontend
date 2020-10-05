@@ -57,7 +57,7 @@ class SearchGoodsCountryController @Inject()(
         value =>
           repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
             GoodsEntry(
-              Some(CategoryQuantityOfGoods("TODO", "123")),
+              CategoryQuantityOfGoods("TODO", "123"),
               Some("TODO"),
               Some(value),
               Some(PriceOfGoods(CurrencyAmount(-1.00), Currency("made up", "ABC"))),

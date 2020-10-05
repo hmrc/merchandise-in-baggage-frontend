@@ -21,16 +21,16 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID.randomUUID
 
 import play.api.i18n.Messages
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
-import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 case class SessionId(value: String)
 
 object SessionId {
-  implicit val format: Format[SessionId] = ValueClassFormat.format(value => SessionId.apply(value))(_.value)
+  implicit val format: Format[SessionId] = implicitly[Format[String]].inmap(SessionId(_), _.value)
 
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
@@ -65,7 +65,7 @@ object CategoryQuantityOfGoods {
   implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
 }
 
-case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
+case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                       maybeGoodsVatRate: Option[String] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePriceOfGoods: Option[PriceOfGoods] = None,
@@ -186,13 +186,12 @@ object Goods {
 
   def apply(goodsEntry: GoodsEntry): Goods = (
     for {
-      categoryQuantityOfGoods <- goodsEntry.maybeCategoryQuantityOfGoods
       goodsVatRate <- goodsEntry.maybeGoodsVatRate
       countryOfPurchase <- goodsEntry.maybeCountryOfPurchase
       priceOfGoods <- goodsEntry.maybePriceOfGoods
       invoiceNumber <- goodsEntry.maybeInvoiceNumber
       taxDue <- goodsEntry.maybeTaxDue
-    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
+    } yield Goods(goodsEntry.categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
     ).getOrElse(throw new RuntimeException(s"incomplete goods entry: [$goodsEntry]"))
 }
 

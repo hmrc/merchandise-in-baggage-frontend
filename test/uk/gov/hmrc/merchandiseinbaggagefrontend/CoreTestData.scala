@@ -38,7 +38,7 @@ trait CoreTestData {
 
   val completedGoodsEntry: GoodsEntry =
     GoodsEntry(
-      Some(CategoryQuantityOfGoods("wine", "1")),
+      CategoryQuantityOfGoods("wine", "1"),
       Some("20"),
       Some("France"),
       Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
@@ -52,7 +52,7 @@ trait CoreTestData {
       goodsEntries = Seq(
         completedGoodsEntry,
         GoodsEntry(
-          Some(CategoryQuantityOfGoods("cheese", "3")),
+          CategoryQuantityOfGoods("cheese", "3"),
           Some("20"),
           Some("France"),
           Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),

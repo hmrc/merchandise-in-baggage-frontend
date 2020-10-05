@@ -33,7 +33,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
   val testGood =
     GoodsEntry(
-      Some(CategoryQuantityOfGoods("test good", "123")),
+      CategoryQuantityOfGoods("test good", "123"),
       Some("test vat rate"),
       Some("Austria"),
       Some(PriceOfGoods(CurrencyAmount(10.00), Currency("test currency", "TST"))),

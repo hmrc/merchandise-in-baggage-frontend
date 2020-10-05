@@ -47,14 +47,14 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
         sessionId = SessionId(),
         goodsEntries = Seq(
           GoodsEntry(
-            Some(CategoryQuantityOfGoods("wine", "1")),
+            CategoryQuantityOfGoods("wine", "1"),
             Some("20"),
             Some("France"),
             Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
             Some("1234560"),
             Some(CurrencyAmount(BigDecimal(10.00)))),
           GoodsEntry(
-            Some(CategoryQuantityOfGoods("cheese", "3")),
+            CategoryQuantityOfGoods("cheese", "3"),
             Some("20"),
             Some("France"),
             Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
