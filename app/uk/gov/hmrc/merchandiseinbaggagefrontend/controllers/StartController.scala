@@ -42,7 +42,7 @@ class StartController @Inject()( override val controllerComponents: MessagesCont
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
     def next(sessionId: SessionId) =
-      Redirect(routes.SkeletonJourneyController.selectDeclarationType()).addingToSession((SessionKeys.sessionId, sessionId.value))
+      Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
 
     def newDeclarationJourney(sessionId: SessionId) = {
       val declarationJourney = DeclarationJourney(sessionId = sessionId)
