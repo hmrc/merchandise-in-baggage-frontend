@@ -12,12 +12,18 @@ GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsVatRate
 GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.purchaseDetails
 GET        /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.invoiceNumber
+GET        /remove-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.removeGoods
+GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsRemoved
 GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.taxCalculation
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.customsAgent
-GET        /enter-trader-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterTraderAddress
-GET        /select-trader-address        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectTraderAddress
+GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.agentDetails
+GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterAgentAddress
+GET        /select-agent-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectAgentAddress
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
-GET        /trader-journey-details       uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.traderJourneyDetails
+GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.journeyDetails
+GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsInVehicle
+GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleSize
+GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleRegistrationNumber
 
 
 # Invalid journey state
@@ -52,8 +58,8 @@ GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefronten
 POST       /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onSubmit
 
 # TraderDetalis
-GET        /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onPageLoad
-POST       /trader-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TraderDetailsController.onSubmit
+GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onPageLoad
+POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

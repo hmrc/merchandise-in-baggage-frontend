@@ -19,17 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TraderDetailsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TraderDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TraderDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
-                                        view: TraderDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class TravellerDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                           actionProvider: DeclarationJourneyActionProvider,
+                                           repo: DeclarationJourneyRepository,
+                                           view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
@@ -43,7 +43,7 @@ class TraderDetailsController @Inject()(override val controllerComponents: Messa
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
           repo.upsert(request.declarationJourney.copy(maybeName = Some(value))).map { _ =>
-            Redirect(routes.SkeletonJourneyController.enterTraderAddress())
+            Redirect(routes.SkeletonJourneyController.journeyDetails())
           }
       )
   }

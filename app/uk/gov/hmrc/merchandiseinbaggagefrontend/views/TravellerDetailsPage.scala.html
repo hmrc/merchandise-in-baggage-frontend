@@ -29,13 +29,13 @@
 
 @(form: Form[Name])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("traderDetails.title"))) {
-  @formHelper(action = TraderDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+@layout(pageTitle = Some(messages("travellerDetails.title"))) {
+  @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
-    @h1(messages("traderDetails.heading"))
+    @h1(messages("travellerDetails.heading"))
 
-    @text(form = form, formKey = "firstName", messageKeyBase = "traderDetails")
-    @text(form = form, formKey = "lastName", messageKeyBase = "traderDetails")
+    @text(form = form, formKey = "firstName", messageKeyBase = "travellerDetails")
+    @text(form = form, formKey = "lastName", messageKeyBase = "travellerDetails")
 
     @button("site.continue")
   }

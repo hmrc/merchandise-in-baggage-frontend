@@ -31,12 +31,18 @@ goodsVatRate.title = Check which VAT rate applies to the x
 purchaseDetails.title = How much did you pay for the x?
 invoiceNumber.title = What is the invoice number for the x?
 reviewGoods.title = Review your goods
+removeGoods.title = Are you sure you want to remove the x?
+goodsRemoved.title = You removed your goods
 taxCalculation.title = Tax due on these goods £x
 customsAgent.title = Are you a customs agent?
-enterTraderAddress.title = Find your address
-selectTraderAddress.title = Select your address
+agentDetails.title = Enter the business name of the customs agent
+enterAgentAddress.title = Find your address
+selectAgentAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
-traderJourneyDetails.title = Journey Details
+journeyDetails.title = Journey Details
+goodsInVehicle.title = Are you travelling by vehicle?
+vehicleSize.title = Are you bringing the goods in a small vehicle?
+vehicleRegistrationNumber.title = Enter the vehicle registration number
 
 
 # Invalid request page
@@ -117,10 +123,10 @@ reviewGoods.h3 = Do you need to declare more goods?
 reviewGoods.error.required = Select one of the options below
 
 # TraderDetails
-traderDetails.title = Enter the name of the person carrying the goods
-traderDetails.heading = Enter the name of the person carrying the goods
-traderDetails.firstName = First name
-traderDetails.lastName = Last name
+travellerDetails.title = Enter the name of the person carrying the goods
+travellerDetails.heading = Enter the name of the person carrying the goods
+travellerDetails.firstName = First name
+travellerDetails.lastName = Last name
 
 
 # CannotUseService
