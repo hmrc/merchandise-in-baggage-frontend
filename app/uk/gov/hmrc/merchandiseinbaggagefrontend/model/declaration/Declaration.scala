@@ -59,9 +59,17 @@ object PriceOfGoods {
   implicit val format: OFormat[PriceOfGoods] = Json.format[PriceOfGoods]
 }
 
-case class GoodsEntry(typeOfGoods: String,
+case class CategoryQuantityOfGoods(category: String, quantity: String)
+
+object CategoryQuantityOfGoods {
+  implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
+}
+
+case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
+                      maybeGoodsVatRate: Option[String] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePriceOfGoods: Option[PriceOfGoods] = None,
+                      maybeInvoiceNumber: Option[String] = None,
                       maybeTaxDue: Option[CurrencyAmount] = None)
 
 object GoodsEntry {
@@ -138,7 +146,12 @@ object DeclarationJourney {
   val id = "sessionId"
 }
 
-case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: PriceOfGoods, taxDue: CurrencyAmount) {
+case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
+                 goodsVatRate: String,
+                 countryOfPurchase: String,
+                 priceOfGoods: PriceOfGoods,
+                 invoiceNumber: String,
+                 taxDue: CurrencyAmount) {
   def toSummaryList(implicit messages: Messages): SummaryList = {
     val price =
       s"${priceOfGoods.amount.value.formatted("%.2f")}, ${priceOfGoods.currency.name} (${priceOfGoods.currency.code})"
@@ -146,7 +159,11 @@ case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: P
     SummaryList(Seq(
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.item"))),
-        Value(Text(typeOfGoods))
+        Value(Text(categoryQuantityOfGoods.category))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.quantity"))),
+        Value(Text(categoryQuantityOfGoods.quantity))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.country"))),
@@ -155,6 +172,10 @@ case class Goods(typeOfGoods: String, countryOfPurchase: String, priceOfGoods: P
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.price"))),
         Value(Text(price))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.invoice"))),
+        Value(Text(invoiceNumber))
       )
     ))
   }
@@ -165,10 +186,13 @@ object Goods {
 
   def apply(goodsEntry: GoodsEntry): Goods = (
     for {
+      categoryQuantityOfGoods <- goodsEntry.maybeCategoryQuantityOfGoods
+      goodsVatRate <- goodsEntry.maybeGoodsVatRate
       countryOfPurchase <- goodsEntry.maybeCountryOfPurchase
       priceOfGoods <- goodsEntry.maybePriceOfGoods
+      invoiceNumber <- goodsEntry.maybeInvoiceNumber
       taxDue <- goodsEntry.maybeTaxDue
-    } yield Goods(goodsEntry.typeOfGoods, countryOfPurchase, priceOfGoods, taxDue)
+    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
     ).getOrElse(throw new RuntimeException(s"incomplete goods entry: [$goodsEntry]"))
 }
 

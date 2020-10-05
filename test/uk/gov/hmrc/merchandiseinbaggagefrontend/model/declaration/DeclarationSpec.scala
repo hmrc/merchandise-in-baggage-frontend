@@ -24,9 +24,11 @@ class DeclarationSpec extends BaseSpec with CoreTestData{
     "be derivable from a completed Goods Entry" in {
       Goods(completedGoodsEntry) mustBe
         Goods(
-          completedGoodsEntry.typeOfGoods,
+          completedGoodsEntry.maybeCategoryQuantityOfGoods.get,
+          completedGoodsEntry.maybeGoodsVatRate.get,
           completedGoodsEntry.maybeCountryOfPurchase.get,
           completedGoodsEntry.maybePriceOfGoods.get,
+          completedGoodsEntry.maybeInvoiceNumber.get,
           completedGoodsEntry.maybeTaxDue.get
         )
     }

@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{Currency, CurrencyAmount, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Currency, CurrencyAmount, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
@@ -57,9 +57,11 @@ class SearchGoodsCountryController @Inject()(
         value =>
           repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
             GoodsEntry(
-              "TODO",
+              Some(CategoryQuantityOfGoods("TODO", "123")),
+              Some("TODO"),
               Some(value),
               Some(PriceOfGoods(CurrencyAmount(-1.00), Currency("made up", "ABC"))),
+              Some("TODO"),
               Some(CurrencyAmount(-1.00))
             )
           ))).map { _ =>

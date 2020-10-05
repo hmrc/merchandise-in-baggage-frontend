@@ -38,9 +38,11 @@ trait CoreTestData {
 
   val completedGoodsEntry: GoodsEntry =
     GoodsEntry(
-      "wine",
+      Some(CategoryQuantityOfGoods("wine", "1")),
+      Some("20"),
       Some("France"),
       Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
+      Some("1234560"),
       Some(CurrencyAmount(BigDecimal(10.00))))
 
   val completedDeclarationJourney: DeclarationJourney =
@@ -50,9 +52,11 @@ trait CoreTestData {
       goodsEntries = Seq(
         completedGoodsEntry,
         GoodsEntry(
-          "cheese",
+          Some(CategoryQuantityOfGoods("cheese", "3")),
+          Some("20"),
           Some("France"),
           Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
+          Some("1234560"),
           Some(CurrencyAmount(BigDecimal(20.00))))),
       maybeName = Some(Name("Terry", "Test")),
       maybeAddress = Some(Address("1 Terry Terrace", "Terry Town", "T11 11T")),

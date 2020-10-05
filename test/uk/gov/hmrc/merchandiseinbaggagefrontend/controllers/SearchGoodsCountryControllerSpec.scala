@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
@@ -63,7 +62,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry("test", Some(CountriesService.countries.head), None, None))))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
 
         val result = controller.onPageLoad()(getRequest)
 

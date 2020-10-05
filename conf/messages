@@ -110,9 +110,11 @@ searchGoodsCountry.error.invalid = Select a valid country
 # ReviewGoods
 reviewGoods.title = Review your goods
 reviewGoods.heading = Review your goods
-reviewGoods.list.item = Item
+reviewGoods.list.item = Type of goods
+reviewGoods.list.quantity = Number of items
 reviewGoods.list.country = Country
-reviewGoods.list.price = Price
+reviewGoods.list.price = Price paid
+reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
 reviewGoods.error.required = Select one of the options below
 
