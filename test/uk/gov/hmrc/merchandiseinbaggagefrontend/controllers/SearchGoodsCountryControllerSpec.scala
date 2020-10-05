@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
 
@@ -33,10 +34,10 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     new SearchGoodsCountryController(
       controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[SearchGoodsCountryView])
 
-  private def ensureContent(result: Future[Result]) = {
+  private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include("In what country did you buy the x?")
+    content must include(s"In what country did you buy the ${goodsEntry.categoryQuantityOfGoods.category}?")
     content must include("If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase")
     content must include("Continue")
 
@@ -49,14 +50,14 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
-    "return OK and render the view" when {
-      "a declaration has been started" in {
+    "redirect to /search-goods" when {
+      "a declaration has been started but a required answer is missing in the journey" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
-        status(result) mustEqual OK
-        ensureContent(result)
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad().toString
       }
     }
 
@@ -67,7 +68,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onPageLoad()(getRequest)
 
         status(result) mustEqual OK
-        ensureContent(result)
+        ensureContent(result, completedGoodsEntry)
       }
     }
   }
@@ -80,7 +81,10 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     "Redirect to /value-weight-of-goods" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        val before =
+          startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
+
+        givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Austria"))
 
@@ -91,20 +95,23 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.purchaseDetails().toString
 
-        startedDeclarationJourney.goodsEntries.headOption mustBe None
+        before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeCountryOfPurchase mustBe Some("Austria")
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+
+        givenADeclarationJourneyIsPersisted(
+          startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry)))
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Select a country")
+        ensureContent(result, goodsEntry) must include("Select a country")
       }
     }
   }

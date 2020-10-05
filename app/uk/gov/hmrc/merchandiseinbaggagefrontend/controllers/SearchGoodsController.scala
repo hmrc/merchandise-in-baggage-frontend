@@ -39,6 +39,7 @@ class SearchGoodsController @Inject()(
   val form: Form[CategoryQuantityOfGoods] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    // TODO replace with parameterised :idx, use headOption for single goods journey
     val preparedForm = request.declarationJourney.goodsEntries.headOption match {
       case Some(goodsEntry) => form.fill(goodsEntry.categoryQuantityOfGoods)
       case None => form

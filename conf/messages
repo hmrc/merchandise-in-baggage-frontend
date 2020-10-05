@@ -116,8 +116,8 @@ searchGoods.quantity = Number of items
 searchGoods.quantity.error.required = Enter the number of items
 
 # SearchGoodsCountry
-searchGoodsCountry.title = In what country did you buy the x?
-searchGoodsCountry.heading = In what country did you buy the x?
+searchGoodsCountry.title = In what country did you buy the {0}?
+searchGoodsCountry.heading = In what country did you buy the {0}?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
 searchGoodsCountry.error.required = Select a country
 searchGoodsCountry.error.invalid = Select a valid country
