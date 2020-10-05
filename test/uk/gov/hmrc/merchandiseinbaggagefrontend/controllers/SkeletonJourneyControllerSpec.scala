@@ -33,13 +33,33 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.searchGoods(getRequest), title, routes.SearchGoodsCountryController.onPageLoad())
+        ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.goodsVatRate())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
         ensureRedirectToInvalidRequestPage(controller.searchGoods(buildGet(url)))
+      }
+    }
+  }
+
+  "goodsVatRate" should {
+    val url = routes.SkeletonJourneyController.goodsVatRate().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Check which VAT rate applies to the x"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.goodsVatRate(getRequest), title, routes.SearchGoodsCountryController.onPageLoad())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.goodsVatRate(buildGet(url)))
       }
     }
   }
@@ -53,13 +73,33 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.purchaseDetails(getRequest), title, routes.ReviewGoodsController.onPageLoad())
+        ensure(controller.purchaseDetails(getRequest), title, routes.SkeletonJourneyController.invoiceNumber())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
         ensureRedirectToInvalidRequestPage(controller.purchaseDetails(buildGet(url)))
+      }
+    }
+  }
+
+  "invoiceNumber" should {
+    val url = routes.SkeletonJourneyController.invoiceNumber().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "What is the invoice number for the x?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.invoiceNumber(getRequest), title, routes.ReviewGoodsController.onPageLoad())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.invoiceNumber(buildGet(url)))
       }
     }
   }

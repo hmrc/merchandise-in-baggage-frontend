@@ -27,7 +27,9 @@ payment.button = Pay now
 next.button = Next
 
 searchGoods.title = What goods are you bringing into the UK?
+goodsVatRate.title = Check which VAT rate applies to the x
 purchaseDetails.title = How much did you pay for the x?
+invoiceNumber.title = What is the invoice number for the x?
 reviewGoods.title = Review your goods
 taxCalculation.title = Tax due on these goods £x
 customsAgent.title = Are you a customs agent?
