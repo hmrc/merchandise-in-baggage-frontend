@@ -26,7 +26,6 @@ site.start = Start now
 payment.button = Pay now
 next.button = Next
 
-selectDeclarationType.title = What do you need to declare?
 searchGoods.title = What goods are you bringing into the UK?
 purchaseDetails.title = How much did you pay for the x?
 reviewGoods.title = Review your goods

@@ -30,7 +30,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = new StartController(controllerComponents, declarationJourneyRepository, view)
 
   "onStartExport" must {
-    "return OK and correct view for GET" in {
+    "render the start export page" in {
       val getRequest = buildGet(routes.StartController.onStartExport().url)
       val result = controller.onStartExport()(getRequest)
       val content = contentAsString(result)
@@ -42,7 +42,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onStartImport" must {
-    "return OK and correct view for GET" in {
+    "render the start import page" in {
       val getRequest = buildGet(routes.StartController.onStartImport().url)
       val result = controller.onStartImport()(getRequest)
       val content = contentAsString(result)
@@ -55,7 +55,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" must {
     val url = routes.StartController.onSubmit().url
-    val nextUrl = routes.SkeletonJourneyController.selectDeclarationType().url
+    val nextUrl = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
     val existingSessionKey = "existingSessionKey"
     val existingSessionValue = "existingSessionValue"
     val existingSession = (existingSessionKey, existingSessionValue)
@@ -64,7 +64,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
         .withSession(existingSession, (SessionKeys.sessionId, sessionId.value))
         .withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-    "assign a new session id, persist a declaration journey and redirect to /select-declaration-type" when {
+    "assign a new session id, persist a declaration journey and redirect to /excise-and-restricted-goods" when {
       "a session is not supplied" in {
         val request = FakeRequest(POST, url).withSession(existingSession).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
@@ -81,7 +81,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "persist a declaration journey and redirect to /select-declaration-type" when {
+    "persist a declaration journey and redirect to /excise-and-restricted-goods" when {
       "a session is supplied but no declaration journey is associated with it" in {
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.isDefined mustBe false
 
@@ -96,7 +96,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
       }
     }
 
-    "redirect to /select-declaration-type" when {
+    "redirect to /excise-and-restricted-goods" when {
       "a session is supplied and a declaration journey is associated with it" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 

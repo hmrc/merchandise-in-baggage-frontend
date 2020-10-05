@@ -24,26 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "selectDeclarationType" should {
-    val url = routes.SkeletonJourneyController.selectDeclarationType().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "What do you need to declare?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.selectDeclarationType(getRequest), title, routes.ExciseAndRestrictedGoodsController.onPageLoad())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.selectDeclarationType(buildGet(url)))
-      }
-    }
-  }
-
   "searchGoods" should {
     val url = routes.SkeletonJourneyController.searchGoods().url
 
