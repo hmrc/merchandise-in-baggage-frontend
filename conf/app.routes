@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.searchGoods
 GET        /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsVatRate
 GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.purchaseDetails
 GET        /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.invoiceNumber
@@ -48,6 +47,8 @@ GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefronten
 POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onSubmit
 
 # SearchGoods
+GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onPageLoad
+POST       /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onSubmit
 
 # SearchGoodsCountry
 GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad

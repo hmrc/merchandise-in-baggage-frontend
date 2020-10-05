@@ -16,13 +16,30 @@
 
 @this(govukInput: GovukInput)
 
-@(form: Form[_], formKey : String, messageKeyBase: String, classes: String = "govuk-input govuk-input--width-20")(implicit messages: Messages)
+@(
+        form: Form[_],
+        id: String,
+        name: String,
+        label: String,
+        isPageHeading: Boolean,
+        headingMessageArgs: Seq[String] = Seq(),
+        hint: Option[String] = None,
+        classes: Option[String] = None,
+        stripWhitespace: Boolean = false
+)(implicit messages: Messages)
 
 @govukInput(Input(
-    classes = classes,
-    id = formKey,
-    name = formKey,
-    inputType = "text",
-    label = Label(content = Text(messages(s"$messageKeyBase.$formKey"))),
-    value = form(formKey).value,
-    errorMessage = form(formKey).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))))
+    id,
+    name,
+    classes = classes.fold("")(x => x),
+    label = Label(
+        content = Text(messages(label, headingMessageArgs:_*)),
+        isPageHeading = isPageHeading,
+        classes = if(isPageHeading) "govuk-label--xl" else ""
+    ),
+    hint = hint.map(hintKey => Hint(
+        content = HtmlContent(messages(hintKey))
+    )),
+    value = form(name).value,
+    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+))

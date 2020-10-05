@@ -25,29 +25,38 @@
         errorSummary: components.errorSummary,
         button: components.button,
         text: components.inputText,
-        h1: components.h1)
+        h1: components.h1,
+        p: components.p)
 
-@(form: Form[Name])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("travellerDetails.title"))) {
-  @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+@layout(pageTitle = Some(messages("searchGoods.title"))) {
+
+  @formHelper(action = SearchGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+
     @errorSummary(form.errors)
-    @h1(messages("travellerDetails.heading"))
+
+    @h1(messages("searchGoods.heading"))
+
+    @p(Html(messages("searchGoods.p")))
 
     @text(
         form = form,
-        id = "firstName",
-        name = "firstName",
-        label = "travellerDetails.firstName",
-        isPageHeading = false
+        id = "category",
+        name = "category",
+        label = "searchGoods.category",
+        isPageHeading = false,
+        classes = Some("govuk-input--width-20"),
+        hint = Some("searchGoods.category.hint")
     )
 
     @text(
         form = form,
-        id = "lastName",
-        name = "lastName",
-        label = "travellerDetails.lastName",
-        isPageHeading = false
+        id = "quantity",
+        name = "quantity",
+        label = "searchGoods.quantity",
+        isPageHeading = false,
+        classes = Some("govuk-input--width-5")
     )
 
     @button("site.continue")

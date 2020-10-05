@@ -54,7 +54,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.searchGoods().toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad().toString
       }
     }
 
@@ -97,7 +97,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.searchGoods().toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad().toString
       }
     }
 

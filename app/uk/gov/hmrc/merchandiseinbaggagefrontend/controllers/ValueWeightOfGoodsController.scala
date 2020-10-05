@@ -56,7 +56,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
             value => {
               repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(value))).map { _ =>
                 if (value) Redirect(routes.CannotUseServiceController.onPageLoad())
-                else Redirect(routes.SkeletonJourneyController.searchGoods())
+                else Redirect(routes.SearchGoodsController.onPageLoad())
               }
             }
           )
