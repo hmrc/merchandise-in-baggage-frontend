@@ -9,7 +9,9 @@ GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
 GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.searchGoods
+GET        /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsVatRate
 GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.purchaseDetails
+GET        /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.invoiceNumber
 GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.taxCalculation
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.customsAgent
 GET        /enter-trader-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterTraderAddress
