@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Name
 
-object TraderDetailsForm {
+object TravellerDetailsForm {
   val firstName = "firstName"
   val lastName = "lastName"
 

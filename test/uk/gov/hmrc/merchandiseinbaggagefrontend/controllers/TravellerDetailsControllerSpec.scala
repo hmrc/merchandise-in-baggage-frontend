@@ -17,21 +17,21 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TraderDetailsForm.{firstName, form, lastName}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.{firstName, form, lastName}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Name
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TraderDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TraderDetailsControllerSpec extends DeclarationJourneyControllerSpec {
+class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
   private val name = Name("Terry", "Test")
 
   private lazy val controller =
-    new TraderDetailsController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[TraderDetailsPage])
+    new TravellerDetailsController(
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[TravellerDetailsPage])
 
   "onPageLoad" must {
-    val url = routes.TraderDetailsController.onPageLoad().url
+    val url = routes.TravellerDetailsController.onPageLoad().url
     val getRequest = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
@@ -88,7 +88,7 @@ class TraderDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterTraderAddress().toString
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.journeyDetails().toString
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeName mustBe Some(name)
       }
     }

@@ -53,27 +53,51 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
     Ok(page(s"invoiceNumber.title", routes.ReviewGoodsController.onPageLoad()))
   }
 
+  val removeGoods: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"removeGoods.title", routes.SkeletonJourneyController.goodsRemoved()))
+  }
+
+  val goodsRemoved: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"goodsRemoved.title", routes.SkeletonJourneyController.searchGoods()))
+  }
+
   val taxCalculation: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(page(s"taxCalculation.title", routes.SkeletonJourneyController.customsAgent()))
   }
 
   val customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"customsAgent.title", routes.TraderDetailsController.onPageLoad()))
+    Ok(page(s"customsAgent.title", routes.SkeletonJourneyController.agentDetails()))
   }
 
-  val enterTraderAddress: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"enterTraderAddress.title", routes.SkeletonJourneyController.selectTraderAddress()))
+  val agentDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"agentDetails.title", routes.SkeletonJourneyController.enterAgentAddress()))
   }
 
-  val selectTraderAddress: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"selectTraderAddress.title", routes.SkeletonJourneyController.enterEoriNumber()))
+  val enterAgentAddress: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"enterAgentAddress.title", routes.SkeletonJourneyController.selectAgentAddress()))
+  }
+
+  val selectAgentAddress: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"selectAgentAddress.title", routes.SkeletonJourneyController.enterEoriNumber()))
   }
 
   val enterEoriNumber: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"enterEoriNumber.title", routes.SkeletonJourneyController.traderJourneyDetails()))
+    Ok(page(s"enterEoriNumber.title", routes.TravellerDetailsController.onPageLoad()))
   }
 
-  val traderJourneyDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"traderJourneyDetails.title", routes.CheckYourAnswersController.onPageLoad()))
+  val journeyDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"journeyDetails.title", routes.SkeletonJourneyController.goodsInVehicle()))
+  }
+
+  val goodsInVehicle: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"goodsInVehicle.title", routes.SkeletonJourneyController.vehicleSize()))
+  }
+
+  val vehicleSize: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"vehicleSize.title", routes.SkeletonJourneyController.vehicleRegistrationNumber()))
+  }
+
+  val vehicleRegistrationNumber: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(page(s"vehicleRegistrationNumber.title", routes.CheckYourAnswersController.onPageLoad()))
   }
 }

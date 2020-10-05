@@ -104,6 +104,46 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     }
   }
 
+  "removeGoods" should {
+    val url = routes.SkeletonJourneyController.removeGoods().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Are you sure you want to remove the x?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.removeGoods(getRequest), title, routes.SkeletonJourneyController.goodsRemoved())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.removeGoods(buildGet(url)))
+      }
+    }
+  }
+
+  "goodsRemoved" should {
+    val url = routes.SkeletonJourneyController.goodsRemoved().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "You removed your goods"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.goodsRemoved(getRequest), title, routes.SkeletonJourneyController.searchGoods())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.goodsRemoved(buildGet(url)))
+      }
+    }
+  }
+
   "taxCalculation" should {
     val url = routes.SkeletonJourneyController.taxCalculation().url
 
@@ -133,7 +173,7 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.customsAgent(getRequest), title, routes.TraderDetailsController.onPageLoad())
+        ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.agentDetails())
       }
     }
 
@@ -144,8 +184,28 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     }
   }
 
-  "enterTraderAddress" should {
-    val url = routes.SkeletonJourneyController.enterTraderAddress().url
+  "agentDetails" should {
+    val url = routes.SkeletonJourneyController.agentDetails().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Enter the business name of the customs agent"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.agentDetails(getRequest), title, routes.SkeletonJourneyController.enterAgentAddress())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.agentDetails(buildGet(url)))
+      }
+    }
+  }
+
+  "enterAgentAddress" should {
+    val url = routes.SkeletonJourneyController.enterAgentAddress().url
 
     "render the page" when {
       "a declaration journey has been started" in {
@@ -153,19 +213,19 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.enterTraderAddress(getRequest), title, routes.SkeletonJourneyController.selectTraderAddress())
+        ensure(controller.enterAgentAddress(getRequest), title, routes.SkeletonJourneyController.selectAgentAddress())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.enterTraderAddress(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.enterAgentAddress(buildGet(url)))
       }
     }
   }
 
-  "selectTraderAddress" should {
-    val url = routes.SkeletonJourneyController.selectTraderAddress().url
+  "selectAgentAddress" should {
+    val url = routes.SkeletonJourneyController.selectAgentAddress().url
 
     "render the page" when {
       "a declaration journey has been started" in {
@@ -173,13 +233,13 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.selectTraderAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
+        ensure(controller.selectAgentAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.selectTraderAddress(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.selectAgentAddress(buildGet(url)))
       }
     }
   }
@@ -193,7 +253,7 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.enterEoriNumber(getRequest), title, routes.SkeletonJourneyController.traderJourneyDetails())
+        ensure(controller.enterEoriNumber(getRequest), title, routes.TravellerDetailsController.onPageLoad())
       }
     }
 
@@ -204,8 +264,8 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
     }
   }
 
-  "traderJourneyDetails" should {
-    val url = routes.SkeletonJourneyController.traderJourneyDetails().url
+  "journeyDetails" should {
+    val url = routes.SkeletonJourneyController.journeyDetails().url
 
     "render the page" when {
       "a declaration journey has been started" in {
@@ -213,13 +273,73 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.traderJourneyDetails(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
+        ensure(controller.journeyDetails(getRequest), title, routes.SkeletonJourneyController.goodsInVehicle())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.traderJourneyDetails(buildGet(url)))
+        ensureRedirectToInvalidRequestPage(controller.journeyDetails(buildGet(url)))
+      }
+    }
+  }
+
+  "goodsInVehicle" should {
+    val url = routes.SkeletonJourneyController.goodsInVehicle().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Are you travelling by vehicle?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.goodsInVehicle(getRequest), title, routes.SkeletonJourneyController.vehicleSize())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.goodsInVehicle(buildGet(url)))
+      }
+    }
+  }
+
+  "vehicleSize" should {
+    val url = routes.SkeletonJourneyController.vehicleSize().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Are you bringing the goods in a small vehicle?"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.vehicleSize(getRequest), title, routes.SkeletonJourneyController.vehicleRegistrationNumber())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.vehicleSize(buildGet(url)))
+      }
+    }
+  }
+
+  "vehicleRegistrationNumber" should {
+    val url = routes.SkeletonJourneyController.vehicleRegistrationNumber().url
+
+    "render the page" when {
+      "a declaration journey has been started" in {
+        val title = "Enter the vehicle registration number"
+        val getRequest = buildGet(url, sessionId)
+
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        ensure(controller.vehicleRegistrationNumber(getRequest), title, routes.CheckYourAnswersController.onPageLoad())
+      }
+    }
+
+    "redirect to /invalid-request" when {
+      "a declaration journey has not been started" in {
+        ensureRedirectToInvalidRequestPage(controller.vehicleRegistrationNumber(buildGet(url)))
       }
     }
   }
