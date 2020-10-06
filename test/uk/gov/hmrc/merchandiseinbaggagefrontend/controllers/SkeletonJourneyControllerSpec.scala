@@ -24,26 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "searchGoods" should {
-    val url = routes.SkeletonJourneyController.searchGoods().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "What goods are you bringing into the UK?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.searchGoods(getRequest), title, routes.SkeletonJourneyController.goodsVatRate())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.searchGoods(buildGet(url)))
-      }
-    }
-  }
-
   "goodsVatRate" should {
     val url = routes.SkeletonJourneyController.goodsVatRate().url
 
@@ -133,7 +113,7 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.goodsRemoved(getRequest), title, routes.SkeletonJourneyController.searchGoods())
+        ensure(controller.goodsRemoved(getRequest), title, routes.SearchGoodsController.onPageLoad())
       }
     }
 

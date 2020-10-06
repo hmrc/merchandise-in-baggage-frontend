@@ -37,10 +37,6 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   extends FrontendController(mcc) {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
-  val searchGoods: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"searchGoods.title", routes.SkeletonJourneyController.goodsVatRate()))
-  }
-
   val goodsVatRate: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(page(s"goodsVatRate.title", routes.SearchGoodsCountryController.onPageLoad()))
   }
@@ -58,7 +54,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   }
 
   val goodsRemoved: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"goodsRemoved.title", routes.SkeletonJourneyController.searchGoods()))
+    Ok(page(s"goodsRemoved.title", routes.SearchGoodsController.onPageLoad()))
   }
 
   val taxCalculation: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

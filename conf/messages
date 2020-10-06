@@ -26,7 +26,7 @@ site.start = Start now
 payment.button = Pay now
 next.button = Next
 
-searchGoods.title = What goods are you bringing into the UK?
+
 goodsVatRate.title = Check which VAT rate applies to the x
 purchaseDetails.title = How much did you pay for the x?
 invoiceNumber.title = What is the invoice number for the x?
@@ -105,9 +105,19 @@ valueWeightOfGoods.ni.heading = Is the total value of the goods over £873 or 10
 valueWeightOfGoods.gb.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.error.required = Select one of the options below
 
+# SearchGoods
+searchGoods.title = What type of goods are you bringing into the UK?
+searchGoods.heading = What type of goods are you bringing into the UK?
+searchGoods.p = Add your goods by their type or category. For example, clothes, electronics, or food.
+searchGoods.category = Type of goods
+searchGoods.category.hint = For example, clothes
+searchGoods.category.error.required = Enter the type of goods
+searchGoods.quantity = Number of items
+searchGoods.quantity.error.required = Enter the number of items
+
 # SearchGoodsCountry
-searchGoodsCountry.title = In what country did you buy the x?
-searchGoodsCountry.heading = In what country did you buy the x?
+searchGoodsCountry.title = In what country did you buy the {0}?
+searchGoodsCountry.heading = In what country did you buy the {0}?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
 searchGoodsCountry.error.required = Select a country
 searchGoodsCountry.error.invalid = Select a valid country

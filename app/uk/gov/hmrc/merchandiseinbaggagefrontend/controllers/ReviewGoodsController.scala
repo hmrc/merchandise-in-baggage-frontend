@@ -36,21 +36,21 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.map(Goods.apply) match {
-      case Seq() => Redirect(routes.SkeletonJourneyController.searchGoods())
+      case Seq() => Redirect(routes.InvalidRequestController.onPageLoad())
       case goods => Ok(view(form, goods))
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.map(Goods.apply) match {
-      case Seq() => Redirect(routes.SkeletonJourneyController.searchGoods())
+      case Seq() => Redirect(routes.InvalidRequestController.onPageLoad())
       case goods =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors => BadRequest(view(formWithErrors, goods)),
             declareMoreGoods =>
-              if (declareMoreGoods) Redirect(routes.SkeletonJourneyController.searchGoods())
+              if (declareMoreGoods) Redirect(routes.SearchGoodsController.onPageLoad())
               else Redirect(routes.SkeletonJourneyController.taxCalculation())
           )
     }

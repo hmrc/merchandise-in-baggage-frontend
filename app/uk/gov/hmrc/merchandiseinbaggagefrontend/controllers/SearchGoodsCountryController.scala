@@ -21,7 +21,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Currency, CurrencyAmount, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
@@ -40,34 +39,32 @@ class SearchGoodsCountryController @Inject()(
   val form: Form[String] = formProvider(CountriesService.countries)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-
-    val preparedForm = request.declarationJourney.goodsEntries.headOption match {
-      case Some(goodsEntry) => goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill)
-      case None => form
+    // TODO replace with parameterised :idx, use headOption for single goods journey
+    request.declarationJourney.goodsEntries.headOption match {
+      case Some(goodsEntry) =>
+        Ok(view(goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
+      case None => Redirect(routes.InvalidRequestController.onPageLoad())
     }
-
-    Ok(view(preparedForm))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-        value =>
-          repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
-            GoodsEntry(
-              CategoryQuantityOfGoods("TODO", "123"),
-              Some("TODO"),
-              Some(value),
-              Some(PriceOfGoods(CurrencyAmount(-1.00), Currency("made up", "ABC"))),
-              Some("TODO"),
-              Some(CurrencyAmount(-1.00))
-            )
-          ))).map { _ =>
-            Redirect(routes.SkeletonJourneyController.purchaseDetails())
-          }
-      )
+    request.declarationJourney.goodsEntries.headOption match {
+      case Some(goodsEntry) =>
+        form
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+          value =>
+            repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
+              goodsEntry.copy(maybeCountryOfPurchase = Some(value))
+            ))).map { _ =>
+              Redirect(routes.SkeletonJourneyController.purchaseDetails())
+            }
+        )
+      case None =>
+        Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+    }
   }
 
 }
