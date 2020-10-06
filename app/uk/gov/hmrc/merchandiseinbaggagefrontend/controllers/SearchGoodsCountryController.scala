@@ -43,7 +43,7 @@ class SearchGoodsCountryController @Inject()(
     request.declarationJourney.goodsEntries.headOption match {
       case Some(goodsEntry) =>
         Ok(view(goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
-      case None => Redirect(routes.SearchGoodsController.onPageLoad())
+      case None => Redirect(routes.InvalidRequestController.onPageLoad())
     }
   }
 
@@ -63,7 +63,7 @@ class SearchGoodsCountryController @Inject()(
             }
         )
       case None =>
-        Future.successful(Redirect(routes.SearchGoodsController.onPageLoad()))
+        Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
     }
   }
 
