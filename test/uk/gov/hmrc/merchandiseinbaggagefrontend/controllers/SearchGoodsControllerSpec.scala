@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.CategoryQuantityOfGoods
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -84,8 +84,6 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
 
-        form.bindFromRequest()(request)
-
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
@@ -99,6 +97,31 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
           .goodsEntries
           .head
           .categoryQuantityOfGoods mustBe CategoryQuantityOfGoods("test category", "100")
+      }
+    }
+
+    //TODO will later apply to a given :idx
+    "Overwrite an existing goods entry" when {
+      "a new type of goods is submitted" in {
+        val before =
+          startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry))
+
+        givenADeclarationJourneyIsPersisted(before)
+
+        val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
+
+        val result = controller.onSubmit()(request)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.goodsVatRate().toString
+
+        before.goodsEntries.head mustBe completedGoodsEntry
+        declarationJourneyRepository
+          .findBySessionId(sessionId)
+          .futureValue
+          .get
+          .goodsEntries
+          .head mustBe GoodsEntry(CategoryQuantityOfGoods("test category", "100"))
       }
     }
 
