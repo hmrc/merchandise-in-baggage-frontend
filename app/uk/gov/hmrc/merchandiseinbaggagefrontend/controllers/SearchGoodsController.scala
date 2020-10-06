@@ -55,7 +55,7 @@ class SearchGoodsController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         categoryQuantityOfGoods =>
           repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(GoodsEntry(categoryQuantityOfGoods)))).map {_ =>
-            Redirect(routes.SkeletonJourneyController.goodsVatRate())
+            Redirect(routes.GoodsVatRateController.onPageLoad())
           }
       )
   }

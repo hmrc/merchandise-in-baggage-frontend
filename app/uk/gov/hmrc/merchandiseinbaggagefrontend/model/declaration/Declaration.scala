@@ -25,7 +25,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsVatRate}
 
 case class SessionId(value: String)
 
@@ -66,7 +66,7 @@ object CategoryQuantityOfGoods {
 }
 
 case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
-                      maybeGoodsVatRate: Option[String] = None,
+                      maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePriceOfGoods: Option[PriceOfGoods] = None,
                       maybeInvoiceNumber: Option[String] = None,
@@ -147,7 +147,7 @@ object DeclarationJourney {
 }
 
 case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
-                 goodsVatRate: String,
+                 goodsVatRate: GoodsVatRate,
                  countryOfPurchase: String,
                  priceOfGoods: PriceOfGoods,
                  invoiceNumber: String,
