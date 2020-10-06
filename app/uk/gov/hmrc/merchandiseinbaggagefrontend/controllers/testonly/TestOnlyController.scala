@@ -27,6 +27,7 @@ import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TestOnlyDeclarationJourneyPage
@@ -48,14 +49,14 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
         goodsEntries = Seq(
           GoodsEntry(
             CategoryQuantityOfGoods("wine", "1"),
-            Some("20"),
+            Some(GoodsVatRate.Twenty),
             Some("France"),
             Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
             Some("1234560"),
             Some(CurrencyAmount(BigDecimal(10.00)))),
           GoodsEntry(
             CategoryQuantityOfGoods("cheese", "3"),
-            Some("20"),
+            Some(GoodsVatRate.Twenty),
             Some("France"),
             Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
             Some("1234560"),

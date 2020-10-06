@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 
 trait CoreTestData {
@@ -39,7 +40,7 @@ trait CoreTestData {
   val completedGoodsEntry: GoodsEntry =
     GoodsEntry(
       CategoryQuantityOfGoods("wine", "1"),
-      Some("20"),
+      Some(GoodsVatRate.Twenty),
       Some("France"),
       Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
       Some("1234560"),
@@ -53,7 +54,7 @@ trait CoreTestData {
         completedGoodsEntry,
         GoodsEntry(
           CategoryQuantityOfGoods("cheese", "3"),
-          Some("20"),
+          Some(GoodsVatRate.Twenty),
           Some("France"),
           Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
           Some("1234560"),

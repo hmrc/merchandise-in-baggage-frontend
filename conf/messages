@@ -27,7 +27,6 @@ payment.button = Pay now
 next.button = Next
 
 
-goodsVatRate.title = Check which VAT rate applies to the x
 purchaseDetails.title = How much did you pay for the x?
 invoiceNumber.title = What is the invoice number for the x?
 reviewGoods.title = Review your goods
@@ -114,6 +113,27 @@ searchGoods.category.hint = For example, clothes
 searchGoods.category.error.required = Enter the type of goods
 searchGoods.quantity = Number of items
 searchGoods.quantity.error.required = Enter the number of items
+
+# GoodsVatRate
+goodsVatRate.title = Check which VAT rate applies to the {0}
+goodsVatRate.heading = Check which VAT rate applies to the {0}
+goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as food and children’s clothes have a lower rate.
+goodsVatRate.table.head.col1 = % of VAT
+goodsVatRate.table.head.col2 = What the rate applies to
+goodsVatRate.table.row1.col1.1 = 0%
+goodsVatRate.table.row1.col1.2 = Zero rate
+goodsVatRate.table.row1.col2 = Antiques; equipment for disabled, blind or partially sighted people; children’s or babywear clothes and footwear; cycle helmets – CE marked; magnetic tape adapted for recording speech for blind people; motorcycle helmets; protective boots and helmets for industrial use; publications.
+goodsVatRate.table.row2.col1.1 = 5%
+goodsVatRate.table.row2.col1.2 = Reduced rate
+goodsVatRate.table.row2.col2 = Energy-saving materials installed in dwellings and buildings used for a relevant residential purpose; carrycots with restraint straps; children’s car seats, booster seats and booster cushions; maternity pads; mobility aids for the elderly; sanitary protection products; smoking cessation products.
+goodsVatRate.table.row3.col1.1 = 20%
+goodsVatRate.table.row3.col1.2 = Standard rate
+goodsVatRate.table.row3.col2 = All other goods.
+goodsVatRate.legend = Which VAT rate applies to the {0}?
+goodsVatRate.zero = 0% VAT
+goodsVatRate.five = 5% VAT
+goodsVatRate.twenty = 20% VAT
+goodsVatRate.error.required = Select one of the options below
 
 # SearchGoodsCountry
 searchGoodsCountry.title = In what country did you buy the {0}?

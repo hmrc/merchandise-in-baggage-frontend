@@ -22,26 +22,28 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enumerable, WithName}
 
-sealed trait GoodsDestination
+trait GoodsVatRate
 
-object GoodsDestination extends Enumerable.Implicits {
+object GoodsVatRate extends Enumerable.Implicits {
 
-  case object NorthernIreland extends WithName("ni") with GoodsDestination
-  case object EngScoWal extends WithName("gb") with GoodsDestination
+  case object Zero extends WithName("zero") with GoodsVatRate
+  case object Five extends WithName("five") with GoodsVatRate
+  case object Twenty extends WithName("twenty") with GoodsVatRate
 
-  val values: Seq[GoodsDestination] = Seq(
-    NorthernIreland,
-    EngScoWal
+  val values: Seq[GoodsVatRate] = Seq(
+    Zero,
+    Five,
+    Twenty
   )
 
   def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
     RadioItem(
       value = Some(value.toString),
-      content = Text(messages(s"goodsDestination.${value.toString}")),
+      content = Text(messages(s"goodsVatRate.${value.toString}")),
       checked = form("value").value.contains(value.toString)
     )
   }
 
-  implicit val enumerable: Enumerable[GoodsDestination] =
+  implicit val enumerable: Enumerable[GoodsVatRate] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

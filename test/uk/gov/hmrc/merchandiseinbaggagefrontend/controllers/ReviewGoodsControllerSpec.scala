@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Currency, CurrencyAmount, Goods, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
@@ -34,7 +35,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   val testGood =
     GoodsEntry(
       CategoryQuantityOfGoods("test good", "123"),
-      Some("test vat rate"),
+      Some(GoodsVatRate.Twenty),
       Some("Austria"),
       Some(PriceOfGoods(CurrencyAmount(10.00), Currency("test currency", "TST"))),
       Some("test invoice number"),
