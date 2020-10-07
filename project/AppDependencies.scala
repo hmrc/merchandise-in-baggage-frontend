@@ -10,7 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "play-frontend-hmrc"         % "0.17.0-play-27",
     "uk.gov.hmrc"             %% "play-frontend-govuk"        % "0.49.0-play-27",
     "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.30.0-play-27",
-    "com.github.pureconfig"   %% "pureconfig"                 % "0.13.0"
+    "com.github.pureconfig"   %% "pureconfig"                 % "0.13.0",
+    "com.beachape"            %% "enumeratum-play"            % "1.5.13"
   )
 
   val test = Seq(

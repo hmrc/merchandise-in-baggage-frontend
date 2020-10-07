@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,6 +43,8 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     content
   }
 
+  private val goodsEntries = GoodsEntries(completedGoodsEntry)
+
   "onPageLoad" must {
     val url = routes.SearchGoodsController.onPageLoad().url
     val getRequest = buildGet(url, sessionId)
@@ -62,7 +64,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -89,12 +91,13 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad().toString
 
-        startedDeclarationJourney.goodsEntries.headOption mustBe None
+        startedDeclarationJourney.goodsEntries.entries.headOption mustBe None
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue
           .get
           .goodsEntries
+          .entries
           .head
           .categoryQuantityOfGoods mustBe CategoryQuantityOfGoods("test category", "100")
       }
@@ -104,7 +107,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     "Overwrite an existing goods entry" when {
       "a new type of goods is submitted" in {
         val before =
-          startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry))
+          startedDeclarationJourney.copy(goodsEntries = goodsEntries)
 
         givenADeclarationJourneyIsPersisted(before)
 
@@ -115,12 +118,13 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad().toString
 
-        before.goodsEntries.head mustBe completedGoodsEntry
+        before.goodsEntries.entries.head mustBe completedGoodsEntry
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue
           .get
           .goodsEntries
+          .entries
           .head mustBe GoodsEntry(CategoryQuantityOfGoods("test category", "100"))
       }
     }

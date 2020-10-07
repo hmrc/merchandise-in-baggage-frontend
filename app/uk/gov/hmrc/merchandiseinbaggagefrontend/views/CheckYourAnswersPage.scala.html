@@ -35,11 +35,15 @@
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
 
- @for(goods <- declaration.goods) {
+ @for(goods <- declaration.declarationGoods.goods) {
    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
-     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.item")</dt>
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
     </div>
     <div class="govuk-summary-list__row">
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
@@ -47,37 +51,47 @@
     </div>
     <div class="govuk-summary-list__row">
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
-     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.priceOfGoods</dd>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.invoiceNumber")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.invoiceNumber</dd>
     </div>
     <div class="govuk-summary-list__row">
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
     </div>
    </dl>
-   <input id="taxDue" type="hidden" name="taxDue" value="@declaration.goods.map(_.taxDue).sum">
+   <input id="taxDue" type="hidden" name="taxDue" value="@declaration.declarationGoods.goods.map(_.taxDue).sum">
 }
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-  <div class="govuk-summary-list__row">
-   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.name")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.name</dd>
-  </div>
-  <div class="govuk-summary-list__row">
-   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.address")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">
-     @for(addressLine <- declaration.address.populatedAddressLines) {
-       @addressLine
-       <br>
-     }
+  @declaration.maybeCustomsAgent.fold(Html("")) { customsAgent =>
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
+    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
+    <dd class="govuk-summary-list__value" style="text-transform: capitalize">
+     @for(addressLine <- customsAgent.address.populatedAddressLines) {
+      @addressLine
+      <br>
+      }
 
-     @declaration.address.postCode
-   </dd>
-  </div>
+     @customsAgent.address.postCode
+    </dd>
+   </div>
+  }
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
   </div>
  </dl>
 
@@ -86,12 +100,22 @@
  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.placeOfArrival")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.placeOfArrival</dd>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.placeOfArrival.display</dd>
   </div>
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
   </div>
+  <div class="govuk-summary-list__row">
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.travellingByVehicle")</dt>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.travellingByVehicle</dd>
+  </div>
+  @declaration.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
+   <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.vehicleRegistrationNumber")</dt>
+    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
+   </div>
+  }
  </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.sendDeclaration")</h2>

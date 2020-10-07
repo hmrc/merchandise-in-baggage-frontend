@@ -33,7 +33,7 @@ class TravellerDetailsController @Inject()(override val controllerComponents: Me
   extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeName.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill)))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -42,7 +42,7 @@ class TravellerDetailsController @Inject()(override val controllerComponents: Me
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         value =>
-          repo.upsert(request.declarationJourney.copy(maybeName = Some(value))).map { _ =>
+          repo.upsert(request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(value))).map { _ =>
             Redirect(routes.SkeletonJourneyController.journeyDetails())
           }
       )

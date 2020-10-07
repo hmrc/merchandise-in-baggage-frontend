@@ -30,7 +30,7 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner
 
-  val invalidRequest: Result = Redirect(routes.InvalidRequestController.onPageLoad())
+  def invalidRequest: Result = Redirect(routes.InvalidRequestController.onPageLoad())
 
   def journeyActionRefiner: ActionRefiner[Request, DeclarationJourneyRequest] =
     new ActionRefiner[Request, DeclarationJourneyRequest] {

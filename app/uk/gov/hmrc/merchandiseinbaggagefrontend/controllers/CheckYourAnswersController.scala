@@ -32,6 +32,8 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   val form: Form[Answers] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.toDeclarationIfComplete.fold(actionProvider.invalidRequest)(declaration => Ok(page(form, declaration)))
+    request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequest){ declaration =>
+      Ok(page(form, declaration))
+    }
   }
 }

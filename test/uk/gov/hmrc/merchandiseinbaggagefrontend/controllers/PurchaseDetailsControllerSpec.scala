@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
@@ -67,7 +67,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -88,7 +88,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
     "Redirect to /invoice-number" when {
       "a declaration is started and a valid selection submitted" in {
         val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-        val before = startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry))
+        val before = startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry))
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("price", "100.0"), ("currency", "ARS"))
@@ -103,14 +103,15 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           .futureValue
           .get
           .goodsEntries
+          .entries
           .head
-          .maybePriceOfGoods mustBe Some(PriceOfGoods(100.0, Currency("Argentina", "Peso", "ARS")))
+          .maybePurchaseDetails mustBe Some(PurchaseDetails(100.0, Currency("Argentina", "Peso", "ARS")))
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)

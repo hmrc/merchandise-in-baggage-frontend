@@ -21,7 +21,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Goods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
 @Singleton
@@ -35,24 +34,21 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
   val form: Form[Boolean] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.map(Goods.apply) match {
-      case Seq() => Redirect(routes.InvalidRequestController.onPageLoad())
-      case goods => Ok(view(form, goods))
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>
+      Ok(view(form, goods))
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.map(Goods.apply) match {
-      case Seq() => Redirect(routes.InvalidRequestController.onPageLoad())
-      case goods =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors => BadRequest(view(formWithErrors, goods)),
-            declareMoreGoods =>
-              if (declareMoreGoods) Redirect(routes.SearchGoodsController.onPageLoad())
-              else Redirect(routes.SkeletonJourneyController.taxCalculation())
-          )
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, goods)),
+          declareMoreGoods =>
+            if (declareMoreGoods) Redirect(routes.SearchGoodsController.onPageLoad())
+            else Redirect(routes.SkeletonJourneyController.taxCalculation())
+        )
     }
   }
 }
