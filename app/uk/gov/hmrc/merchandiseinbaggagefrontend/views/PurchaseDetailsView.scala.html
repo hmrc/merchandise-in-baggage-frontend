@@ -17,16 +17,19 @@
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 h1: components.h1,
 errorSummary: components.errorSummary,
+text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], goodsCategory: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], goodsCategory: String, currencies: Seq[Currency])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
@@ -35,11 +38,11 @@ button: components.button
 @scripts = {
     <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
     <script>
-            var selectEl = document.querySelector('#country-auto-complete')
+            var selectEl = document.querySelector('#currency')
             if(selectEl){
                 accessibleAutocomplete.enhanceSelectElement({
                     autoselect: true,
-                    defaultValue: selectEl.options[selectEl.options.selectedIndex].innerHTML,
+                    defaultValue: '',
                     minLength: 2,
                     selectElement: selectEl
                 })
@@ -48,34 +51,48 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(messages("searchGoodsCountry.title", goodsCategory)),
+    pageTitle = Some(messages("purchaseDetails.title", goodsCategory)),
     headBlock = Some(head),
     scriptsBlock = Some(scripts)
 ) {
-    @formHelper(action = SearchGoodsCountryController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = PurchaseDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @errorSummary(form.errors, Some("country-auto-complete"))
+        @errorSummary(form.errors)
 
-        @h1(messages("searchGoodsCountry.heading", goodsCategory))
+        @h1(messages("purchaseDetails.heading", goodsCategory))
 
-        <p class="govuk-hint">@messages("searchGoodsCountry.hint")</p>
+        @text(
+            form = form,
+            id = "price",
+            name = "price",
+            label = "purchaseDetails.price.label",
+            isPageHeading = false,
+            classes = Some("govuk-input--width-10")
+        )
 
         <div class="govuk-form-group">
-            <div class="autocomplete-wrapper country">
-                <select name="value" id="country-auto-complete">
+            <label class="govuk-label" for="currency">@messages("purchaseDetails.currency.label")</label>
+            <div class="autocomplete-wrapper currency govuk-input--width-30">
+                <select name="currency" id="currency">
                     @if(form("value").value.isEmpty) {
                         <option value="" selected></option>
                     }
-                    @for(country <- CountriesService.countries) {
-                        @if(form("value").value.contains(country)) {
-                            <option value="@country" selected>@country</option>
+                    @for(currency <- currencies) {
+                        @if(form("currency").value.contains(currency.currencyCode)) {
+                            <option value="@currency.currencyCode" selected>@currency.displayName</option>
                         } else {
-                            <option value="@country">@country</option>
+                            <option value="@currency.currencyCode">@currency.displayName</option>
                         }
                     }
                 </select>
             </div>
         </div>
+
+        <p class="govuk-body">
+            @messages("purchaseDetails.p.1")
+            <a class="govuk-link" href="@messages("purchaseDetails.p.a.href")">@messages("purchaseDetails.p.a.text")</a>
+            @messages("purchaseDetails.p.2")
+        </p>
 
         @button("site.continue")
     }

@@ -59,7 +59,7 @@ class SearchGoodsCountryController @Inject()(
             repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
               goodsEntry.copy(maybeCountryOfPurchase = Some(value))
             ))).map { _ =>
-              Redirect(routes.SkeletonJourneyController.purchaseDetails())
+              Redirect(routes.PurchaseDetailsController.onPageLoad())
             }
         )
       case None =>

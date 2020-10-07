@@ -19,7 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Currency, CurrencyAmount, Goods, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Goods, GoodsEntry, PriceOfGoods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
@@ -37,9 +38,9 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       CategoryQuantityOfGoods("test good", "123"),
       Some(GoodsVatRate.Twenty),
       Some("Austria"),
-      Some(PriceOfGoods(CurrencyAmount(10.00), Currency("test currency", "TST"))),
+      Some(PriceOfGoods(10.00, Currency("test country", "test currency", "TST"))),
       Some("test invoice number"),
-      Some(CurrencyAmount(0.00))
+      Some(0.00)
     )
 
   "onPageLoad" must {

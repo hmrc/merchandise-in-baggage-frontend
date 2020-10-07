@@ -20,6 +20,8 @@ import play.api.data.FormError
 import play.api.data.format.Formatter
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enumerable
 
+import scala.util.control.Exception.nonFatalCatch
+
 
 trait Formatters {
 
@@ -50,6 +52,32 @@ trait Formatters {
         }
 
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
+
+  private[mappings] def bigDecimalFormatter(
+                                             requiredKey: String,
+                                             nonNumericKey: String,
+                                             args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    new Formatter[BigDecimal] {
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]) =
+        baseFormatter
+          .bind(key, data)
+          .right
+          .map(_.replace(",", ""))
+          .map(_.trim)
+          .right
+          .flatMap {
+            case s =>
+              nonFatalCatch
+                .either(BigDecimal(s))
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          }
+
+      override def unbind(key: String, value: BigDecimal) =
+        baseFormatter.unbind(key, value.toString)
     }
 
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =

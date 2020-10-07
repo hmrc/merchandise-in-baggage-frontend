@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.PaymentService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -32,7 +32,7 @@ class PaymentController @Inject()(
                                    mcc: MessagesControllerComponents,
                                    paymentPage: PaymentPage,
                                    httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends FrontendController(mcc) with PaymentService {
+  extends FrontendController(mcc) with PaymentConnector {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))

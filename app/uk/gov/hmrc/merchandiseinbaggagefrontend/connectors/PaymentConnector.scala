@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.PaymentServiceConf
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{PayApiResponse, PayApitRequest}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.SessionIdGenerator
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PaymentService extends PaymentServiceConf with SessionIdGenerator {
+trait PaymentConnector extends PaymentServiceConf with SessionIdGenerator {
 
   def makePayment(httpClient: HttpClient, requestBody: PayApitRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     httpClient.POST[PayApitRequest, HttpResponse](s"$paymentBaseUri${paymentServiceConf.url.value}", requestBody, addSessionId(hc).headers)

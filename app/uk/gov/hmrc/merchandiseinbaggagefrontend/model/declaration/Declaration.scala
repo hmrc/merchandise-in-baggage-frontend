@@ -25,7 +25,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsVatRate, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 case class SessionId(value: String)
 
@@ -35,24 +36,10 @@ object SessionId {
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
 
-case class CurrencyAmount(value: BigDecimal) {
-  override val toString = s"${value.setScale(2)}"
-}
+case class PriceOfGoods(amount: BigDecimal, currency: Currency) {
+  override val toString = s"${amount.formatted(s"%.${amount.scale}f")}, ${currency.displayName}"
 
-object CurrencyAmount {
-  implicit val format: OFormat[CurrencyAmount] = Json.format[CurrencyAmount]
-}
-
-case class Currency(name: String, code: String) {
-  override val toString = s"$name ($code)"
-}
-
-object Currency {
-  implicit val format: OFormat[Currency] = Json.format[Currency]
-}
-
-case class PriceOfGoods(amount: CurrencyAmount, currency: Currency) {
-  override val toString = s"$amount, $currency"
+  def toPurchaseDetailsInput = PurchaseDetailsInput(amount, currency.currencyCode)
 }
 
 object PriceOfGoods {
@@ -70,7 +57,7 @@ case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePriceOfGoods: Option[PriceOfGoods] = None,
                       maybeInvoiceNumber: Option[String] = None,
-                      maybeTaxDue: Option[CurrencyAmount] = None)
+                      maybeTaxDue: Option[BigDecimal] = None)
 
 object GoodsEntry {
   implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
@@ -151,10 +138,10 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  countryOfPurchase: String,
                  priceOfGoods: PriceOfGoods,
                  invoiceNumber: String,
-                 taxDue: CurrencyAmount) {
+                 taxDue: BigDecimal) {
   def toSummaryList(implicit messages: Messages): SummaryList = {
     val price =
-      s"${priceOfGoods.amount.value.formatted("%.2f")}, ${priceOfGoods.currency.name} (${priceOfGoods.currency.code})"
+      s"${priceOfGoods.amount}, ${priceOfGoods.currency.displayName})"
 
     SummaryList(Seq(
       SummaryListRow(

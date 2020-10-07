@@ -18,35 +18,39 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new SearchGoodsCountryFormProvider()
-  private val form = formProvider(CountriesService.countries)
+class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
+  private val formProvider = new PurchaseDetailsFormProvider()
+  private val form = formProvider()
 
   private lazy val controller =
-    new SearchGoodsCountryController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[SearchGoodsCountryView])
+    new PurchaseDetailsController(
+      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView])
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include(s"In what country did you buy the ${goodsEntry.categoryQuantityOfGoods.category}?")
-    content must include("If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase")
+    content must include(s"How much did you pay for the ${goodsEntry.categoryQuantityOfGoods.category}?")
     content must include("Continue")
 
     content
   }
 
   "onPageLoad" must {
-    val url = routes.SearchGoodsCountryController.onPageLoad().url
+    val url = routes.SearchGoodsController.onPageLoad().url
     val getRequest = buildGet(url, sessionId)
+
+    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
@@ -74,44 +78,45 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
   }
 
   "onSubmit" must {
-    val url = routes.SearchGoodsCountryController.onSubmit().url
+    val url = routes.SearchGoodsController.onSubmit().url
     val postRequest = buildPost(url, sessionId)
+
+    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /value-weight-of-goods" when {
+    "Redirect to /invoice-number" when {
       "a declaration is started and a valid selection submitted" in {
-        val before =
-          startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
-
+        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        val before = startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry))
         givenADeclarationJourneyIsPersisted(before)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "Austria"))
-
-        form.bindFromRequest()(request)
+        val request = postRequest.withFormUrlEncodedBody(("price", "100.0"), ("currency", "ARS"))
 
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.PurchaseDetailsController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.invoiceNumber().toString
 
-        before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeCountryOfPurchase mustBe Some("Austria")
+        declarationJourneyRepository
+          .findBySessionId(sessionId)
+          .futureValue
+          .get
+          .goodsEntries
+          .head
+          .maybePriceOfGoods mustBe Some(PriceOfGoods(100.0, Currency("Argentina", "Peso", "ARS")))
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-
-        givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result, goodsEntry) must include("Select a country")
+        ensureContent(result, completedGoodsEntry) must include("Enter an amount")
       }
     }
   }
