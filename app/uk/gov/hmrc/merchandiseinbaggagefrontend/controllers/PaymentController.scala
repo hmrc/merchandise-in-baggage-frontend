@@ -49,7 +49,7 @@ class PaymentController @Inject()(
       json => {
 
         //TODO hard coded data for now
-        val body = PayApitRequest(
+        val body = PayApiRequest(
           MibReference("MIBI1234567890"),
           AmountInPence(json.taxDue),
           AmountInPence(json.taxDue),

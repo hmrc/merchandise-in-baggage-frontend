@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 
 trait CoreTestData {
 
-  val payApiRequest: PayApitRequest = PayApitRequest(
+  val payApiRequest: PayApiRequest = PayApiRequest(
     MibReference("MIBI1234567890"),
     AmountInPence(1),
     AmountInPence(2),
