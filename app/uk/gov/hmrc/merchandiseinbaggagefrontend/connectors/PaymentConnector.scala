@@ -19,16 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.PaymentServiceConf
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{PayApiResponse, PayApitRequest}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{PayApiResponse, PayApiRequest}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.SessionIdGenerator
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait PaymentConnector extends PaymentServiceConf with SessionIdGenerator {
+  protected val httpClient: HttpClient
 
-  def makePayment(httpClient: HttpClient, requestBody: PayApitRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    httpClient.POST[PayApitRequest, HttpResponse](s"$paymentBaseUri${paymentServiceConf.url.value}", requestBody, addSessionId(hc).headers)
+  def makePayment(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    httpClient.POST[PayApiRequest, HttpResponse](s"$paymentBaseUri${paymentServiceConf.url.value}", requestBody, addSessionId(hc).headers)
   }
 
   protected def extractUrl(response: HttpResponse): PayApiResponse =

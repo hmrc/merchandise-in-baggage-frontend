@@ -16,12 +16,21 @@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Declaration
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
-@this(layout: Layout)
+@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
-@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
+
+ @helper.form(action = PaymentController.onSubmit()) {
+
+  @helper.CSRF.formField
+  @if(form.hasErrors) {
+    @errorSummary(form.errors)
+  }
+
  <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
@@ -45,7 +54,8 @@
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
     </div>
    </dl>
-  }
+   <input id="taxDue" type="hidden" name="taxDue" value="@declaration.goods.map(_.taxDue).sum">
+}
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
@@ -100,4 +110,7 @@
    @messages("checkYourAnswers.sendDeclaration.warning.message")
   </strong>
  </div>
+
+  @button("Pay now")
+ }
 }

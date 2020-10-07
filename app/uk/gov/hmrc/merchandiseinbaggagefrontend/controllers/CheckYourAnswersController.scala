@@ -17,16 +17,21 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.{Answers, CheckYourAnswersFormProvider}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
 @Singleton
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                            actionProvider: DeclarationJourneyActionProvider,
+                                           formProvider: CheckYourAnswersFormProvider,
                                            page: CheckYourAnswersPage)
                                           (implicit appConfig: AppConfig) extends DeclarationJourneyController {
+  val form: Form[Answers] = formProvider()
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.toDeclarationIfComplete.fold(actionProvider.invalidRequest)(declaration => Ok(page(declaration)))
+    request.declarationJourney.toDeclarationIfComplete.fold(actionProvider.invalidRequest)(declaration => Ok(page(form, declaration)))
   }
 }

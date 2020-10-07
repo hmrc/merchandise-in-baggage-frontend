@@ -48,16 +48,17 @@ class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with Cor
       .willReturn(okJson(stubbedResponse).withStatus(201))
     )
 
-    private val httpClient = app.injector.instanceOf[HttpClient]
+    override val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
-      val response: HttpResponse = Await.result(makePayment(httpClient, payApiRequest), 5.seconds)
+      val response: HttpResponse = Await.result(makePayment(payApiRequest), 5.seconds)
       response.status mustBe 201
       response.body mustBe stubbedResponse
     }
   }
 
   "extract redirect url from pay-api http response" in new PaymentConnector {
+    override val httpClient = app.injector.instanceOf[HttpClient]
     val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
 
     extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))
