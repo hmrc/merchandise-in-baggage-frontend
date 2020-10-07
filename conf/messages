@@ -29,7 +29,6 @@ payment.button = Pay now
 next.button = Next
 
 
-invoiceNumber.title = What is the invoice number for the x?
 reviewGoods.title = Review your goods
 removeGoods.title = Are you sure you want to remove the x?
 goodsRemoved.title = You removed your goods
@@ -155,6 +154,12 @@ purchaseDetails.p.2 = and the rate of the month in which you make your declarati
 purchaseDetails.price.error.required = Enter an amount
 purchaseDetails.price.error.invalid = Enter only numbers
 purchaseDetails.currency.error.required = Select a currency
+
+# InvoiceNumber
+invoiceNumber.title = What is the invoice number for the {0}?
+invoiceNumber.heading = What is the invoice number for the {0}?
+invoiceNumber.hint = This is the number on the original invoice you received for the goods.
+invoiceNumber.error.required = Enter an invoice number
 
 # ReviewGoods
 reviewGoods.title = Review your goods
