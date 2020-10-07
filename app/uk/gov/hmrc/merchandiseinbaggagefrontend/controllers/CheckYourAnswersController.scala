@@ -27,6 +27,6 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                            page: CheckYourAnswersPage)
                                           (implicit appConfig: AppConfig) extends DeclarationJourneyController {
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.toDeclarationIfComplete.fold(Redirect(routes.InvalidRequestController.onPageLoad()))(declaration => Ok(page(declaration)))
+    request.declarationJourney.toDeclarationIfComplete.fold(actionProvider.invalidRequest)(declaration => Ok(page(declaration)))
   }
 }
