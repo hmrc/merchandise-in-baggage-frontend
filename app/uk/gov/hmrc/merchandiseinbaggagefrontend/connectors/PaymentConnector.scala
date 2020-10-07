@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PaymentService extends PaymentServiceConf with SessionIdGenerator {
+trait PaymentConnector extends PaymentServiceConf with SessionIdGenerator {
   protected val httpClient: HttpClient
 
   def makePayment(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {

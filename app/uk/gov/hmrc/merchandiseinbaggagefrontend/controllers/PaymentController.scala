@@ -34,7 +34,7 @@ class PaymentController @Inject()(
                                    paymentPage: PaymentPage,
                                    formProvider: CheckYourAnswersFormProvider,
                                    override val httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends FrontendController(mcc) with PaymentService {
+  extends FrontendController(mcc) with PaymentConnector {
 
   private val form = formProvider()
 

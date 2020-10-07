@@ -57,7 +57,7 @@ class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with Cor
     }
   }
 
-  "extract redirect url from pay-api http response" in new PaymentService {
+  "extract redirect url from pay-api http response" in new PaymentConnector {
     override val httpClient = app.injector.instanceOf[HttpClient]
     val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
 
