@@ -33,8 +33,8 @@ class PaymentController @Inject()(
                                    mcc: MessagesControllerComponents,
                                    paymentPage: PaymentPage,
                                    formProvider: CheckYourAnswersFormProvider,
-                                   httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends FrontendController(mcc) with PaymentConnector {
+                                   override val httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
+  extends FrontendController(mcc) with PaymentService {
 
   private val form = formProvider()
 
@@ -57,7 +57,7 @@ class PaymentController @Inject()(
           TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
           MerchandiseDetails("Parts and technical crew for the forest moon")
         )
-        makePayment(httpClient, body).map { response => Redirect(extractUrl(response).nextUrl.value) }
+        makePayment(body).map { response => Redirect(extractUrl(response).nextUrl.value) }
           .recoverWith {
             case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
           }

@@ -50,7 +50,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   "on submit will trigger a call to pay-api to make payment and render the response" in {
     val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
     val controller = new PaymentController(component, view, formProvider, httpClient) {
-      override def makePayment(httpClient: HttpClient, requestBody: PayApiRequest)
+      override def makePayment(requestBody: PayApiRequest)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
         Future.successful(HttpResponse(201, stubbedApiResponse))
     }
@@ -65,7 +65,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "on submit will return error page if call to pay-api fails" in {
     val controller = new PaymentController(component, view, formProvider, httpClient) {
-      override def makePayment(httpClient: HttpClient, requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      override def makePayment(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
         Future.failed(new Exception("Something wrong"))
     }
 

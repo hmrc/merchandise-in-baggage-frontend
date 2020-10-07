@@ -21,7 +21,6 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.{Answers, CheckYourAnswersFormProvider}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Declaration
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
 @Singleton

@@ -25,9 +25,10 @@ import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PaymentConnector extends PaymentServiceConf with SessionIdGenerator {
+trait PaymentService extends PaymentServiceConf with SessionIdGenerator {
+  protected val httpClient: HttpClient
 
-  def makePayment(httpClient: HttpClient, requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def makePayment(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     httpClient.POST[PayApiRequest, HttpResponse](s"$paymentBaseUri${paymentServiceConf.url.value}", requestBody, addSessionId(hc).headers)
   }
 
