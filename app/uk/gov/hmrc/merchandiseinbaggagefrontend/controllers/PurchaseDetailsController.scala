@@ -21,11 +21,11 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.PriceOfGoods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CurrencyConversionService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,7 +39,7 @@ class PurchaseDetailsController @Inject()(
                                            repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController with CurrencyConversionService {
+  extends DeclarationJourneyUpdateController with CurrencyConversionConnector {
 
   val form: Form[PurchaseDetailsInput] = formProvider()
 
@@ -56,7 +56,7 @@ class PurchaseDetailsController @Inject()(
 
           Ok(view(preparedForm, goodsEntry.categoryQuantityOfGoods.category, currencyPeriod.currencies))
         }
-      case None => Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+      case None => Future.successful(actionProvider.invalidRequest)
     }
   }
 
@@ -78,13 +78,13 @@ class PurchaseDetailsController @Inject()(
                     ))).map { _ =>
                       Redirect(routes.SkeletonJourneyController.invoiceNumber())
                     }
-                  case None => Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+                  case None => Future.successful(actionProvider.invalidRequest)
                 }
               }
             )
         }
       case None =>
-        Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+        Future.successful(actionProvider.invalidRequest)
     }
   }
 

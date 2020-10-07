@@ -14,63 +14,34 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
-import java.time.LocalDate
-
-import com.github.tomakehurst.wiremock.client.WireMock.{get, urlPathEqualTo, _}
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.CurrencyPeriod
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, BaseSpecWithWireMock}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class CurrencyConversionServiceSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually {
+class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
 
-  "get list of currencies for a given date" in new CurrencyConversionService {
+  "get list of currencies for a given date" in new CurrencyConversionConnector {
     override val httpClient: HttpClient = injector.instanceOf[HttpClient]
 
-    val stubbedResponse =
-      """{
-        |  "start": "2020-10-01",
-        |  "end": "2020-10-31",
-        |  "currencies": [
-        |    {
-        |      "countryName": "Argentina",
-        |      "currencyName": "Peso ",
-        |      "currencyCode": "ARS"
-        |    },
-        |    {
-        |      "countryName": "Australia",
-        |      "currencyName": "Dollar ",
-        |      "currencyCode": "AUD"
-        |    },
-        |    {
-        |      "countryName": "Brazil",
-        |      "currencyName": "Real ",
-        |      "currencyCode": "BRL"
-        |    }
-        |  ]
-        |}
-        |""".stripMargin
-
-    currencyConversionMockServer
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.now()}"))
-        .willReturn(okJson(stubbedResponse).withStatus(200))
-      )
+    givenCurrenciesAreFound(currencyConversionMockServer)
 
     eventually {
       val response: CurrencyPeriod = Await.result(getCurrencies(), 5.seconds)
 
-      response mustBe Json.parse(stubbedResponse).as[CurrencyPeriod]
+      response mustBe Json.parse(currencyConversionResponse).as[CurrencyPeriod]
     }
   }
 

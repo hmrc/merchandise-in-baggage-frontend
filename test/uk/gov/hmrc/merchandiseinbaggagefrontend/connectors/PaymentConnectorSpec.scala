@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import org.scalatest.concurrent.Eventually
@@ -29,12 +29,12 @@ import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class PaymentServiceSpec extends BaseSpecWithWireMock with Eventually with CoreTestData {
+class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with CoreTestData {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
 
-  "send a payment request to payment service adding a generated session id to the header" in new PaymentService {
+  "send a payment request to payment service adding a generated session id to the header" in new PaymentConnector {
     private val sessionId = generateSessionId
     override def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier =
       hc.withExtraHeaders(HeaderNames.xSessionId -> sessionId)
@@ -57,7 +57,7 @@ class PaymentServiceSpec extends BaseSpecWithWireMock with Eventually with CoreT
     }
   }
 
-  "extract redirect url from pay-api http response" in new PaymentService {
+  "extract redirect url from pay-api http response" in new PaymentConnector {
     val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
 
     extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))

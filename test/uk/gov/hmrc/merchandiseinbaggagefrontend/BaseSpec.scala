@@ -39,10 +39,7 @@ trait BaseSpecWithApplication extends BaseSpec
 
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
 
-  override def beforeEach(): Unit = {
-    declarationJourneyRepository.deleteAll().futureValue
-  }
-
+  override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 }
 
 
@@ -50,13 +47,13 @@ trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEa
   val paymentMockServer = new WireMockServer(9057)
   val currencyConversionMockServer = new WireMockServer(9016)
 
-  override def beforeEach: Unit = {
+  override def beforeEach(): Unit = {
     super.beforeEach()
     paymentMockServer.start()
     currencyConversionMockServer.start()
   }
 
-  override def afterEach: Unit = {
+  override def afterEach(): Unit = {
     paymentMockServer.stop()
     currencyConversionMockServer.stop()
   }

@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import java.time.LocalDate
-
-import com.github.tomakehurst.wiremock.client.WireMock.{get, okJson, urlPathEqualTo}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpClient
@@ -26,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -48,42 +46,11 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
     content
   }
 
-  private def setup() = {
-    val stubbedResponse =
-      """{
-        |  "start": "2020-10-01",
-        |  "end": "2020-10-31",
-        |  "currencies": [
-        |    {
-        |      "countryName": "Argentina",
-        |      "currencyName": "Peso",
-        |      "currencyCode": "ARS"
-        |    },
-        |    {
-        |      "countryName": "Australia",
-        |      "currencyName": "Dollar",
-        |      "currencyCode": "AUD"
-        |    },
-        |    {
-        |      "countryName": "Brazil",
-        |      "currencyName": "Real",
-        |      "currencyCode": "BRL"
-        |    }
-        |  ]
-        |}
-        |""".stripMargin
-
-    currencyConversionMockServer
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.now()}"))
-        .willReturn(okJson(stubbedResponse).withStatus(200))
-      )
-  }
-
   "onPageLoad" must {
     val url = routes.SearchGoodsController.onPageLoad().url
     val getRequest = buildGet(url, sessionId)
 
-    setup()
+    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
@@ -114,7 +81,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
     val url = routes.SearchGoodsController.onSubmit().url
     val postRequest = buildPost(url, sessionId)
 
-    setup()
+    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 

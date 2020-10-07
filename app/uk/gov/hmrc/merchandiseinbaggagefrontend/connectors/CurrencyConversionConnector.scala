@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import java.time.LocalDate
 
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.CurrencyConversionConf
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.CurrencyPeriod
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CurrencyConversionService extends CurrencyConversionConf {
-
+trait CurrencyConversionConnector extends CurrencyConversionConf {
   val httpClient: HttpClient
 
   def getCurrencies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CurrencyPeriod] =
     httpClient.GET[CurrencyPeriod](s"$currencyConversionBaseUrl/currency-conversion/currencies/${LocalDate.now()}")
-
 }
