@@ -46,8 +46,6 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
     FakeRequest(POST, url).withSession((SessionKeys.sessionId, sessionId.value))
       .withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
-  override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
-
   def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
     declarationJourneyRepository.insert(declarationJourney).futureValue
 

@@ -33,6 +33,14 @@ class AppConfig() extends PaymentServiceConf with MongoConfiguration {
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
 }
 
+trait CurrencyConversionConf {
+  lazy val currencyConversionConf: CurrencyConversionConfiguration = configSource("microservice.services.currency-conversion").loadOrThrow[CurrencyConversionConfiguration]
+  import currencyConversionConf._
+  lazy val currencyConversionBaseUrl = s"$protocol://$host:$port"
+}
+
+case class CurrencyConversionConfiguration(protocol: String, host: String, port: String)
+
 trait PaymentServiceConf {
   lazy val paymentServiceConf: PaymentServiceConfiguration = configSource("microservice.services.payment").loadOrThrow[PaymentServiceConfiguration]
   import paymentServiceConf._

@@ -17,6 +17,8 @@ footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
 error.summary.title = There is a problem
+error.max.3.decimals = Maximum of three decimal places
+error.must.be.positive = Enter an amount greater than 0
 
 site.yes = Yes
 site.no = No
@@ -27,7 +29,6 @@ payment.button = Pay now
 next.button = Next
 
 
-purchaseDetails.title = How much did you pay for the x?
 invoiceNumber.title = What is the invoice number for the x?
 reviewGoods.title = Review your goods
 removeGoods.title = Are you sure you want to remove the x?
@@ -142,6 +143,18 @@ searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the 
 searchGoodsCountry.error.required = Select a country
 searchGoodsCountry.error.invalid = Select a valid country
 
+# PurchaseDetails
+purchaseDetails.title = How much did you pay for the {0}?
+purchaseDetails.heading = How much did you pay for the {0}?
+purchaseDetails.price.label = Price paid
+purchaseDetails.currency.label = Currency
+purchaseDetails.p.1 = We use
+purchaseDetails.p.a.text = HMRC's monthly exchange rates (opens in new tab)
+purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
+purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
+purchaseDetails.price.error.required = Enter an amount
+purchaseDetails.price.error.invalid = Enter only numbers
+purchaseDetails.currency.error.required = Select a currency
 
 # ReviewGoods
 reviewGoods.title = Review your goods

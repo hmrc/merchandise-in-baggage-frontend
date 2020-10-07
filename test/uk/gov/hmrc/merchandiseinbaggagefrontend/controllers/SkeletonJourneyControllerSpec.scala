@@ -24,26 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "purchaseDetails" should {
-    val url = routes.SkeletonJourneyController.purchaseDetails().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "How much did you pay for the x?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.purchaseDetails(getRequest), title, routes.SkeletonJourneyController.invoiceNumber())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.purchaseDetails(buildGet(url)))
-      }
-    }
-  }
-
   "invoiceNumber" should {
     val url = routes.SkeletonJourneyController.invoiceNumber().url
 

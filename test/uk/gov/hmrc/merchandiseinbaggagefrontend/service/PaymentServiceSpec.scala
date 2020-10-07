@@ -23,13 +23,13 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, BaseSpecWithWireMock, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, BaseSpecWithWireMock, CoreTestData}
 
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
-class PaymentServiceSpec extends BaseSpec with BaseSpecWithWireMock with Eventually with CoreTestData {
+class PaymentServiceSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually with CoreTestData {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))

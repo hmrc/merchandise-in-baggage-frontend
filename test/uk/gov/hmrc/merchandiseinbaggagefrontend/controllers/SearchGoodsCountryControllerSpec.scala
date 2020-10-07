@@ -93,7 +93,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.purchaseDetails().toString
+        redirectLocation(result).get mustEqual routes.PurchaseDetailsController.onPageLoad().toString
 
         before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeCountryOfPurchase mustBe Some("Austria")

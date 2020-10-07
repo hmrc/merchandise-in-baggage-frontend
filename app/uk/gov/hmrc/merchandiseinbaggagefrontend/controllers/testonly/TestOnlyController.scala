@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TestOnlyDeclarationJourneyPage
@@ -51,16 +52,16 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
             CategoryQuantityOfGoods("wine", "1"),
             Some(GoodsVatRate.Twenty),
             Some("France"),
-            Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
+            Some(PriceOfGoods(BigDecimal(100.00), Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560"),
-            Some(CurrencyAmount(BigDecimal(10.00)))),
+            Some(BigDecimal(10.00))),
           GoodsEntry(
             CategoryQuantityOfGoods("cheese", "3"),
             Some(GoodsVatRate.Twenty),
             Some("France"),
-            Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
+            Some(PriceOfGoods(BigDecimal(200.00), Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560"),
-            Some(CurrencyAmount(BigDecimal(20.00))))),
+            Some(BigDecimal(20.00)))),
         maybeName = Some(Name("Terry", "Test")),
         maybeAddress = Some(Address("1 Terry Terrace", "Terry Town", "T11 11T")),
         maybeEori = Some(Eori("TerrysEori")),

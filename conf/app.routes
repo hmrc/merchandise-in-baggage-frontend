@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 GET        /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.purchaseDetails
 GET        /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.invoiceNumber
 GET        /remove-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.removeGoods
 GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsRemoved
@@ -56,6 +55,10 @@ POST       /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefronten
 # SearchGoodsCountry
 GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad
 POST       /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit
+
+# PurchaseDetails
+GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onPageLoad
+POST       /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onSubmit
 
 # ReviewGoods
 GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onPageLoad

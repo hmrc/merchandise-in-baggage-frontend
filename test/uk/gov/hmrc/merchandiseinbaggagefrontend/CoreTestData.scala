@@ -20,6 +20,7 @@ import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 
 trait CoreTestData {
@@ -42,9 +43,9 @@ trait CoreTestData {
       CategoryQuantityOfGoods("wine", "1"),
       Some(GoodsVatRate.Twenty),
       Some("France"),
-      Some(PriceOfGoods(CurrencyAmount(BigDecimal(100.00)), Currency("Euros", "EUR"))),
+      Some(PriceOfGoods(BigDecimal(99.99), Currency("Eurozone", "Euro", "EUR"))),
       Some("1234560"),
-      Some(CurrencyAmount(BigDecimal(10.00))))
+      Some(BigDecimal(10.11)))
 
   val completedDeclarationJourney: DeclarationJourney =
     DeclarationJourney(
@@ -56,9 +57,9 @@ trait CoreTestData {
           CategoryQuantityOfGoods("cheese", "3"),
           Some(GoodsVatRate.Twenty),
           Some("France"),
-          Some(PriceOfGoods(CurrencyAmount(BigDecimal(200.00)), Currency("Euros", "EUR"))),
+          Some(PriceOfGoods(BigDecimal(199.99), Currency("Eurozone", "Euro", "EUR"))),
           Some("1234560"),
-          Some(CurrencyAmount(BigDecimal(20.00))))),
+          Some(BigDecimal(20.22)))),
       maybeName = Some(Name("Terry", "Test")),
       maybeAddress = Some(Address("1 Terry Terrace", "Terry Town", "T11 11T")),
       maybeEori = Some(Eori("TerrysEori")),
