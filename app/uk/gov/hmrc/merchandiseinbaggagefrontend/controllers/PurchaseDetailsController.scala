@@ -76,7 +76,7 @@ class PurchaseDetailsController @Inject()(
                     repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
                       goodsEntry.copy(maybePriceOfGoods = Some(priceOfGoods))
                     ))).map { _ =>
-                      Redirect(routes.SkeletonJourneyController.invoiceNumber())
+                      Redirect(routes.InvoiceNumberController.onPageLoad())
                     }
                   case None => Future.successful(actionProvider.invalidRequest)
                 }

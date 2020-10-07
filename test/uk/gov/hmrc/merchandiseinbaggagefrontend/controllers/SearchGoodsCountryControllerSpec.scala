@@ -79,7 +79,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /value-weight-of-goods" when {
+    "Redirect to /purchase-details" when {
       "a declaration is started and a valid selection submitted" in {
         val before =
           startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
@@ -87,8 +87,6 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Austria"))
-
-        form.bindFromRequest()(request)
 
         val result = controller.onSubmit()(request)
 

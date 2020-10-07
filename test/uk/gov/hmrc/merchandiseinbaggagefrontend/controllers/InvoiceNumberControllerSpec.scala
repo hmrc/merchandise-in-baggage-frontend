@@ -18,39 +18,31 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry, PriceOfGoods}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.InvoiceNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
-  private val formProvider = new PurchaseDetailsFormProvider()
-  private val form = formProvider()
+class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller =
-    new PurchaseDetailsController(
-      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView])
+    new InvoiceNumberController(
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[InvoiceNumberView])
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include(s"How much did you pay for the ${goodsEntry.categoryQuantityOfGoods.category}?")
+    content must include(s"What is the invoice number for the ${goodsEntry.categoryQuantityOfGoods.category}?")
+    content must include("This is the number on the original invoice you received for the goods.")
     content must include("Continue")
 
     content
   }
 
   "onPageLoad" must {
-    val url = routes.SearchGoodsController.onPageLoad().url
+    val url = routes.InvoiceNumberController.onPageLoad().url
     val getRequest = buildGet(url, sessionId)
-
-    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
@@ -78,45 +70,41 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
   }
 
   "onSubmit" must {
-    val url = routes.SearchGoodsController.onSubmit().url
+    val url = routes.InvoiceNumberController.onSubmit().url
     val postRequest = buildPost(url, sessionId)
-
-    givenCurrenciesAreFound(currencyConversionMockServer)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /invoice-number" when {
+    "Redirect to /review-goods" when {
       "a declaration is started and a valid selection submitted" in {
-        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-        val before = startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry))
+        val before =
+          startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
+
         givenADeclarationJourneyIsPersisted(before)
 
-        val request = postRequest.withFormUrlEncodedBody(("price", "100.0"), ("currency", "ARS"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "test invoice number"))
 
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvoiceNumberController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
 
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .head
-          .maybePriceOfGoods mustBe Some(PriceOfGoods(100.0, Currency("Argentina", "Peso", "ARS")))
+        before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeInvoiceNumber mustBe Some("test invoice number")
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
-        form.bindFromRequest()(postRequest)
+        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+
+        givenADeclarationJourneyIsPersisted(
+          startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry)))
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result, completedGoodsEntry) must include("Enter an amount")
+        ensureContent(result, goodsEntry) must include("Enter an invoice number")
       }
     }
   }
