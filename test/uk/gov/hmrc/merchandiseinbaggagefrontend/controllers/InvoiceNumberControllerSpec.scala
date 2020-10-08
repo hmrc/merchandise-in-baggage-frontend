@@ -33,7 +33,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include(s"What is the invoice number for the ${goodsEntry.categoryQuantityOfGoods.category}?")
+    content must include(s"What is the invoice number for the ${goodsEntry.maybeCategoryQuantityOfGoods.get.category}?")
     content must include("This is the number on the original invoice you received for the goods.")
     content must include("Continue")
 
@@ -45,17 +45,6 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
     val getRequest = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "redirect to /invalid-request" when {
-      "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvalidRequestController.onPageLoad().toString
-      }
-    }
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
@@ -77,10 +66,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /review-goods" when {
       "a declaration is started and a valid selection submitted" in {
-        val before =
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
-
-        givenADeclarationJourneyIsPersisted(before)
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "test invoice number"))
 
@@ -89,22 +75,19 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
 
-        before.goodsEntries.entries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        startedGoodsEntry mustBe GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeInvoiceNumber mustBe Some("test invoice number")
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-
-        givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry)))
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result, goodsEntry) must include("Enter an invoice number")
+        ensureContent(result, startedGoodsEntry) must include("Enter an invoice number")
       }
     }
   }

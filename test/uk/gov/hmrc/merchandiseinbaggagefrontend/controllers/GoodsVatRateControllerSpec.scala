@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry, GoodsVatRate}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -36,7 +36,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include(s"Check which VAT rate applies to the ${goodsEntry.categoryQuantityOfGoods.category}")
+    content must include(s"Check which VAT rate applies to the ${goodsEntry.maybeCategoryQuantityOfGoods.get.category}")
     content must include("The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as food and children’s clothes have a lower rate.")
     content must include("Continue")
 
@@ -48,17 +48,6 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
     val getRequest = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "redirect to /invalid-request" when {
-      "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvalidRequestController.onPageLoad().toString
-      }
-    }
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
@@ -80,10 +69,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /search-goods-country" when {
       "a declaration is started and a valid selection submitted" in {
-        val before =
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
-
-        givenADeclarationJourneyIsPersisted(before)
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "twenty"))
 
@@ -94,23 +80,20 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad().toString
 
-        before.goodsEntries.entries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        startedDeclarationJourney.goodsEntries.entries.head mustBe GoodsEntry.empty
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(GoodsVatRate.Twenty)
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-
-        givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry)))
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result, goodsEntry) must include("Select one of the options below")
+        ensureContent(result, startedGoodsEntry) must include("Select one of the options below")
       }
     }
   }

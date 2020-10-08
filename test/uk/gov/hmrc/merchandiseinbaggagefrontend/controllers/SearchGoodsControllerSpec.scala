@@ -80,29 +80,6 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /goods-vat-rate" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-
-        val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
-
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad().toString
-
-        startedDeclarationJourney.goodsEntries.entries.headOption mustBe None
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head
-          .categoryQuantityOfGoods mustBe CategoryQuantityOfGoods("test category", "100")
-      }
-    }
-
     //TODO will later apply to a given :idx
     "Overwrite an existing goods entry" when {
       "a new type of goods is submitted" in {
@@ -125,7 +102,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
           .get
           .goodsEntries
           .entries
-          .head mustBe GoodsEntry(CategoryQuantityOfGoods("test category", "100"))
+          .head mustBe GoodsEntry(Some(CategoryQuantityOfGoods("test category", "100")))
       }
     }
 

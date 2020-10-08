@@ -43,7 +43,7 @@ class GoodsVatRateController @Inject()(
     // TODO replace with parameterised :idx, use headOption for single goods journey
     request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
-        Ok(view(goodsEntry.maybeGoodsVatRate.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
+        Ok(view(goodsEntry.maybeGoodsVatRate.fold(form)(form.fill), goodsEntry.goodsCategoryOrDefault))
       case None => Redirect(routes.InvalidRequestController.onPageLoad())
     }
   }
@@ -55,7 +55,7 @@ class GoodsVatRateController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+              Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault))),
             value =>
               repo.upsert(
                 request.declarationJourney.copy(

@@ -27,7 +27,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   private val goods =
     Goods(
-      completedGoodsEntry.categoryQuantityOfGoods,
+      completedGoodsEntry.maybeCategoryQuantityOfGoods.get,
       completedGoodsEntry.maybeGoodsVatRate.get,
       completedGoodsEntry.maybeCountryOfPurchase.get,
       completedGoodsEntry.maybePurchaseDetails.get,
@@ -49,9 +49,24 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         incompleteGoodsEntry.goodsIfComplete mustBe None
       }
     }
+
+    "provide a default for the goods category" in {
+      GoodsEntry().maybeCategoryQuantityOfGoods mustBe None
+      GoodsEntry().goodsCategoryOrDefault mustBe "goods"
+    }
   }
 
   "GoodsEntries" should {
+    "have an empty GoodsEntry by default" in {
+      GoodsEntries().entries mustBe Seq(GoodsEntry.empty)
+    }
+
+    "blow up if created with an empty sequence" in {
+      intercept[RuntimeException] {
+        GoodsEntries(Seq.empty)
+      }.getMessage mustBe "GoodsEntries cannot be empty: use apply()"
+    }
+
     "be complete" when {
       "all goods entries are complete" in {
         GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe Some(DeclarationGoods(goods))

@@ -37,7 +37,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
 
-    content must include(s"In what country did you buy the ${goodsEntry.categoryQuantityOfGoods.category}?")
+    content must include(s"In what country did you buy the ${goodsEntry.maybeCategoryQuantityOfGoods.get.category}?")
     content must include("If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase")
     content must include("Continue")
 
@@ -49,17 +49,6 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     val getRequest = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "redirect to /invalid-request" when {
-      "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvalidRequestController.onPageLoad().toString
-      }
-    }
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
@@ -81,10 +70,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
     "Redirect to /purchase-details" when {
       "a declaration is started and a valid selection submitted" in {
-        val before =
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
-
-        givenADeclarationJourneyIsPersisted(before)
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Austria"))
 
@@ -93,23 +79,20 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.PurchaseDetailsController.onPageLoad().toString
 
-        before.goodsEntries.entries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        declarationJourneyWithStartedGoodsEntry.goodsEntries.entries.head mustBe GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeCountryOfPurchase mustBe Some("Austria")
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-
-        givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry)))
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result, goodsEntry) must include("Select a country")
+        ensureContent(result, startedGoodsEntry) must include("Select a country")
       }
     }
   }

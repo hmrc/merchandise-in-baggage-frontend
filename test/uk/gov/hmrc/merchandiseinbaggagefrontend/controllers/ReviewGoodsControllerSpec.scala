@@ -31,7 +31,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val goods =
     GoodsEntry(
-      CategoryQuantityOfGoods("test good", "123"),
+      Some(CategoryQuantityOfGoods("test good", "123")),
       Some(GoodsVatRate.Twenty),
       Some("Austria"),
       Some(PurchaseDetails(10.00, Currency("test country", "test currency", "TST"))),
