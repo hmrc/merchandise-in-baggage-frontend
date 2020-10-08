@@ -41,7 +41,7 @@ class InvoiceNumberController @Inject()(
     // TODO replace with parameterised :idx, use headOption for single goods journey
     request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
-        Ok(view(goodsEntry.maybeInvoiceNumber.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
+        Ok(view(goodsEntry.maybeInvoiceNumber.fold(form)(form.fill), goodsEntry.goodsCategoryOrDefault))
       case None => actionProvider.invalidRequest
     }
   }
@@ -53,7 +53,7 @@ class InvoiceNumberController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+              Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault))),
             value =>
               repo.upsert(
                 request.declarationJourney.copy(

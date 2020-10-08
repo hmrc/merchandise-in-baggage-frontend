@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationJourney, GoodsEntry, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, Declaration, DeclarationJourney, GoodsEntries, GoodsEntry, SessionId}
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = PayApiRequest(
@@ -41,4 +41,9 @@ trait CoreTestData {
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
   val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetails = None)
+
+  val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
+
+  val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
+    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
 }

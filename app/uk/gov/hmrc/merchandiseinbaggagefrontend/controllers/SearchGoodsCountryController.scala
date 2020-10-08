@@ -43,7 +43,7 @@ class SearchGoodsCountryController @Inject()(
     // TODO replace with parameterised :idx, use headOption for single goods journey
     request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
-        Ok(view(goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
+        Ok(view(goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill), goodsEntry.goodsCategoryOrDefault))
       case None => actionProvider.invalidRequest
     }
   }
@@ -55,7 +55,7 @@ class SearchGoodsCountryController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+              Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault))),
             value =>
               repo.upsert(
                 request.declarationJourney.copy(

@@ -53,7 +53,7 @@ class PurchaseDetailsController @Inject()(
             case None => form
           }
 
-          Ok(view(preparedForm, goodsEntry.categoryQuantityOfGoods.category, currencyPeriod.currencies))
+          Ok(view(preparedForm, goodsEntry.goodsCategoryOrDefault, currencyPeriod.currencies))
         }
       case None => Future.successful(actionProvider.invalidRequest)
     }
@@ -67,7 +67,7 @@ class PurchaseDetailsController @Inject()(
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category, currencyPeriod.currencies))),
+                Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault, currencyPeriod.currencies))),
               value => {
                 currencyPeriod.currencies.find(_.currencyCode == value.currency) match {
                   case Some(currency) =>

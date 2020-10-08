@@ -69,7 +69,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
 object TestOnlyController {
   val completedGoodsEntry: GoodsEntry =
     GoodsEntry(
-      CategoryQuantityOfGoods("wine", "1"),
+      Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRate.Twenty),
       Some("France"),
       Some(PurchaseDetails(BigDecimal(99.99), Currency("Eurozone", "Euro", "EUR"))),
@@ -86,7 +86,7 @@ object TestOnlyController {
         Seq(
           completedGoodsEntry,
           GoodsEntry(
-            CategoryQuantityOfGoods("cheese", "3"),
+            Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRate.Twenty),
             Some("France"),
             Some(PurchaseDetails(BigDecimal(199.99), Currency("Eurozone", "Euro", "EUR"))),

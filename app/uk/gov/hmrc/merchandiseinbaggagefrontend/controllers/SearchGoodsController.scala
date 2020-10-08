@@ -34,15 +34,14 @@ class SearchGoodsController @Inject()(
                                        formProvider: SearchGoodsFormProvider,
                                        repo: DeclarationJourneyRepository,
                                        view: SearchGoodsView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+                                     )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val form: Form[CategoryQuantityOfGoods] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    val preparedForm = request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) => form.fill(goodsEntry.categoryQuantityOfGoods)
-      case None => form
+    val preparedForm = request.declarationJourney.goodsEntries.entries.headOption.fold(form) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(categoryQuantityOfGoods => form.fill(categoryQuantityOfGoods))
     }
 
     Ok(view(preparedForm))
@@ -56,7 +55,7 @@ class SearchGoodsController @Inject()(
         categoryQuantityOfGoods =>
           repo.upsert(
             request.declarationJourney.copy(
-              goodsEntries = GoodsEntries(GoodsEntry(categoryQuantityOfGoods)))).map {_ =>
+              goodsEntries = GoodsEntries(GoodsEntry(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))))).map { _ =>
             Redirect(routes.GoodsVatRateController.onPageLoad())
           }
       )

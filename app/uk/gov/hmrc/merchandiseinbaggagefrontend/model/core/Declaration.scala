@@ -51,14 +51,17 @@ object CategoryQuantityOfGoods {
   implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
 }
 
-case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
+case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePurchaseDetails: Option[PurchaseDetails] = None,
                       maybeInvoiceNumber: Option[String] = None,
                       maybeTaxDue: Option[BigDecimal] = None) {
+  val goodsCategoryOrDefault: String = maybeCategoryQuantityOfGoods.fold("goods")(_.category)
+
   val goodsIfComplete: Option[Goods] =
     for {
+      categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
       goodsVatRate <- maybeGoodsVatRate
       countryOfPurchase <- maybeCountryOfPurchase
       priceOfGoods <- maybePurchaseDetails
@@ -69,9 +72,13 @@ case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
 
 object GoodsEntry {
   implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
+
+  val empty: GoodsEntry = GoodsEntry()
 }
 
-case class GoodsEntries(entries: Seq[GoodsEntry]) {
+case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
+  if (entries.isEmpty) throw new RuntimeException("GoodsEntries cannot be empty: use apply()")
+
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
     val goods = entries.flatMap(_.goodsIfComplete)
 
@@ -85,7 +92,7 @@ object GoodsEntries {
 
   def apply(goodsEntry: GoodsEntry): GoodsEntries = GoodsEntries(Seq(goodsEntry))
 
-  val empty: GoodsEntries = GoodsEntries(Seq.empty)
+  val empty: GoodsEntries = GoodsEntries()
 }
 
 case class Name(firstName: String, lastName: String) {
@@ -130,7 +137,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeExciseOrRestrictedGoods: Option[Boolean] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
-                              goodsEntries: GoodsEntries = GoodsEntries(Seq.empty),
+                              goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
                               maybeIsACustomsAgent: Option[Boolean] = None,
                               maybeCustomsAgentName: Option[String] = None,
