@@ -34,12 +34,12 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
     new GoodsDestinationController(
       controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[GoodsDestinationView])
 
-  private def ensureContent(result: Future[Result]) = {
+  private def ensureContent(result: Future[Result]): String = {
     val content = contentAsString(result)
 
     content must include("Where in the UK are the goods going?")
     content must include("Northern Ireland")
-    content must include("England, Wales or Scotland")
+    content must include("England, Scotland or Wales")
     content must include("Continue")
 
     content

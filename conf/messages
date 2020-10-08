@@ -93,7 +93,8 @@ exciseAndRestrictedGoods.error.required = Select one of the options below
 goodsDestination.title = Where in the UK are the goods going?
 goodsDestination.heading = Where in the UK are the goods going?
 goodsDestination.ni = Northern Ireland
-goodsDestination.gb = England, Wales or Scotland
+goodsDestination.gb = Great Britain
+goodsDestination.gb.hint = England, Scotland or Wales
 goodsDestination.error.required = Select one of the options below
 
 
