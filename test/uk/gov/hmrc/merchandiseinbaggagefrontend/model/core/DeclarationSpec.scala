@@ -49,11 +49,6 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         incompleteGoodsEntry.goodsIfComplete mustBe None
       }
     }
-
-    "provide a default for the goods category" in {
-      GoodsEntry().maybeCategoryQuantityOfGoods mustBe None
-      GoodsEntry().goodsCategoryOrDefault mustBe "goods"
-    }
   }
 
   "GoodsEntries" should {
