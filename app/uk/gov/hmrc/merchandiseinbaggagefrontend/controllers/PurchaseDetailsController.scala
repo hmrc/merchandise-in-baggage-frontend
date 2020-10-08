@@ -23,8 +23,7 @@ import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{GoodsEntries, PurchaseDetails}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, PurchaseDetails, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 

@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.Assets.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.SessionId
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.SessionId
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 
 import scala.concurrent.{ExecutionContext, Future}

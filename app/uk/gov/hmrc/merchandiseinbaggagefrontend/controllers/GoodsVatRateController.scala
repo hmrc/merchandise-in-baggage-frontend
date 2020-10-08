@@ -21,8 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntries
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsVatRate}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
 

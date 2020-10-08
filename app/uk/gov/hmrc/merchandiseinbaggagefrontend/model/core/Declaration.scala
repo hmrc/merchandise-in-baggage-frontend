@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -25,7 +25,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsVatRate, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 case class SessionId(value: String)
@@ -147,13 +146,11 @@ case class DeclarationJourney(sessionId: SessionId,
       for {
         customsAgentName <- maybeCustomsAgentName
         customsAgentAddress <- maybeCustomsAgentAddress
-
-        if customsAgentName.trim.nonEmpty
       } yield CustomsAgent(customsAgentName, customsAgentAddress)
     } else None
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
-    maybeJourneyDetails.fold(false){ journeyDetails =>
+    maybeJourneyDetails.fold(false) { journeyDetails =>
       if (journeyDetails.placeOfArrival.requiresVehicleChecks) {
         if (maybeTravellingByVehicle.contains(false)) {
           true
@@ -165,19 +162,21 @@ case class DeclarationJourney(sessionId: SessionId,
       } else true
     }
 
-  val declarationIfRequiredAndComplete: Option[Declaration] =
+  val declarationIfRequiredAndComplete: Option[Declaration] = {
+    val discardedAnswersAreCompleteAndRequireADeclaration =
+      maybeGoodsDestination.isDefined &&
+        maybeExciseOrRestrictedGoods.contains(false) &&
+        maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
+        journeyDetailsCompleteAndDeclarationRequired &&
+        (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(false))
+
     for {
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
-      iAmACustomsAgent <- maybeIsACustomsAgent
       eori <- maybeEori
       journeyDetails <- maybeJourneyDetails
       goods <- goodsEntries.declarationGoodsIfComplete
-      _ <- maybeGoodsDestination
 
-      if maybeExciseOrRestrictedGoods.contains(false)
-      if maybeValueWeightOfGoodsExceedsThreshold.contains(false)
-      if maybeCustomsAgent.isDefined || !iAmACustomsAgent
-      if journeyDetailsCompleteAndDeclarationRequired
+      if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
       Declaration(
         sessionId,
@@ -190,6 +189,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeRegistrationNumber
       )
     }
+  }
 }
 
 object DeclarationJourney {
