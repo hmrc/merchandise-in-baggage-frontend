@@ -20,7 +20,6 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
@@ -30,12 +29,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
-  private val formProvider = new PurchaseDetailsFormProvider()
-  private val form = formProvider()
-
   private lazy val controller =
     new PurchaseDetailsController(
-      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView])
+      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView])
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
@@ -92,14 +88,14 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           .goodsEntries
           .entries
           .head
-          .maybePurchaseDetails mustBe Some(PurchaseDetails(100.0, Currency("Argentina", "Peso", "ARS")))
+          .maybePurchaseDetails mustBe Some(PurchaseDetails("100.0", Currency("Argentina", "Peso", "ARS")))
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
-        form.bindFromRequest()(postRequest)
+        //form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 

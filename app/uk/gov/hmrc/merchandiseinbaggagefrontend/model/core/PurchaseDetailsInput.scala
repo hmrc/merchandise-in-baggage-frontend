@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import play.api.libs.json.{Json, OFormat}
 
-case class PurchaseDetailsInput(price: BigDecimal, currency: String)
+case class PurchaseDetailsInput(price: String, currency: String)
 
 object PurchaseDetailsInput {
   implicit val format: OFormat[PurchaseDetailsInput] = Json.format[PurchaseDetailsInput]

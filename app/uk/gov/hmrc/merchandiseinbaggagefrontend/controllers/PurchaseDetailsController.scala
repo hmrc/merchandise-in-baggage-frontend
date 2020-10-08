@@ -17,13 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, PurchaseDetails, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
@@ -34,13 +33,10 @@ class PurchaseDetailsController @Inject()(
                                            override val controllerComponents: MessagesControllerComponents,
                                            override val httpClient: HttpClient,
                                            actionProvider: DeclarationJourneyActionProvider,
-                                           formProvider: PurchaseDetailsFormProvider,
                                            repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController with CurrencyConversionConnector {
-
-  val form: Form[PurchaseDetailsInput] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey

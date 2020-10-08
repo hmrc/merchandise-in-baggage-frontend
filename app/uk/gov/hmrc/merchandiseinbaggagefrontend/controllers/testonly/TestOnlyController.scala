@@ -72,7 +72,7 @@ object TestOnlyController {
       Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRate.Twenty),
       Some("France"),
-      Some(PurchaseDetails(BigDecimal(99.99), Currency("Eurozone", "Euro", "EUR"))),
+      Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))),
       Some("1234560"),
       Some(BigDecimal(10.11)))
 
@@ -89,7 +89,7 @@ object TestOnlyController {
             Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRate.Twenty),
             Some("France"),
-            Some(PurchaseDetails(BigDecimal(199.99), Currency("Eurozone", "Euro", "EUR"))),
+            Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560"),
             Some(BigDecimal(20.00))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
