@@ -20,6 +20,7 @@ import java.time.LocalDate.now
 
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
@@ -36,6 +37,31 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   private val incompleteGoodsEntry = completedGoodsEntry.copy(maybeTaxDue = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
+
+  "PurchaseDetails toString" should {
+    "include the price string as entered" in {
+      val currency = Currency("country", "currency", "ccy")
+
+      PurchaseDetails( "1", currency ).toString mustBe "1, country currency (ccy)"
+      PurchaseDetails( "1.", currency ).toString mustBe "1., country currency (ccy)"
+      PurchaseDetails( "1.0", currency ).toString mustBe "1.0, country currency (ccy)"
+      PurchaseDetails( "1.00", currency ).toString mustBe "1.00, country currency (ccy)"
+      PurchaseDetails( "1.000", currency ).toString mustBe "1.000, country currency (ccy)"
+
+      PurchaseDetails( "01", currency ).toString mustBe "01, country currency (ccy)"
+      PurchaseDetails( "01.", currency ).toString mustBe "01., country currency (ccy)"
+      PurchaseDetails( "01.0", currency ).toString mustBe "01.0, country currency (ccy)"
+      PurchaseDetails( "01.00", currency ).toString mustBe "01.00, country currency (ccy)"
+      PurchaseDetails( "01.000", currency ).toString mustBe "01.000, country currency (ccy)"
+
+      PurchaseDetails( "0.1", currency ).toString mustBe "0.1, country currency (ccy)"
+      PurchaseDetails( "0.10", currency ).toString mustBe "0.10, country currency (ccy)"
+      PurchaseDetails( "0.100", currency ).toString mustBe "0.100, country currency (ccy)"
+
+      PurchaseDetails( ".01", currency ).toString mustBe ".01, country currency (ccy)"
+      PurchaseDetails( ".001", currency ).toString mustBe ".001, country currency (ccy)"
+    }
+  }
 
   "GoodsEntry" should {
     "convert to a Goods" when {

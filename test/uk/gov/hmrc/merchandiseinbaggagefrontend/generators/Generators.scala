@@ -43,6 +43,13 @@ trait Generators {
       value.setScale(3, RoundingMode.HALF_UP)
     }
 
+  def zeroOrNegativeBigDecimalsWith3dp: Gen[BigDecimal] =
+    for {
+      value <- arbitrary[BigDecimal] suchThat (bd => bd <= 0)
+    } yield {
+      value.setScale(3, RoundingMode.HALF_UP)
+    }
+
   def positiveBigDecimalsWithMoreThan3dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
