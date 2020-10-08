@@ -38,8 +38,6 @@ class PurchaseDetailsController @Inject()(
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController with CurrencyConversionConnector {
 
-  val form: Form[PurchaseDetailsInput] = formProvider()
-
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
       goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
