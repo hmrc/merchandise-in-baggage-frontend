@@ -21,16 +21,11 @@ import play.api.data.validation.{Constraint, Invalid, Valid}
 trait Constraints {
 
   protected def existInList(options: List[String], errorKey: String): Constraint[String] = Constraint { value =>
-    if(options.contains(value)) Valid else Invalid(errorKey)
+    if (options.contains(value)) Valid else Invalid(errorKey)
   }
 
   protected def greaterThan[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] = Constraint { value =>
     import ev._
     if (value > minimum) Valid else Invalid(errorKey)
   }
-
-  protected def maxThreeDecimals(errorKey: Option[String] = None): Constraint[BigDecimal] = Constraint { value =>
-    if (value.scale <= 3) Valid else Invalid(errorKey.getOrElse("error.max.3.decimals"))
-  }
-
 }

@@ -16,25 +16,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
 
-class PurchaseDetailsFormProvider @Inject() extends Mappings {
+import scala.util.{Success, Try}
 
-  def apply(): Form[PurchaseDetailsInput] =
+object PurchaseDetailsForm extends Mappings {
+  private val isAValidPurchasePrice: Constraint[String] = Constraint { value =>
+    Try(BigDecimal(value)) match {
+      case Success(bigDecimal) =>
+        if (bigDecimal <= 0) Invalid("error.must.be.positive")
+        else if (bigDecimal.scale > 3) Invalid("error.max.3.decimals")
+        else Valid
+      case _ =>
+        Invalid("purchaseDetails.price.error.invalid")
+    }
+  }
+
+  val form: Form[PurchaseDetailsInput] =
     Form(
       mapping(
-        "price" -> bigDecimal(
-          requiredKey = "purchaseDetails.price.error.required",
-          nonNumericKey = "purchaseDetails.price.error.invalid"
-        )
-          .verifying(greaterThan(BigDecimal(0.0), "error.must.be.positive"))
-          .verifying(maxThreeDecimals()),
+        "price" -> text("purchaseDetails.price.error.required").verifying(isAValidPurchasePrice),
         "currency" -> text("purchaseDetails.currency.error.required")
       )(PurchaseDetailsInput.apply)(PurchaseDetailsInput.unapply)
     )
-
 }

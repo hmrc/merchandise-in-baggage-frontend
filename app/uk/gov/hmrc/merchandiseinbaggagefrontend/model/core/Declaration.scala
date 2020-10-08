@@ -35,8 +35,10 @@ object SessionId {
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
 
-case class PurchaseDetails(amount: BigDecimal, currency: Currency) {
-  override val toString = s"${amount.formatted(s"%.${amount.scale}f")}, ${currency.displayName}"
+case class PurchaseDetails(amount: String, currency: Currency) {
+  override val toString = s"$amount, ${currency.displayName}"
+
+  val numericAmount: BigDecimal = BigDecimal(amount)
 
   def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.currencyCode)
 }
