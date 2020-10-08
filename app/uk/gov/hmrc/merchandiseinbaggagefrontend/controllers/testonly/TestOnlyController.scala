@@ -26,9 +26,12 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.PlacesOfArrival.Dover
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TestOnlyDeclarationJourneyPage
@@ -44,31 +47,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
   private val form = formProvider()
 
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
-    val sampleDeclarationJourney: DeclarationJourney =
-      DeclarationJourney(
-        sessionId = SessionId(),
-        goodsEntries = Seq(
-          GoodsEntry(
-            CategoryQuantityOfGoods("wine", "1"),
-            Some(GoodsVatRate.Twenty),
-            Some("France"),
-            Some(PriceOfGoods(BigDecimal(100.00), Currency("Eurozone", "Euro", "EUR"))),
-            Some("1234560"),
-            Some(BigDecimal(10.00))),
-          GoodsEntry(
-            CategoryQuantityOfGoods("cheese", "3"),
-            Some(GoodsVatRate.Twenty),
-            Some("France"),
-            Some(PriceOfGoods(BigDecimal(200.00), Currency("Eurozone", "Euro", "EUR"))),
-            Some("1234560"),
-            Some(BigDecimal(20.00)))),
-        maybeName = Some(Name("Terry", "Test")),
-        maybeAddress = Some(Address("1 Terry Terrace", "Terry Town", "T11 11T")),
-        maybeEori = Some(Eori("TerrysEori")),
-        maybeJourneyDetails = Some(JourneyDetails("Dover", now()))
-      )
-
-    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney)))))
+    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId()))))))
   }
 
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>
@@ -86,4 +65,42 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
       }
     )
   }
+}
+
+object TestOnlyController {
+  val completedGoodsEntry: GoodsEntry =
+    GoodsEntry(
+      CategoryQuantityOfGoods("wine", "1"),
+      Some(GoodsVatRate.Twenty),
+      Some("France"),
+      Some(PurchaseDetails(BigDecimal(99.99), Currency("Eurozone", "Euro", "EUR"))),
+      Some("1234560"),
+      Some(BigDecimal(10.11)))
+
+  def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
+    DeclarationJourney(
+      sessionId = sessionId,
+      maybeExciseOrRestrictedGoods = Some(false),
+      maybeGoodsDestination = Some(NorthernIreland),
+      maybeValueWeightOfGoodsExceedsThreshold = Some(false),
+      goodsEntries = GoodsEntries(
+        Seq(
+          completedGoodsEntry,
+          GoodsEntry(
+            CategoryQuantityOfGoods("cheese", "3"),
+            Some(GoodsVatRate.Twenty),
+            Some("France"),
+            Some(PurchaseDetails(BigDecimal(199.99), Currency("Eurozone", "Euro", "EUR"))),
+            Some("1234560"),
+            Some(BigDecimal(20.00))))),
+      maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
+      maybeIsACustomsAgent = Some(true),
+      maybeCustomsAgentName = Some("Andy Agent"),
+      maybeCustomsAgentAddress = Some(Address("1 Agent Drive", "Agent Town", "AG1 5NT")),
+      maybeEori = Some(Eori("TerrysEori")),
+      maybeJourneyDetails = Some(JourneyDetails(Dover, now())),
+      maybeTravellingByVehicle = Some(true),
+      maybeTravellingBySmallVehicle = Some(true),
+      maybeRegistrationNumber = Some("T5 RRY")
+    )
 }

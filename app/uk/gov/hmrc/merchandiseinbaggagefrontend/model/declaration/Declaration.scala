@@ -36,14 +36,14 @@ object SessionId {
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
 
-case class PriceOfGoods(amount: BigDecimal, currency: Currency) {
+case class PurchaseDetails(amount: BigDecimal, currency: Currency) {
   override val toString = s"${amount.formatted(s"%.${amount.scale}f")}, ${currency.displayName}"
 
-  def toPurchaseDetailsInput = PurchaseDetailsInput(amount, currency.currencyCode)
+  def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.currencyCode)
 }
 
-object PriceOfGoods {
-  implicit val format: OFormat[PriceOfGoods] = Json.format[PriceOfGoods]
+object PurchaseDetails {
+  implicit val format: OFormat[PurchaseDetails] = Json.format[PurchaseDetails]
 }
 
 case class CategoryQuantityOfGoods(category: String, quantity: String)
@@ -55,12 +55,38 @@ object CategoryQuantityOfGoods {
 case class GoodsEntry(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
-                      maybePriceOfGoods: Option[PriceOfGoods] = None,
+                      maybePurchaseDetails: Option[PurchaseDetails] = None,
                       maybeInvoiceNumber: Option[String] = None,
-                      maybeTaxDue: Option[BigDecimal] = None)
+                      maybeTaxDue: Option[BigDecimal] = None) {
+  val goodsIfComplete: Option[Goods] =
+    for {
+      goodsVatRate <- maybeGoodsVatRate
+      countryOfPurchase <- maybeCountryOfPurchase
+      priceOfGoods <- maybePurchaseDetails
+      invoiceNumber <- maybeInvoiceNumber
+      taxDue <- maybeTaxDue
+    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
+}
 
 object GoodsEntry {
   implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
+}
+
+case class GoodsEntries(entries: Seq[GoodsEntry]) {
+  val declarationGoodsIfComplete: Option[DeclarationGoods] = {
+    val goods = entries.flatMap(_.goodsIfComplete)
+
+    if (entries.nonEmpty && (goods.size == entries.size)) Some(DeclarationGoods(goods))
+    else None
+  }
+}
+
+object GoodsEntries {
+  implicit val format: OFormat[GoodsEntries] = Json.format[GoodsEntries]
+
+  def apply(goodsEntry: GoodsEntry): GoodsEntries = GoodsEntries(Seq(goodsEntry))
+
+  val empty: GoodsEntries = GoodsEntries(Seq.empty)
 }
 
 case class Name(firstName: String, lastName: String) {
@@ -93,7 +119,7 @@ object Eori {
   implicit val format: OFormat[Eori] = Json.format[Eori]
 }
 
-case class JourneyDetails(placeOfArrival: String, dateOfArrival: LocalDate) {
+case class JourneyDetails(placeOfArrival: PlaceOfArrival, dateOfArrival: LocalDate) {
   val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
 }
 
@@ -103,28 +129,67 @@ object JourneyDetails {
 
 case class DeclarationJourney(sessionId: SessionId,
                               maybeExciseOrRestrictedGoods: Option[Boolean] = None,
-                              goodsEntries: Seq[GoodsEntry] = Seq.empty,
-                              maybeName: Option[Name] = None,
-                              maybeAddress: Option[Address] = None,
+                              maybeGoodsDestination: Option[GoodsDestination] = None,
+                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
+                              goodsEntries: GoodsEntries = GoodsEntries(Seq.empty),
+                              maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
+                              maybeIsACustomsAgent: Option[Boolean] = None,
+                              maybeCustomsAgentName: Option[String] = None,
+                              maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
                               maybeJourneyDetails: Option[JourneyDetails] = None,
-                              maybeGoodsDestination: Option[GoodsDestination] = None,
-                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None) {
-  def toDeclarationIfComplete: Option[Declaration] =
+                              maybeTravellingByVehicle: Option[Boolean] = None,
+                              maybeTravellingBySmallVehicle: Option[Boolean] = None,
+                              maybeRegistrationNumber: Option[String] = None) {
+
+  val maybeCustomsAgent: Option[CustomsAgent] =
+    if (maybeIsACustomsAgent.getOrElse(false)) {
+      for {
+        customsAgentName <- maybeCustomsAgentName
+        customsAgentAddress <- maybeCustomsAgentAddress
+
+        if customsAgentName.trim.nonEmpty
+      } yield CustomsAgent(customsAgentName, customsAgentAddress)
+    } else None
+
+  val journeyDetailsCompleteAndDeclarationRequired: Boolean =
+    maybeJourneyDetails.fold(false){ journeyDetails =>
+      if (journeyDetails.placeOfArrival.requiresVehicleChecks) {
+        if (maybeTravellingByVehicle.contains(false)) {
+          true
+        } else {
+          if (maybeTravellingByVehicle.isEmpty) false
+          else if (!maybeTravellingBySmallVehicle.getOrElse(false)) false
+          else maybeRegistrationNumber.fold(false)(_ => true)
+        }
+      } else true
+    }
+
+  val declarationIfRequiredAndComplete: Option[Declaration] =
     for {
-      name <- maybeName
-      address <- maybeAddress
+      nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
+      iAmACustomsAgent <- maybeIsACustomsAgent
       eori <- maybeEori
       journeyDetails <- maybeJourneyDetails
-    } yield
+      goods <- goodsEntries.declarationGoodsIfComplete
+      _ <- maybeGoodsDestination
+
+      if maybeExciseOrRestrictedGoods.contains(false)
+      if maybeValueWeightOfGoodsExceedsThreshold.contains(false)
+      if maybeCustomsAgent.isDefined || !iAmACustomsAgent
+      if journeyDetailsCompleteAndDeclarationRequired
+    } yield {
       Declaration(
         sessionId,
-        goodsEntries.map(entry => Goods(entry)),
-        name,
-        address,
+        goods,
+        nameOfPersonCarryingTheGoods,
+        maybeCustomsAgent,
         eori,
-        journeyDetails
+        journeyDetails,
+        maybeTravellingByVehicle.getOrElse(false),
+        maybeRegistrationNumber
       )
+    }
 }
 
 object DeclarationJourney {
@@ -136,12 +201,12 @@ object DeclarationJourney {
 case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  goodsVatRate: GoodsVatRate,
                  countryOfPurchase: String,
-                 priceOfGoods: PriceOfGoods,
+                 purchaseDetails: PurchaseDetails,
                  invoiceNumber: String,
                  taxDue: BigDecimal) {
   def toSummaryList(implicit messages: Messages): SummaryList = {
     val price =
-      s"${priceOfGoods.amount}, ${priceOfGoods.currency.displayName})"
+      s"${purchaseDetails.amount}, ${purchaseDetails.currency.displayName})"
 
     SummaryList(Seq(
       SummaryListRow(
@@ -170,24 +235,30 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
 
 object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
+}
 
-  def apply(goodsEntry: GoodsEntry): Goods = (
-    for {
-      goodsVatRate <- goodsEntry.maybeGoodsVatRate
-      countryOfPurchase <- goodsEntry.maybeCountryOfPurchase
-      priceOfGoods <- goodsEntry.maybePriceOfGoods
-      invoiceNumber <- goodsEntry.maybeInvoiceNumber
-      taxDue <- goodsEntry.maybeTaxDue
-    } yield Goods(goodsEntry.categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
-    ).getOrElse(throw new RuntimeException(s"incomplete goods entry: [$goodsEntry]"))
+case class DeclarationGoods(goods: Seq[Goods])
+
+object DeclarationGoods {
+  implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]
+
+  def apply(goods: Goods): DeclarationGoods = DeclarationGoods(Seq(goods))
+}
+
+case class CustomsAgent(name: String, address: Address)
+
+object CustomsAgent {
+  implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
 }
 
 case class Declaration(sessionId: SessionId,
-                       goods: Seq[Goods],
-                       name: Name,
-                       address: Address,
+                       declarationGoods: DeclarationGoods,
+                       nameOfPersonCarryingTheGoods: Name,
+                       maybeCustomsAgent: Option[CustomsAgent],
                        eori: Eori,
-                       journeyDetails: JourneyDetails)
+                       journeyDetails: JourneyDetails,
+                       travellingByVehicle: Boolean,
+                       maybeRegistrationNumber: Option[String] = None)
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]

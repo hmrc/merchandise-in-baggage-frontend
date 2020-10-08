@@ -20,7 +20,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, Goods, GoodsEntry, PriceOfGoods}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
@@ -28,20 +28,20 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val form = formProvider()
 
   private lazy val view = injector.instanceOf[ReviewGoodsView]
+  private lazy val controller = new ReviewGoodsController(controllerComponents, actionBuilder, formProvider, view)
 
-  private lazy val controller =
-    new ReviewGoodsController(
-      controllerComponents, actionBuilder, formProvider, view)
-
-  val testGood =
+  private val goods =
     GoodsEntry(
       CategoryQuantityOfGoods("test good", "123"),
       Some(GoodsVatRate.Twenty),
       Some("Austria"),
-      Some(PriceOfGoods(10.00, Currency("test country", "test currency", "TST"))),
+      Some(PurchaseDetails(10.00, Currency("test country", "test currency", "TST"))),
       Some("test invoice number"),
       Some(0.00)
     )
+
+  private val goodsEntries = GoodsEntries(goods)
+  private val declarationGoods = DeclarationGoods(goods.goodsIfComplete.get)
 
   "onPageLoad" must {
     val url = routes.ReviewGoodsController.onPageLoad().url
@@ -62,13 +62,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started with and goods have been entered" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(testGood)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual
-          view(form, Seq(Goods(testGood)))(request, messagesApi.preferred(request), appConfig).toString
+          view(form, declarationGoods)(request, messagesApi.preferred(request), appConfig).toString
       }
     }
   }
@@ -81,7 +81,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /tax-calculation" when {
       "a declaration is started and false is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(testGood)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "false"))
         val result = controller.onSubmit()(request)
@@ -93,7 +93,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /search-goods" when {
       "a declaration is started and true is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(testGood)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "true"))
         val result = controller.onSubmit()(request)
@@ -105,14 +105,14 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(testGood)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
         val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual
-          view(submittedForm, Seq(Goods(testGood)))(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+          view(submittedForm, declarationGoods)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
       }
     }
   }

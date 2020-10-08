@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsCountryView
@@ -34,36 +35,36 @@ class SearchGoodsCountryController @Inject()(
                                               formProvider: SearchGoodsCountryFormProvider,
                                               repo: DeclarationJourneyRepository,
                                               view: SearchGoodsCountryView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+                                            )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val form: Form[String] = formProvider(CountriesService.countries)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         Ok(view(goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
-      case None => Redirect(routes.InvalidRequestController.onPageLoad())
+      case None => actionProvider.invalidRequest
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
-          value =>
-            repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
-              goodsEntry.copy(maybeCountryOfPurchase = Some(value))
-            ))).map { _ =>
-              Redirect(routes.PurchaseDetailsController.onPageLoad())
-            }
-        )
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+            value =>
+              repo.upsert(
+                request.declarationJourney.copy(
+                  goodsEntries = GoodsEntries(goodsEntry.copy(maybeCountryOfPurchase = Some(value))))).map { _ =>
+                Redirect(routes.PurchaseDetailsController.onPageLoad())
+              }
+          )
       case None =>
-        Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+        Future.successful(actionProvider.invalidRequest)
     }
   }
 

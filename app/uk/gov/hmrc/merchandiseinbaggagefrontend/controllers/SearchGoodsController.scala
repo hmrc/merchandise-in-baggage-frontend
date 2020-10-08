@@ -21,7 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
@@ -40,7 +40,7 @@ class SearchGoodsController @Inject()(
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    val preparedForm = request.declarationJourney.goodsEntries.headOption match {
+    val preparedForm = request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) => form.fill(goodsEntry.categoryQuantityOfGoods)
       case None => form
     }
@@ -54,7 +54,9 @@ class SearchGoodsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
         categoryQuantityOfGoods =>
-          repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(GoodsEntry(categoryQuantityOfGoods)))).map {_ =>
+          repo.upsert(
+            request.declarationJourney.copy(
+              goodsEntries = GoodsEntries(GoodsEntry(categoryQuantityOfGoods)))).map {_ =>
             Redirect(routes.GoodsVatRateController.onPageLoad())
           }
       )

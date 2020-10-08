@@ -54,7 +54,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and trader name persisted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeName = Some(name)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(name)))
 
         val result = controller.onPageLoad()(getRequest)
         val content = contentAsString(result)
@@ -89,7 +89,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.journeyDetails().toString
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeName mustBe Some(name)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeNameOfPersonCarryingTheGoods mustBe Some(name)
       }
     }
 

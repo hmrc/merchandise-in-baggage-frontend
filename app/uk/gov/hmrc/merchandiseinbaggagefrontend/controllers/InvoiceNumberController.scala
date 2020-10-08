@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.InvoiceNumberView
 
@@ -28,17 +29,17 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class InvoiceNumberController @Inject()(
-                                              override val controllerComponents: MessagesControllerComponents,
-                                              actionProvider: DeclarationJourneyActionProvider,
-                                              repo: DeclarationJourneyRepository,
-                                              view: InvoiceNumberView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+                                         override val controllerComponents: MessagesControllerComponents,
+                                         actionProvider: DeclarationJourneyActionProvider,
+                                         repo: DeclarationJourneyRepository,
+                                         view: InvoiceNumberView
+                                       )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val form: Form[String] = InvoiceNumberForm.form
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         Ok(view(goodsEntry.maybeInvoiceNumber.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
       case None => actionProvider.invalidRequest
@@ -46,20 +47,24 @@ class InvoiceNumberController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         form
-        .bindFromRequest()
-        .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
-          value =>
-            repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
-              goodsEntry.copy(maybeInvoiceNumber = Some(value), maybeTaxDue = Some(BigDecimal(-999.99))) //TODO call backend for real tax calculation
-            ))).map { _ =>
-              Redirect(routes.ReviewGoodsController.onPageLoad())
-            }
-        )
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
+            value =>
+              repo.upsert(
+                request.declarationJourney.copy(
+                  goodsEntries =
+                    GoodsEntries(goodsEntry.copy(
+                      //TODO call backend for real tax calculation
+                      maybeInvoiceNumber = Some(value),
+                      maybeTaxDue = Some(BigDecimal(-999.99)))))).map { _ =>
+                Redirect(routes.ReviewGoodsController.onPageLoad())
+              }
+          )
       case None =>
         Future.successful(actionProvider.invalidRequest)
     }

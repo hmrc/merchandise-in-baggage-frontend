@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.PriceOfGoods
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{GoodsEntries, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
@@ -38,19 +38,19 @@ class PurchaseDetailsController @Inject()(
                                            formProvider: PurchaseDetailsFormProvider,
                                            repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                         )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController with CurrencyConversionConnector {
 
   val form: Form[PurchaseDetailsInput] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
 
         getCurrencies().map { currencyPeriod =>
-          val preparedForm = goodsEntry.maybePriceOfGoods match {
-            case Some(priceOfGoods) => form.fill(priceOfGoods.toPurchaseDetailsInput)
+          val preparedForm = goodsEntry.maybePurchaseDetails match {
+            case Some(purchaseDetails) => form.fill(purchaseDetails.purchaseDetailsInput)
             case None => form
           }
 
@@ -61,7 +61,7 @@ class PurchaseDetailsController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         getCurrencies().flatMap { currencyPeriod =>
           form
@@ -72,10 +72,12 @@ class PurchaseDetailsController @Inject()(
               value => {
                 currencyPeriod.currencies.find(_.currencyCode == value.currency) match {
                   case Some(currency) =>
-                    val priceOfGoods = PriceOfGoods(value.price, currency)
-                    repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
-                      goodsEntry.copy(maybePriceOfGoods = Some(priceOfGoods))
-                    ))).map { _ =>
+                    val purchaseDetails = PurchaseDetails(value.price, currency)
+
+                    repo.upsert(
+                      request.declarationJourney.copy(
+                        goodsEntries = GoodsEntries(
+                          goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))))).map { _ =>
                       Redirect(routes.InvoiceNumberController.onPageLoad())
                     }
                   case None => Future.successful(actionProvider.invalidRequest)

@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
 
@@ -33,14 +34,15 @@ class GoodsVatRateController @Inject()(
                                         actionProvider: DeclarationJourneyActionProvider,
                                         formProvider: GoodsVatRateFormProvider,
                                         repo: DeclarationJourneyRepository,
-                                        view: GoodsVatRateView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+                                        view: GoodsVatRateView)
+                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends DeclarationJourneyUpdateController {
 
   val form: Form[GoodsVatRate] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         Ok(view(goodsEntry.maybeGoodsVatRate.fold(form)(form.fill), goodsEntry.categoryQuantityOfGoods.category))
       case None => Redirect(routes.InvalidRequestController.onPageLoad())
@@ -48,7 +50,7 @@ class GoodsVatRateController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.headOption match {
+    request.declarationJourney.goodsEntries.entries.headOption match {
       case Some(goodsEntry) =>
         form
           .bindFromRequest()
@@ -56,9 +58,9 @@ class GoodsVatRateController @Inject()(
             formWithErrors =>
               Future.successful(BadRequest(view(formWithErrors, goodsEntry.categoryQuantityOfGoods.category))),
             value =>
-              repo.upsert(request.declarationJourney.copy(goodsEntries = Seq(
-                goodsEntry.copy(maybeGoodsVatRate = Some(value))
-              ))).map { _ =>
+              repo.upsert(
+                request.declarationJourney.copy(
+                  goodsEntries = GoodsEntries(goodsEntry.copy(maybeGoodsVatRate = Some(value))))).map { _ =>
                 Redirect(routes.SearchGoodsCountryController.onPageLoad())
               }
           )

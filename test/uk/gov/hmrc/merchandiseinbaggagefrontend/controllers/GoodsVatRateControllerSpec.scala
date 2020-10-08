@@ -20,7 +20,7 @@ import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -63,7 +63,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -82,7 +82,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
     "Redirect to /search-goods-country" when {
       "a declaration is started and a valid selection submitted" in {
         val before =
-          startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
+          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
 
         givenADeclarationJourneyIsPersisted(before)
 
@@ -95,8 +95,8 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad().toString
 
-        before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeGoodsVatRate mustBe Some(GoodsVatRate.Twenty)
+        before.goodsEntries.entries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(GoodsVatRate.Twenty)
       }
     }
 
@@ -105,7 +105,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
 
         givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry)))
+          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry)))
         form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)

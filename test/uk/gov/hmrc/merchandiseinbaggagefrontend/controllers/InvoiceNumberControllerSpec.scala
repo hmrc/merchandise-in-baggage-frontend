@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.InvoiceNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -59,7 +59,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = Seq(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -78,7 +78,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
     "Redirect to /review-goods" when {
       "a declaration is started and a valid selection submitted" in {
         val before =
-          startedDeclarationJourney.copy(goodsEntries = Seq(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
+          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(GoodsEntry(CategoryQuantityOfGoods("test good", "123"))))
 
         givenADeclarationJourneyIsPersisted(before)
 
@@ -89,8 +89,8 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
 
-        before.goodsEntries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.head.maybeInvoiceNumber mustBe Some("test invoice number")
+        before.goodsEntries.entries.head mustBe GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeInvoiceNumber mustBe Some("test invoice number")
       }
     }
 
@@ -99,7 +99,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
         val goodsEntry = GoodsEntry(CategoryQuantityOfGoods("test good", "123"))
 
         givenADeclarationJourneyIsPersisted(
-          startedDeclarationJourney.copy(goodsEntries = Seq(goodsEntry)))
+          startedDeclarationJourney.copy(goodsEntries = GoodsEntries(goodsEntry)))
 
         val result = controller.onSubmit()(postRequest)
 
