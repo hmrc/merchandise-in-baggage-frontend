@@ -53,7 +53,7 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.goodsRemoved(getRequest), title, routes.SearchGoodsController.onPageLoad())
+        ensure(controller.goodsRemoved(getRequest), title, routes.SearchGoodsController.onPageLoad(1))
       }
     }
 

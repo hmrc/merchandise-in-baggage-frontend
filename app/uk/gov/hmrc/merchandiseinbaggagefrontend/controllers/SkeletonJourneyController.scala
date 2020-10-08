@@ -42,7 +42,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   }
 
   val goodsRemoved: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"goodsRemoved.title", routes.SearchGoodsController.onPageLoad()))
+    Ok(page(s"goodsRemoved.title", routes.SearchGoodsController.onPageLoad(1)))
   }
 
   val taxCalculation: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

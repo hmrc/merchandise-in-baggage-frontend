@@ -33,40 +33,48 @@ class InvoiceNumberController @Inject()(
                                          actionProvider: DeclarationJourneyActionProvider,
                                          repo: DeclarationJourneyRepository,
                                          view: InvoiceNumberView
-                                       )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+                                       )(implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends IndexedDeclarationJourneyUpdateController {
 
   val form: Form[String] = InvoiceNumberForm.form
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
-        Ok(view(goodsEntry.maybeInvoiceNumber.fold(form)(form.fill), goodsEntry.goodsCategoryOrDefault))
-      case None => actionProvider.invalidRequest
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequest) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequest) { categoryQuantityOfGoods =>
+        val preparedForm = goodsEntry.maybeInvoiceNumber.fold(form)(form.fill)
+
+        Ok(view(preparedForm, idx, categoryQuantityOfGoods.category))
+      }
     }
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault))),
-            value =>
+              Future.successful(BadRequest(view(formWithErrors, idx, categoryQuantityOfGoods.category))),
+            invoiceNumber => {
+              val updatedGoodsEntries =
+                request.declarationJourney.goodsEntries.entries.updated(
+                  idx - 1,
+                  goodsEntry.copy(
+                    maybeInvoiceNumber = Some(invoiceNumber),
+                    maybeTaxDue = Some(BigDecimal(-999.99))
+                  ))
+
               repo.upsert(
                 request.declarationJourney.copy(
-                  goodsEntries =
-                    GoodsEntries(goodsEntry.copy(
-                      //TODO call backend for real tax calculation
-                      maybeInvoiceNumber = Some(value),
-                      maybeTaxDue = Some(BigDecimal(-999.99)))))).map { _ =>
+                  goodsEntries = GoodsEntries(updatedGoodsEntries)
+                )
+              ).map { _ =>
                 Redirect(routes.ReviewGoodsController.onPageLoad())
               }
+            }
           )
-      case None =>
-        Future.successful(actionProvider.invalidRequest)
+      }
     }
   }
 

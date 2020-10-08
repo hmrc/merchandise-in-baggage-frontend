@@ -29,3 +29,13 @@ trait DeclarationJourneyController extends FrontendBaseController {
 trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
   val onSubmit: Action[AnyContent]
 }
+
+trait IndexedDeclarationJourneyController extends FrontendBaseController {
+  implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
+
+  def onPageLoad(idx: Int): Action[AnyContent]
+}
+
+trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
+  def onSubmit(idx: Int): Action[AnyContent]
+}

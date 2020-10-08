@@ -107,7 +107,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(1).toString
 
         startedDeclarationJourney.maybeValueWeightOfGoodsExceedsThreshold mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeValueWeightOfGoodsExceedsThreshold mustBe Some(false)

@@ -26,10 +26,10 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], goodsCategory: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("invoiceNumber.title", goodsCategory))) {
-    @formHelper(action = InvoiceNumberController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = InvoiceNumberController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
