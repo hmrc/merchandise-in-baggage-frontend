@@ -44,16 +44,16 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onPageLoad" must {
-    val url = routes.GoodsVatRateController.onPageLoad().url
+    val url = routes.GoodsVatRateController.onPageLoad(1).url
     val getRequest = buildGet(url, sessionId)
 
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
+    behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
-        val result = controller.onPageLoad()(getRequest)
+        val result = controller.onPageLoad(1)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result, completedGoodsEntry)
@@ -62,23 +62,23 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onSubmit" must {
-    val url = routes.GoodsVatRateController.onSubmit().url
+    val url = routes.GoodsVatRateController.onSubmit(1).url
     val postRequest = buildPost(url, sessionId)
 
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
+    behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /search-goods-country" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "twenty"))
 
         form.bindFromRequest()(request)
 
-        val result = controller.onSubmit()(request)
+        val result = controller.onSubmit(1)(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad(1).toString
 
         startedDeclarationJourney.goodsEntries.entries.head mustBe GoodsEntry.empty
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(GoodsVatRate.Twenty)
@@ -90,7 +90,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
         form.bindFromRequest()(postRequest)
 
-        val result = controller.onSubmit()(postRequest)
+        val result = controller.onSubmit(1)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result, startedGoodsEntry) must include("Select one of the options below")

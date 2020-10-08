@@ -88,4 +88,44 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       }
     }
   }
+
+  def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: IndexedDeclarationJourneyController, url: String): Unit = {
+    "redirect to /invalid-request" when {
+      "no session id is set" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val result = controller.onPageLoad(1)(buildGet(url))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
+      }
+
+      "a declaration has not been started" in {
+        val result = controller.onPageLoad(1)(buildGet(url, sessionId))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
+      }
+    }
+  }
+
+  def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: IndexedDeclarationJourneyUpdateController, url: String): Unit = {
+    "redirect to /invalid-request" when {
+      "no session id is set" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val result = controller.onSubmit(1)(buildPost(url))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
+      }
+
+      "a declaration has not been started" in {
+        val result = controller.onSubmit(1)(buildPost(url, sessionId))
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
+      }
+    }
+  }
 }

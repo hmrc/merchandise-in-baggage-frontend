@@ -32,6 +32,8 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
 
   def invalidRequest: Result = Redirect(routes.InvalidRequestController.onPageLoad())
 
+  def invalidRequestF: Future[Result] = Future.successful(invalidRequest)
+
   def journeyActionRefiner: ActionRefiner[Request, DeclarationJourneyRequest] =
     new ActionRefiner[Request, DeclarationJourneyRequest] {
 

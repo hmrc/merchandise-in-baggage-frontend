@@ -22,12 +22,14 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val formProvider = new ReviewGoodsFormProvider()
   private val form = formProvider()
 
   private lazy val view = injector.instanceOf[ReviewGoodsView]
-  private lazy val controller = new ReviewGoodsController(controllerComponents, actionBuilder, formProvider, view)
+  private lazy val controller = new ReviewGoodsController(controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
 
   private val goods =
     GoodsEntry(
@@ -98,7 +100,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(2).toString
       }
     }
 

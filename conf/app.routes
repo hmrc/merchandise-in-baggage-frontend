@@ -44,24 +44,24 @@ GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefronten
 POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onSubmit
 
 # SearchGoods
-GET        /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onPageLoad
-POST       /search-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onSubmit
+GET        /search-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onPageLoad(idx: Int)
+POST       /search-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsController.onSubmit(idx: Int)
 
 # GoodsVatRate
-GET        /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onPageLoad
-POST       /goods-vat-rate               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onSubmit
+GET        /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onPageLoad(idx: Int)
+POST       /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onSubmit(idx: Int)
 
 # SearchGoodsCountry
-GET        /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad
-POST       /search-goods-country         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit
+GET        /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad(idx: Int)
+POST       /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit(idx: Int)
 
 # PurchaseDetails
-GET        /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onPageLoad
-POST       /purchase-details             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onSubmit
+GET        /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onPageLoad(idx: Int)
+POST       /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onSubmit(idx: Int)
 
 # InvoiceNumber
-GET        /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onPageLoad
-POST       /invoice-number               uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onSubmit
+GET        /invoice-number/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onPageLoad(idx: Int)
+POST       /invoice-number/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onSubmit(idx: Int)
 
 # ReviewGoods
 GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onPageLoad

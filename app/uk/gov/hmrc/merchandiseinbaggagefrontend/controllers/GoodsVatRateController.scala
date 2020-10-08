@@ -35,36 +35,44 @@ class GoodsVatRateController @Inject()(
                                         repo: DeclarationJourneyRepository,
                                         view: GoodsVatRateView)
                                       (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+  extends IndexedDeclarationJourneyUpdateController {
 
   val form: Form[GoodsVatRate] = formProvider()
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
-        Ok(view(goodsEntry.maybeGoodsVatRate.fold(form)(form.fill), goodsEntry.goodsCategoryOrDefault))
-      case None => Redirect(routes.InvalidRequestController.onPageLoad())
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequest) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequest) { categoryQuantityOfGoods =>
+        val preparedForm = goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
+
+        Ok(view(preparedForm, idx, categoryQuantityOfGoods.category))
+      }
     }
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault))),
-            value =>
+              Future.successful(BadRequest(view(formWithErrors, idx, categoryQuantityOfGoods.category))),
+            goodsVatRate => {
+              val updatedGoodsEntries =
+                request.declarationJourney.goodsEntries.entries.updated(
+                  idx - 1,
+                  goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate)))
+
               repo.upsert(
                 request.declarationJourney.copy(
-                  goodsEntries = GoodsEntries(goodsEntry.copy(maybeGoodsVatRate = Some(value))))).map { _ =>
-                Redirect(routes.SearchGoodsCountryController.onPageLoad())
+                  goodsEntries = GoodsEntries(updatedGoodsEntries)
+                )
+              ).map { _ =>
+                Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
               }
+            }
           )
-      case None =>
-        Future.successful(Redirect(routes.InvalidRequestController.onPageLoad()))
+      }
     }
   }
 

@@ -28,11 +28,11 @@
         h1: components.h1,
         p: components.p)
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("searchGoods.title"))) {
 
-  @formHelper(action = SearchGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = SearchGoodsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 

@@ -21,14 +21,19 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ReviewGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       actionProvider: DeclarationJourneyActionProvider,
                                       formProvider: ReviewGoodsFormProvider,
+                                      repo: DeclarationJourneyRepository,
                                       view: ReviewGoodsView)
-                                     (implicit appConfig: AppConfig)
+                                     (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
   val form: Form[Boolean] = formProvider()
@@ -39,15 +44,27 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
     }
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => BadRequest(view(formWithErrors, goods)),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods))),
           declareMoreGoods =>
-            if (declareMoreGoods) Redirect(routes.SearchGoodsController.onPageLoad())
-            else Redirect(routes.SkeletonJourneyController.taxCalculation())
+            if (declareMoreGoods) {
+              val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
+
+              repo.upsert(
+                request.declarationJourney.copy(
+                  goodsEntries = GoodsEntries(updatedGoodsEntries)
+                )
+              ).map { _ =>
+                Redirect(routes.SearchGoodsController.onPageLoad(updatedGoodsEntries.size))
+              }
+            }
+            else {
+              Future.successful(Redirect(routes.SkeletonJourneyController.taxCalculation()))
+            }
         )
     }
   }

@@ -29,7 +29,7 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[PurchaseDetailsInput], goodsCategory: String, currencies: Seq[Currency])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, currencies: Seq[Currency])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
@@ -55,7 +55,7 @@ button: components.button
     headBlock = Some(head),
     scriptsBlock = Some(scripts)
 ) {
-    @formHelper(action = PurchaseDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = PurchaseDetailsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 

@@ -59,7 +59,6 @@ case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoo
                       maybePurchaseDetails: Option[PurchaseDetails] = None,
                       maybeInvoiceNumber: Option[String] = None,
                       maybeTaxDue: Option[BigDecimal] = None) {
-  val goodsCategoryOrDefault: String = maybeCategoryQuantityOfGoods.fold("goods")(_.category)
 
   val goodsIfComplete: Option[Goods] =
     for {

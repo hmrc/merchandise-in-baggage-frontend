@@ -36,52 +36,51 @@ class PurchaseDetailsController @Inject()(
                                            repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController with CurrencyConversionConnector {
+  extends IndexedDeclarationJourneyUpdateController with CurrencyConversionConnector {
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    // TODO replace with parameterised :idx, use headOption for single goods journey
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
-
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
         getCurrencies().map { currencyPeriod =>
-          val preparedForm = goodsEntry.maybePurchaseDetails match {
-            case Some(purchaseDetails) => form.fill(purchaseDetails.purchaseDetailsInput)
-            case None => form
-          }
+          val preparedForm = goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-          Ok(view(preparedForm, goodsEntry.goodsCategoryOrDefault, currencyPeriod.currencies))
+          Ok(view(preparedForm, idx, categoryQuantityOfGoods.category, currencyPeriod.currencies))
         }
-      case None => Future.successful(actionProvider.invalidRequest)
+      }
     }
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.headOption match {
-      case Some(goodsEntry) =>
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
+      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
         getCurrencies().flatMap { currencyPeriod =>
           form
             .bindFromRequest()
             .fold(
               formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, goodsEntry.goodsCategoryOrDefault, currencyPeriod.currencies))),
-              value => {
-                currencyPeriod.currencies.find(_.currencyCode == value.currency) match {
-                  case Some(currency) =>
-                    val purchaseDetails = PurchaseDetails(value.price, currency)
+                Future.successful(BadRequest(view(formWithErrors, idx, categoryQuantityOfGoods.category, currencyPeriod.currencies))),
+              purchaseDetailsInput => {
+                currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
+                  .fold(actionProvider.invalidRequestF) { currency =>
+                    val purchaseDetails = PurchaseDetails(purchaseDetailsInput.price, currency)
+
+                    val updatedGoodsEntries =
+                      request.declarationJourney.goodsEntries.entries.updated(
+                        idx - 1,
+                        goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails)))
 
                     repo.upsert(
                       request.declarationJourney.copy(
-                        goodsEntries = GoodsEntries(
-                          goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))))).map { _ =>
-                      Redirect(routes.InvoiceNumberController.onPageLoad())
+                        goodsEntries = GoodsEntries(updatedGoodsEntries)
+                      )
+                    ).map { _ =>
+                      Redirect(routes.InvoiceNumberController.onPageLoad(idx))
                     }
-                  case None => Future.successful(actionProvider.invalidRequest)
-                }
+                  }
               }
             )
         }
-      case None =>
-        Future.successful(actionProvider.invalidRequest)
+      }
     }
   }
 
