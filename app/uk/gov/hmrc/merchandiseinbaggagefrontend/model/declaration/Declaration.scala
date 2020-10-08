@@ -176,10 +176,8 @@ case class DeclarationJourney(sessionId: SessionId,
 
       if maybeExciseOrRestrictedGoods.contains(false)
       if maybeValueWeightOfGoodsExceedsThreshold.contains(false)
-      if (iAmACustomsAgent && maybeCustomsAgent.isDefined) || (!iAmACustomsAgent)
+      if maybeCustomsAgent.isDefined || !iAmACustomsAgent
       if journeyDetailsCompleteAndDeclarationRequired
-      if nameOfPersonCarryingTheGoods.firstName.trim.nonEmpty
-      if nameOfPersonCarryingTheGoods.lastName.trim.nonEmpty
     } yield {
       Declaration(
         sessionId,
