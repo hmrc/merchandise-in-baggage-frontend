@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import enumeratum.{Enum, EnumEntry}
 import play.api.libs.json._

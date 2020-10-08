@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationJourney, GoodsEntry, SessionId}
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = PayApiRequest(

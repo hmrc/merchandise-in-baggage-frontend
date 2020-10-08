@@ -23,8 +23,8 @@ import reactivemongo.api.DB
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.api.indexes.Index
 import reactivemongo.api.indexes.IndexType.Ascending
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.DeclarationJourney.{format, id}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.{DeclarationJourney, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney.{format, id}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId}
 import uk.gov.hmrc.mongo.ReactiveRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global

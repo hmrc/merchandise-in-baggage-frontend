@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.{firstName, form, lastName}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Name
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Name
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global

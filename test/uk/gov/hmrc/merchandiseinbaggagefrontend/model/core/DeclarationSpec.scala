@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.time.LocalDate.now
 
 import play.api.libs.json.Json.{parse, toJson}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.PlacesOfArrival.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {

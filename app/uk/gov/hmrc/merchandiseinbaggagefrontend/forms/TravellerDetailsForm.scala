@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.Name
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Name
 
 object TravellerDetailsForm {
   val firstName = "firstName"

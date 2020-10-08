@@ -20,7 +20,7 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.declaration.CategoryQuantityOfGoods
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
 class SearchGoodsFormProvider @Inject() extends Mappings {
 
