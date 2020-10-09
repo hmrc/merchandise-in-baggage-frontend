@@ -56,7 +56,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url)
-      .withFormUrlEncodedBody("taxDue" -> "10")
+      .withFormUrlEncodedBody("taxDue" -> "10.11")
     val eventualResult = controller.onSubmit()(postRequest)
 
     status(eventualResult) mustBe 303
