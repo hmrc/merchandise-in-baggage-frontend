@@ -20,17 +20,18 @@ import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.Forms._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import play.api.data.format.Formats._
 
 class CheckYourAnswersFormProvider extends Mappings {
 
   def apply(): Form[Answers] =
     Form(
       mapping(
-        "taxDue" -> longNumber
+        "taxDue" -> of(doubleFormat)
       )(Answers.apply)(Answers.unapply)
     )
 
 }
 
 
-case class Answers(taxDue: Long)
+case class Answers(taxDue: Double)
