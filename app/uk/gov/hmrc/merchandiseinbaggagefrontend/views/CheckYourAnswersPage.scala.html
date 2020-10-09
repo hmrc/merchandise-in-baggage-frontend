@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersFormProvider._
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
@@ -62,7 +63,7 @@
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
     </div>
    </dl>
-   <input id="taxDue" type="hidden" name="taxDue" value="@declaration.declarationGoods.goods.map(_.taxDue).sum">
+   <input id="@taxDue" type="hidden" name="@taxDue" value="@declaration.declarationGoods.goods.map(_.taxDue).sum">
 }
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
@@ -135,6 +136,6 @@
   </strong>
  </div>
 
-  @button("Pay now")
+  @button(messages("checkYourAnswers.payButton"))
  }
 }

@@ -93,7 +93,8 @@ exciseAndRestrictedGoods.error.required = Select one of the options below
 goodsDestination.title = Where in the UK are the goods going?
 goodsDestination.heading = Where in the UK are the goods going?
 goodsDestination.ni = Northern Ireland
-goodsDestination.gb = England, Wales or Scotland
+goodsDestination.gb = Great Britain
+goodsDestination.gb.hint = England, Scotland or Wales
 goodsDestination.error.required = Select one of the options below
 
 
@@ -211,5 +212,6 @@ checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and
 checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force.
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
+checkYourAnswers.payButton = Accept and Pay
 
 

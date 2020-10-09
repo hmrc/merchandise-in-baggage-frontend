@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 import play.api.data.Form
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enumerable, WithName}
 
@@ -38,9 +39,11 @@ object GoodsDestination extends Enumerable.Implicits {
     RadioItem(
       value = Some(value.toString),
       content = Text(messages(s"goodsDestination.${value.toString}")),
-      checked = form("value").value.contains(value.toString)
+      checked = form("value").value.contains(value.toString),
+      hint = if(value == EngScoWal) Some(Hint(content = Text(messages("goodsDestination.gb.hint")))) else None
     )
   }
+
 
   implicit val enumerable: Enumerable[GoodsDestination] =
     Enumerable(values.map(v => v.toString -> v): _*)

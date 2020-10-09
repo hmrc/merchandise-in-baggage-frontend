@@ -16,27 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.Forms._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import play.api.data.format.Formats._
+import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
 import CheckYourAnswersFormProvider._
 
-object CheckYourAnswersFormProvider {
-  val taxDue = "taxDue"
+class CheckYourAnswersFormProviderSpec extends BaseSpec {
+
+
+  "bind data to the form" in {
+    val provider = new CheckYourAnswersFormProvider()
+
+    provider().bind(Map(taxDue -> "30.12")).value mustBe Some(Answers(30.12))
+   }
+
+  "return error if incorrect" in {
+    val provider = new CheckYourAnswersFormProvider()
+
+    provider().bind(Map[String, String]()).errors mustBe List(FormError(taxDue, List("error.required"),List()))
+   }
+
 }
-
-class CheckYourAnswersFormProvider extends Mappings {
-
-  def apply(): Form[Answers] =
-    Form(
-      mapping(
-        taxDue -> of(doubleFormat)
-      )(Answers.apply)(Answers.unapply)
-    )
-
-}
-
-
-case class Answers(taxDue: Double)
