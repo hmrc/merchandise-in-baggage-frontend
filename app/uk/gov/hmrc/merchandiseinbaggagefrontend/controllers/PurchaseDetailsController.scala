@@ -22,7 +22,7 @@ import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, PurchaseDetails}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
@@ -38,48 +38,42 @@ class PurchaseDetailsController @Inject()(
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController with CurrencyConversionConnector {
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
-      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
-        getCurrencies().map { currencyPeriod =>
-          val preparedForm = goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+    withGoodsCategory(request.goodsEntry) { category =>
+      getCurrencies().map { currencyPeriod =>
+        val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-          Ok(view(preparedForm, idx, categoryQuantityOfGoods.category, currencyPeriod.currencies))
-        }
+        Ok(view(preparedForm, idx, category, currencyPeriod.currencies))
       }
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
-      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
-        getCurrencies().flatMap { currencyPeriod =>
-          form
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future.successful(BadRequest(view(formWithErrors, idx, categoryQuantityOfGoods.category, currencyPeriod.currencies))),
-              purchaseDetailsInput => {
-                currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
-                  .fold(actionProvider.invalidRequestF) { currency =>
-                    val purchaseDetails = PurchaseDetails(purchaseDetailsInput.price, currency)
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+    withGoodsCategory(request.goodsEntry) { category =>
+      getCurrencies().flatMap { currencyPeriod =>
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies))),
+            purchaseDetailsInput => {
+              currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
+                .fold(actionProvider.invalidRequestF) { currency =>
+                  val purchaseDetails = PurchaseDetails(purchaseDetailsInput.price, currency)
 
-                    val updatedGoodsEntries =
-                      request.declarationJourney.goodsEntries.entries.updated(
-                        idx - 1,
-                        goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails)))
-
-                    repo.upsert(
-                      request.declarationJourney.copy(
-                        goodsEntries = GoodsEntries(updatedGoodsEntries)
+                  repo.upsert(
+                    request.declarationJourney.copy(
+                      goodsEntries = request.declarationJourney.goodsEntries.patch(
+                        idx,
+                        request.goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))
                       )
-                    ).map { _ =>
-                      Redirect(routes.InvoiceNumberController.onPageLoad(idx))
-                    }
+                    )
+                  ).map { _ =>
+                    Redirect(routes.InvoiceNumberController.onPageLoad(idx))
                   }
-              }
-            )
-        }
+                }
+            }
+          )
       }
     }
   }

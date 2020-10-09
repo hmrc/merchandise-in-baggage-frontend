@@ -17,11 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
@@ -29,14 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsDestinationController @Inject()(
-                                          override val controllerComponents: MessagesControllerComponents,
-                                          actionProvider: DeclarationJourneyActionProvider,
-                                          formProvider: GoodsDestinationFormProvider,
-                                          repo: DeclarationJourneyRepository,
-                                          view: GoodsDestinationView
+                                            override val controllerComponents: MessagesControllerComponents,
+                                            actionProvider: DeclarationJourneyActionProvider,
+                                            repo: DeclarationJourneyRepository,
+                                            view: GoodsDestinationView
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
-
-  val form: Form[GoodsDestination] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeGoodsDestination.fold(form)(form.fill)))

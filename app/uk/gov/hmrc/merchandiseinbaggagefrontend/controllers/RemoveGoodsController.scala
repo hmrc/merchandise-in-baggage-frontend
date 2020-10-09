@@ -19,26 +19,24 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.RemoveGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.RemoveGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsVatRateController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
-                                        view: GoodsVatRateView)
-                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
+class RemoveGoodsController @Inject()(
+                                       override val controllerComponents: MessagesControllerComponents,
+                                       actionProvider: DeclarationJourneyActionProvider,
+                                       repo: DeclarationJourneyRepository,
+                                       view: RemoveGoodsView
+                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      val preparedForm = request.goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
-
-      Future successful Ok(view(preparedForm, idx, category))
+      Future successful Ok(view(form, idx, category))
     }
   }
 
@@ -47,18 +45,19 @@ class GoodsVatRateController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category))),
-          goodsVatRate => {
-            repo.upsert(
-              request.declarationJourney.copy(
-                goodsEntries = request.declarationJourney.goodsEntries.patch(
-                  idx,
-                  request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate))
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category))),
+          removeGoods => {
+            if(removeGoods) {
+              repo.upsert(
+                request.declarationJourney.copy(
+                  goodsEntries = request.declarationJourney.goodsEntries.remove(idx)
                 )
-              )
-            ).map { _ =>
-              Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
+              ).map { _ =>
+                if(request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad)
+                else Redirect(routes.ReviewGoodsController.onPageLoad())
+              }
+            } else {
+              Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
             }
           }
         )

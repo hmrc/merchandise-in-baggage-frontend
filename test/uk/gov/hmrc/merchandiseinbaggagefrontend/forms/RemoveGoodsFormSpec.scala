@@ -16,16 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsVatRate, GoodsVatRates}
+import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.RemoveGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
 
-class GoodsVatRateFormProvider @Inject() extends Mappings {
+class RemoveGoodsFormSpec extends BooleanFieldBehaviours {
 
-  def apply(): Form[GoodsVatRate] =
-    Form(
-      "value" -> enum[GoodsVatRate](GoodsVatRates, "goodsVatRate.error.required")
+  val requiredKey = "removeGoods.error.required"
+  val invalidKey = "error.boolean"
+
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
     )
 
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
+  }
 }

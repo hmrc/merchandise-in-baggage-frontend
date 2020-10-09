@@ -17,16 +17,23 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
 
-class SearchGoodsFormProviderSpec extends FieldBehaviours {
+class ValueWeightOfGoodsFormSpec extends BooleanFieldBehaviours {
 
-  val form = new SearchGoodsFormProvider()()
+  val requiredKey = "valueWeightOfGoods.error.required"
+  val invalidKey = "error.boolean"
 
-  ".category" must {
+  ".value" must {
 
-    val fieldName = "category"
-    val requiredKey = "searchGoods.category.error.required"
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
 
     behave like mandatoryField(
       form,
@@ -34,17 +41,4 @@ class SearchGoodsFormProviderSpec extends FieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
-  ".quantity" must {
-
-    val fieldName = "quantity"
-    val requiredKey = "searchGoods.quantity.error.required"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
 }

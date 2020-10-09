@@ -17,19 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new ReviewGoodsFormProvider()
-  private val form = formProvider()
 
   private lazy val view = injector.instanceOf[ReviewGoodsView]
-  private lazy val controller = new ReviewGoodsController(controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, view)
+  private lazy val controller =
+    new ReviewGoodsController(controllerComponents, actionBuilder, declarationJourneyRepository, view)
 
   private val goods =
     GoodsEntry(

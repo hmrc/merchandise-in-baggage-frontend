@@ -18,19 +18,16 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new ExciseAndRestrictedGoodsFormProvider()
-  private val form = formProvider()
 
   private lazy val controller =
     new ExciseAndRestrictedGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[ExciseAndRestrictedGoodsView])
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[ExciseAndRestrictedGoodsView])
 
   private def ensureContent(result: Future[Result]) = {
     val content = contentAsString(result)
@@ -109,7 +106,6 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 

@@ -17,11 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
@@ -31,44 +29,35 @@ import scala.concurrent.{ExecutionContext, Future}
 class SearchGoodsController @Inject()(
                                        override val controllerComponents: MessagesControllerComponents,
                                        actionProvider: DeclarationJourneyActionProvider,
-                                       formProvider: SearchGoodsFormProvider,
                                        repo: DeclarationJourneyRepository,
                                        view: SearchGoodsView
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  val form: Form[CategoryQuantityOfGoods] = formProvider()
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
+    val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequest) { goodsEntry =>
-      val preparedForm = goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
-
-      Ok(view(preparedForm, idx))
-    }
+    Ok(view(preparedForm, idx))
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
-          categoryQuantityOfGoods => {
-            val updatedGoodsEntries =
-              request.declarationJourney.goodsEntries.entries.updated(
-                idx - 1,
-                goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)))
-
-            repo.upsert(
-              request.declarationJourney.copy(
-                goodsEntries = GoodsEntries(updatedGoodsEntries)
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+        categoryQuantityOfGoods => {
+          repo.upsert(
+            request.declarationJourney.copy(
+              goodsEntries = request.declarationJourney.goodsEntries.patch(
+                idx,
+                request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
               )
-            ).map { _ =>
-              Redirect(routes.GoodsVatRateController.onPageLoad(idx))
-            }
+            )
+          ).map { _ =>
+            Redirect(routes.GoodsVatRateController.onPageLoad(idx))
           }
-        )
-    }
+        }
+      )
   }
 
 }

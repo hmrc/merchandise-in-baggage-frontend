@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
@@ -27,12 +26,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new GoodsVatRateFormProvider()
-  private val form = formProvider()
 
   private lazy val controller =
     new GoodsVatRateController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[GoodsVatRateView])
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[GoodsVatRateView])
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
@@ -74,8 +71,6 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Twenty"))
 
-        form.bindFromRequest()(request)
-
         val result = controller.onSubmit(1)(request)
 
         status(result) mustEqual SEE_OTHER
@@ -89,7 +84,6 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
-        form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit(1)(postRequest)
 

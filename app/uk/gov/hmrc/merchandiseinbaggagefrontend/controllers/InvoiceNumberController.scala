@@ -17,11 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntries
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.InvoiceNumberView
 
@@ -36,45 +34,37 @@ class InvoiceNumberController @Inject()(
                                        )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  val form: Form[String] = InvoiceNumberForm.form
+  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+    withGoodsCategory(request.goodsEntry) { category =>
+      val preparedForm = request.goodsEntry.maybeInvoiceNumber.fold(form)(form.fill)
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequest) { goodsEntry =>
-      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequest) { categoryQuantityOfGoods =>
-        val preparedForm = goodsEntry.maybeInvoiceNumber.fold(form)(form.fill)
-
-        Ok(view(preparedForm, idx, categoryQuantityOfGoods.category))
-      }
+      Future successful Ok(view(preparedForm, idx, category))
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.entries.lift(idx - 1).fold(actionProvider.invalidRequestF) { goodsEntry =>
-      goodsEntry.maybeCategoryQuantityOfGoods.fold(actionProvider.invalidRequestF) { categoryQuantityOfGoods =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, idx, categoryQuantityOfGoods.category))),
-            invoiceNumber => {
-              val updatedGoodsEntries =
-                request.declarationJourney.goodsEntries.entries.updated(
-                  idx - 1,
-                  goodsEntry.copy(
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+    withGoodsCategory(request.goodsEntry) { category =>
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, idx, category))),
+          invoiceNumber => {
+            repo.upsert(
+              request.declarationJourney.copy(
+                goodsEntries = request.declarationJourney.goodsEntries.patch(
+                  idx,
+                  request.goodsEntry.copy(
                     maybeInvoiceNumber = Some(invoiceNumber),
                     maybeTaxDue = Some(BigDecimal(-999.99))
-                  ))
-
-              repo.upsert(
-                request.declarationJourney.copy(
-                  goodsEntries = GoodsEntries(updatedGoodsEntries)
+                  )
                 )
-              ).map { _ =>
-                Redirect(routes.ReviewGoodsController.onPageLoad())
-              }
+              )
+            ).map { _ =>
+              Redirect(routes.ReviewGoodsController.onPageLoad())
             }
-          )
-      }
+          }
+        )
     }
   }
 

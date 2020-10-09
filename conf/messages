@@ -23,7 +23,10 @@ error.must.be.positive = Enter an amount greater than 0
 site.yes = Yes
 site.no = No
 site.continue = Continue
+site.confirm = Confirm
 site.start = Start now
+site.startAgain = Start again
+site.remove = Remove
 
 payment.button = Pay now
 next.button = Next
@@ -173,6 +176,17 @@ reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
 reviewGoods.error.required = Select one of the options below
+
+# RemoveGoods
+removeGoods.title = Are you sure you want to remove the {0}?
+removeGoods.heading = Are you sure you want to remove the {0}?
+removeGoods.error.required = Select one of the options below
+
+# GoodsRemoved
+goodsRemoved.title = You removed your goods
+goodsRemoved.heading = You removed your goods
+goodsRemoved.p1 = You have no goods to declare.
+goodsRemoved.link = Add other goods
 
 # TraderDetails
 travellerDetails.title = Enter the name of the person carrying the goods

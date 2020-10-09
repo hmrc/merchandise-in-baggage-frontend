@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
-class ReviewGoodsFormProvider @Inject() extends Mappings {
+object ReviewGoodsForm extends Mappings {
 
-  def apply(): Form[Boolean] =
+  val form: Form[Boolean] =
     Form(
       "value" -> boolean("reviewGoods.error.required")
     )
