@@ -17,23 +17,30 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import enumeratum.EnumEntry
-import play.api.libs.json.Format
+import play.api.libs.json._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{EnumFormat, Enum}
 
 import scala.collection.immutable
 
-sealed trait GoodsVatRate extends EnumEntry
-
-object GoodsVatRate {
-  implicit val format: Format[GoodsVatRate] = EnumFormat(GoodsVatRates)
+object Port {
+  implicit val format: Format[Port] = EnumFormat(Ports)
 }
 
-object GoodsVatRates extends Enum[GoodsVatRate] {
-  override val baseMessageKey: String = "goodsVatRate"
+sealed trait Port extends EnumEntry {
+  val rollOnRollOff: Boolean = false
+  val display: String = entryName
+}
 
-  override val values: immutable.IndexedSeq[GoodsVatRate] = findValues
+sealed abstract class RollOnRollOffPort extends Port {
+  override val rollOnRollOff: Boolean = true
+}
 
-  case object Zero extends GoodsVatRate
-  case object Five extends GoodsVatRate
-  case object Twenty extends GoodsVatRate
+object Ports extends Enum[Port] {
+  override val baseMessageKey: String = "placeOfArrival"
+  override val values: immutable.IndexedSeq[Port] = findValues
+
+  case object Dover extends RollOnRollOffPort
+
+  case object Heathrow extends Port
+
 }

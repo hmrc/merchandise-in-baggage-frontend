@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
 @this(
@@ -37,7 +37,7 @@ button: components.button
             form = form,
             legend = messages("goodsDestination.heading"),
             legendAsHeading = true,
-            items = GoodsDestination.options(form)
+            items = GoodsDestinations.options(form)
         )
 
         @button("site.continue")

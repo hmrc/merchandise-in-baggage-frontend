@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsVatRate, GoodsVatRates}
 
 class GoodsVatRateFormProviderSpec extends OptionFieldBehaviours {
 
@@ -32,7 +32,7 @@ class GoodsVatRateFormProviderSpec extends OptionFieldBehaviours {
     behave like optionsField[GoodsVatRate](
       form,
       fieldName,
-      validValues = GoodsVatRate.values,
+      validValues = GoodsVatRates.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 

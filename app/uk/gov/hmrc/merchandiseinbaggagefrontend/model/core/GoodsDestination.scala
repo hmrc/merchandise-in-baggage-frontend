@@ -16,35 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
-import play.api.data.Form
+import enumeratum.EnumEntry
 import play.api.i18n.Messages
+import play.api.libs.json.Format
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enumerable, WithName}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumFormat}
 
-sealed trait GoodsDestination
+import scala.collection.immutable
 
-object GoodsDestination extends Enumerable.Implicits {
+sealed trait GoodsDestination extends EnumEntry
 
-  case object NorthernIreland extends WithName("ni") with GoodsDestination
-  case object EngScoWal extends WithName("gb") with GoodsDestination
+object GoodsDestination {
+  implicit val format: Format[GoodsDestination] = EnumFormat(GoodsDestinations)
+}
 
-  val values: Seq[GoodsDestination] = Seq(
-    NorthernIreland,
-    EngScoWal
-  )
+object GoodsDestinations extends Enum[GoodsDestination] {
+  override val baseMessageKey: String = "goodsDestination"
+  override val values: immutable.IndexedSeq[GoodsDestination] = findValues
 
-  def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
-    RadioItem(
-      value = Some(value.toString),
-      content = Text(messages(s"goodsDestination.${value.toString}")),
-      checked = form("value").value.contains(value.toString),
-      hint = if(value == EngScoWal) Some(Hint(content = Text(messages("goodsDestination.gb.hint")))) else None
-    )
-  }
+  case object NorthernIreland extends GoodsDestination
 
+  case object GreatBritain extends GoodsDestination
 
-  implicit val enumerable: Enumerable[GoodsDestination] =
-    Enumerable(values.map(v => v.toString -> v): _*)
+  override def hint(value: GoodsDestination)(implicit messages: Messages): Option[Hint] =
+    if (value == GreatBritain) Some(Hint(content = Text(messages("goodsDestination.GreatBritain.hint")))) else None
 }

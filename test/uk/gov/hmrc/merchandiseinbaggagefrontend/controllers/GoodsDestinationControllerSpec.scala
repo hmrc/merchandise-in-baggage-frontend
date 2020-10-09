@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,7 +64,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GoodsDestination.values.head)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.values.head)))
 
         val result = controller.onPageLoad()(getRequest)
 

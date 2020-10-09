@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings
 
+import enumeratum.EnumEntry
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enumerable
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -42,7 +43,7 @@ trait Formatters {
 
       private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]) =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Boolean] =
         baseFormatter
           .bind(key, data)
           .right.flatMap {
@@ -61,7 +62,7 @@ trait Formatters {
     new Formatter[BigDecimal] {
       private val baseFormatter = stringFormatter(requiredKey)
 
-      override def bind(key: String, data: Map[String, String]) =
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], BigDecimal] =
         baseFormatter
           .bind(key, data)
           .right
@@ -69,25 +70,25 @@ trait Formatters {
           .map(_.trim)
           .right
           .flatMap {
-            case s =>
+            s =>
               nonFatalCatch
                 .either(BigDecimal(s))
                 .left
                 .map(_ => Seq(FormError(key, nonNumericKey, args)))
           }
 
-      override def unbind(key: String, value: BigDecimal) =
+      override def unbind(key: String, value: BigDecimal): Map[String, String] =
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
+  private[mappings] def enumFormatter[A <: EnumEntry](enum: Enum[A], requiredKey: String, invalidKey: String): Formatter[A] =
     new Formatter[A] {
 
       private val baseFormatter = stringFormatter(requiredKey)
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], A] =
         baseFormatter.bind(key, data).right.flatMap { str =>
-          ev.withName(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
+          enum.forCode(str).map(Right.apply).getOrElse(Left(Seq(FormError(key, invalidKey))))
         }
 
       override def unbind(key: String, value: A): Map[String, String] =

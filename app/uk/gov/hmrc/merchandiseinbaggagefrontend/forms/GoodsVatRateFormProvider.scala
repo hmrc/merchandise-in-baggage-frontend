@@ -19,13 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsVatRate, GoodsVatRates}
 
 class GoodsVatRateFormProvider @Inject() extends Mappings {
 
   def apply(): Form[GoodsVatRate] =
     Form(
-      "value" -> enumerable[GoodsVatRate]("goodsVatRate.error.required")
+      "value" -> enum[GoodsVatRate](GoodsVatRates, "goodsVatRate.error.required")
     )
 
 }
