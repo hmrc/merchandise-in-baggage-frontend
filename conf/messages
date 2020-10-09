@@ -87,22 +87,23 @@ exciseAndRestrictedGoods.hint = Excise goods are alcohol, tobacco, or fuel. You 
 exciseAndRestrictedGoods.hint.a = check if your goods are restricted (opens in new tab or window).
 exciseAndRestrictedGoods.hint.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
 exciseAndRestrictedGoods.error.required = Select one of the options below
+exciseAndRestrictedGoods.error.enum = Select one of the options below
 
 
 # GoodsDestination
 goodsDestination.title = Where in the UK are the goods going?
 goodsDestination.heading = Where in the UK are the goods going?
-goodsDestination.ni = Northern Ireland
-goodsDestination.gb = Great Britain
-goodsDestination.gb.hint = England, Scotland or Wales
+goodsDestination.NorthernIreland = Northern Ireland
+goodsDestination.GreatBritain = Great Britain
+goodsDestination.GreatBritain.hint = England, Scotland or Wales
 goodsDestination.error.required = Select one of the options below
 
 
 # ValueWeightOfGoods
 valueWeightOfGoods.ni.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.gb.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
-valueWeightOfGoods.ni.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.gb.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
+valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.error.required = Select one of the options below
 
 # SearchGoods
@@ -131,9 +132,9 @@ goodsVatRate.table.row3.col1.1 = 20%
 goodsVatRate.table.row3.col1.2 = Standard rate
 goodsVatRate.table.row3.col2 = All other goods.
 goodsVatRate.legend = Which VAT rate applies to the {0}?
-goodsVatRate.zero = 0% VAT
-goodsVatRate.five = 5% VAT
-goodsVatRate.twenty = 20% VAT
+goodsVatRate.Zero = 0% VAT
+goodsVatRate.Five = 5% VAT
+goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select one of the options below
 
 # SearchGoodsCountry

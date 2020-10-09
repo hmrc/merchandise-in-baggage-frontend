@@ -28,8 +28,8 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination.NorthernIreland
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.Dover
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -70,7 +70,7 @@ object TestOnlyController {
   val completedGoodsEntry: GoodsEntry =
     GoodsEntry(
       Some(CategoryQuantityOfGoods("wine", "1")),
-      Some(GoodsVatRate.Twenty),
+      Some(GoodsVatRates.Twenty),
       Some("France"),
       Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))),
       Some("1234560"),
@@ -87,7 +87,7 @@ object TestOnlyController {
           completedGoodsEntry,
           GoodsEntry(
             Some(CategoryQuantityOfGoods("cheese", "3")),
-            Some(GoodsVatRate.Twenty),
+            Some(GoodsVatRates.Twenty),
             Some("France"),
             Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560"),

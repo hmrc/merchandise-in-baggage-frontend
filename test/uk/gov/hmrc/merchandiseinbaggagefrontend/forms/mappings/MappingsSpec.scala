@@ -16,23 +16,25 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings
 
+import enumeratum.EnumEntry
 import org.scalatest.OptionValues
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enumerable
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.MappingsSpec.Foos.Bar
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+
+import scala.collection.immutable
 
 object MappingsSpec {
 
-  sealed trait Foo
-  case object Bar extends Foo
-  case object Baz extends Foo
+  sealed trait Foo extends EnumEntry
 
-  object Foo {
+  object Foos extends Enum[Foo]{
+    override val baseMessageKey: String = "foo"
+    override val values: immutable.IndexedSeq[Foo] = findValues
 
-    val values: Set[Foo] = Set(Bar, Baz)
-
-    implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(values.toSeq.map(v => v.toString -> v): _*)
+    case object Bar extends Foo
+    case object Baz extends Foo
   }
 }
 
@@ -43,7 +45,7 @@ class MappingsSpec extends BaseSpec with OptionValues with Mappings {
   "enumerable" must {
 
     val testForm = Form(
-      "value" -> enumerable[Foo]()
+      "value" -> enum[Foo](Foos)
     )
 
     "bind a valid option" in {

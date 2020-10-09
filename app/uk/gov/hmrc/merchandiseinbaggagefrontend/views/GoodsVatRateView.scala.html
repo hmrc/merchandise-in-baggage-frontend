@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 
@@ -83,7 +83,7 @@ button: components.button
             legend = messages("goodsVatRate.legend", goodsCategory),
             legendAsHeading = false,
             classes = "govuk-fieldset__legend--s",
-            items = GoodsVatRate.options(form)
+            items = GoodsVatRates.options(form)
         )
 
         @button("site.continue")

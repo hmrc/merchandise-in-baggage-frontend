@@ -126,7 +126,7 @@ object Eori {
   implicit val format: OFormat[Eori] = Json.format[Eori]
 }
 
-case class JourneyDetails(placeOfArrival: PlaceOfArrival, dateOfArrival: LocalDate) {
+case class JourneyDetails(placeOfArrival: Port, dateOfArrival: LocalDate) {
   val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
 }
 
@@ -159,7 +159,7 @@ case class DeclarationJourney(sessionId: SessionId,
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
     maybeJourneyDetails.fold(false) { journeyDetails =>
-      if (journeyDetails.placeOfArrival.requiresVehicleChecks) {
+      if (journeyDetails.placeOfArrival.rollOnRollOff) {
         if (maybeTravellingByVehicle.contains(false)) {
           true
         } else {

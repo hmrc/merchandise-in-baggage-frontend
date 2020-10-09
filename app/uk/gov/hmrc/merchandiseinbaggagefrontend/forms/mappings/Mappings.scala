@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings
 
+import enumeratum.EnumEntry
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enumerable
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 
 trait Mappings extends Formatters with Constraints {
 
@@ -32,7 +33,6 @@ trait Mappings extends Formatters with Constraints {
   protected def bigDecimal(requiredKey: String = "error.required", nonNumericKey: String = "error.nonNumeric"): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))
 
-  protected def enumerable[A](requiredKey: String = "error.required", invalidKey: String = "error.invalid")(
-    implicit ev: Enumerable[A]): FieldMapping[A] =
-    of(enumerableFormatter[A](requiredKey, invalidKey))
+  protected def enum[A <: EnumEntry](enum: Enum[A], requiredKey: String = "error.required", invalidKey: String = "error.invalid"): FieldMapping[A] =
+    of(enumFormatter[A](enum, requiredKey, invalidKey))
 }

@@ -19,7 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsVatRateFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsVatRateView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -71,7 +72,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration is started and a valid selection submitted" in {
         givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "twenty"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Twenty"))
 
         form.bindFromRequest()(request)
 
@@ -81,7 +82,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad(1).toString
 
         startedDeclarationJourney.goodsEntries.entries.head mustBe GoodsEntry.empty
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(GoodsVatRate.Twenty)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(Twenty)
       }
     }
 

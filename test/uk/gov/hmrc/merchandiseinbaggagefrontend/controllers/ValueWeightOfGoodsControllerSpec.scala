@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ValueWeightOfGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -71,7 +71,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
       }
 
       "a declaration has been started with a destination of England, Wales or Scotland" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(EngScoWal)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
 
         val result = controller.onPageLoad()(request)
 

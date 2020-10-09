@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 import java.time.LocalDate.now
 
 import play.api.libs.json.Json.{parse, toJson}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
