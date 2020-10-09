@@ -17,23 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsDestinations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsForm.form
 
-class GoodsDestinationFormProviderSpec extends OptionFieldBehaviours {
+class ExciseAndRestrictedGoodsFormSpec extends BooleanFieldBehaviours {
 
-  val form = new GoodsDestinationFormProvider()()
+  val requiredKey = "exciseAndRestrictedGoods.error.required"
+  val invalidKey = "error.boolean"
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "goodsDestination.error.required"
 
-    behave like optionsField[GoodsDestination](
+    behave like booleanField(
       form,
       fieldName,
-      validValues = GoodsDestinations.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
@@ -42,5 +41,4 @@ class GoodsDestinationFormProviderSpec extends OptionFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }

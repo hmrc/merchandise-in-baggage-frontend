@@ -21,9 +21,10 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID.randomUUID
 
 import play.api.i18n.Messages
+import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Key, SummaryList, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
@@ -85,6 +86,14 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
 
     if (entries.nonEmpty && (goods.size == entries.size)) Some(DeclarationGoods(goods))
     else None
+  }
+
+  def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
+    GoodsEntries(entries.updated(idx -1, goodsEntry))
+
+  def remove(idx: Int): GoodsEntries = {
+    if(entries.size == 1) GoodsEntries.empty
+    else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
   }
 }
 
@@ -212,9 +221,9 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  purchaseDetails: PurchaseDetails,
                  invoiceNumber: String,
                  taxDue: BigDecimal) {
-  def toSummaryList(implicit messages: Messages): SummaryList = {
+  def toSummaryList(idx: Int)(implicit messages: Messages): SummaryList = {
     val price =
-      s"${purchaseDetails.amount}, ${purchaseDetails.currency.displayName})"
+      s"${purchaseDetails.amount}, ${purchaseDetails.currency.displayName}"
 
     SummaryList(Seq(
       SummaryListRow(
@@ -236,6 +245,12 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.invoice"))),
         Value(Text(invoiceNumber))
+      ),
+      SummaryListRow(
+        key = Key(
+          HtmlContent(s"""<a style="font-weight: 400" href="${RemoveGoodsController.onPageLoad(idx).url}" class="govuk-link">${messages("site.remove")}</a>""")
+        ),
+        classes = "govuk-summary-list__row--no-border"
       )
     ))
   }

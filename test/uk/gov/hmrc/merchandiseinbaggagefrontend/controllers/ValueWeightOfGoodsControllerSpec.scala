@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ValueWeightOfGoodsView
 
@@ -26,12 +25,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new ValueWeightOfGoodsFormProvider()
-  private val form = formProvider()
 
   private lazy val controller =
     new ValueWeightOfGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[ValueWeightOfGoodsView])
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[ValueWeightOfGoodsView])
 
   private def ensureContent(result: Future[Result]) = {
     val content = contentAsString(result)
@@ -129,7 +126,6 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
-        form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 

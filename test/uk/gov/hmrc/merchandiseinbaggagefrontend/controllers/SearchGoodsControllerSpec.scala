@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
@@ -26,12 +25,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new SearchGoodsFormProvider()
-  private val form = formProvider()
 
   private lazy val controller =
     new SearchGoodsController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[SearchGoodsView])
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[SearchGoodsView])
 
   private def ensureContent(result: Future[Result]) = {
     val content = contentAsString(result)
@@ -105,7 +102,6 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit(1)(postRequest)
 

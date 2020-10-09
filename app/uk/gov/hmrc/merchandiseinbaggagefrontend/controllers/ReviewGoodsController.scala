@@ -17,10 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
@@ -30,13 +29,10 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ReviewGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       actionProvider: DeclarationJourneyActionProvider,
-                                      formProvider: ReviewGoodsFormProvider,
                                       repo: DeclarationJourneyRepository,
                                       view: ReviewGoodsView)
                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
-
-  val form: Form[Boolean] = formProvider()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>

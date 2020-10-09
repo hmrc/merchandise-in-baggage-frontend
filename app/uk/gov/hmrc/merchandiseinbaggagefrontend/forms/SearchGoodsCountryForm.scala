@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
-class SearchGoodsCountryFormProvider @Inject() extends Mappings {
+object SearchGoodsCountryForm extends Mappings {
 
-  def apply(options: List[String]): Form[String] =
+  def form(options: List[String]): Form[String] =
     Form(
       "value" -> text("searchGoodsCountry.error.required")
         .verifying(existInList(options, "searchGoodsCountry.error.invalid"))

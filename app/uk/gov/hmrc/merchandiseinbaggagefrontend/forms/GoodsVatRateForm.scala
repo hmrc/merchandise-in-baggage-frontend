@@ -16,30 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsVatRate, GoodsVatRates}
 
-class ValueWeightOfGoodsFormProviderSpec extends BooleanFieldBehaviours {
+object GoodsVatRateForm extends Mappings {
 
-  val requiredKey = "valueWeightOfGoods.error.required"
-  val invalidKey = "error.boolean"
-
-  val form = new ValueWeightOfGoodsFormProvider()()
-
-  ".value" must {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  val form: Form[GoodsVatRate] =
+    Form(
+      "value" -> enum[GoodsVatRate](GoodsVatRates, "goodsVatRate.error.required")
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

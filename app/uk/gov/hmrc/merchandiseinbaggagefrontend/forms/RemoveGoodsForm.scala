@@ -16,30 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
-class ReviewGoodsFormProviderSpec extends BooleanFieldBehaviours {
+object RemoveGoodsForm extends Mappings {
 
-  val requiredKey = "reviewGoods.error.required"
-  val invalidKey = "error.boolean"
-
-  val form = new ReviewGoodsFormProvider()()
-
-  ".value" must {
-
-    val fieldName = "value"
-
-    behave like booleanField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
+  val form: Form[Boolean] =
+    Form(
+      "value" -> boolean("removeGoods.error.required")
     )
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

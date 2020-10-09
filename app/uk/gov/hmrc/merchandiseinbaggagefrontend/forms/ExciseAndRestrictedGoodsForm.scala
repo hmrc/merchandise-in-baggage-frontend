@@ -16,20 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
-import play.api.data.Forms.mapping
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
-class SearchGoodsFormProvider @Inject() extends Mappings {
+object ExciseAndRestrictedGoodsForm extends Mappings {
 
-  def apply(): Form[CategoryQuantityOfGoods] =
+  val form: Form[Boolean] =
     Form(
-      mapping(
-        "category" -> text("searchGoods.category.error.required"),
-        "quantity" -> text("searchGoods.quantity.error.required")
-      )(CategoryQuantityOfGoods.apply)(CategoryQuantityOfGoods.unapply)
+      "value" -> boolean("exciseAndRestrictedGoods.error.required")
     )
 
 }

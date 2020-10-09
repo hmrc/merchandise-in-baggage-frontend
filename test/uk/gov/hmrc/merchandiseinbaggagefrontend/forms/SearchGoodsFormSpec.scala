@@ -17,24 +17,27 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsVatRate, GoodsVatRates}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsForm.form
 
-class GoodsVatRateFormProviderSpec extends OptionFieldBehaviours {
+class SearchGoodsFormSpec extends FieldBehaviours {
 
-  val form = new GoodsVatRateFormProvider()()
+  ".category" must {
 
-  ".value" must {
+    val fieldName = "category"
+    val requiredKey = "searchGoods.category.error.required"
 
-    val fieldName = "value"
-    val requiredKey = "goodsVatRate.error.required"
-
-    behave like optionsField[GoodsVatRate](
+    behave like mandatoryField(
       form,
       fieldName,
-      validValues = GoodsVatRates.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      requiredError = FormError(fieldName, requiredKey)
     )
+  }
+
+  ".quantity" must {
+
+    val fieldName = "quantity"
+    val requiredKey = "searchGoods.quantity.error.required"
 
     behave like mandatoryField(
       form,

@@ -16,41 +16,28 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
-h1: components.h1,
-h3: components.h3,
-summaryList: GovukSummaryList,
 errorSummary: components.errorSummary,
 inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], goods: DeclarationGoods)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages(s"reviewGoods.title"))) {
-    @formHelper(action = ReviewGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+@layout(pageTitle = Some(messages(s"removeGoods.title", goodsCategory))) {
+    @formHelper(action = RemoveGoodsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
-        @h1(messages("reviewGoods.heading"))
-
-        @for((goods, idx) <- goods.goods.zipWithIndex) {
-            @summaryList(goods.toSummaryList(idx + 1))
-        }
-
-        @h3(messages("reviewGoods.h3"))
-
         @inputYesNo(
             form = form,
-            legend = messages(s"reviewGoods.h3"),
-            legendAsHeading = false,
-            classes = "govuk-visually-hidden"
+            legend = messages(s"removeGoods.heading", goodsCategory),
+            legendAsHeading = true
         )
 
-        @button("site.continue")
+        @button("site.confirm")
     }
 }

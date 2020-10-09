@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
-class ValueWeightOfGoodsFormProvider @Inject() extends Mappings {
+object ValueWeightOfGoodsForm extends Mappings {
 
-  def apply(): Form[Boolean] =
+  val form: Form[Boolean] =
     Form(
       "value" -> boolean("valueWeightOfGoods.error.required")
     )

@@ -17,21 +17,23 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithApplication
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.OptionFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsDestinations}
 
-class SearchGoodsCountryFormProviderSpec extends BaseSpecWithApplication with FieldBehaviours {
-
-  val appConfig = injector.instanceOf[AppConfig]
-
-  val form = new SearchGoodsCountryFormProvider()(CountriesService.countries)
+class GoodsDestinationFormSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "searchGoodsCountry.error.required"
+    val requiredKey = "goodsDestination.error.required"
+
+    behave like optionsField[GoodsDestination](
+      form,
+      fieldName,
+      validValues = GoodsDestinations.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
 
     behave like mandatoryField(
       form,

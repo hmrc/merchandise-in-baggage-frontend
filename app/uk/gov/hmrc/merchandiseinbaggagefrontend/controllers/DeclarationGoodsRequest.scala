@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
+package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import javax.inject.Inject
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsDestination, GoodsDestinations}
+import play.api.mvc.WrappedRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
 
-class GoodsDestinationFormProvider @Inject() extends Mappings {
-  def apply(): Form[GoodsDestination] =
-    Form(
-      "value" -> enum[GoodsDestination](GoodsDestinations, "goodsDestination.error.required")
-    )
+final class DeclarationGoodsRequest[A](declarationJourneyRequest: DeclarationJourneyRequest[A], val goodsEntry: GoodsEntry)
+  extends WrappedRequest[A](declarationJourneyRequest) {
 
+  val declarationJourney = declarationJourneyRequest.declarationJourney
 }

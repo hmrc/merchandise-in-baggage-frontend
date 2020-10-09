@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
@@ -27,12 +26,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
-  private val formProvider = new GoodsDestinationFormProvider()
-  private val form = formProvider()
 
   private lazy val controller =
     new GoodsDestinationController(
-      controllerComponents, actionBuilder, formProvider, declarationJourneyRepository, injector.instanceOf[GoodsDestinationView])
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[GoodsDestinationView])
 
   private def ensureContent(result: Future[Result]): String = {
     val content = contentAsString(result)
@@ -86,8 +83,6 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
         val request = postRequest.withFormUrlEncodedBody(("value", NorthernIreland.toString))
 
-        form.bindFromRequest()(request)
-
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
@@ -99,7 +94,6 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit()(postRequest)
 
