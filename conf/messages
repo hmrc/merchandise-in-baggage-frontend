@@ -212,5 +212,6 @@ checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and
 checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force.
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
+checkYourAnswers.payButton = Accept and Pay
 
 

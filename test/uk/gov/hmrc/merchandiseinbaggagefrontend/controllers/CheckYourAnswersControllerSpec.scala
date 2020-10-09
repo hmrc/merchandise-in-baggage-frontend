@@ -68,7 +68,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("I will need to show my declaration and invoices if I am stopped by Border Force.")
         content must include("Warning")
         content must include("If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.")
-        content must include("Pay now")
+        content must include("Accept and Pay")
       }
     }
 
