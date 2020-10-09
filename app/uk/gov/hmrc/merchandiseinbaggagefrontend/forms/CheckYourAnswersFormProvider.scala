@@ -21,13 +21,18 @@ import play.api.data.Forms.mapping
 import play.api.data.Forms._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 import play.api.data.format.Formats._
+import CheckYourAnswersFormProvider._
+
+object CheckYourAnswersFormProvider {
+  val taxDue = "taxDue"
+}
 
 class CheckYourAnswersFormProvider extends Mappings {
 
   def apply(): Form[Answers] =
     Form(
       mapping(
-        "taxDue" -> of(doubleFormat)
+        taxDue -> of(doubleFormat)
       )(Answers.apply)(Answers.unapply)
     )
 
