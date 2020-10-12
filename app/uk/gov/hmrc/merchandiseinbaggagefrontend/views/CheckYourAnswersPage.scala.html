@@ -66,6 +66,8 @@
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.declarationGoods.totalTaxDue.formattedInPounds</dd>
    </div>
+
+  <input id="@taxDue" type="hidden" name="@taxDue" value="@declaration.declarationGoods.totalTaxDue.value">
  </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
