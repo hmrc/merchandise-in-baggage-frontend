@@ -15,14 +15,13 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
     errorSummary: components.errorSummary,
-    inputRadio: components.inputRadio,
+    inputYesNo: components.inputYesNo,
     button: components.button
 )
 
@@ -33,11 +32,10 @@
 
         @errorSummary(form.errors)
 
-        @inputRadio(
+        @inputYesNo(
             form = form,
             legend = messages("customsDeclares.heading"),
-            legendAsHeading = true,
-            items = CustomsDeclares.options(form)
+            legendAsHeading = true
         )
 
         @button("site.continue")

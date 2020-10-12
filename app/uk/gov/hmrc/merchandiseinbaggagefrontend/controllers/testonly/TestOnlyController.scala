@@ -28,9 +28,6 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.AgentDeclares
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination.NorthernIreland
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.Dover
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
@@ -96,7 +93,7 @@ object TestOnlyController {
             Some("1234560"),
             Some(AmountInPence(2000))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
-      maybeIsACustomsAgent = Some(AgentDeclares),
+      maybeIsACustomsAgent = Some(YesNo(true)),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address("1 Agent Drive", "Agent Town", "AG1 5NT")),
       maybeEori = Some(Eori("TerrysEori")),

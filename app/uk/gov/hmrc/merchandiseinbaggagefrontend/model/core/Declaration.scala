@@ -28,7 +28,6 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.{AgentDeclares, NoAgentDeclares}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -166,7 +165,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
-                              maybeIsACustomsAgent: Option[CustomsDeclares] = None,
+                              maybeIsACustomsAgent: Option[YesNo] = None,
                               maybeCustomsAgentName: Option[String] = None,
                               maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
@@ -176,14 +175,12 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeRegistrationNumber: Option[String] = None) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
-    maybeIsACustomsAgent.fold(None: Option[CustomsAgent]) {
-      case NoAgentDeclares => None
-      case AgentDeclares =>
-        for {
-          customsAgentName <- maybeCustomsAgentName
-          customsAgentAddress <- maybeCustomsAgentAddress
-        } yield CustomsAgent(customsAgentName, customsAgentAddress)
-    }
+    for {
+      _                   <- maybeIsACustomsAgent
+      customsAgentName    <- maybeCustomsAgentName
+      customsAgentAddress <- maybeCustomsAgentAddress
+      if(maybeIsACustomsAgent.exists(_.yes))
+    } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
     maybeJourneyDetails.fold(false) { journeyDetails =>
@@ -297,6 +294,9 @@ object CustomsAgent {
 
 sealed trait YesNo extends EnumEntry {
   val messageKey = s"${YesNo.baseMessageKey}.$entryName"
+case class YesNo(yes: Boolean) {
+  override val toString: String = if (yes) "Yes" else "No"
+  val stringValue: String = if (yes) "true" else "false"
 }
 
 object YesNo extends Enum[YesNo] {
