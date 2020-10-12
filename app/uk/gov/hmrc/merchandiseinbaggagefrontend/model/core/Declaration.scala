@@ -179,7 +179,7 @@ case class DeclarationJourney(sessionId: SessionId,
       _                   <- maybeIsACustomsAgent
       customsAgentName    <- maybeCustomsAgentName
       customsAgentAddress <- maybeCustomsAgentAddress
-      if(maybeIsACustomsAgent.exists(_.yes))
+      if maybeIsACustomsAgent.exists(_.yes)
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
