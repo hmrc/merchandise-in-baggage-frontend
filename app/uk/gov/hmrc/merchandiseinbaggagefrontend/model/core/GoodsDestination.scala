@@ -35,6 +35,6 @@ object GoodsDestinations extends Enum[GoodsDestination] with RadioSupport[GoodsD
   case object NorthernIreland extends GoodsDestination
 
   case object GreatBritain extends GoodsDestination {
-    override val maybeHintMessageKey: Option[String] = hintMessageKey
+    override val maybeHintMessageKey: Option[String] = Some(s"$baseMessageKeyForEntry.hint")
   }
 }
