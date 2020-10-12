@@ -18,17 +18,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import enumeratum.EnumEntry
 import play.api.libs.json.Format
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{EnumFormat, Enum}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumEntryRadioItemSupport, EnumFormat, RadioSupport}
 
 import scala.collection.immutable
 
-sealed trait GoodsVatRate extends EnumEntry
+sealed trait GoodsVatRate extends EnumEntry with EnumEntryRadioItemSupport
 
 object GoodsVatRate {
   implicit val format: Format[GoodsVatRate] = EnumFormat(GoodsVatRates)
 }
 
-object GoodsVatRates extends Enum[GoodsVatRate] {
+object GoodsVatRates extends Enum[GoodsVatRate] with RadioSupport[GoodsVatRate] {
   override val baseMessageKey: String = "goodsVatRate"
 
   override val values: immutable.IndexedSeq[GoodsVatRate] = findValues

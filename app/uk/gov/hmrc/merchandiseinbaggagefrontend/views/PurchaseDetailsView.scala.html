@@ -75,13 +75,13 @@ button: components.button
             <div class="autocomplete-wrapper currency govuk-input--width-30">
                 <select name="currency" id="currency">
                     @if(form("value").value.isEmpty) {
-                        <option value="" selected></option>
+                        <option value="" selected>
                     }
                     @for(currency <- currencies) {
                         @if(form("currency").value.contains(currency.currencyCode)) {
-                            <option value="@currency.currencyCode" selected>@currency.displayName</option>
+                            <option value="@currency.currencyCode" selected>@currency.displayName
                         } else {
-                            <option value="@currency.currencyCode">@currency.displayName</option>
+                            <option value="@currency.currencyCode">@currency.displayName
                         }
                     }
                 </select>

@@ -22,14 +22,18 @@ import java.time.format.DateTimeFormatter
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
 
+import enumeratum.EnumEntry
 import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
+
+import scala.collection.immutable
 
 case class SessionId(value: String)
 
@@ -214,7 +218,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeCustomsAgent,
         eori,
         journeyDetails,
-        YesNo(maybeTravellingByVehicle.getOrElse(false)),
+        YesNo.from(maybeTravellingByVehicle.getOrElse(false)),
         maybeRegistrationNumber
       )
     }
@@ -288,12 +292,17 @@ object CustomsAgent {
   implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
 }
 
-case class YesNo(yes: Boolean) {
-  override val toString: String = if (yes) "Yes" else "No"
-}
+sealed trait YesNo extends EnumEntry
 
-object YesNo {
-  implicit val format: OFormat[YesNo] = Json.format[YesNo]
+object YesNo extends Enum[YesNo] {
+  override val baseMessageKey: String = "enum"
+  override val values: immutable.IndexedSeq[YesNo] = findValues
+
+  def from(bool: Boolean): YesNo = if (bool) Yes else No
+
+  case object No extends YesNo
+
+  case object Yes extends YesNo
 }
 
 case class Declaration(sessionId: SessionId,

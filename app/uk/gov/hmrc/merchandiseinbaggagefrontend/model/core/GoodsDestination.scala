@@ -17,28 +17,24 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import enumeratum.EnumEntry
-import play.api.i18n.Messages
 import play.api.libs.json.Format
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
-import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumFormat}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumFormat, EnumEntryRadioItemSupport, RadioSupport}
 
 import scala.collection.immutable
 
-sealed trait GoodsDestination extends EnumEntry
+sealed trait GoodsDestination extends EnumEntry with EnumEntryRadioItemSupport
 
 object GoodsDestination {
   implicit val format: Format[GoodsDestination] = EnumFormat(GoodsDestinations)
 }
 
-object GoodsDestinations extends Enum[GoodsDestination] {
+object GoodsDestinations extends Enum[GoodsDestination] with RadioSupport[GoodsDestination]{
   override val baseMessageKey: String = "goodsDestination"
   override val values: immutable.IndexedSeq[GoodsDestination] = findValues
 
   case object NorthernIreland extends GoodsDestination
 
-  case object GreatBritain extends GoodsDestination
-
-  override def hint(value: GoodsDestination, messages: Messages): Option[Hint] =
-    if (value == GreatBritain) Some(Hint(content = Text(messages("goodsDestination.GreatBritain.hint")))) else None
+  case object GreatBritain extends GoodsDestination {
+    override val maybeHintMessageKey: Option[String] = hintMessageKey
+  }
 }
