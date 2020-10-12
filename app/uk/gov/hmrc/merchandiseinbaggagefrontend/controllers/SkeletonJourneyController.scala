@@ -38,11 +38,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val taxCalculation: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"taxCalculation.title", routes.SkeletonJourneyController.customsAgent()))
-  }
-
-  val customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"customsAgent.title", routes.SkeletonJourneyController.agentDetails()))
+    Ok(page(s"taxCalculation.title", routes.CustomsAgentController.onPageLoad()))
   }
 
   val agentDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

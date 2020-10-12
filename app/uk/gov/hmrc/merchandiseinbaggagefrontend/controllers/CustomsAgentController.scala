@@ -17,25 +17,32 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
+import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomAgentFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext
 
 class CustomsAgentController @Inject()(
                                         override val controllerComponents: MessagesControllerComponents,
                                         actionProvider: DeclarationJourneyActionProvider,
-                                        formProvider: GoodsDestinationFormProvider,
-                                      )(implicit ec: ExecutionContext) extends DeclarationJourneyUpdateController {
+                                        formProvider: CustomAgentFormProvider,
+                                        view: CustomsAgentView,
+                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   override val onSubmit: Action[AnyContent] = customsAgentSubmit
   override val onPageLoad: Action[AnyContent] = customsAgent
 
+  private val form: Form[CustomsDeclares] = formProvider()
+
   private def customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok("hello")
+    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill)))
   }
 
   private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok("hello submit")
+    Redirect(routes.SkeletonJourneyController.agentDetails())
   }
 }

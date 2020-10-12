@@ -21,18 +21,26 @@ import play.api.test.Helpers._
 class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller = app.injector.instanceOf[CustomsAgentController]
-  val url = routes.SkeletonJourneyController.customsAgent().url
 
   "render the page when a declaration journey has been started" in {
     val title = "Are you a customs agent?"
-    val getRequest = buildGet(url, sessionId)
+    val getRequest = buildGet(routes.CustomsAgentController.onPageLoad().url, sessionId)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onPageLoad()(getRequest)
     val content = contentAsString(eventualResponse)
 
     status(eventualResponse) mustBe OK
-//    content must include(title)
+    content must include(title)
+  }
+
+  "redirect to agent Details on submit" in {
+    val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
+
+    givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+    val eventualResponse = controller.onSubmit()(postRequest)
+
+    redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.agentDetails.url)
   }
 
 //  "redirect to /invalid-request" when {
@@ -40,5 +48,4 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 //      ensureRedirectToInvalidRequestPage(controller.customsAgent(buildGet(url)))
 //    }
 //  }
-
 }

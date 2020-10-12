@@ -19,12 +19,14 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 import java.time.LocalDate.now
 
 import play.api.libs.json.Json.{parse, toJson}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.NoAgentDeclares
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PlacesOfArrival.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
-  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(false))
+  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(NoAgentDeclares))
 
   private val goods =
     Goods(

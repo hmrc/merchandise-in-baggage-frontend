@@ -28,6 +28,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.{AgentDeclares, NoAgentDeclares}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -165,7 +166,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
-                              maybeIsACustomsAgent: Option[Boolean] = None,
+                              maybeIsACustomsAgent: Option[CustomsDeclares] = None,
                               maybeCustomsAgentName: Option[String] = None,
                               maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
@@ -175,12 +176,14 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeRegistrationNumber: Option[String] = None) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
-    if (maybeIsACustomsAgent.getOrElse(false)) {
-      for {
-        customsAgentName <- maybeCustomsAgentName
-        customsAgentAddress <- maybeCustomsAgentAddress
-      } yield CustomsAgent(customsAgentName, customsAgentAddress)
-    } else None
+    maybeIsACustomsAgent.fold(None: Option[CustomsAgent]) {
+      case NoAgentDeclares => None
+      case AgentDeclares =>
+        for {
+          customsAgentName <- maybeCustomsAgentName
+          customsAgentAddress <- maybeCustomsAgentAddress
+        } yield CustomsAgent(customsAgentName, customsAgentAddress)
+    }
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
     maybeJourneyDetails.fold(false) { journeyDetails =>
