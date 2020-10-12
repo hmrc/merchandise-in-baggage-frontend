@@ -17,26 +17,23 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import play.api.data.Forms._
+import play.api.data.Forms.{mapping, _}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
-import play.api.data.format.Formats._
-import CheckYourAnswersFormProvider._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 
-object CheckYourAnswersFormProvider {
+object CheckYourAnswersForm extends Mappings {
   val taxDue = "taxDue"
-}
 
-class CheckYourAnswersFormProvider extends Mappings {
-
-  def apply(): Form[Answers] =
+  val form: Form[Answers] =
     Form(
       mapping(
-        taxDue -> of(doubleFormat)
-      )(Answers.apply)(Answers.unapply)
+        taxDue -> longNumber
+      )(Answers.apply)(answers => Some(answers.taxDue.value))
     )
-
 }
 
+case class Answers(taxDue: AmountInPence)
 
-case class Answers(taxDue: Double)
+object Answers {
+  def apply(taxDue: Long): Answers = Answers(AmountInPence(taxDue))
+}
