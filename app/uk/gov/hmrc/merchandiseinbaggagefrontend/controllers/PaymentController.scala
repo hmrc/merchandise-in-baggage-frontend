@@ -52,9 +52,9 @@ class PaymentController @Inject()(
         //TODO hard coded data for now
         val body = PayApiRequest(
           MibReference("MIBI1234567890"),
-          AmountInPence((json.taxDue * 100).toLong),
-          AmountInPence((json.taxDue * 100).toLong),
-          AmountInPence((json.taxDue * 100).toLong),
+          AmountInPence(json.taxDue.toLong),
+          AmountInPence(json.taxDue.toLong),
+          AmountInPence(json.taxDue.toLong),
           TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
           MerchandiseDetails("Parts and technical crew for the forest moon")
         )
