@@ -16,17 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
+import java.text.NumberFormat.getCurrencyInstance
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale.UK
 import java.util.UUID.randomUUID
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 case class SessionId(value: String)
 
@@ -54,12 +57,21 @@ object CategoryQuantityOfGoods {
   implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
 }
 
+case class AmountInPence(value: Long) {
+  val inPounds: BigDecimal = (BigDecimal(value) / 100).setScale(2)
+  val formattedInPounds: String = getCurrencyInstance(UK).format(inPounds)
+}
+
+object AmountInPence {
+  implicit val format: Format[AmountInPence] = ValueClassFormat.formatDouble(value => AmountInPence.apply(value))(_.value)
+}
+
 case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePurchaseDetails: Option[PurchaseDetails] = None,
                       maybeInvoiceNumber: Option[String] = None,
-                      maybeTaxDue: Option[BigDecimal] = None) {
+                      maybeTaxDue: Option[AmountInPence] = None) {
 
   val goodsIfComplete: Option[Goods] =
     for {
@@ -89,10 +101,10 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   }
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
-    GoodsEntries(entries.updated(idx -1, goodsEntry))
+    GoodsEntries(entries.updated(idx - 1, goodsEntry))
 
   def remove(idx: Int): GoodsEntries = {
-    if(entries.size == 1) GoodsEntries.empty
+    if (entries.size == 1) GoodsEntries.empty
     else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
   }
 }
@@ -202,7 +214,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeCustomsAgent,
         eori,
         journeyDetails,
-        maybeTravellingByVehicle.getOrElse(false),
+        YesNo(maybeTravellingByVehicle.getOrElse(false)),
         maybeRegistrationNumber
       )
     }
@@ -220,7 +232,7 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  countryOfPurchase: String,
                  purchaseDetails: PurchaseDetails,
                  invoiceNumber: String,
-                 taxDue: BigDecimal) {
+                 taxDue: AmountInPence) {
   def toSummaryList(idx: Int)(implicit messages: Messages): SummaryList = {
     val price =
       s"${purchaseDetails.amount}, ${purchaseDetails.currency.displayName}"
@@ -260,7 +272,9 @@ object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
 }
 
-case class DeclarationGoods(goods: Seq[Goods])
+case class DeclarationGoods(goods: Seq[Goods]) {
+  val totalTaxDue: AmountInPence = AmountInPence(goods.map(g => g.taxDue.value).sum.max(0))
+}
 
 object DeclarationGoods {
   implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]
@@ -274,13 +288,21 @@ object CustomsAgent {
   implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
 }
 
+case class YesNo(yes: Boolean) {
+  override val toString: String = if (yes) "Yes" else "No"
+}
+
+object YesNo {
+  implicit val format: OFormat[YesNo] = Json.format[YesNo]
+}
+
 case class Declaration(sessionId: SessionId,
                        declarationGoods: DeclarationGoods,
                        nameOfPersonCarryingTheGoods: Name,
                        maybeCustomsAgent: Option[CustomsAgent],
                        eori: Eori,
                        journeyDetails: JourneyDetails,
-                       travellingByVehicle: Boolean,
+                       travellingByVehicle: YesNo,
                        maybeRegistrationNumber: Option[String] = None)
 
 object Declaration {

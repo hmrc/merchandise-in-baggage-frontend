@@ -17,17 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 
 case class MibReference(value: String)
 object MibReference {
   implicit val format: Format[MibReference] = ValueClassFormat.format(value => MibReference.apply(value))(_.value)
-}
-
-case class AmountInPence(value: Long)
-object AmountInPence {
-  implicit val format: Format[AmountInPence] = ValueClassFormat.formatDouble(value => AmountInPence.apply(value))(_.value)
 }
 
 case class TraderDetails(value: String)

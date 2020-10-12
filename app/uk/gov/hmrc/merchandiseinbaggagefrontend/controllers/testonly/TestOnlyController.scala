@@ -74,7 +74,7 @@ object TestOnlyController {
       Some("France"),
       Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))),
       Some("1234560"),
-      Some(BigDecimal(10.11)))
+      Some(AmountInPence(1011)))
 
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
@@ -91,7 +91,7 @@ object TestOnlyController {
             Some("France"),
             Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560"),
-            Some(BigDecimal(20.00))))),
+            Some(AmountInPence(2000))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeIsACustomsAgent = Some(true),
       maybeCustomsAgentName = Some("Andy Agent"),

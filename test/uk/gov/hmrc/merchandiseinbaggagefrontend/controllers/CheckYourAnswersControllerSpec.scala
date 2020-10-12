@@ -39,7 +39,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("Check your answers before making your declaration")
 
         content must include("Details of the goods")
-        content must include("Item")
+        content must include("Type of goods")
         content must include("wine")
         content must include("cheese")
         content must include("Country")
@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("99.99, Eurozone Euro (EUR)")
         content must include("199.99, Eurozone Euro (EUR)")
         content must include("Tax due")
-        content must include("£10.11")
+        content must include("£30.11")
 
         content must include("Personal details")
         content must include("Name")
@@ -61,6 +61,10 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("Dover")
         content must include("Date of arrival")
         content must include(completedDeclarationJourney.maybeJourneyDetails.get.formattedDateOfArrival)
+        content must include("Travelling by vehicle")
+        content must include("Yes")
+        content must include("Vehicle registration number")
+        content must include("T5 RRY")
 
         content must include("Now send your declaration")
         content must include("I understand that:")

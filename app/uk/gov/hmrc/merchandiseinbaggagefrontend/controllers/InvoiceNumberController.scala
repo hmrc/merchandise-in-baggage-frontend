@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.InvoiceNumberView
 
@@ -56,7 +57,7 @@ class InvoiceNumberController @Inject()(
                   idx,
                   request.goodsEntry.copy(
                     maybeInvoiceNumber = Some(invoiceNumber),
-                    maybeTaxDue = Some(BigDecimal(-999.99))
+                    maybeTaxDue = Some(AmountInPence(-9999))
                   )
                 )
               )

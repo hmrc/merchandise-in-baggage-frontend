@@ -39,6 +39,6 @@ object GoodsDestinations extends Enum[GoodsDestination] {
 
   case object GreatBritain extends GoodsDestination
 
-  override def hint(value: GoodsDestination)(implicit messages: Messages): Option[Hint] =
+  override def hint(value: GoodsDestination, messages: Messages): Option[Hint] =
     if (value == GreatBritain) Some(Hint(content = Text(messages("goodsDestination.GreatBritain.hint")))) else None
 }

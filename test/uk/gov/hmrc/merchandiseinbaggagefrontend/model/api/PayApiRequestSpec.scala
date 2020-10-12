@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 
 class PayApiRequestSpec extends BaseSpec {
 
