@@ -205,7 +205,7 @@ cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declara
 
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods
-checkYourAnswers.detailsOfTheGoods.category = Item
+checkYourAnswers.detailsOfTheGoods.category = Type of goods
 checkYourAnswers.detailsOfTheGoods.quantity = Number of items
 checkYourAnswers.detailsOfTheGoods.country = Country
 checkYourAnswers.detailsOfTheGoods.price = Price paid

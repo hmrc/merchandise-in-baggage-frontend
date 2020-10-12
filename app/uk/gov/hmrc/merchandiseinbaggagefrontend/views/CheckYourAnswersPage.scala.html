@@ -58,13 +58,15 @@
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.invoiceNumber")</dt>
      <dd class="govuk-summary-list__value" style="text-transform: capitalize">@goods.invoiceNumber</dd>
     </div>
-    <div class="govuk-summary-list__row">
-     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
-     <dd class="govuk-summary-list__value" style="text-transform: capitalize">£@goods.taxDue</dd>
-    </div>
    </dl>
-   <input id="@taxDue" type="hidden" name="@taxDue" value="@declaration.declarationGoods.goods.map(_.taxDue).sum">
 }
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+   <div class="govuk-summary-list__row">
+     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.declarationGoods.totalTaxDue.formattedInPounds</dd>
+   </div>
+ </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
@@ -108,12 +110,12 @@
    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
   </div>
   <div class="govuk-summary-list__row">
-   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.travellingByVehicle")</dt>
+   <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.travellingByVehicle")</dt>
    <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.travellingByVehicle</dd>
   </div>
   @declaration.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
    <div class="govuk-summary-list__row">
-    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.vehicleRegistrationNumber")</dt>
+    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.vehicleRegistrationNumber")</dt>
     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
    </div>
   }

@@ -63,6 +63,14 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     }
   }
 
+  "AmountInPence" should {
+    "format correctly" in {
+      AmountInPence(0).formattedInPounds mustBe "£0.00"
+      AmountInPence(101).formattedInPounds mustBe "£1.01"
+      AmountInPence(100101).formattedInPounds mustBe "£1,001.01"
+    }
+  }
+
   "GoodsEntry" should {
     "convert to a Goods" when {
       "the GoodsEntry is complete" in {
@@ -208,7 +216,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
             completedDeclarationJourney.maybeJourneyDetails.get,
-            completedDeclarationJourney.maybeTravellingByVehicle.get,
+            YesNo(completedDeclarationJourney.maybeTravellingByVehicle.get),
             completedDeclarationJourney.maybeRegistrationNumber))
       }
     }
@@ -262,6 +270,13 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the user has not provided journey details" in {
         completedDeclarationJourney.copy(maybeJourneyDetails = None).declarationIfRequiredAndComplete mustBe None
       }
+    }
+  }
+
+  "declaration goods" should {
+    "sum the total tax due" in {
+      declaration.declarationGoods.totalTaxDue mustBe AmountInPence(3011)
+      declaration.declarationGoods.copy(goods = Seq.empty).totalTaxDue mustBe AmountInPence(0)
     }
   }
 

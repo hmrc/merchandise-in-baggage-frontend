@@ -34,11 +34,11 @@ trait Enum[A <: EnumEntry] extends PlayEnum[A] {
       value = Some(value.toString),
       content = Text(messages(s"$baseMessageKey.${value.toString}")),
       checked = form("value").value.contains(value.toString),
-      hint = hint(value)
+      hint = hint(value, messages)
     )
   }
 
-  protected def hint(value: A)(implicit messages: Messages): Option[Hint] = None
+  protected def hint(value: A, messages: Messages): Option[Hint] = None
 }
 
 object EnumFormat {
