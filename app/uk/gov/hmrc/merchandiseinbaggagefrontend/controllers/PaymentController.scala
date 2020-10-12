@@ -21,9 +21,8 @@ import play.api.mvc._
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
@@ -33,11 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class PaymentController @Inject()(
                                    mcc: MessagesControllerComponents,
                                    paymentPage: PaymentPage,
-                                   formProvider: CheckYourAnswersFormProvider,
                                    override val httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
   extends FrontendController(mcc) with PaymentConnector {
-
-  private val form = formProvider()
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
@@ -47,14 +43,13 @@ class PaymentController @Inject()(
     def onError(): Future[Result] = Future successful BadRequest("something WRONG")
 
     form.bindFromRequest().fold(_ => onError(),
-      json => {
-
+      answers => {
         //TODO hard coded data for now
         val body = PayApiRequest(
           MibReference("MIBI1234567890"),
-          AmountInPence(json.taxDue.toLong),
-          AmountInPence(json.taxDue.toLong),
-          AmountInPence(json.taxDue.toLong),
+          answers.taxDue,
+          answers.taxDue,
+          answers.taxDue,
           TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
           MerchandiseDetails("Parts and technical crew for the forest moon")
         )
