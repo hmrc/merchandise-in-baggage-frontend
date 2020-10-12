@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import akka.stream.Materializer
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.{AgentDeclares, NoAgentDeclares}
 
 class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller = app.injector.instanceOf[CustomsAgentController]
+  private implicit val materializer = app.injector.instanceOf[Materializer]
 
   "render the page when a declaration journey has been started" in {
     val title = "Are you a customs agent?"
@@ -34,8 +37,9 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     content must include(title)
   }
 
-  "redirect to agent Details on submit" in {
+  "redirect to agent Details on submit if is an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
+      .withFormUrlEncodedBody("value" -> AgentDeclares.toString)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onSubmit()(postRequest)
@@ -43,9 +47,18 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.agentDetails.url)
   }
 
-//  "redirect to /invalid-request" when {
-//    "a declaration journey has not been started" in {
-//      ensureRedirectToInvalidRequestPage(controller.customsAgent(buildGet(url)))
-//    }
+  "redirect to EORI number on submit if is not an agent" in {
+    val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
+      .withFormUrlEncodedBody("value" -> NoAgentDeclares.toString)
+
+    givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+    val eventualResponse = controller.onSubmit()(postRequest)
+
+    redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.enterEoriNumber().url)
+  }
+
+  //TODO ask for validation
+//  "a declaration journey has not been started" in {
+//    ensureRedirectToInvalidRequestPage(controller.onPageLoad(buildGet(url)))
 //  }
 }

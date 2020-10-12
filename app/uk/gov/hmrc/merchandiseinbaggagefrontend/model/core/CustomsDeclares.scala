@@ -37,7 +37,7 @@ object CustomsDeclares extends Enumerable.Implicits {
   def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
     RadioItem(
       value = Some(value.toString),
-      content = Text(messages(s"customDeclares.${value.toString}")),
+      content = Text(messages(s"customsDeclares.${value.toString}")),
       checked = form("value").value.contains(value.toString),
     )
   }

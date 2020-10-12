@@ -206,7 +206,7 @@ cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declara
 
 # Custom Agent
 customsDeclares.title = Are you a customs agent?
-customsDeclares.title = Are you a customs agent?
+customsDeclares.heading = Are you a customs agent?
 customsDeclares.agent = Yes
 customsDeclares.declares = No
 customsDeclares.error.required = Select one of the options below

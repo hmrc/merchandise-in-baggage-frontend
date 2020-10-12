@@ -204,7 +204,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeExciseOrRestrictedGoods.contains(false) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
         journeyDetailsCompleteAndDeclarationRequired &&
-        (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(false))
+        maybeCustomsAgent.isDefined
 
     for {
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods

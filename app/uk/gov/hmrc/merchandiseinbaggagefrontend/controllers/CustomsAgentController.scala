@@ -18,10 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomAgentFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CustomsDeclares.{AgentDeclares, NoAgentDeclares}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext
@@ -43,6 +44,11 @@ class CustomsAgentController @Inject()(
   }
 
   private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Redirect(routes.SkeletonJourneyController.agentDetails())
+    def onError(): Result = BadRequest("something WRONG")
+
+    form.bindFromRequest().fold(_ => onError(), {
+      case AgentDeclares => Redirect(routes.SkeletonJourneyController.agentDetails())
+      case NoAgentDeclares => Redirect(routes.SkeletonJourneyController.enterEoriNumber())
+    })
   }
 }
