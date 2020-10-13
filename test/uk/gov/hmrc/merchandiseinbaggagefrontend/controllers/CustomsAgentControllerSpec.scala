@@ -56,9 +56,4 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
     redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.enterEoriNumber().url)
   }
-
-  //TODO ask for validation
-//  "a declaration journey has not been started" in {
-//    ensureRedirectToInvalidRequestPage(controller.onPageLoad(buildGet(url)))
-//  }
 }
