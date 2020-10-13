@@ -35,7 +35,7 @@ class TaxCalculationController @Inject()(override val controllerComponents: Mess
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
       calculationService.taxCalculation(goods).map { taxCalculations =>
-        Ok(view(taxCalculations, routes.SkeletonJourneyController.customsAgent()))
+        Ok(view(taxCalculations, routes.CustomsAgentController.onPageLoad()))
       }
     }
   }

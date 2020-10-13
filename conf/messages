@@ -104,8 +104,8 @@ goodsDestination.error.required = Select one of the options below
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.ni.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.gb.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
+valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.error.required = Select one of the options below

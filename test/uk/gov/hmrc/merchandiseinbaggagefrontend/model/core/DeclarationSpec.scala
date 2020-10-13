@@ -32,10 +32,9 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       completedGoodsEntry.maybeGoodsVatRate.get,
       completedGoodsEntry.maybeCountryOfPurchase.get,
       completedGoodsEntry.maybePurchaseDetails.get,
-      completedGoodsEntry.maybeInvoiceNumber.get,
-      completedGoodsEntry.maybeTaxDue.get)
+      completedGoodsEntry.maybeInvoiceNumber.get)
 
-  private val incompleteGoodsEntry = completedGoodsEntry.copy(maybeTaxDue = None)
+  private val incompleteGoodsEntry = completedGoodsEntry.copy(maybeInvoiceNumber = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
 
   "PurchaseDetails toString" should {
@@ -275,7 +274,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   "declaration goods" should {
     "sum the total tax due" in {
-      declaration.declarationGoods.totalTaxDue mustBe AmountInPence(3011)
+      declaration.declarationGoods.totalTaxDue mustBe AmountInPence(0)
       declaration.declarationGoods.copy(goods = Seq.empty).totalTaxDue mustBe AmountInPence(0)
     }
   }
