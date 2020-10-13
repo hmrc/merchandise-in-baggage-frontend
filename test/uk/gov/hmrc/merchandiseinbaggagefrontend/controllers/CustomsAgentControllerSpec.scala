@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import akka.stream.Materializer
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 
 class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
@@ -39,7 +40,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "redirect to agent Details on submit if is an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("value" -> Yes.toString)
+      .withFormUrlEncodedBody("value" -> YesNo.to(Yes).toString)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onSubmit()(postRequest)
@@ -49,7 +50,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "redirect to EORI number on submit if is not an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("value" -> No.toString)
+      .withFormUrlEncodedBody("value" -> YesNo.to(No).toString)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onSubmit()(postRequest)
