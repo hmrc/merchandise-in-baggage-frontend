@@ -179,7 +179,7 @@ case class DeclarationJourney(sessionId: SessionId,
       _                   <- maybeIsACustomsAgent
       customsAgentName    <- maybeCustomsAgentName
       customsAgentAddress <- maybeCustomsAgentAddress
-      if maybeIsACustomsAgent.exists(_.yes)
+      if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
@@ -294,9 +294,6 @@ object CustomsAgent {
 
 sealed trait YesNo extends EnumEntry {
   val messageKey = s"${YesNo.baseMessageKey}.$entryName"
-case class YesNo(yes: Boolean) {
-  override val toString: String = if (yes) "Yes" else "No"
-  val stringValue: String = if (yes) "true" else "false"
 }
 
 object YesNo extends Enum[YesNo] {
@@ -304,10 +301,21 @@ object YesNo extends Enum[YesNo] {
   override val values: immutable.IndexedSeq[YesNo] = findValues
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No
+  def to(yesNo: YesNo): Boolean = yesNo match {
+    case Yes => true
+    case No  => false
+  }
 
   case object No extends YesNo
 
   case object Yes extends YesNo
+
+  implicit class ToString(yesNo: YesNo) {
+    val stringValue: String = yesNo match {
+      case No  => "false"
+      case Yes => "true"
+    }
+  }
 }
 
 case class Declaration(sessionId: SessionId,

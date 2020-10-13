@@ -39,7 +39,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "redirect to agent Details on submit if is an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("value" -> YesNo(true).stringValue)
+      .withFormUrlEncodedBody("value" -> YesNo.Yes.stringValue)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onSubmit()(postRequest)
@@ -49,7 +49,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "redirect to EORI number on submit if is not an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("value" -> YesNo(false).stringValue)
+      .withFormUrlEncodedBody("value" -> YesNo.No.stringValue)
 
     givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
     val eventualResponse = controller.onSubmit()(postRequest)

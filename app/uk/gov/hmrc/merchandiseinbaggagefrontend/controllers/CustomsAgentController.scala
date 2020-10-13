@@ -21,6 +21,7 @@ import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomAgentFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext
@@ -38,7 +39,7 @@ class CustomsAgentController @Inject()(
   private val form: Form[Boolean] = formProvider()
 
   private def customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(yesNo => form.fill(yesNo.yes))))
+    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(yesNo => form.fill(YesNo.to(yesNo)))))
   }
 
   private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
