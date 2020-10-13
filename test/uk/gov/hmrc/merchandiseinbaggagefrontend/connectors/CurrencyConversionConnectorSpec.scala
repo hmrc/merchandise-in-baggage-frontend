@@ -36,7 +36,10 @@ class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseS
   "get list of currencies for a given date" in new CurrencyConversionConnector {
     override val httpClient: HttpClient = injector.instanceOf[HttpClient]
 
-    givenCurrenciesAreFound(currencyConversionMockServer)
+    override lazy val currencyConversionBaseUrl =
+      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
+
+    givenCurrenciesAreFound(wireMockServer)
 
     eventually {
       val response: CurrencyPeriod = Await.result(getCurrencies(), 5.seconds)

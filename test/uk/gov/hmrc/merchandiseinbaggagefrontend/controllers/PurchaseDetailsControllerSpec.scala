@@ -31,7 +31,11 @@ import scala.concurrent.Future
 class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
   private lazy val controller =
     new PurchaseDetailsController(
-      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView])
+      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView]){
+
+      override lazy val currencyConversionBaseUrl =
+        s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
+    }
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)
@@ -46,7 +50,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
     val url = routes.SearchGoodsController.onPageLoad(1).url
     val getRequest = buildGet(url, sessionId)
 
-    givenCurrenciesAreFound(currencyConversionMockServer)
+    givenCurrenciesAreFound(wireMockServer)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
@@ -66,7 +70,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
     val url = routes.SearchGoodsController.onSubmit(1).url
     val postRequest = buildPost(url, sessionId)
 
-    givenCurrenciesAreFound(currencyConversionMockServer)
+    givenCurrenciesAreFound(wireMockServer)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
