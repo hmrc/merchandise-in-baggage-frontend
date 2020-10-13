@@ -30,6 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 import scala.collection.immutable
