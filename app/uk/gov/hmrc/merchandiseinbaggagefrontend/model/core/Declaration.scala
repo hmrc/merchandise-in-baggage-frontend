@@ -292,7 +292,9 @@ object CustomsAgent {
   implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
 }
 
-sealed trait YesNo extends EnumEntry
+sealed trait YesNo extends EnumEntry {
+  val messageKey = s"${YesNo.baseMessageKey}.$entryName"
+}
 
 object YesNo extends Enum[YesNo] {
   override val baseMessageKey: String = "enum"

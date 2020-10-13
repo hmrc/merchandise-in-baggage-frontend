@@ -113,7 +113,7 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.travellingByVehicle")</dt>
-   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.travellingByVehicle</dd>
+   <dd class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.travellingByVehicle.messageKey)</dd>
   </div>
   @declaration.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
    <div class="govuk-summary-list__row">

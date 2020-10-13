@@ -45,7 +45,6 @@ trait EnumEntryRadioItemSupport {
   this: EnumEntry =>
 
   protected val baseMessageKeyForEntry: String = s"$baseMessageKey.$entryName"
-  protected val hintMessageKey: Option[String] = Some(s"$baseMessageKeyForEntry.hint")
   protected val maybeHintMessageKey: Option[String] = None
 
   def radioItem(form: Form[_])(implicit messages: Messages): RadioItem =
