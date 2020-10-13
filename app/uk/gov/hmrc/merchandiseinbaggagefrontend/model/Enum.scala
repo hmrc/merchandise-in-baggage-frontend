@@ -23,7 +23,6 @@ import play.api.libs.json._
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.baseMessageKey
 
 trait Enum[A <: EnumEntry] extends PlayEnum[A] {
   val baseMessageKey: String
@@ -44,13 +43,12 @@ object EnumFormat {
 trait EnumEntryRadioItemSupport {
   this: EnumEntry =>
 
-  protected val baseMessageKeyForEntry: String = s"$baseMessageKey.$entryName"
   protected val maybeHintMessageKey: Option[String] = None
 
-  def radioItem(form: Form[_])(implicit messages: Messages): RadioItem =
+  def radioItem(form: Form[_], baseMessageKey: String)(implicit messages: Messages): RadioItem =
     RadioItem(
       value = Some(entryName),
-      content = Text(messages(s"$baseMessageKeyForEntry")),
+      content = Text(messages(s"$baseMessageKey.$entryName")),
       checked = form("value").value.contains(entryName),
       hint = maybeHintMessageKey.flatMap { messageKey =>
         Some(Hint(content = Text(messages(messageKey))))
@@ -60,9 +58,8 @@ trait EnumEntryRadioItemSupport {
 
 trait RadioSupport[A <: EnumEntry with EnumEntryRadioItemSupport] {
   this: Enum[A] =>
-
   def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
-    value.radioItem(form)(messages)
+    value.radioItem(form, baseMessageKey)(messages)
   }
 }
 
