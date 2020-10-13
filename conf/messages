@@ -190,6 +190,22 @@ goodsRemoved.heading = You removed your goods
 goodsRemoved.p1 = You have no goods to declare.
 goodsRemoved.link = Add other goods
 
+# TaxCalculation
+taxCalculation.title = Tax due on these goods {0}
+taxCalculation.heading = Tax due on these goods {0}
+taxCalculation.table.col1.head = Type of goods
+taxCalculation.table.col2.head = Customs Duty
+taxCalculation.table.col3.head = VAT
+taxCalculation.table.col4.head = Total
+taxCalculation.table.col3.row = {0} at {1}%
+taxCalculation.table.total = Tax due
+taxCalculation.h3 = How we calculate your tax
+taxCalculation.p1 = Custom Duty on goods is charged at a flat rate of 3.3%. VAT is then charged on top of that at the appropriate rate.
+taxCalculation.p2.1 = We use
+taxCalculation.p2.a.text = HMRC's monthly exchange rates (opens in new tab).
+taxCalculation.p2.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
+taxCalculation.p2.2 = We use the rates of the month in which you make your declaration.
+
 # TraderDetails
 travellerDetails.title = Enter the name of the person carrying the goods
 travellerDetails.heading = Enter the name of the person carrying the goods

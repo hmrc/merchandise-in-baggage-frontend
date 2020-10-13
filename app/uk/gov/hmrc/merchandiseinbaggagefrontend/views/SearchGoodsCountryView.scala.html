@@ -64,13 +64,13 @@ button: components.button
             <div class="autocomplete-wrapper country">
                 <select name="value" id="country-auto-complete">
                     @if(form("value").value.isEmpty) {
-                        <option value="" selected>
+                        <option value="" selected></option>
                     }
                     @for(country <- CountriesService.countries) {
                         @if(form("value").value.contains(country)) {
-                            <option value="@country" selected>@country
+                            <option value="@country" selected>@country</option>
                         } else {
-                            <option value="@country">@country
+                            <option value="@country">@country</option>
                         }
                     }
                 </select>

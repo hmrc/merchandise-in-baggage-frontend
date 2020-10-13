@@ -17,8 +17,20 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.MerchandiseInBaggageConnector
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, TaxCalculation, TaxCalculations}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CalculationService @Inject() {
+class CalculationService @Inject()(override val httpClient: HttpClient)(implicit ec: ExecutionContext) extends MerchandiseInBaggageConnector {
+
+  def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
+    Future.traverse(declarationGoods.goods) { good =>
+      getCalculationResult(good.toCalculationRequest).map{ result =>
+        TaxCalculation(good, result)
+      }
+    }.map(TaxCalculations)
 
 }

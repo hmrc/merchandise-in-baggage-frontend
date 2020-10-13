@@ -19,7 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 
-case class CalculationResult(gbpAmount: AmountInPence, duty: AmountInPence, vat: AmountInPence)
+case class CalculationResult(gbpAmount: AmountInPence, duty: AmountInPence, vat: AmountInPence) {
+  def taxDue: AmountInPence = AmountInPence(
+    duty.value + vat.value
+  )
+}
 
 object CalculationResult {
   implicit val format: OFormat[CalculationResult] = Json.format[CalculationResult]
