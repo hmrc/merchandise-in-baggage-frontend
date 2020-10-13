@@ -19,12 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 class CustomAgentFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
+  def apply(): Form[YesNo] =
     Form(
-      "value" -> boolean("customsDeclares.error.required")
+      "value" -> enum[YesNo](YesNo,"customsDeclares.error.required")
     )
 
 }

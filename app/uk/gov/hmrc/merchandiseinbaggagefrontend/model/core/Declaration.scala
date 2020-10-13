@@ -309,13 +309,6 @@ object YesNo extends Enum[YesNo] {
   case object No extends YesNo
 
   case object Yes extends YesNo
-
-  implicit class ToString(yesNo: YesNo) {
-    val stringValue: String = yesNo match {
-      case No  => "false"
-      case Yes => "true"
-    }
-  }
 }
 
 case class Declaration(sessionId: SessionId,

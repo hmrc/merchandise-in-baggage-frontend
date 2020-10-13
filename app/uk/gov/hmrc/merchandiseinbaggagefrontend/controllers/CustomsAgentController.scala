@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomAgentFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext
@@ -36,19 +37,18 @@ class CustomsAgentController @Inject()(
   override val onSubmit: Action[AnyContent] = customsAgentSubmit
   override val onPageLoad: Action[AnyContent] = customsAgent
 
-  private val form: Form[Boolean] = formProvider()
+  private val form: Form[YesNo] = formProvider()
 
   private def customsAgent: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(yesNo => form.fill(YesNo.to(yesNo)))))
+    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill)))
   }
 
   private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     def onError(): Result = BadRequest("something WRONG")
 
-    form.bindFromRequest().fold(_ => onError(), { yesNo =>
-      if (yesNo)
-        Redirect(routes.SkeletonJourneyController.agentDetails())
-      else Redirect(routes.SkeletonJourneyController.enterEoriNumber())
+    form.bindFromRequest().fold(_ => onError(), {
+      case Yes => Redirect(routes.SkeletonJourneyController.agentDetails())
+      case No  => Redirect(routes.SkeletonJourneyController.enterEoriNumber())
     })
   }
 }
