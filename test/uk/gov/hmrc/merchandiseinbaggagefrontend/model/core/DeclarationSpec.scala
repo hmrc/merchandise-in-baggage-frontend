@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currenc
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
-  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(false))
+  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.from(false)))
 
   private val goods =
     Goods(

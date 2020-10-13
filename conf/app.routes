@@ -9,7 +9,6 @@ GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefronten
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
 GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.taxCalculation
-GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.customsAgent
 GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.agentDetails
 GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterAgentAddress
 GET        /select-agent-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectAgentAddress
@@ -75,6 +74,10 @@ GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefronten
 # TraderDetalis
 GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onPageLoad
 POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onSubmit
+
+# CustomsAgent
+GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onPageLoad
+POST       /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

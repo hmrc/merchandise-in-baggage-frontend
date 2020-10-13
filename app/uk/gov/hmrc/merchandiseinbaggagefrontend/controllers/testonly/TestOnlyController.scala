@@ -93,7 +93,7 @@ object TestOnlyController {
             Some("1234560"),
             Some(AmountInPence(2000))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
-      maybeIsACustomsAgent = Some(true),
+      maybeIsACustomsAgent = Some(YesNo.from(true)),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address("1 Agent Drive", "Agent Town", "AG1 5NT")),
       maybeEori = Some(Eori("TerrysEori")),

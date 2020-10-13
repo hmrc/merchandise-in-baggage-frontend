@@ -165,7 +165,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
-                              maybeIsACustomsAgent: Option[Boolean] = None,
+                              maybeIsACustomsAgent: Option[YesNo] = None,
                               maybeCustomsAgentName: Option[String] = None,
                               maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
@@ -175,12 +175,12 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeRegistrationNumber: Option[String] = None) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
-    if (maybeIsACustomsAgent.getOrElse(false)) {
-      for {
-        customsAgentName <- maybeCustomsAgentName
-        customsAgentAddress <- maybeCustomsAgentAddress
-      } yield CustomsAgent(customsAgentName, customsAgentAddress)
-    } else None
+    for {
+      _                   <- maybeIsACustomsAgent
+      customsAgentName    <- maybeCustomsAgentName
+      customsAgentAddress <- maybeCustomsAgentAddress
+      if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
+    } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
   val journeyDetailsCompleteAndDeclarationRequired: Boolean =
     maybeJourneyDetails.fold(false) { journeyDetails =>
@@ -201,7 +201,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeExciseOrRestrictedGoods.contains(false) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
         journeyDetailsCompleteAndDeclarationRequired &&
-        (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(false))
+        maybeCustomsAgent.isDefined
 
     for {
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
@@ -301,6 +301,10 @@ object YesNo extends Enum[YesNo] {
   override val values: immutable.IndexedSeq[YesNo] = findValues
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No
+  def to(yesNo: YesNo): Boolean = yesNo match {
+    case Yes => true
+    case No  => false
+  }
 
   case object No extends YesNo
 

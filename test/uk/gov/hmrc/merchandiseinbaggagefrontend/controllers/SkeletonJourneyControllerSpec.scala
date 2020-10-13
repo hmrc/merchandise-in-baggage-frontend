@@ -33,33 +33,13 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.taxCalculation(getRequest), title, routes.SkeletonJourneyController.customsAgent())
+        ensure(controller.taxCalculation(getRequest), title, routes.CustomsAgentController.onPageLoad())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
         ensureRedirectToInvalidRequestPage(controller.taxCalculation(buildGet(url)))
-      }
-    }
-  }
-
-  "customsAgent" should {
-    val url = routes.SkeletonJourneyController.customsAgent().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Are you a customs agent?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.customsAgent(getRequest), title, routes.SkeletonJourneyController.agentDetails())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.customsAgent(buildGet(url)))
       }
     }
   }
