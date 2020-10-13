@@ -272,13 +272,6 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     }
   }
 
-  "declaration goods" should {
-    "sum the total tax due" in {
-      declaration.declarationGoods.totalTaxDue mustBe AmountInPence(0)
-      declaration.declarationGoods.copy(goods = Seq.empty).totalTaxDue mustBe AmountInPence(0)
-    }
-  }
-
   "declaration" should {
     "serialise and de-serialise" in {
       parse(toJson(declaration).toString()).validate[Declaration].asOpt mustBe Some(declaration)

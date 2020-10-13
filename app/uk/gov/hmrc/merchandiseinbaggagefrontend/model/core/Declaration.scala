@@ -278,10 +278,7 @@ object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
 }
 
-case class DeclarationGoods(goods: Seq[Goods]) {
-  //TODO remove later
-  val totalTaxDue: AmountInPence = AmountInPence(0)
-}
+case class DeclarationGoods(goods: Seq[Goods])
 
 object DeclarationGoods {
   implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]

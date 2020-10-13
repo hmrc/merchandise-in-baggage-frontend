@@ -20,16 +20,23 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
+
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                            actionProvider: DeclarationJourneyActionProvider,
+                                           calculationService: CalculationService,
                                            page: CheckYourAnswersPage)
-                                          (implicit appConfig: AppConfig) extends DeclarationJourneyController {
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequest){ declaration =>
-      Ok(page(form, declaration))
+                                          (implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyController {
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
+      calculationService.taxCalculation(declaration.declarationGoods).map { taxCalculations =>
+        val taxDue = taxCalculations.totalTaxDue
+        Ok(page(form, declaration, taxDue))
+      }
     }
   }
 }
