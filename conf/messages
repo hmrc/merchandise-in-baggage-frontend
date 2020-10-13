@@ -38,7 +38,6 @@ reviewGoods.title = Review your goods
 removeGoods.title = Are you sure you want to remove the x?
 goodsRemoved.title = You removed your goods
 taxCalculation.title = Tax due on these goods £x
-customsAgent.title = Are you a customs agent?
 agentDetails.title = Enter the business name of the customs agent
 enterAgentAddress.title = Find your address
 selectAgentAddress.title = Select your address
@@ -220,6 +219,13 @@ cannotUseService.p1 = For excise, restricted and goods over the threshold you mu
 cannotUseService.a = Make a full custom declaration
 cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
+
+# Custom Agent
+customsDeclares.title = Are you a customs agent?
+customsDeclares.heading = Are you a customs agent?
+customsDeclares.agent = Yes
+customsDeclares.declares = No
+customsDeclares.error.required = Select one of the options below
 
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods
