@@ -56,8 +56,7 @@ class InvoiceNumberController @Inject()(
                 goodsEntries = request.declarationJourney.goodsEntries.patch(
                   idx,
                   request.goodsEntry.copy(
-                    maybeInvoiceNumber = Some(invoiceNumber),
-                    maybeTaxDue = Some(AmountInPence(-9999))
+                    maybeInvoiceNumber = Some(invoiceNumber)
                   )
                 )
               )
