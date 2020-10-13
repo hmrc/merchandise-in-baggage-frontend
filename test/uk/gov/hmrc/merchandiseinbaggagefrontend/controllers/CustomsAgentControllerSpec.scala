@@ -38,7 +38,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     content must include(title)
   }
 
-  "redirect to agent Details on submit if is an agent" in {
+  "redirect to agent Details and persist answer on submit if is an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
       .withFormUrlEncodedBody("value" -> YesNo.to(Yes).toString)
 
@@ -46,9 +46,10 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     val eventualResponse = controller.onSubmit()(postRequest)
 
     redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.agentDetails.url)
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(Yes)
   }
 
-  "redirect to EORI number on submit if is not an agent" in {
+  "redirect to EORI number and persist answer on submit if is not an agent" in {
     val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
       .withFormUrlEncodedBody("value" -> YesNo.to(No).toString)
 
@@ -56,5 +57,6 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     val eventualResponse = controller.onSubmit()(postRequest)
 
     redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.enterEoriNumber().url)
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(No)
   }
 }

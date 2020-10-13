@@ -22,14 +22,16 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomAgentFormProvider
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsAgentController @Inject()(
                                         override val controllerComponents: MessagesControllerComponents,
                                         actionProvider: DeclarationJourneyActionProvider,
                                         formProvider: CustomAgentFormProvider,
+                                        repo: DeclarationJourneyRepository,
                                         view: CustomsAgentView,
                                       )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
@@ -42,12 +44,14 @@ class CustomsAgentController @Inject()(
     Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(asw => form.fill(YesNo.to(asw)))))
   }
 
-  private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    def onError(): Result = BadRequest("something WRONG")
+  private def customsAgentSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    def onError(): Future[Result] = Future.successful(BadRequest("something WRONG"))
 
     form.bindFromRequest().fold(_ => onError(), { answer =>
-      if (answer) Redirect(routes.SkeletonJourneyController.agentDetails())
-      else Redirect(routes.SkeletonJourneyController.enterEoriNumber())
+      repo.upsert(request.declarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.from(answer)))).map { _ =>
+        if (answer) Redirect(routes.SkeletonJourneyController.agentDetails())
+        else Redirect(routes.SkeletonJourneyController.enterEoriNumber())
+      }
     })
   }
 }
