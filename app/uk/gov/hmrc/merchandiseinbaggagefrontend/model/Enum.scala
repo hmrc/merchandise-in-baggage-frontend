@@ -19,26 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model
 import enumeratum.{EnumEntry, PlayEnum}
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Reads, Writes}
+import play.api.libs.json._
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.baseMessageKey
 
 trait Enum[A <: EnumEntry] extends PlayEnum[A] {
   val baseMessageKey: String
 
   def forCode(code: String): Option[A] = values.find(_.toString == code)
 
-  def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
-    RadioItem(
-      value = Some(value.toString),
-      content = Text(messages(s"$baseMessageKey.${value.toString}")),
-      checked = form("value").value.contains(value.toString),
-      hint = hint(value, messages)
-    )
-  }
-
-  protected def hint(value: A, messages: Messages): Option[Hint] = None
 }
 
 object EnumFormat {
@@ -50,4 +41,28 @@ object EnumFormat {
     Writes(v => JsString(v.entryName)))
 }
 
+trait EnumEntryRadioItemSupport {
+  this: EnumEntry =>
+
+  protected val baseMessageKeyForEntry: String = s"$baseMessageKey.$entryName"
+  protected val maybeHintMessageKey: Option[String] = None
+
+  def radioItem(form: Form[_])(implicit messages: Messages): RadioItem =
+    RadioItem(
+      value = Some(entryName),
+      content = Text(messages(s"$baseMessageKeyForEntry")),
+      checked = form("value").value.contains(entryName),
+      hint = maybeHintMessageKey.flatMap { messageKey =>
+        Some(Hint(content = Text(messages(messageKey))))
+      }
+    )
+}
+
+trait RadioSupport[A <: EnumEntry with EnumEntryRadioItemSupport] {
+  this: Enum[A] =>
+
+  def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
+    value.radioItem(form)(messages)
+  }
+}
 

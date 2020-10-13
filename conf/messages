@@ -31,6 +31,8 @@ site.remove = Remove
 payment.button = Pay now
 next.button = Next
 
+enum.Yes = Yes
+enum.No = No
 
 reviewGoods.title = Review your goods
 removeGoods.title = Are you sure you want to remove the x?

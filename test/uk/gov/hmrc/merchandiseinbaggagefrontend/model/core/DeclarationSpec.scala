@@ -216,7 +216,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
             completedDeclarationJourney.maybeJourneyDetails.get,
-            YesNo(completedDeclarationJourney.maybeTravellingByVehicle.get),
+            YesNo.from(completedDeclarationJourney.maybeTravellingByVehicle.get),
             completedDeclarationJourney.maybeRegistrationNumber))
       }
     }

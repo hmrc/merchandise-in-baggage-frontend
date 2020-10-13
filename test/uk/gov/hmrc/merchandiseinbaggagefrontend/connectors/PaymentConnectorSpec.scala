@@ -34,21 +34,27 @@ class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with Cor
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
 
-  "send a payment request to payment service adding a generated session id to the header" in new PaymentConnector {
+  trait TestPaymentConnector extends PaymentConnector {
+    override val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
+
+    override lazy val paymentBaseUri =
+      s"${paymentServiceConf.protocol}://${paymentServiceConf.host}:${BaseSpecWithWireMock.port}/"
+  }
+
+  "send a payment request to payment service adding a generated session id to the header" in new TestPaymentConnector {
     private val sessionId = generateSessionId
     override def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier =
       hc.withExtraHeaders(HeaderNames.xSessionId -> sessionId)
 
     val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
 
-    paymentMockServer
+    wireMockServer
       .stubFor(post(urlPathEqualTo(s"/${paymentServiceConf.url.value}"))
       .withRequestBody(equalToJson(Json.toJson(payApiRequest).toString, true, false))
       .withHeader(HeaderNames.xSessionId, containing(sessionId))
       .willReturn(okJson(stubbedResponse).withStatus(201))
     )
 
-    override val httpClient = app.injector.instanceOf[HttpClient]
 
     eventually {
       val response: HttpResponse = Await.result(makePayment(payApiRequest), 5.seconds)
@@ -57,8 +63,7 @@ class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with Cor
     }
   }
 
-  "extract redirect url from pay-api http response" in new PaymentConnector {
-    override val httpClient = app.injector.instanceOf[HttpClient]
+  "extract redirect url from pay-api http response" in new TestPaymentConnector {
     val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
 
     extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))

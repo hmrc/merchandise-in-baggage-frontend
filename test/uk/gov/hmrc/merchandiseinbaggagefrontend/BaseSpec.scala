@@ -44,17 +44,18 @@ trait BaseSpecWithApplication extends BaseSpec
 
 
 trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEach {
-  val paymentMockServer = new WireMockServer(9057)
-  val currencyConversionMockServer = new WireMockServer(9016)
+  val wireMockServer = new WireMockServer(BaseSpecWithWireMock.port)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
-    paymentMockServer.start()
-    currencyConversionMockServer.start()
+    wireMockServer.start()
   }
 
   override def afterEach(): Unit = {
-    paymentMockServer.stop()
-    currencyConversionMockServer.stop()
+    wireMockServer.stop()
   }
+}
+
+object BaseSpecWithWireMock {
+  val port: Int = 17777
 }
