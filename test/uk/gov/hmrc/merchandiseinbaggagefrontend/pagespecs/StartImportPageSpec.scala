@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,21 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None, name: Option[String] = None)(implicit messages: Messages)
+class StartImportPageSpec extends BasePageSpec {
+  "the start import page" should {
+    "render correctly" in {
+      startPage.open()
+      startPage.assertPageIsDisplayed()
+    }
 
-@govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse(""), name = name))
+    "allow the user to navigate to the excise and restricted goods page" in {
+      startPage.open()
+      startPage.clickOnStartNowButton()
+      exciseAndRestrictedGoodsPage.assertPageIsDisplayed()
+    }
+  }
+}

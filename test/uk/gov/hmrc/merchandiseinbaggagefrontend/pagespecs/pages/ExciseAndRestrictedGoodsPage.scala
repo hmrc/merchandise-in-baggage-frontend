@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukButton: GovukButton)
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-@(msg: String, href: Option[String] = None, classes: Option[String] = None, name: Option[String] = None)(implicit messages: Messages)
+import org.openqa.selenium.WebDriver
 
-@govukButton(Button(content = Text(messages(msg)), href = href, classes = classes.getOrElse(""), name = name))
+class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+  override val path = "/merchandise-in-baggage/excise-and-restricted-goods"
+
+  override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+  override val expectedHeadingContent: String = expectedTitle
+
+  def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
+}
