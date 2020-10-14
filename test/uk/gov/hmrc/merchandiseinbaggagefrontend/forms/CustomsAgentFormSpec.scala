@@ -16,18 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
+import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomsAgentForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
 
-class CustomAgentFormProviderSpec extends BaseSpec {
+class CustomsAgentFormSpec extends BooleanFieldBehaviours {
 
-  val form = new CustomAgentFormProvider()
+  val requiredKey = "customsAgent.error.required"
+  val invalidKey = "error.boolean"
 
-  "Bind CustomsDeclares data or return error" in {
-    val bindData = Map("value" -> true.toString)
-    val bindDataTwo = Map("value" -> false.toString)
+  ".isCustomsAgent" must {
 
-    form().bind(bindData).data mustBe bindData
-    form().bind(bindDataTwo).data mustBe bindDataTwo
-    form().bind(Map[String, String]()).errors.head.message mustBe "customsDeclares.error.required"
+    val fieldName = "isCustomsAgent"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
 }

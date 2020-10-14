@@ -27,14 +27,14 @@
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(messages("customsDeclares.title"))) {
+@layout(pageTitle = Some(messages("customsAgent.title"))) {
     @formHelper(action = CustomsAgentController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             form = form,
-            legend = messages("customsDeclares.heading"),
+            legend = messages("customsAgent.heading"),
             legendAsHeading = true
         )
 

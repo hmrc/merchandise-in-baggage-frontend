@@ -220,12 +220,10 @@ cannotUseService.a = Make a full custom declaration
 cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 
-# Custom Agent
-customsDeclares.title = Are you a customs agent?
-customsDeclares.heading = Are you a customs agent?
-customsDeclares.agent = Yes
-customsDeclares.declares = No
-customsDeclares.error.required = Select one of the options below
+# CustomsAgent
+customsAgent.title = Are you a customs agent?
+customsAgent.heading = Are you a customs agent?
+customsAgent.error.required = Select one of the options below
 
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods

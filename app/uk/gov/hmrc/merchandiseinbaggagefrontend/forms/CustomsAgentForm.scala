@@ -16,16 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import javax.inject.Inject
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
-class CustomAgentFormProvider @Inject() extends Mappings {
+object CustomsAgentForm extends Mappings {
 
-  //TODO make it Form[YesNo] or any other type as soon pattern is established
-  def apply(): Form[Boolean] =
+  val form: Form[Boolean] =
     Form(
-      "value" -> boolean("customsDeclares.error.required")
+      "isCustomsAgent" -> boolean("customsAgent.error.required")
     )
 
 }
