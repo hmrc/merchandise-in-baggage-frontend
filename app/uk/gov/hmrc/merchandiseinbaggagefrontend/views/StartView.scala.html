@@ -69,7 +69,7 @@
             @p(Html(messages("start.p1")))
 
             @formHelper(action = StartController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
-                @button("site.start")
+                @button("site.start", name = Some("startNow"))
             }
 
         </div>
