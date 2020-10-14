@@ -16,18 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MerchandiseInBaggageConf
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.{CalculationRequest, CalculationResult}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait MerchandiseInBaggageConnector extends MerchandiseInBaggageConf {
   val httpClient: HttpClient
 
-  def getCalculationResult(request: CalculationRequest)
-                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculationResult] = {
+  def getCalculationResult(request: CalculationRequest): Future[CalculationResult] = {
     //TODO actually call backend when it's done, will just println for now
     println(s"Returning dummy CalculationResult for request: $request")
     Future.successful(CalculationResult(AmountInPence(10000), AmountInPence(330), AmountInPence(65)))
