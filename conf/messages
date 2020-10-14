@@ -154,7 +154,7 @@ purchaseDetails.heading = How much did you pay for the {0}?
 purchaseDetails.price.label = Price paid
 purchaseDetails.currency.label = Currency
 purchaseDetails.p.1 = We use
-purchaseDetails.p.a.text = HMRC's monthly exchange rates (opens in new tab)
+purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
 purchaseDetails.price.error.required = Enter an amount
@@ -201,7 +201,7 @@ taxCalculation.table.total = Tax due
 taxCalculation.h3 = How we calculate your tax
 taxCalculation.p1 = Custom Duty on goods is charged at a flat rate of 3.3%. VAT is then charged on top of that at the appropriate rate.
 taxCalculation.p2.1 = We use
-taxCalculation.p2.a.text = HMRC's monthly exchange rates (opens in new tab).
+taxCalculation.p2.a.text = HMRC’s monthly exchange rates (opens in new tab).
 taxCalculation.p2.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 taxCalculation.p2.2 = We use the rates of the month in which you make your declaration.
 
@@ -220,12 +220,10 @@ cannotUseService.a = Make a full custom declaration
 cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 
-# Custom Agent
-customsDeclares.title = Are you a customs agent?
-customsDeclares.heading = Are you a customs agent?
-customsDeclares.agent = Yes
-customsDeclares.declares = No
-customsDeclares.error.required = Select one of the options below
+# CustomsAgent
+customsAgent.title = Are you a customs agent?
+customsAgent.heading = Are you a customs agent?
+customsAgent.error.required = Select one of the options below
 
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods

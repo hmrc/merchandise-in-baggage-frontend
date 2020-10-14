@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion
 
-import javax.inject.Inject
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import java.time.LocalDate
 
-class CustomAgentFormProvider @Inject() extends Mappings {
+import play.api.libs.json.{Json, OFormat}
 
-  //TODO make it Form[YesNo] or any other type as soon pattern is established
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("customsDeclares.error.required")
-    )
+case class ConversionRatePeriod(startDate: LocalDate,
+                                endDate: LocalDate,
+                                currencyCode: String,
+                                rate: BigDecimal)
 
+object ConversionRatePeriod {
+  implicit val format: OFormat[ConversionRatePeriod] = Json.format[ConversionRatePeriod]
 }
