@@ -21,6 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
 object CustomsAgentForm extends Mappings {
 
+  //TODO make it Form[YesNo] or any other type as soon pattern is established
   val form: Form[Boolean] =
     Form(
       "isCustomsAgent" -> boolean("customsAgent.error.required")
