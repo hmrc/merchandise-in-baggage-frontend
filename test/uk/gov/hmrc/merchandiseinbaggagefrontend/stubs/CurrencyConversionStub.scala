@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.stubs
 import java.time.LocalDate
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{get, okJson, urlPathEqualTo}
+import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, get, okJson, urlPathEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 object CurrencyConversionStub {
@@ -47,9 +47,25 @@ object CurrencyConversionStub {
       |}
       |""".stripMargin
 
+  def conversionRateResponse(code: String) =
+    s"""[
+       |  {
+       |    "startDate": "2020-10-01",
+       |    "endDate": "2020-10-31",
+       |    "currencyCode": "$code",
+       |    "rate": "1.2763"
+       |  }
+       |]""".stripMargin
+
 
   def givenCurrenciesAreFound(server: WireMockServer): StubMapping =
     server
       .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.now()}"))
       .willReturn(okJson(currencyConversionResponse).withStatus(200)))
+
+  def givenCurrencyIsFound(code: String, server: WireMockServer): StubMapping =
+    server
+      .stubFor(get(urlPathEqualTo(s"/currency-conversion/rates/${LocalDate.now()}"))
+        .withQueryParam("cc", equalTo(code))
+      .willReturn(okJson(conversionRateResponse(code))))
 }

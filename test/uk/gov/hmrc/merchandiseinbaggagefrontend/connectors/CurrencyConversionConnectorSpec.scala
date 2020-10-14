@@ -20,7 +20,7 @@ import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.CurrencyPeriod
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, BaseSpecWithWireMock}
 
@@ -45,6 +45,21 @@ class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseS
       val response: CurrencyPeriod = Await.result(getCurrencies(), 5.seconds)
 
       response mustBe Json.parse(currencyConversionResponse).as[CurrencyPeriod]
+    }
+  }
+
+  "get conversion rate for a given currency code" in new CurrencyConversionConnector {
+    override val httpClient: HttpClient = injector.instanceOf[HttpClient]
+
+    override lazy val currencyConversionBaseUrl =
+      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
+
+    givenCurrencyIsFound("USD", wireMockServer)
+
+    eventually {
+      val response: Seq[ConversionRatePeriod] = Await.result(getConversionRate("USD"), 5.seconds)
+
+      response mustBe Json.parse(conversionRateResponse("USD")).as[Seq[ConversionRatePeriod]]
     }
   }
 

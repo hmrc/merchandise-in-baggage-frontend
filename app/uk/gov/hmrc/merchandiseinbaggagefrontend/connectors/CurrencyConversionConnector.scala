@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.CurrencyConversionConf
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.CurrencyPeriod
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,4 +30,9 @@ trait CurrencyConversionConnector extends CurrencyConversionConf {
 
   def getCurrencies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CurrencyPeriod] =
     httpClient.GET[CurrencyPeriod](s"$currencyConversionBaseUrl/currency-conversion/currencies/${LocalDate.now()}")
+
+  def getConversionRate(code: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ConversionRatePeriod]] =
+    httpClient.GET[Seq[ConversionRatePeriod]](
+      s"$currencyConversionBaseUrl/currency-conversion/rates/${LocalDate.now()}?cc=$code"
+    )
 }

@@ -22,7 +22,7 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
-@(form: Form[_], declaration: Declaration, taxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
 
@@ -65,10 +65,10 @@
  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
      <dt class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
-     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@taxDue.formattedInPounds</dd>
+     <dd class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue.formattedInPounds</dd>
    </div>
 
-  <input id="@taxDue" type="hidden" name="@taxDue" value="@taxDue.value">
+  <input id="@taxDue" type="hidden" name="@taxDue" value="@totalTaxDue.value">
  </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>

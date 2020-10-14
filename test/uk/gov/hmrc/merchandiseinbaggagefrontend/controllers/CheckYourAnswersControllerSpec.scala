@@ -17,15 +17,32 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
-  private lazy val controller = app.injector.instanceOf[CheckYourAnswersController]
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
+
+  private lazy val view = injector.instanceOf[CheckYourAnswersPage]
+  private lazy val calculationService = new CalculationService(injector.instanceOf[HttpClient]) {
+    override lazy val currencyConversionBaseUrl =
+      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
+  }
+
+  private lazy val controller =
+    new CheckYourAnswersController(controllerComponents, actionBuilder, calculationService, view)
 
   private val url: String = routes.CheckYourAnswersController.onPageLoad().url
   private val getRequestWithSessionId = buildGet(url, sessionId)
 
   "onPageLoad" should {
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
+
+    givenCurrencyIsFound("EUR", wireMockServer)
 
     "render the page" when {
       "a declaration has been completed" in {
@@ -48,7 +65,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("99.99, Eurozone Euro (EUR)")
         content must include("199.99, Eurozone Euro (EUR)")
         content must include("Tax due")
-        content must include("£7.90")
+        content must include("£56.32")
+        content must include("5632") // value for hidden form field
 
         content must include("Personal details")
         content must include("Name")
