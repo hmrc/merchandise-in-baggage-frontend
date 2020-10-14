@@ -31,6 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 import scala.collection.immutable
@@ -180,7 +181,7 @@ case class DeclarationJourney(sessionId: SessionId,
       if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
-  val journeyDetailsCompleteAndDeclarationRequired: Boolean =
+  private val journeyDetailsCompleteAndDeclarationRequired: Boolean =
     maybeJourneyDetails.fold(false) { journeyDetails =>
       if (journeyDetails.placeOfArrival.rollOnRollOff) {
         if (maybeTravellingByVehicle.contains(false)) {
@@ -199,7 +200,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeExciseOrRestrictedGoods.contains(false) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
         journeyDetailsCompleteAndDeclarationRequired &&
-        maybeCustomsAgent.isDefined
+        maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
 
     for {
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
