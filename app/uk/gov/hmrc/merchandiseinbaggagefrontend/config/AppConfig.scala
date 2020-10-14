@@ -34,12 +34,22 @@ class AppConfig() extends PaymentServiceConf with MongoConfiguration {
 }
 
 trait CurrencyConversionConf {
-  lazy val currencyConversionConf: CurrencyConversionConfiguration = configSource("microservice.services.currency-conversion").loadOrThrow[CurrencyConversionConfiguration]
+  lazy val currencyConversionConf: CurrencyConversionConfiguration =
+    configSource("microservice.services.currency-conversion").loadOrThrow[CurrencyConversionConfiguration]
   import currencyConversionConf._
   lazy val currencyConversionBaseUrl = s"$protocol://$host:$port"
 }
 
 case class CurrencyConversionConfiguration(protocol: String, host: String, port: String)
+
+trait MerchandiseInBaggageConf {
+  lazy val merchandiseInBaggageConf: MerchandiseInBaggageConfiguration =
+    configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MerchandiseInBaggageConfiguration]
+  import merchandiseInBaggageConf._
+  lazy val merchandiseInBaggageBaseUrl = s"$protocol://$host:$port"
+}
+
+case class MerchandiseInBaggageConfiguration(protocol: String, host: String, port: String)
 
 trait PaymentServiceConf {
   lazy val paymentServiceConf: PaymentServiceConfiguration = configSource("microservice.services.payment").loadOrThrow[PaymentServiceConfiguration]

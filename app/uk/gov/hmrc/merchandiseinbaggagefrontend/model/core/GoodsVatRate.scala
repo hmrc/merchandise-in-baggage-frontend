@@ -22,7 +22,9 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumEntryRadioItemS
 
 import scala.collection.immutable
 
-sealed trait GoodsVatRate extends EnumEntry with EnumEntryRadioItemSupport
+sealed trait GoodsVatRate extends EnumEntry with EnumEntryRadioItemSupport {
+  val value: Int
+}
 
 object GoodsVatRate {
   implicit val format: Format[GoodsVatRate] = EnumFormat(GoodsVatRates)
@@ -33,7 +35,7 @@ object GoodsVatRates extends Enum[GoodsVatRate] with RadioSupport[GoodsVatRate] 
 
   override val values: immutable.IndexedSeq[GoodsVatRate] = findValues
 
-  case object Zero extends GoodsVatRate
-  case object Five extends GoodsVatRate
-  case object Twenty extends GoodsVatRate
+  case object Zero extends GoodsVatRate { override val value: Int = 0 }
+  case object Five extends GoodsVatRate { override val value: Int = 5 }
+  case object Twenty extends GoodsVatRate { override val value: Int = 20 }
 }

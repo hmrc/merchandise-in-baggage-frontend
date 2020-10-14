@@ -33,7 +33,7 @@ class CustomsAgentController @Inject()(
                                         formProvider: CustomAgentFormProvider,
                                         repo: DeclarationJourneyRepository,
                                         view: CustomsAgentView,
-                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+                                      )(implicit appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   override val onSubmit: Action[AnyContent] = customsAgentSubmit
   override val onPageLoad: Action[AnyContent] = customsAgent

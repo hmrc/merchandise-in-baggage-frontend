@@ -36,8 +36,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       Some(GoodsVatRates.Twenty),
       Some("Austria"),
       Some(PurchaseDetails("10.00", Currency("test country", "test currency", "TST"))),
-      Some("test invoice number"),
-      Some(AmountInPence(0))
+      Some("test invoice number")
     )
 
   private val goodsEntries = GoodsEntries(goods)
@@ -87,7 +86,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.taxCalculation().toString
+        redirectLocation(result).get mustEqual routes.TaxCalculationController.onPageLoad().toString
       }
     }
 

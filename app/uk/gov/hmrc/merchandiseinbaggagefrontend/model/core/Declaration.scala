@@ -30,8 +30,8 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
 import scala.collection.immutable
 
@@ -67,15 +67,14 @@ case class AmountInPence(value: Long) {
 }
 
 object AmountInPence {
-  implicit val format: Format[AmountInPence] = ValueClassFormat.formatDouble(value => AmountInPence.apply(value))(_.value)
+  implicit val format: Format[AmountInPence] = implicitly[Format[Long]].inmap(AmountInPence(_), _.value)
 }
 
 case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePurchaseDetails: Option[PurchaseDetails] = None,
-                      maybeInvoiceNumber: Option[String] = None,
-                      maybeTaxDue: Option[AmountInPence] = None) {
+                      maybeInvoiceNumber: Option[String] = None) {
 
   val goodsIfComplete: Option[Goods] =
     for {
@@ -84,8 +83,7 @@ case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoo
       countryOfPurchase <- maybeCountryOfPurchase
       priceOfGoods <- maybePurchaseDetails
       invoiceNumber <- maybeInvoiceNumber
-      taxDue <- maybeTaxDue
-    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber, taxDue)
+    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber)
 }
 
 object GoodsEntry {
@@ -235,11 +233,15 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  goodsVatRate: GoodsVatRate,
                  countryOfPurchase: String,
                  purchaseDetails: PurchaseDetails,
-                 invoiceNumber: String,
-                 taxDue: AmountInPence) {
+                 invoiceNumber: String) {
+
+  def toCalculationRequest = CalculationRequest(
+    purchaseDetails.numericAmount,
+    purchaseDetails.currency.currencyCode,
+    goodsVatRate
+  )
+
   def toSummaryList(idx: Int)(implicit messages: Messages): SummaryList = {
-    val price =
-      s"${purchaseDetails.amount}, ${purchaseDetails.currency.displayName}"
 
     SummaryList(Seq(
       SummaryListRow(
@@ -256,7 +258,7 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.price"))),
-        Value(Text(price))
+        Value(Text(purchaseDetails.toString))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.invoice"))),
@@ -276,9 +278,7 @@ object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
 }
 
-case class DeclarationGoods(goods: Seq[Goods]) {
-  val totalTaxDue: AmountInPence = AmountInPence(goods.map(g => g.taxDue.value).sum.max(0))
-}
+case class DeclarationGoods(goods: Seq[Goods])
 
 object DeclarationGoods {
   implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]

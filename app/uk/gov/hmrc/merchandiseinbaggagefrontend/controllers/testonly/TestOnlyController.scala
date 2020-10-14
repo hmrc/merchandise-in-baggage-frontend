@@ -73,8 +73,7 @@ object TestOnlyController {
       Some(GoodsVatRates.Twenty),
       Some("France"),
       Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))),
-      Some("1234560"),
-      Some(AmountInPence(1011)))
+      Some("1234560"))
 
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
@@ -90,8 +89,7 @@ object TestOnlyController {
             Some(GoodsVatRates.Twenty),
             Some("France"),
             Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))),
-            Some("1234560"),
-            Some(AmountInPence(2000))))),
+            Some("1234560")))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeIsACustomsAgent = Some(YesNo.from(true)),
       maybeCustomsAgentName = Some("Andy Agent"),

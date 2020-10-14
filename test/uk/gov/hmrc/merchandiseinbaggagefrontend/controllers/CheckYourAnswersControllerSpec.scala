@@ -48,7 +48,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         content must include("99.99, Eurozone Euro (EUR)")
         content must include("199.99, Eurozone Euro (EUR)")
         content must include("Tax due")
-        content must include("£30.11")
+        content must include("£7.90")
 
         content must include("Personal details")
         content must include("Name")
