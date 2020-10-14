@@ -20,6 +20,7 @@ import java.time.LocalDate.now
 
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
@@ -145,66 +146,6 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
     }
 
-    "be complete and required" when {
-      "the place of arrival does not require vehicle checks" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Heathrow, now))
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe true
-      }
-
-      "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = Some(false)
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe true
-      }
-
-      "the place of arrival requires vehicle checks and the trader has supplied the registration number of a small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
-          maybeTravellingByVehicle = Some(true),
-          maybeTravellingBySmallVehicle = Some(true),
-          maybeRegistrationNumber = Some("reg")
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe true
-      }
-    }
-
-    "be incomplete or not required" when {
-      "journey details have not been completed" in {
-        completedDeclarationJourney.copy(maybeJourneyDetails = None).journeyDetailsCompleteAndDeclarationRequired mustBe false
-      }
-
-      "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = None
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe false
-      }
-
-      "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
-          maybeTravellingByVehicle = Some(true),
-          maybeTravellingBySmallVehicle = Some(false)
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe false
-      }
-
-      "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
-          maybeTravellingByVehicle = Some(true),
-          maybeTravellingBySmallVehicle = None
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe false
-      }
-
-      "the place of arrival requires vehicle checks and the trader has not supplied the registration number of their small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
-          maybeTravellingByVehicle = Some(true),
-          maybeTravellingBySmallVehicle = Some(true),
-          maybeRegistrationNumber = None
-        ).journeyDetailsCompleteAndDeclarationRequired mustBe false
-      }
-    }
-
     "be complete" when {
       "the user has completed the journey" in {
         completedDeclarationJourney.declarationIfRequiredAndComplete mustBe
@@ -217,6 +158,72 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             completedDeclarationJourney.maybeJourneyDetails.get,
             YesNo.from(completedDeclarationJourney.maybeTravellingByVehicle.get),
             completedDeclarationJourney.maybeRegistrationNumber))
+      }
+
+      "the user is not a customs agent" in {
+        completedNonCustomsAgentJourney.declarationIfRequiredAndComplete.isDefined mustBe true
+      }
+
+      "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
+        completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)).declarationIfRequiredAndComplete.isDefined mustBe true
+      }
+
+      "the place of arrival does not require vehicle checks" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Heathrow, now))
+        ).declarationIfRequiredAndComplete.isDefined mustBe true
+      }
+
+      "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = Some(false)
+        ).declarationIfRequiredAndComplete.isDefined mustBe true
+      }
+
+      "the place of arrival requires vehicle checks and the trader has supplied the registration number of a small vehicle" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeTravellingByVehicle = Some(true),
+          maybeTravellingBySmallVehicle = Some(true),
+          maybeRegistrationNumber = Some("reg")
+        ).declarationIfRequiredAndComplete.isDefined mustBe true
+      }
+    }
+
+    "be incomplete or not required" when {
+      "journey details have not been completed" in {
+        completedDeclarationJourney.copy(maybeJourneyDetails = None).declarationIfRequiredAndComplete.isDefined mustBe false
+      }
+
+      "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = None
+        ).declarationIfRequiredAndComplete.isDefined mustBe false
+      }
+
+      "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeTravellingByVehicle = Some(true),
+          maybeTravellingBySmallVehicle = Some(false)
+        ).declarationIfRequiredAndComplete.isDefined mustBe false
+      }
+
+      "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeTravellingByVehicle = Some(true),
+          maybeTravellingBySmallVehicle = None
+        ).declarationIfRequiredAndComplete.isDefined mustBe false
+      }
+
+      "the place of arrival requires vehicle checks and the trader has not supplied the registration number of their small vehicle" in {
+        completedDeclarationJourney.copy(
+          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeTravellingByVehicle = Some(true),
+          maybeTravellingBySmallVehicle = Some(true),
+          maybeRegistrationNumber = None
+        ).declarationIfRequiredAndComplete.isDefined mustBe false
       }
     }
 
