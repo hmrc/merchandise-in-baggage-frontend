@@ -16,17 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-class StartImportPageSpec extends BasePageSpec {
+import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec with CoreTestData {
   "the page" should {
     "render correctly" in {
-      startImportPage.open()
-      startImportPage.assertPageIsDisplayed()
+      testOnlyDeclarationJourneyPage.open()
+      testOnlyDeclarationJourneyPage.assertPageIsDisplayed()
     }
 
-    "allow the user to navigate to the excise and restricted goods page" in {
-      startImportPage.open()
-      startImportPage.clickOnStartNowButton()
-      exciseAndRestrictedGoodsPage.assertPageIsDisplayed()
+    "allow the user to set up a declaration and redirect to the start import page" in {
+      declarationJourneyRepository.findAll().futureValue.size mustBe 0
+
+      testOnlyDeclarationJourneyPage.open()
+      testOnlyDeclarationJourneyPage.clickOnSubmitButton()
+      startImportPage.assertPageIsDisplayed()
+
+      declarationJourneyRepository.findAll().futureValue.size mustBe 1
     }
   }
 }

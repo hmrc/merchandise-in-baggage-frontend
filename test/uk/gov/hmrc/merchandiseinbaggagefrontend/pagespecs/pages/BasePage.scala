@@ -37,7 +37,7 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
   val path: String
   val expectedTitle: String
-  val expectedHeadingContent: String
+  lazy val expectedHeadingContent: String = expectedTitle
 
   def assertPageIsDisplayed(): Unit
 
@@ -51,7 +51,6 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
     readPath() mustBe path
     headerText() mustBe expectedHeadingContent
     pageTitle mustBe expectedTitle
-    ()
   }
 
   def patiently[A](assertionsMayTimeOut: => A): A = eventually(assertionsMayTimeOut).withClue {

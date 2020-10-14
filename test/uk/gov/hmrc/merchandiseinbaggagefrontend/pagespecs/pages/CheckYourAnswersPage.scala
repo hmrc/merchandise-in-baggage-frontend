@@ -17,11 +17,21 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatestplus.selenium.WebBrowser
 
-class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path = "/merchandise-in-baggage/excise-and-restricted-goods"
+class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
 
-  override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+  import WebBrowser._
+
+  override val path = "/merchandise-in-baggage/check-your-answers"
+  override val expectedTitle = "Check your answers before making your declaration"
 
   def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
+
+  def assertClickOnPayButtonRedirectsToPayFrontend(): Unit = {
+    val button = find(NameQuery("payButton")).get
+    click on button
+    readPath() mustBe "/pay/card-billing-address"
+  }
 }
+

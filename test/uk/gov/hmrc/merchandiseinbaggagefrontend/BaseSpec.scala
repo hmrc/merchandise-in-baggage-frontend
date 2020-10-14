@@ -23,7 +23,9 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.Application
 import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MongoConfiguration
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 
@@ -36,6 +38,9 @@ trait BaseSpecWithApplication extends BaseSpec
     PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))
 
   lazy val injector: Injector = app.injector
+
+  override def fakeApplication(): Application =
+    new GuiceApplicationBuilder().configure(Map("play.http.router" -> "testOnlyDoNotUseInAppConf.Routes")).build()
 
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
 
