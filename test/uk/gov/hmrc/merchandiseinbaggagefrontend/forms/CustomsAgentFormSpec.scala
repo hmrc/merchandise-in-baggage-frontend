@@ -25,9 +25,9 @@ class CustomsAgentFormSpec extends BooleanFieldBehaviours {
   val requiredKey = "customsAgent.error.required"
   val invalidKey = "error.boolean"
 
-  ".isCustomsAgent" must {
+  ".value" must {
 
-    val fieldName = "isCustomsAgent"
+    val fieldName = "value"
 
     behave like booleanField(
       form,
