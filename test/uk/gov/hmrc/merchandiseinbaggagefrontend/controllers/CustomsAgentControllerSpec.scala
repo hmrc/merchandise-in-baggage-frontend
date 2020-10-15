@@ -16,47 +16,105 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import akka.stream.Materializer
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private lazy val controller = app.injector.instanceOf[CustomsAgentController]
-  private implicit val materializer = app.injector.instanceOf[Materializer]
+  private lazy val controller =
+    new CustomsAgentController(
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[CustomsAgentView])
 
-  "render the page when a declaration journey has been started" in {
-    val title = "Are you a customs agent?"
-    val getRequest = buildGet(routes.CustomsAgentController.onPageLoad().url, sessionId)
+  private def ensureContent(result: Future[Result]) = {
+    val content = contentAsString(result)
 
-    givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-    val eventualResponse = controller.onPageLoad()(getRequest)
-    val content = contentAsString(eventualResponse)
+    content must include("Are you a customs agent?")
+    content must include("Yes")
+    content must include("No")
+    content must include("Continue")
 
-    status(eventualResponse) mustBe OK
-    content must include(title)
+    content
   }
 
-  "redirect to agent Details and persist answer on submit if is an agent" in {
-    val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("isCustomsAgent" -> YesNo.to(Yes).toString)
+  "onPageLoad" must {
+    val url = routes.CustomsAgentController.onPageLoad().url
+    val request = buildGet(url, sessionId)
 
-    givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-    val eventualResponse = controller.onSubmit()(postRequest)
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
-    redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.agentDetails.url)
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(Yes)
+    "return OK and render the view" when {
+
+      "a declaration has been started" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val result = controller.onPageLoad()(request)
+
+        status(result) mustEqual OK
+        ensureContent(result)
+      }
+
+      "a declaration has been started and a value saved" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney
+          .copy(maybeIsACustomsAgent = Some(YesNo.Yes)))
+
+        val result = controller.onPageLoad()(request)
+
+        status(result) mustEqual OK
+        ensureContent(result)
+      }
+    }
   }
 
-  "redirect to EORI number and persist answer on submit if is not an agent" in {
-    val postRequest = buildPost(routes.CustomsAgentController.onSubmit().url, sessionId)
-      .withFormUrlEncodedBody("isCustomsAgent" -> YesNo.to(No).toString)
+  "onSubmit" must {
+    val url = routes.CustomsAgentController.onSubmit().url
+    val postRequest = buildPost(url, sessionId)
 
-    givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-    val eventualResponse = controller.onSubmit()(postRequest)
+    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    redirectLocation(eventualResponse) mustBe Some(routes.SkeletonJourneyController.enterEoriNumber().url)
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(No)
+    "Redirect to /enter-eori-number" when {
+      "a declaration is started and false is submitted" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val result = controller.onSubmit()(request)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterEoriNumber().toString
+
+        startedDeclarationJourney.maybeIsACustomsAgent mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(YesNo.No)
+      }
+    }
+
+    "Redirect to /agent-details" when {
+      "a declaration is started and true is submitted" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val result = controller.onSubmit()(request)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.agentDetails().toString
+
+        startedDeclarationJourney.maybeIsACustomsAgent mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(YesNo.Yes)
+      }
+    }
+
+    "return BAD_REQUEST and errors" when {
+      "no selection is made" in {
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+
+        val result = controller.onSubmit()(postRequest)
+
+        status(result) mustEqual BAD_REQUEST
+        ensureContent(result) must include("Select one of the options below")
+      }
+    }
   }
 }
