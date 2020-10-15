@@ -17,11 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
 class CheckYourAnswersPageSpec extends BasePageSpec with CoreTestData {
   private def createDeclaration(): Unit = {
     testOnlyDeclarationJourneyPage.open()
     testOnlyDeclarationJourneyPage.clickOnSubmitButton()
+
+    givenCurrencyIsFound("EUR", wireMockServer)
   }
 
   "the page" should {

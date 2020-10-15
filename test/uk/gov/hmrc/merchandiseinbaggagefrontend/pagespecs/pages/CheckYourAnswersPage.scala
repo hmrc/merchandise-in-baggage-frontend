@@ -31,7 +31,12 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
   def assertClickOnPayButtonRedirectsToPayFrontend(): Unit = {
     val button = find(NameQuery("payButton")).get
     click on button
-    readPath() mustBe "/pay/card-billing-address"
+
+    // to do find a better assertion
+    val redirectedTo = readPath()
+    val successfulRedirectDependingOnEnvironment =
+      redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/process-payment"
+    successfulRedirectDependingOnEnvironment mustBe true
   }
 }
 

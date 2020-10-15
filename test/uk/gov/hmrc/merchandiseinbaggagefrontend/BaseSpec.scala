@@ -39,6 +39,9 @@ trait BaseSpecWithApplication extends BaseSpec
 
   lazy val injector: Injector = app.injector
 
+  //to do integrate this neatly with GuiceApplicationBuilder().configure
+  System.setProperty("microservice.services.currency-conversion.port", BaseSpecWithWireMock.port.toString)
+
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder().configure(Map("play.http.router" -> "testOnlyDoNotUseInAppConf.Routes")).build()
 
@@ -47,6 +50,10 @@ trait BaseSpecWithApplication extends BaseSpec
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 }
 
+/*
+to do make this
+  trait BaseSpecWithWireMock extends BeforeAndAfterEach { this: Suite =>
+*/
 
 trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEach {
   val wireMockServer = new WireMockServer(BaseSpecWithWireMock.port)
