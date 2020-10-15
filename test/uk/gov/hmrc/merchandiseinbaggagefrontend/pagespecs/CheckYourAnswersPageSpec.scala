@@ -16,27 +16,39 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.TaxCalculations
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
+import scala.concurrent.Future
+
 class CheckYourAnswersPageSpec extends BasePageSpec with CoreTestData {
-  private def createDeclaration(): Unit = {
+  private val calculationService = injector.instanceOf[CalculationService]
+
+  private def createDeclaration(): Future[TaxCalculations] = {
+    implicit val hc: HeaderCarrier = HeaderCarrier()
+
+    givenCurrencyIsFound("EUR", wireMockServer)
+
     testOnlyDeclarationJourneyPage.open()
     testOnlyDeclarationJourneyPage.clickOnSubmitButton()
 
-    givenCurrencyIsFound("EUR", wireMockServer)
+    calculationService.taxCalculation(declaration.declarationGoods)
   }
 
   "the page" should {
     "render correctly" in {
-      createDeclaration()
+      val taxDue = createDeclaration().futureValue
 
       checkYourAnswersPage.open()
       checkYourAnswersPage.assertPageIsDisplayed()
+      checkYourAnswersPage.assertDetailIsRendered(declaration, taxDue.totalTaxDue)
     }
 
     "allow the user to make a payment" in {
-      createDeclaration()
+      createDeclaration().futureValue
 
       checkYourAnswersPage.open()
       checkYourAnswersPage.assertClickOnPayButtonRedirectsToPayFrontend()

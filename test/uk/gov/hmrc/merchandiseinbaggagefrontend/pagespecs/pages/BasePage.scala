@@ -17,10 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.{By, WebDriver}
-import org.scalatest.AppendedClues
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.{AppendedClues, Assertion}
 import org.scalatestplus.selenium.WebBrowser
 
 final case class BaseUrl(value: String)
@@ -46,6 +46,10 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
+
+  def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
+
+  def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
 
   def ensureBasicContent(): Unit = {
     readPath() mustBe path
