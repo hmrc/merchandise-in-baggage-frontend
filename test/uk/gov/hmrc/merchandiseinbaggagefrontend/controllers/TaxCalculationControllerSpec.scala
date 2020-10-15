@@ -17,11 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
+import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 
-class TaxCalculationControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
+class TaxCalculationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
 
   private lazy val controller = injector.instanceOf[TaxCalculationController]
 

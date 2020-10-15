@@ -21,11 +21,11 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, BaseSpecWithWireMock}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, WireMockSupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually {
+class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with WireMockSupport with Eventually {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[CurrencyConversionConnector]
 

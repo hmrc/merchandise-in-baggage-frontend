@@ -18,11 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, WireMockSupport}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 
-trait BasePageSpec extends BaseSpecWithWireMock{
-  implicit lazy val webDriver: HtmlUnitDriver =  new HtmlUnitDriver(false)
+trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport {
+  implicit lazy val webDriver: HtmlUnitDriver = new HtmlUnitDriver(false)
 
   lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
 

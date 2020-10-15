@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
@@ -42,8 +42,8 @@ trait BaseSpecWithApplication extends BaseSpec
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder().configure(Map(
       "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-      "microservice.services.currency-conversion.port" -> BaseSpecWithWireMock.port,
-      "microservice.services.payment.port" -> BaseSpecWithWireMock.port
+      "microservice.services.currency-conversion.port" -> WireMockSupport.port,
+      "microservice.services.payment.port" -> WireMockSupport.port
     )).build()
 
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]
@@ -51,13 +51,8 @@ trait BaseSpecWithApplication extends BaseSpec
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 }
 
-/*
-to do make this
-  trait BaseSpecWithWireMock extends BeforeAndAfterEach { this: Suite =>
-*/
-
-trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEach {
-  val wireMockServer = new WireMockServer(BaseSpecWithWireMock.port)
+trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
+  val wireMockServer = new WireMockServer(WireMockSupport.port)
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -69,6 +64,6 @@ trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEa
   }
 }
 
-object BaseSpecWithWireMock {
+object WireMockSupport {
   val port: Int = 17777
 }

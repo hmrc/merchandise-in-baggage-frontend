@@ -22,12 +22,12 @@ import uk.gov.hmrc.http.HeaderNames.xSessionId
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithWireMock, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PaymentConnectorSpec extends BaseSpecWithWireMock with CoreTestData {
+class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
 
   class TestPaymentConnector extends PaymentConnector(
     injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))

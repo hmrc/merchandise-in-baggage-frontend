@@ -17,10 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
+import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
   private lazy val controller = injector.instanceOf[CheckYourAnswersController]
 
   private val url: String = routes.CheckYourAnswersController.onPageLoad().url
