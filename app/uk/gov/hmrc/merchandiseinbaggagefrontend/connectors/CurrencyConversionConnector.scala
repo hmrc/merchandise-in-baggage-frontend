@@ -16,23 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
-import java.time.LocalDate
+import java.time.LocalDate.now
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.CurrencyConversionConf
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
+import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait CurrencyConversionConnector extends CurrencyConversionConf {
-  val httpClient: HttpClient
-
+@Singleton
+class CurrencyConversionConnector @Inject()(httpClient: HttpClient, @Named("currencyConversionBaseUrl") baseUrl: String) {
   def getCurrencies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CurrencyPeriod] =
-    httpClient.GET[CurrencyPeriod](s"$currencyConversionBaseUrl/currency-conversion/currencies/${LocalDate.now()}")
+    httpClient.GET[CurrencyPeriod](s"$baseUrl/currency-conversion/currencies/${now()}")
 
   def getConversionRate(code: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ConversionRatePeriod]] =
-    httpClient.GET[Seq[ConversionRatePeriod]](
-      s"$currencyConversionBaseUrl/currency-conversion/rates/${LocalDate.now()}?cc=$code"
-    )
+    httpClient.GET[Seq[ConversionRatePeriod]](s"$baseUrl/currency-conversion/rates/${now()}?cc=$code")
 }

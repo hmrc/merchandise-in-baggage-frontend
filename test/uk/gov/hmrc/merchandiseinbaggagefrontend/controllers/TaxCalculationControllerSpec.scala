@@ -17,25 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TaxCalculationView
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class TaxCalculationControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
 
-  private lazy val view = injector.instanceOf[TaxCalculationView]
-  private lazy val calculationService = new CalculationService(injector.instanceOf[HttpClient]) {
-    override lazy val currencyConversionBaseUrl =
-      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
-  }
-
-  private lazy val controller =
-    new TaxCalculationController(controllerComponents, actionBuilder, calculationService, view)
+  private lazy val controller = injector.instanceOf[TaxCalculationController]
 
   "onPageLoad" must {
     val url = routes.TaxCalculationController.onPageLoad().url

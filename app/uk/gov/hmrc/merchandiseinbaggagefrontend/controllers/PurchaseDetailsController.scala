@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsForm.form
@@ -31,16 +30,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PurchaseDetailsController @Inject()(
                                            override val controllerComponents: MessagesControllerComponents,
-                                           override val httpClient: HttpClient,
+                                           connector: CurrencyConversionConnector,
                                            actionProvider: DeclarationJourneyActionProvider,
                                            repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController with CurrencyConversionConnector {
+  extends IndexedDeclarationJourneyUpdateController {
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      getCurrencies().map { currencyPeriod =>
+      connector.getCurrencies().map { currencyPeriod =>
         val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
         Ok(view(preparedForm, idx, category, currencyPeriod.currencies))
@@ -50,7 +49,7 @@ class PurchaseDetailsController @Inject()(
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      getCurrencies().flatMap { currencyPeriod =>
+      connector.getCurrencies().flatMap { currencyPeriod =>
         form
           .bindFromRequest()
           .fold(
