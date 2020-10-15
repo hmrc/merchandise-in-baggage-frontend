@@ -29,5 +29,6 @@ class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuratio
 
   override def configure(): Unit = {
     bindBaseUrl("currencyConversionBaseUrl", "currency-conversion")
+    bindBaseUrl("paymentBaseUrl", "payment")
   }
 }

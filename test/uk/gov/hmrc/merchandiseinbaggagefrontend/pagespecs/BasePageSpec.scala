@@ -32,7 +32,7 @@ trait BasePageSpec extends BaseSpecWithWireMock{
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
-  def startImportJourney: Unit = {
+  def startImportJourney(): Unit = {
     startImportPage.open()
     startImportPage.clickOnStartNowButton()
   }

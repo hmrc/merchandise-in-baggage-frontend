@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
@@ -28,7 +27,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
   private lazy val connector = injector.instanceOf[CurrencyConversionConnector]
 
   "get list of currencies for a given date" in {

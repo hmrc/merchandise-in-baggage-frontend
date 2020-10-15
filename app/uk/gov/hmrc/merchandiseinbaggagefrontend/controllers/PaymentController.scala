@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
@@ -29,11 +28,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentController @Inject()(
-                                   mcc: MessagesControllerComponents,
-                                   paymentPage: PaymentPage,
-                                   override val httpClient: HttpClient)(implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends FrontendController(mcc) with PaymentConnector {
+class PaymentController @Inject()(mcc: MessagesControllerComponents, paymentPage: PaymentPage, connector: PaymentConnector)
+                                 (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
+  extends FrontendController(mcc) {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
@@ -51,7 +48,7 @@ class PaymentController @Inject()(
           answers.taxDue,
           answers.taxDue
         )
-        makePayment(body).map { response => Redirect(extractUrl(response).nextUrl.value) }
+        connector.makePayment(body).map { response => Redirect(connector.extractUrl(response).nextUrl.value) }
           .recoverWith {
             case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
           }

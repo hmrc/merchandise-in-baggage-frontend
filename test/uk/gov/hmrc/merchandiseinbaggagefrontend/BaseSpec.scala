@@ -42,10 +42,11 @@ trait BaseSpecWithApplication extends BaseSpec
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder().configure(Map(
       "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-      "microservice.services.currency-conversion.port" -> BaseSpecWithWireMock.port
+      "microservice.services.currency-conversion.port" -> BaseSpecWithWireMock.port,
+      "microservice.services.payment.port" -> BaseSpecWithWireMock.port
     )).build()
 
-  lazy val declarationJourneyRepository: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
+  lazy val declarationJourneyRepository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]
 
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 }

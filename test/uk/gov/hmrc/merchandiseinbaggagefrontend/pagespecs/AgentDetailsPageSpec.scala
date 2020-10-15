@@ -19,14 +19,14 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 class AgentDetailsPageSpec extends BasePageSpec {
   "the page" should {
     "render correctly" in {
-      startImportJourney
+      startImportJourney()
 
       agentDetailsPage.open()
       agentDetailsPage.assertPageIsDisplayed()
     }
 
     "allow the user to navigate to the /enter-agent-address" in {
-      startImportJourney
+      startImportJourney()
 
       agentDetailsPage.open()
       agentDetailsPage.fillOutForm("test agent")
