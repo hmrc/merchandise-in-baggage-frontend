@@ -27,9 +27,7 @@ class PayApiRequestSpec extends BaseSpec {
       MibReference("MIBI1234567890"),
       AmountInPence(1),
       AmountInPence(2),
-      AmountInPence(3),
-      TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
-      MerchandiseDetails("Parts and technical crew for the forest moon")
+      AmountInPence(3)
     )
 
     val actual = Json.toJson(paymentRequest).toString
