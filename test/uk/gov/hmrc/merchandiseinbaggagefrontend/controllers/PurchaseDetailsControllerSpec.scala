@@ -18,24 +18,15 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PurchaseDetailsView
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
-  private lazy val controller =
-    new PurchaseDetailsController(
-      controllerComponents, injector.instanceOf[HttpClient], actionBuilder, declarationJourneyRepository, injector.instanceOf[PurchaseDetailsView]){
-
-      override lazy val currencyConversionBaseUrl =
-        s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
-    }
+  private lazy val controller = injector.instanceOf[PurchaseDetailsController]
 
   private def ensureContent(result: Future[Result], goodsEntry: GoodsEntry) = {
     val content = contentAsString(result)

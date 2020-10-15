@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, TaxCalculation, TaxCalculations}
@@ -25,12 +25,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Decla
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CalculationService @Inject()(override val httpClient: HttpClient)(implicit ec: ExecutionContext) extends CurrencyConversionConnector {
+class CalculationService @Inject()(connector: CurrencyConversionConnector)(implicit ec: ExecutionContext) {
 
   def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
     Future.traverse(declarationGoods.goods) { good =>
       val code = good.purchaseDetails.currency.currencyCode
-      getConversionRate(code).map { rates =>
+      connector.getConversionRate(code).map { rates =>
         val rounding = BigDecimal.RoundingMode.HALF_UP
 
         val rate: BigDecimal = rates.find(_.currencyCode == code).fold(BigDecimal(0))(_.rate)

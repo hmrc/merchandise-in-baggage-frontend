@@ -19,48 +19,30 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 import org.scalatest.concurrent.Eventually
 import org.scalatest.time.{Second, Seconds, Span}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, BaseSpecWithWireMock}
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 
 class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with BaseSpecWithWireMock with Eventually {
-
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
+  private lazy val connector = injector.instanceOf[CurrencyConversionConnector]
 
-  "get list of currencies for a given date" in new CurrencyConversionConnector {
-    override val httpClient: HttpClient = injector.instanceOf[HttpClient]
-
-    override lazy val currencyConversionBaseUrl =
-      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
-
+  "get list of currencies for a given date" in {
     givenCurrenciesAreFound(wireMockServer)
 
-    eventually {
-      val response: CurrencyPeriod = Await.result(getCurrencies(), 5.seconds)
+    val response: CurrencyPeriod = connector.getCurrencies().futureValue
 
-      response mustBe Json.parse(currencyConversionResponse).as[CurrencyPeriod]
-    }
+    response mustBe Json.parse(currencyConversionResponse).as[CurrencyPeriod]
   }
 
-  "get conversion rate for a given currency code" in new CurrencyConversionConnector {
-    override val httpClient: HttpClient = injector.instanceOf[HttpClient]
-
-    override lazy val currencyConversionBaseUrl =
-      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
-
+  "get conversion rate for a given currency code" in {
     givenCurrencyIsFound("USD", wireMockServer)
 
-    eventually {
-      val response: Seq[ConversionRatePeriod] = Await.result(getConversionRate("USD"), 5.seconds)
-
-      response mustBe Json.parse(conversionRateResponse("USD")).as[Seq[ConversionRatePeriod]]
-    }
+    val response: Seq[ConversionRatePeriod] = connector.getConversionRate("USD").futureValue
+    response mustBe Json.parse(conversionRateResponse("USD")).as[Seq[ConversionRatePeriod]]
   }
-
 }

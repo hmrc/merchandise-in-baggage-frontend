@@ -17,24 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with BaseSpecWithWireMock {
-
-  private lazy val view = injector.instanceOf[CheckYourAnswersPage]
-  private lazy val calculationService = new CalculationService(injector.instanceOf[HttpClient]) {
-    override lazy val currencyConversionBaseUrl =
-      s"${currencyConversionConf.protocol}://${currencyConversionConf.host}:${BaseSpecWithWireMock.port}"
-  }
-
-  private lazy val controller =
-    new CheckYourAnswersController(controllerComponents, actionBuilder, calculationService, view)
+  private lazy val controller = injector.instanceOf[CheckYourAnswersController]
 
   private val url: String = routes.CheckYourAnswersController.onPageLoad().url
   private val getRequestWithSessionId = buildGet(url, sessionId)
