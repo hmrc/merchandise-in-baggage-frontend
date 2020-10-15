@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatestplus.selenium.WebBrowser
 
 class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
   override val path = "/merchandise-in-baggage/agent-details"
@@ -24,4 +25,17 @@ class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends 
   override val expectedTitle = "Enter the business name of the customs agent"
 
   def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
+
+  import WebBrowser._
+
+  def fillOutForm(value: String) = {
+    click on find(NameQuery("value")).get
+    enter(value)
+  }
+
+  def clickContinue = {
+    click on find(NameQuery("continue")).get
+
+    readPath() mustBe "/merchandise-in-baggage/enter-agent-address"
+  }
 }
