@@ -49,9 +49,7 @@ class PaymentController @Inject()(
           MibReference("MIBI1234567890"),
           answers.taxDue,
           answers.taxDue,
-          answers.taxDue,
-          TraderDetails("Trader Inc, 239 Old Street, Berlin, Germany, EC1V 9EY"),
-          MerchandiseDetails("Parts and technical crew for the forest moon")
+          answers.taxDue
         )
         makePayment(body).map { response => Redirect(extractUrl(response).nextUrl.value) }
           .recoverWith {
