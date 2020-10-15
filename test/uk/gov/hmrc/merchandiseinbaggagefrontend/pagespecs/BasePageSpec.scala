@@ -29,6 +29,12 @@ trait BasePageSpec extends BaseSpecWithWireMock{
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
+  lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
+
+  def startImportJourney: Unit = {
+    startImportPage.open()
+    startImportPage.clickOnStartNowButton()
+  }
 }
 

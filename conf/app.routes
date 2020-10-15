@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.agentDetails
 GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterAgentAddress
 GET        /select-agent-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectAgentAddress
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
@@ -80,6 +79,10 @@ POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggagefronten
 # CustomsAgent
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onPageLoad
 POST       /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onSubmit
+
+# AgentDetails
+GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onPageLoad
+POST       /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

@@ -46,7 +46,7 @@ class CustomsAgentController @Inject()(
           repo.upsert(
             request.declarationJourney.copy(
               maybeIsACustomsAgent = Some(YesNo.from(isCustomsAgent)))).map { _ =>
-            if (isCustomsAgent) Redirect(routes.SkeletonJourneyController.agentDetails())
+            if (isCustomsAgent) Redirect(routes.AgentDetailsController.onPageLoad())
             else Redirect(routes.SkeletonJourneyController.enterEoriNumber())
           }
       )

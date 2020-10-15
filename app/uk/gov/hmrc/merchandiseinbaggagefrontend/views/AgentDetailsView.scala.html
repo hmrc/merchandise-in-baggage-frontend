@@ -23,41 +23,25 @@
         formHelper: FormWithCSRF,
         errorSummary: components.errorSummary,
         button: components.button,
-        text: components.inputText,
-        h1: components.h1,
-        p: components.p)
+        text: components.inputText)
 
-@(form: Form[_], idx: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("searchGoods.title"))) {
+@layout(pageTitle = Some(messages("agentDetails.title"))) {
 
-  @formHelper(action = SearchGoodsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = AgentDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 
-    @h1(messages("searchGoods.heading"))
-
-    @p(Html(messages("searchGoods.p")))
-
     @text(
         form = form,
-        id = "category",
-        name = "category",
-        label = "searchGoods.category",
-        isPageHeading = false,
-        classes = Some("govuk-input--width-20"),
-        hint = Some("searchGoods.category.hint")
+        id = "value",
+        name = "value",
+        label = "agentDetails.heading",
+        isPageHeading = true,
+        classes = Some("govuk-input--width-20")
     )
 
-    @text(
-        form = form,
-        id = "quantity",
-        name = "quantity",
-        label = "searchGoods.quantity",
-        isPageHeading = false,
-        classes = Some("govuk-input--width-5")
-    )
-
-    @button("site.continue")
+    @button("site.continue", name = Some("continue"))
   }
 }

@@ -24,26 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "agentDetails" should {
-    val url = routes.SkeletonJourneyController.agentDetails().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Enter the business name of the customs agent"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.agentDetails(getRequest), title, routes.SkeletonJourneyController.enterAgentAddress())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.agentDetails(buildGet(url)))
-      }
-    }
-  }
-
   "enterAgentAddress" should {
     val url = routes.SkeletonJourneyController.enterAgentAddress().url
 
