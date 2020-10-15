@@ -19,14 +19,16 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpecWithWireMock
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{BaseUrl, ExciseAndRestrictedGoodsPage, StartImportPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 
 trait BasePageSpec extends BaseSpecWithWireMock{
   implicit lazy val webDriver: HtmlUnitDriver =  new HtmlUnitDriver(false)
 
   lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
 
-  lazy val startPage: StartImportPage = wire[StartImportPage]
+  lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
+  lazy val startImportPage: StartImportPage = wire[StartImportPage]
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
+  lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 }
 

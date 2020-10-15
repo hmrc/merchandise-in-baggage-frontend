@@ -16,17 +16,30 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-class StartImportPageSpec extends BasePageSpec {
+import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
+
+class CheckYourAnswersPageSpec extends BasePageSpec with CoreTestData {
+  private def createDeclaration(): Unit = {
+    testOnlyDeclarationJourneyPage.open()
+    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
+
+    givenCurrencyIsFound("EUR", wireMockServer)
+  }
+
   "the page" should {
     "render correctly" in {
-      startImportPage.open()
-      startImportPage.assertPageIsDisplayed()
+      createDeclaration()
+
+      checkYourAnswersPage.open()
+      checkYourAnswersPage.assertPageIsDisplayed()
     }
 
-    "allow the user to navigate to the excise and restricted goods page" in {
-      startImportPage.open()
-      startImportPage.clickOnStartNowButton()
-      exciseAndRestrictedGoodsPage.assertPageIsDisplayed()
+    "allow the user to make a payment" in {
+      createDeclaration()
+
+      checkYourAnswersPage.open()
+      checkYourAnswersPage.assertClickOnPayButtonRedirectsToPayFrontend()
     }
   }
 }

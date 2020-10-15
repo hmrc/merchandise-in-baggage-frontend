@@ -23,7 +23,9 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
+import play.api.Application
 import play.api.inject.Injector
+import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MongoConfiguration
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 
@@ -37,11 +39,21 @@ trait BaseSpecWithApplication extends BaseSpec
 
   lazy val injector: Injector = app.injector
 
+  //to do integrate this neatly with GuiceApplicationBuilder().configure
+  System.setProperty("microservice.services.currency-conversion.port", BaseSpecWithWireMock.port.toString)
+
+  override def fakeApplication(): Application =
+    new GuiceApplicationBuilder().configure(Map("play.http.router" -> "testOnlyDoNotUseInAppConf.Routes")).build()
+
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
 
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 }
 
+/*
+to do make this
+  trait BaseSpecWithWireMock extends BeforeAndAfterEach { this: Suite =>
+*/
 
 trait BaseSpecWithWireMock extends BaseSpecWithApplication with BeforeAndAfterEach {
   val wireMockServer = new WireMockServer(BaseSpecWithWireMock.port)

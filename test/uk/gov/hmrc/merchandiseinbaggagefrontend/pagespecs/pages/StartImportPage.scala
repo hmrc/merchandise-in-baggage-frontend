@@ -24,7 +24,6 @@ class StartImportPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends B
 
   override val path = "/merchandise-in-baggage/start-import"
   override val expectedTitle = "Declaring goods in your baggage you're bringing to the UK to sell"
-  override val expectedHeadingContent: String = expectedTitle
 
   def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
 
