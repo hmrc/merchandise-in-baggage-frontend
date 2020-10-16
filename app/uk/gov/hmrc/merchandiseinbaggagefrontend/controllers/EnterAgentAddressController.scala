@@ -39,13 +39,10 @@ class EnterAgentAddressController @Inject()(
   }
 
   def returnFromAddressLookup(id: String): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    addressLookupFrontendConnector.getAddress(id) flatMap { address =>
-      repo.upsert(
-        request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address))
-      ) map { _ =>
-        Redirect(routes.SkeletonJourneyController.enterEoriNumber())
-      }
-    }
+    for {
+      address <- addressLookupFrontendConnector.getAddress(id)
+      _ <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
+    } yield Redirect(routes.SkeletonJourneyController.enterEoriNumber())
   }
 
 }
