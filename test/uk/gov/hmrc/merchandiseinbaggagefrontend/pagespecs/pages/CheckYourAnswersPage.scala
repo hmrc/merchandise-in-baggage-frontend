@@ -69,7 +69,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
       textOfElementWithId("customsAgentName") mustBe customsAgent.name
 
       textOfElementWithId("customsAgentAddressLabel") mustBe "Customs agent address"
-      textOfElementWithId("customsAgentAddress").contains(customsAgent.address.postCode) mustBe true
+      textOfElementWithId("customsAgentAddress").contains(customsAgent.address.postcode.get) mustBe true
     }
 
     textOfElementWithId("eoriLabel") mustBe "EORI number"

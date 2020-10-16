@@ -42,6 +42,7 @@ trait BaseSpecWithApplication extends BaseSpec
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder().configure(Map(
       "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
+      "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
       "microservice.services.currency-conversion.port" -> WireMockSupport.port,
       "microservice.services.payment.port" -> WireMockSupport.port
     )).build()

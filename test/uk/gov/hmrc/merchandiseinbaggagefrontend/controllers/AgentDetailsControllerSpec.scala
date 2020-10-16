@@ -82,7 +82,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterAgentAddress().toString
+        redirectLocation(result).get mustEqual routes.EnterAgentAddressController.onPageLoad().toString
 
         startedDeclarationJourney.maybeCustomsAgentName mustBe None
         declarationJourneyRepository
