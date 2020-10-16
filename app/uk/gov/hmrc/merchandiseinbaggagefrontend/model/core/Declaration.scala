@@ -30,6 +30,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -126,20 +127,6 @@ case class Name(firstName: String, lastName: String) {
 
 object Name {
   implicit val format: OFormat[Name] = Json.format[Name]
-}
-
-case class Address(maybeLine1: Option[String],
-                   maybeLine2: Option[String] = None,
-                   maybeTown: Option[String] = None,
-                   maybeCounty: Option[String] = None,
-                   postCode: String) {
-  val populatedAddressLines: Seq[String] = Seq(maybeLine1, maybeLine2, maybeTown, maybeCounty).flatten
-}
-
-object Address {
-  implicit val format: OFormat[Address] = Json.format[Address]
-
-  def apply(line1: String, line2: String, postcode: String): Address = Address(Some(line1), Some(line2), None, None, postcode)
 }
 
 case class Eori(value: String) {

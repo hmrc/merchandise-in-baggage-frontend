@@ -82,12 +82,12 @@
    <div class="govuk-summary-list__row">
     <dt class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
     <dd class="govuk-summary-list__value" style="text-transform: capitalize">
-     @for(addressLine <- customsAgent.address.populatedAddressLines) {
+     @for(addressLine <- customsAgent.address.lines) {
       @addressLine
       <br>
       }
 
-     @customsAgent.address.postCode
+     @customsAgent.address.postcode
     </dd>
    </div>
   }
