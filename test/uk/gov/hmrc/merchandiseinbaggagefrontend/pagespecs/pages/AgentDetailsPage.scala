@@ -32,9 +32,12 @@ class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends 
     enter(value)
   }
 
-  def clickContinue(): Assertion = {
+  def mustRedirectToAddressLookupFromTheCTA(): Assertion = {
     click on find(NameQuery("continue")).get
 
-    readPath() mustBe "/merchandise-in-baggage/enter-agent-address"
+    val redirectedTo = readPath()
+    val successfulRedirectDependingOnWhetherAddressLookupIsAvailable =
+      redirectedTo == "/merchandise-in-baggage/enter-agent-address" || redirectedTo.startsWith("/lookup-address")
+    successfulRedirectDependingOnWhetherAddressLookupIsAvailable mustBe true
   }
 }

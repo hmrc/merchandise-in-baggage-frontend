@@ -98,15 +98,14 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
     }
   }
 
-  def mustRedirectToPaymentWhenThePayButtonIsClicked(): Unit = {
+  def mustRedirectToPaymentFromTheCTA(): Unit = {
     val button = find(NameQuery("payButton")).get
     click on button
 
-    // to do find a better assertion
     val redirectedTo = readPath()
-    val successfulRedirectDependingOnEnvironment =
+    val successfulRedirectDependingOnWhetherPaymentIsAvailable =
       redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/process-payment"
-    successfulRedirectDependingOnEnvironment mustBe true
+    successfulRedirectDependingOnWhetherPaymentIsAvailable mustBe true
   }
 
   def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"

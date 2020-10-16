@@ -30,7 +30,7 @@ class AgentDetailsPageSpec extends BasePageSpec {
 
       agentDetailsPage.open()
       agentDetailsPage.fillOutForm("test agent")
-      agentDetailsPage.clickContinue()
+      agentDetailsPage.mustRedirectToAddressLookupFromTheCTA()
     }
   }
 }
