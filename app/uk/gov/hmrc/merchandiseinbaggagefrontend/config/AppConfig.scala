@@ -20,10 +20,9 @@ import javax.inject.Singleton
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._ // Do not remove this
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfigSource.configSource
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
 
 @Singleton
-class AppConfig() extends PaymentServiceConf with MongoConfiguration {
+class AppConfig() extends MongoConfiguration {
   lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
 
   private val serviceIdentifier = "mib"
@@ -32,32 +31,6 @@ class AppConfig() extends PaymentServiceConf with MongoConfiguration {
 
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
 }
-
-trait CurrencyConversionConf {
-  lazy val currencyConversionConf: CurrencyConversionConfiguration =
-    configSource("microservice.services.currency-conversion").loadOrThrow[CurrencyConversionConfiguration]
-  import currencyConversionConf._
-  lazy val currencyConversionBaseUrl = s"$protocol://$host:$port"
-}
-
-case class CurrencyConversionConfiguration(protocol: String, host: String, port: String)
-
-trait MerchandiseInBaggageConf {
-  lazy val merchandiseInBaggageConf: MerchandiseInBaggageConfiguration =
-    configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MerchandiseInBaggageConfiguration]
-  import merchandiseInBaggageConf._
-  lazy val merchandiseInBaggageBaseUrl = s"$protocol://$host:$port"
-}
-
-case class MerchandiseInBaggageConfiguration(protocol: String, host: String, port: String)
-
-trait PaymentServiceConf {
-  lazy val paymentServiceConf: PaymentServiceConfiguration = configSource("microservice.services.payment").loadOrThrow[PaymentServiceConfiguration]
-  import paymentServiceConf._
-  lazy val paymentBaseUri = s"$protocol://$host:$port/"
-}
-
-case class PaymentServiceConfiguration(protocol: String, port: Int, host: String, url: URL)
 
 trait MongoConfiguration {
   lazy val mongoConf: MongoConf = configSource("mongodb").loadOrThrow[MongoConf]

@@ -29,6 +29,7 @@ class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuratio
 
   override def configure(): Unit = {
     bindBaseUrl("currencyConversionBaseUrl", "currency-conversion")
+    bindBaseUrl("paymentBaseUrl", "payment")
     bindBaseUrl("addressLookupFrontendBaseUrl", "address-lookup-frontend")
     bindConstant().annotatedWith(named("addressLookupCallback"))
       .to(servicesConfig.getString("microservice.services.address-lookup-frontend.callback"))

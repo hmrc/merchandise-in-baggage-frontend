@@ -41,18 +41,6 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
     }
   }
 
-  "onStartImport" must {
-    "render the start import page" in {
-      val getRequest = buildGet(routes.StartController.onStartImport().url)
-      val result = controller.onStartImport()(getRequest)
-      val content = contentAsString(result)
-
-      status(result) mustEqual OK
-      content must include("Declaring goods in your baggage you&#x27;re bringing to the UK to sell")
-      content must include("Start now")
-    }
-  }
-
   "onSubmit" must {
     val url = routes.StartController.onSubmit().url
     val nextUrl = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
