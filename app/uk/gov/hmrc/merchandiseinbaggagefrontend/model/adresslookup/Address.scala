@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup
 
-class AgentDetailsPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      startImportJourney()
+import play.api.libs.json._
 
-      agentDetailsPage.open()
-      agentDetailsPage.mustRenderBasicContent()
-    }
+case class Country(code: String, name: Option[String])
 
-    "allow the user to navigate to the /enter-agent-address" in {
-      startImportJourney()
+case class Address(lines: Seq[String], postcode: Option[String], country: Country)
 
-      agentDetailsPage.open()
-      agentDetailsPage.fillOutForm("test agent")
-      agentDetailsPage.mustRedirectToAddressLookupFromTheCTA()
-    }
-  }
+object Address {
+
+  implicit val formatCountry: OFormat[Country] = Json.format[Country]
+  implicit val formatAddressLookupAddress: OFormat[Address] =
+    Json.format[Address]
+
 }

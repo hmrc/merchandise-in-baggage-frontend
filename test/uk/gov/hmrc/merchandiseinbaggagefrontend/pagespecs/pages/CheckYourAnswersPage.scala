@@ -69,7 +69,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
       textOfElementWithId("customsAgentName") mustBe customsAgent.name
 
       textOfElementWithId("customsAgentAddressLabel") mustBe "Customs agent address"
-      textOfElementWithId("customsAgentAddress").contains(customsAgent.address.postCode) mustBe true
+      textOfElementWithId("customsAgentAddress").contains(customsAgent.address.postcode.get) mustBe true
     }
 
     textOfElementWithId("eoriLabel") mustBe "EORI number"
@@ -98,15 +98,14 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
     }
   }
 
-  def mustRedirectToPaymentWhenThePayButtonIsClicked(): Unit = {
+  def mustRedirectToPaymentFromTheCTA(): Unit = {
     val button = find(NameQuery("payButton")).get
     click on button
 
-    // to do find a better assertion
     val redirectedTo = readPath()
-    val successfulRedirectDependingOnEnvironment =
+    val successfulRedirectDependingOnWhetherPaymentIsAvailable =
       redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/process-payment"
-    successfulRedirectDependingOnEnvironment mustBe true
+    successfulRedirectDependingOnWhetherPaymentIsAvailable mustBe true
   }
 
   def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"

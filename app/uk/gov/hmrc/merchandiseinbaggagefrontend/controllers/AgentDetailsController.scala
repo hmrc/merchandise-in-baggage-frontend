@@ -49,7 +49,7 @@ class AgentDetailsController @Inject()(
           repo.upsert(
             request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
           ).map { _ =>
-            Redirect(routes.SkeletonJourneyController.enterAgentAddress())
+            Redirect(routes.EnterAgentAddressController.onPageLoad())
           }
         }
       )

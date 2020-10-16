@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.config
 
-class AgentDetailsPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      startImportJourney()
+import javax.inject.Inject
+import play.api.libs.json.{JsObject, Json}
 
-      agentDetailsPage.open()
-      agentDetailsPage.mustRenderBasicContent()
-    }
+class AddressLookupConfig @Inject()() {
 
-    "allow the user to navigate to the /enter-agent-address" in {
-      startImportJourney()
-
-      agentDetailsPage.open()
-      agentDetailsPage.fillOutForm("test agent")
-      agentDetailsPage.mustRedirectToAddressLookupFromTheCTA()
-    }
-  }
+  def config(continueUrl: String) =
+    Json.parse(
+      s"""{
+         |  "version": 2,
+         |  "options": {
+         |    "continueUrl": "$continueUrl"
+         |  }
+         |}
+         |""".stripMargin).as[JsObject]
 }

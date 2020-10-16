@@ -86,7 +86,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec with CoreTestData {
 
       checkYourAnswersPage.open()
 
-      checkYourAnswersPage.mustRedirectToPaymentWhenThePayButtonIsClicked()
+      checkYourAnswersPage.mustRedirectToPaymentFromTheCTA()
     }
   }
 }

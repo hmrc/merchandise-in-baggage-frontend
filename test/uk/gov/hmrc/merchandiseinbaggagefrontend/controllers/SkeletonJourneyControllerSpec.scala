@@ -24,46 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "enterAgentAddress" should {
-    val url = routes.SkeletonJourneyController.enterAgentAddress().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Find your address"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.enterAgentAddress(getRequest), title, routes.SkeletonJourneyController.selectAgentAddress())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.enterAgentAddress(buildGet(url)))
-      }
-    }
-  }
-
-  "selectAgentAddress" should {
-    val url = routes.SkeletonJourneyController.selectAgentAddress().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Select your address"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.selectAgentAddress(getRequest), title, routes.SkeletonJourneyController.enterEoriNumber())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.selectAgentAddress(buildGet(url)))
-      }
-    }
-  }
-
   "enterEoriNumber" should {
     val url = routes.SkeletonJourneyController.enterEoriNumber().url
 

@@ -8,8 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterAgentAddress
-GET        /select-agent-address         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.selectAgentAddress
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
 GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.journeyDetails
 GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsInVehicle
@@ -83,6 +81,10 @@ POST       /customs-agent                uk.gov.hmrc.merchandiseinbaggagefronten
 # AgentDetails
 GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onPageLoad
 POST       /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onSubmit
+
+# EnterAgentAddress
+GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.onPageLoad
+GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.returnFromAddressLookup(id: String ?= "")
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

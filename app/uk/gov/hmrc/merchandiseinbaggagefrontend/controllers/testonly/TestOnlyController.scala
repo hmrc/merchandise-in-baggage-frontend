@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourneyFormProvider
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.{Address, Country}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
@@ -93,7 +94,7 @@ object TestOnlyController {
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeIsACustomsAgent = Some(YesNo.from(true)),
       maybeCustomsAgentName = Some("Andy Agent"),
-      maybeCustomsAgentAddress = Some(Address("1 Agent Drive", "Agent Town", "AG1 5NT")),
+      maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),
       maybeEori = Some(Eori("TerrysEori")),
       maybeJourneyDetails = Some(JourneyDetails(Dover, now())),
       maybeTravellingByVehicle = Some(true),
