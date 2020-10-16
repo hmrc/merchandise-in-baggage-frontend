@@ -16,8 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend
 
+import java.time.LocalDate.now
+
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Heathrow
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 
 trait CoreTestData {
@@ -44,4 +48,8 @@ trait CoreTestData {
 
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
+
+  val sparseCompleteDeclarationJourney: DeclarationJourney =
+    completedDeclarationJourney.copy(
+      maybeIsACustomsAgent = Some(No), maybeJourneyDetails = Some(JourneyDetails(Heathrow, now())))
 }

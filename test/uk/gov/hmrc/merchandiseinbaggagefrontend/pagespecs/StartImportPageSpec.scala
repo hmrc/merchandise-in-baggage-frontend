@@ -20,13 +20,13 @@ class StartImportPageSpec extends BasePageSpec {
   "the page" should {
     "render correctly" in {
       startImportPage.open()
-      startImportPage.assertPageIsDisplayed()
+      startImportPage.mustRenderBasicContent()
     }
 
     "allow the user to navigate to the excise and restricted goods page" in {
       startImportPage.open()
       startImportPage.clickOnStartNowButton()
-      exciseAndRestrictedGoodsPage.assertPageIsDisplayed()
+      exciseAndRestrictedGoodsPage.mustRenderBasicContent()
     }
   }
 }

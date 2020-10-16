@@ -16,22 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
+import javax.inject.{Inject, Named, Singleton}
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.PaymentServiceConf
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{PayApiResponse, PayApiRequest}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.SessionIdGenerator
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.{PayApiRequest, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.SessionIdGenerator
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait PaymentConnector extends PaymentServiceConf with SessionIdGenerator {
-  protected val httpClient: HttpClient
-
+@Singleton
+class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) extends SessionIdGenerator {
   def makePayment(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    httpClient.POST[PayApiRequest, HttpResponse](s"$paymentBaseUri${paymentServiceConf.url.value}", requestBody, addSessionId(hc).headers)
+    httpClient.POST[PayApiRequest, HttpResponse](
+      s"$baseUrl/pay-api/mib-frontend/mib/journey/start", requestBody, addSessionId(hc).headers)
   }
 
-  protected def extractUrl(response: HttpResponse): PayApiResponse =
-    Json.parse(response.body).as[PayApiResponse]
+  def extractUrl(response: HttpResponse): PayApiResponse = Json.parse(response.body).as[PayApiResponse]
 }

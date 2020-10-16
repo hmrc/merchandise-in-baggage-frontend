@@ -17,54 +17,43 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
-import org.scalatest.concurrent.Eventually
-import org.scalatest.time.{Second, Seconds, Span}
-import play.api.libs.json.Json
-import uk.gov.hmrc.http.{HeaderCarrier, HeaderNames, HttpClient, HttpResponse}
+import play.api.libs.json.Json.toJson
+import uk.gov.hmrc.http.HeaderNames.xSessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithWireMock, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.duration._
 
-class PaymentConnectorSpec extends BaseSpecWithWireMock with Eventually with CoreTestData {
+class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  override implicit val patienceConfig: PatienceConfig = PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(1L, Second)))
-
-  trait TestPaymentConnector extends PaymentConnector {
-    override val httpClient: HttpClient = app.injector.instanceOf[HttpClient]
-
-    override lazy val paymentBaseUri =
-      s"${paymentServiceConf.protocol}://${paymentServiceConf.host}:${BaseSpecWithWireMock.port}/"
-  }
+  class TestPaymentConnector extends PaymentConnector(
+    injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))
 
   "send a payment request to payment service adding a generated session id to the header" in new TestPaymentConnector {
     private val sessionId = generateSessionId
-    override def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier =
-      hc.withExtraHeaders(HeaderNames.xSessionId -> sessionId)
+    private val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
 
-    val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
+    private implicit val hc: HeaderCarrier = HeaderCarrier()
+
+    override def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier = hc.withExtraHeaders(xSessionId -> sessionId)
 
     wireMockServer
-      .stubFor(post(urlPathEqualTo(s"/${paymentServiceConf.url.value}"))
-      .withRequestBody(equalToJson(Json.toJson(payApiRequest).toString, true, false))
-      .withHeader(HeaderNames.xSessionId, containing(sessionId))
-      .willReturn(okJson(stubbedResponse).withStatus(201))
-    )
+      .stubFor(post(urlPathEqualTo(s"/pay-api/mib-frontend/mib/journey/start"))
+        .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
+        .withHeader(xSessionId, containing(sessionId))
+        .willReturn(okJson(stubbedResponse).withStatus(201))
+      )
 
-
-    eventually {
-      val response: HttpResponse = Await.result(makePayment(payApiRequest), 5.seconds)
-      response.status mustBe 201
-      response.body mustBe stubbedResponse
-    }
+    val response: HttpResponse = makePayment(payApiRequest).futureValue
+    response.status mustBe 201
+    response.body mustBe stubbedResponse
   }
 
   "extract redirect url from pay-api http response" in new TestPaymentConnector {
-    val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
+    private val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
 
     extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))
   }

@@ -21,9 +21,9 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithWireMock, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, WireMockSupport, CoreTestData}
 
-class CalculationServiceSpec extends BaseSpecWithWireMock with CoreTestData {
+class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
