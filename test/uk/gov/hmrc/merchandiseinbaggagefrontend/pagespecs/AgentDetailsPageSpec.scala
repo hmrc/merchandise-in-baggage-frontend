@@ -22,7 +22,7 @@ class AgentDetailsPageSpec extends BasePageSpec {
       startImportJourney()
 
       agentDetailsPage.open()
-      agentDetailsPage.assertPageIsDisplayed()
+      agentDetailsPage.mustRenderBasicContent()
     }
 
     "allow the user to navigate to the /enter-agent-address" in {
@@ -30,7 +30,7 @@ class AgentDetailsPageSpec extends BasePageSpec {
 
       agentDetailsPage.open()
       agentDetailsPage.fillOutForm("test agent")
-      agentDetailsPage.clickContinue
+      agentDetailsPage.clickContinue()
     }
   }
 }

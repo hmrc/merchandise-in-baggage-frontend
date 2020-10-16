@@ -22,6 +22,4 @@ class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriv
   override val path = "/merchandise-in-baggage/excise-and-restricted-goods"
 
   override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
-
-  def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
 }

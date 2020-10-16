@@ -23,7 +23,7 @@ class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec with CoreTestData 
   "the page" should {
     "render correctly" in {
       testOnlyDeclarationJourneyPage.open()
-      testOnlyDeclarationJourneyPage.assertPageIsDisplayed()
+      testOnlyDeclarationJourneyPage.mustRenderBasicContent()
     }
 
     "allow the user to set up a declaration and redirect to the start import page" in {
@@ -31,7 +31,7 @@ class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec with CoreTestData 
 
       testOnlyDeclarationJourneyPage.open()
       testOnlyDeclarationJourneyPage.clickOnSubmitButton()
-      startImportPage.assertPageIsDisplayed()
+      startImportPage.mustRenderBasicContent()
 
       declarationJourneyRepository.findAll().futureValue.size mustBe 1
     }

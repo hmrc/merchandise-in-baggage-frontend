@@ -25,8 +25,6 @@ class StartImportPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends B
   override val path = "/merchandise-in-baggage/start-import"
   override val expectedTitle = "Declaring goods in your baggage you're bringing to the UK to sell"
 
-  def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
-
   def clickOnStartNowButton(): Unit = {
     val button = find(NameQuery("startNow")).get
     click on button

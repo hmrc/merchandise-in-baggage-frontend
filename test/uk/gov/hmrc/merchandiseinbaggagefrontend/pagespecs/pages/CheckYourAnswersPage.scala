@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration}
@@ -31,9 +32,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
   private val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
 
-  def assertPageIsDisplayed(): Unit = patiently(ensureBasicContent())
-
-  def assertDetailIsRendered(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
+  def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
     findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
 
     declaration.declarationGoods.goods.zipWithIndex.foreach { goodsWithIndex =>
@@ -80,7 +79,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
     textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
 
     textOfElementWithId("placeOfArrivalLabel") mustBe "Place of arrival"
-    textOfElementWithId("placeOfArrival") mustBe declaration.journeyDetails.placeOfArrival.entryName
+    textOfElementWithId("placeOfArrival") mustBe declaration.journeyDetails.placeOfArrival.display
 
     textOfElementWithId("dateOfArrivalLabel") mustBe "Date of arrival"
     textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfArrival
@@ -99,7 +98,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
     }
   }
 
-  def assertClickOnPayButtonRedirectsToPayFrontend(): Unit = {
+  def mustRedirectToPaymentWhenThePayButtonIsClicked(): Unit = {
     val button = find(NameQuery("payButton")).get
     click on button
 
@@ -109,5 +108,6 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
       redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/process-payment"
     successfulRedirectDependingOnEnvironment mustBe true
   }
-}
 
+  def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"
+}
