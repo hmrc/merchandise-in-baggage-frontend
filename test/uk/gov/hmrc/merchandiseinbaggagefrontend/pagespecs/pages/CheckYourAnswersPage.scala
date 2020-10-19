@@ -19,8 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
 
 class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
 
@@ -85,16 +84,15 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
     textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfArrival
 
     textOfElementWithId("travellingByVehicleLabel") mustBe "Travelling by vehicle"
-    textOfElementWithId("travellingByVehicle") mustBe declaration.travellingByVehicle.entryName
+    textOfElementWithId("travellingByVehicle") mustBe declaration.journeyDetails.travellingByVehicle.entryName
 
-    declaration.travellingByVehicle match {
-      case No =>
+    declaration.journeyDetails match {
+      case journeyInSmallVehicle: JourneyInSmallVehicle =>
+        textOfElementWithId("vehicleRegistrationNumberLabel") mustBe "Vehicle registration number"
+        textOfElementWithId("vehicleRegistrationNumber") mustBe journeyInSmallVehicle.registrationNumber
+      case _ =>
         elementIsNotRenderedWithId("vehicleRegistrationNumberLabel")
         elementIsNotRenderedWithId("vehicleRegistrationNumber")
-
-      case Yes =>
-        textOfElementWithId("vehicleRegistrationNumberLabel") mustBe "Vehicle registration number"
-        textOfElementWithId("vehicleRegistrationNumber") mustBe declaration.maybeRegistrationNumber.get
     }
   }
 

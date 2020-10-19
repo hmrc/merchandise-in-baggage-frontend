@@ -114,9 +114,9 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt id="travellingByVehicleLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.travellingByVehicle")</dt>
-   <dd id="travellingByVehicle" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.travellingByVehicle.messageKey)</dd>
+   <dd id="travellingByVehicle" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.travellingByVehicle.messageKey)</dd>
   </div>
-  @declaration.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
+  @declaration.journeyDetails.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
    <div class="govuk-summary-list__row">
     <dt id="vehicleRegistrationNumberLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.vehicleRegistrationNumber")</dt>
     <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
