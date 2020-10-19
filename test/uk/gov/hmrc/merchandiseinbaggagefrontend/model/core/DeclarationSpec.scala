@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
-import java.time.LocalDate.now
-
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
@@ -37,6 +35,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   private val incompleteGoodsEntry = completedGoodsEntry.copy(maybeInvoiceNumber = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
+  private val vehicleRegistrationNumber = "reg"
 
   "PurchaseDetails toString" should {
     "include the price string as entered" in {
@@ -113,9 +112,30 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     }
   }
 
+  "JourneyViaFootPassengerOnlyPort" should {
+    "serialise and de-serialise" in {
+      val journey = JourneyViaFootPassengerOnlyPort(Heathrow, journeyDate)
+      parse(toJson(journey).toString()).validate[JourneyViaFootPassengerOnlyPort].get mustBe journey
+    }
+  }
+
+  "JourneyOnFootViaVehiclePort" should {
+    "serialise and de-serialise" in {
+      val journey = JourneyOnFootViaVehiclePort(Dover, journeyDate)
+      parse(toJson(journey).toString()).validate[JourneyOnFootViaVehiclePort].get mustBe journey
+    }
+  }
+
+  "JourneyInSmallVehicle" should {
+    "serialise and de-serialise" in {
+      val journey = JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
+      parse(toJson(journey).toString()).validate[JourneyInSmallVehicle].get mustBe journey
+    }
+  }
+
   "DeclarationJourney" should {
     "serialise and de-serialise" in {
-      parse(toJson(completedDeclarationJourney).toString()).validate[DeclarationJourney].asOpt mustBe Some(completedDeclarationJourney)
+      parse(toJson(completedDeclarationJourney).toString()).validate[DeclarationJourney].get mustBe completedDeclarationJourney
     }
 
     "have a customs agent" when {
@@ -155,9 +175,10 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
-            completedDeclarationJourney.maybeJourneyDetails.get,
-            YesNo.from(completedDeclarationJourney.maybeTravellingByVehicle.get),
-            completedDeclarationJourney.maybeRegistrationNumber))
+            JourneyInSmallVehicle(
+              Dover,
+              completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfArrival,
+              completedDeclarationJourney.maybeRegistrationNumber.get)))
       }
 
       "the user is not a customs agent" in {
@@ -170,60 +191,60 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival does not require vehicle checks" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Heathrow, now))
-        ).declarationIfRequiredAndComplete.isDefined mustBe true
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate))
+        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyViaFootPassengerOnlyPort(Heathrow, journeyDate)
       }
 
       "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = Some(false)
-        ).declarationIfRequiredAndComplete.isDefined mustBe true
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(false)
+        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFootViaVehiclePort(Dover, journeyDate)
       }
 
-      "the place of arrival requires vehicle checks and the trader has supplied the registration number of a small vehicle" in {
+      "the place of arrival requires vehicle checks and the trader has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(true),
           maybeTravellingBySmallVehicle = Some(true),
-          maybeRegistrationNumber = Some("reg")
-        ).declarationIfRequiredAndComplete.isDefined mustBe true
+          maybeRegistrationNumber = Some(vehicleRegistrationNumber)
+        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
       }
     }
 
     "be incomplete or not required" when {
       "journey details have not been completed" in {
-        completedDeclarationJourney.copy(maybeJourneyDetails = None).declarationIfRequiredAndComplete.isDefined mustBe false
+        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationIfRequiredAndComplete mustBe None
       }
 
       "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)), maybeTravellingByVehicle = None
-        ).declarationIfRequiredAndComplete.isDefined mustBe false
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = None
+        ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(true),
           maybeTravellingBySmallVehicle = Some(false)
-        ).declarationIfRequiredAndComplete.isDefined mustBe false
+        ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(true),
           maybeTravellingBySmallVehicle = None
-        ).declarationIfRequiredAndComplete.isDefined mustBe false
+        ).declarationIfRequiredAndComplete mustBe None
       }
 
-      "the place of arrival requires vehicle checks and the trader has not supplied the registration number of their small vehicle" in {
+      "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetails = Some(JourneyDetails(Dover, now)),
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(true),
           maybeTravellingBySmallVehicle = Some(true),
           maybeRegistrationNumber = None
-        ).declarationIfRequiredAndComplete.isDefined mustBe false
+        ).declarationIfRequiredAndComplete mustBe None
       }
     }
 
@@ -274,14 +295,14 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
 
       "the user has not provided journey details" in {
-        completedDeclarationJourney.copy(maybeJourneyDetails = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationIfRequiredAndComplete mustBe None
       }
     }
   }
 
   "declaration" should {
     "serialise and de-serialise" in {
-      parse(toJson(declaration).toString()).validate[Declaration].asOpt mustBe Some(declaration)
+      parse(toJson(declaration).toString()).validate[Declaration].get mustBe declaration
     }
   }
 }

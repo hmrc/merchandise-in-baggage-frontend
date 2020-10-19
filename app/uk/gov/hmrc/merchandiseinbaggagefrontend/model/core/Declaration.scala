@@ -32,7 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 import scala.collection.immutable
@@ -137,12 +137,10 @@ object Eori {
   implicit val format: OFormat[Eori] = Json.format[Eori]
 }
 
-case class JourneyDetails(placeOfArrival: Port, dateOfArrival: LocalDate) {
-  val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
-}
+case class JourneyDetailsEntry(placeOfArrival: Port, dateOfArrival: LocalDate)
 
-object JourneyDetails {
-  implicit val format: OFormat[JourneyDetails] = Json.format[JourneyDetails]
+object JourneyDetailsEntry {
+  implicit val format: OFormat[JourneyDetailsEntry] = Json.format[JourneyDetailsEntry]
 }
 
 case class DeclarationJourney(sessionId: SessionId,
@@ -155,58 +153,47 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeCustomsAgentName: Option[String] = None,
                               maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
-                              maybeJourneyDetails: Option[JourneyDetails] = None,
+                              maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
                               maybeTravellingByVehicle: Option[Boolean] = None,
                               maybeTravellingBySmallVehicle: Option[Boolean] = None,
                               maybeRegistrationNumber: Option[String] = None) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
-      _                   <- maybeIsACustomsAgent
-      customsAgentName    <- maybeCustomsAgentName
+      _ <- maybeIsACustomsAgent
+      customsAgentName <- maybeCustomsAgentName
       customsAgentAddress <- maybeCustomsAgentAddress
       if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
-  private val journeyDetailsCompleteAndDeclarationRequired: Boolean =
-    maybeJourneyDetails.fold(false) { journeyDetails =>
-      if (journeyDetails.placeOfArrival.rollOnRollOff) {
-        if (maybeTravellingByVehicle.contains(false)) {
-          true
-        } else {
-          if (maybeTravellingByVehicle.isEmpty) false
-          else if (!maybeTravellingBySmallVehicle.getOrElse(false)) false
-          else maybeRegistrationNumber.fold(false)(_ => true)
-        }
-      } else true
+  private val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap { journeyDetailsEntry =>
+    (journeyDetailsEntry.placeOfArrival, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
+      case (port:FootPassengerOnlyPort, _, _, _) =>
+        Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
+      case (port:VehiclePort, Some(false), _, _) =>
+        Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
+      case (port:VehiclePort, Some(true), Some(true), Some(registrationNumber)) =>
+        Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
+      case _ => None
     }
+  }
 
   val declarationIfRequiredAndComplete: Option[Declaration] = {
     val discardedAnswersAreCompleteAndRequireADeclaration =
       maybeGoodsDestination.isDefined &&
         maybeExciseOrRestrictedGoods.contains(false) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
-        journeyDetailsCompleteAndDeclarationRequired &&
         maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
 
     for {
+      goods <- goodsEntries.declarationGoodsIfComplete
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
       eori <- maybeEori
-      journeyDetails <- maybeJourneyDetails
-      goods <- goodsEntries.declarationGoodsIfComplete
+      journeyDetails <- maybeCompleteJourneyDetails
 
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(
-        sessionId,
-        goods,
-        nameOfPersonCarryingTheGoods,
-        maybeCustomsAgent,
-        eori,
-        journeyDetails,
-        YesNo.from(maybeTravellingByVehicle.getOrElse(false)),
-        maybeRegistrationNumber
-      )
+      Declaration(sessionId, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
     }
   }
 }
@@ -223,11 +210,8 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  purchaseDetails: PurchaseDetails,
                  invoiceNumber: String) {
 
-  def toCalculationRequest = CalculationRequest(
-    purchaseDetails.numericAmount,
-    purchaseDetails.currency.currencyCode,
-    goodsVatRate
-  )
+  val calculationRequest: CalculationRequest =
+    CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency.currencyCode, goodsVatRate)
 
   def toSummaryList(idx: Int)(implicit messages: Messages): SummaryList = {
 
@@ -289,14 +273,49 @@ object YesNo extends Enum[YesNo] {
   override val values: immutable.IndexedSeq[YesNo] = findValues
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No
+
   def to(yesNo: YesNo): Boolean = yesNo match {
     case Yes => true
-    case No  => false
+    case No => false
   }
 
   case object No extends YesNo
 
   case object Yes extends YesNo
+
+}
+
+sealed trait JourneyDetails {
+  val placeOfArrival: Port
+  val dateOfArrival: LocalDate
+  val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
+  val travellingByVehicle: YesNo = No
+  val maybeRegistrationNumber: Option[String] = None
+}
+
+case class JourneyViaFootPassengerOnlyPort(placeOfArrival: FootPassengerOnlyPort, dateOfArrival: LocalDate) extends JourneyDetails
+
+case class JourneyOnFootViaVehiclePort(placeOfArrival: VehiclePort, dateOfArrival: LocalDate) extends JourneyDetails
+
+case class JourneyInSmallVehicle(placeOfArrival: VehiclePort, dateOfArrival: LocalDate, registrationNumber: String) extends JourneyDetails {
+  override val travellingByVehicle: YesNo = Yes
+  override val maybeRegistrationNumber: Option[String] = Some(registrationNumber)
+}
+
+object JourneyDetails {
+  implicit val format: OFormat[JourneyDetails] = Json.format[JourneyDetails]
+}
+
+object JourneyViaFootPassengerOnlyPort {
+  implicit val format: OFormat[JourneyViaFootPassengerOnlyPort] = Json.format[JourneyViaFootPassengerOnlyPort]
+}
+
+object JourneyOnFootViaVehiclePort {
+  implicit val format: OFormat[JourneyOnFootViaVehiclePort] = Json.format[JourneyOnFootViaVehiclePort]
+}
+
+object JourneyInSmallVehicle {
+  implicit val format: OFormat[JourneyInSmallVehicle] = Json.format[JourneyInSmallVehicle]
 }
 
 case class Declaration(sessionId: SessionId,
@@ -304,9 +323,7 @@ case class Declaration(sessionId: SessionId,
                        nameOfPersonCarryingTheGoods: Name,
                        maybeCustomsAgent: Option[CustomsAgent],
                        eori: Eori,
-                       journeyDetails: JourneyDetails,
-                       travellingByVehicle: YesNo,
-                       maybeRegistrationNumber: Option[String] = None)
+                       journeyDetails: JourneyDetails)
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]

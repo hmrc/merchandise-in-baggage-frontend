@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend
 
+import java.time.LocalDate
 import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
@@ -42,14 +43,16 @@ trait CoreTestData {
 
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
-  val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetails = None)
+  val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
 
   val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
 
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
 
+  val journeyDate: LocalDate = now
+
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney.copy(
-      maybeIsACustomsAgent = Some(No), maybeJourneyDetails = Some(JourneyDetails(Heathrow, now())))
+      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
 }

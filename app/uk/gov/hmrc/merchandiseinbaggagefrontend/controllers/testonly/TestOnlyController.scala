@@ -96,7 +96,7 @@ object TestOnlyController {
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),
       maybeEori = Some(Eori("TerrysEori")),
-      maybeJourneyDetails = Some(JourneyDetails(Dover, now())),
+      maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, now())),
       maybeTravellingByVehicle = Some(true),
       maybeTravellingBySmallVehicle = Some(true),
       maybeRegistrationNumber = Some("T5 RRY")
