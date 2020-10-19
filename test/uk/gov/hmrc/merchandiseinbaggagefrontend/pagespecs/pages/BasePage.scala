@@ -37,9 +37,9 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
   val path: String
   val expectedTitle: String
-  lazy val expectedHeadingContent: String = expectedTitle
 
-  def mustRenderBasicContent(): Unit = patiently{
+  def mustRenderBasicContent(expectedTitle: String = expectedTitle): Unit = patiently{
+    val expectedHeadingContent: String = expectedTitle
     readPath() mustBe path
     headerText() mustBe expectedHeadingContent
     pageTitle mustBe expectedTitle

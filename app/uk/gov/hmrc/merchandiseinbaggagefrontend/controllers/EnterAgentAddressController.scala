@@ -42,7 +42,7 @@ class EnterAgentAddressController @Inject()(
     for {
       address <- addressLookupFrontendConnector.getAddress(id)
       _ <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
-    } yield Redirect(routes.SkeletonJourneyController.enterEoriNumber())
+    } yield Redirect(routes.EoriNumberController.onPageLoad())
   }
 
 }

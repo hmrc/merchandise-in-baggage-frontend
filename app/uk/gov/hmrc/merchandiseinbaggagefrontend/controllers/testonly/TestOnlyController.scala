@@ -95,7 +95,7 @@ object TestOnlyController {
       maybeIsACustomsAgent = Some(YesNo.from(true)),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),
-      maybeEori = Some(Eori("TerrysEori")),
+      maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, now())),
       maybeTravellingByVehicle = Some(true),
       maybeTravellingBySmallVehicle = Some(true),

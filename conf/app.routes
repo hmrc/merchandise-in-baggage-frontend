@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.enterEoriNumber
 GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.journeyDetails
 GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsInVehicle
 GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleSize
@@ -85,6 +84,10 @@ POST       /agent-details                uk.gov.hmrc.merchandiseinbaggagefronten
 # EnterAgentAddress
 GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.onPageLoad
 GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.returnFromAddressLookup(id: String ?= "")
+
+# EoriNumber
+GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onPageLoad
+POST       /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
