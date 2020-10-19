@@ -19,6 +19,13 @@ footer.govukHelp.url = https://www.gov.uk/help
 error.summary.title = There is a problem
 error.max.3.decimals = Maximum of three decimal places
 error.must.be.positive = Enter an amount greater than 0
+error.nonNumeric = Please enter a number
+error.date.day_blank = Enter a day
+error.date.day_invalid = Give a correct day using numbers 1 to 31
+error.date.month_blank = Enter a month
+error.date.month_invalid = Enter a month using numbers 1 to 12
+error.date.year_blank = Enter a year
+error.date.year_invalid = Enter a real year
 
 site.yes = Yes
 site.no = No
@@ -42,7 +49,6 @@ agentDetails.title = Enter the business name of the customs agent
 enterAgentAddress.title = Find your address
 selectAgentAddress.title = Select your address
 enterEoriNumber.title = What is your EORI number?
-journeyDetails.title = Journey Details
 goodsInVehicle.title = Are you travelling by vehicle?
 vehicleSize.title = Are you bringing the goods in a small vehicle?
 vehicleRegistrationNumber.title = Enter the vehicle registration number
@@ -220,6 +226,18 @@ travellerDetails.title = Enter the name of the person carrying the goods
 travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
+
+# JourneyDetails
+journeyDetails.title = Journey details
+journeyDetails.heading = Journey details
+journeyDetails.placeOfArrival = Place of arrival in the UK
+journeyDetails.placeOfArrival.hint = For example, Heathrow airport or Dover
+journeyDetails.placeOfArrival.error.required = Please enter a place of arrival
+journeyDetails.placeOfArrival.error.invalid = Please enter a valid place of arrival
+journeyDetails.dateOfArrival = Date of arrival
+journeyDetails.dateOfArrival.hint = For example, 12 05 2021
+journeyDetails.dateOfArrival.error.invalid = Please enter a valid date
+journeyDetails.dateOfArrival.error.notWithinTheNext5Days = Please enter a date within the next 5 days
 
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?

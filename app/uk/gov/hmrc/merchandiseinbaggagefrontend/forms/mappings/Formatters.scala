@@ -40,6 +40,32 @@ trait Formatters {
       Map(key -> value)
   }
 
+  private[mappings] def intFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String): Formatter[Int] =
+    new Formatter[Int] {
+      val decimalRegexp = """^-?(\d*\.\d*)$"""
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Int] =
+        baseFormatter
+          .bind(key, data)
+          .right
+          .map(_.replace(",", ""))
+          .right
+          .flatMap {
+            case s if s.matches(decimalRegexp) =>
+              Left(Seq(FormError(key, wholeNumberKey)))
+            case s =>
+              nonFatalCatch
+                .either(s.toInt)
+                .left
+                .map(_ => Seq(FormError(key, nonNumericKey)))
+          }
+
+      override def unbind(key: String, value: Int): Map[String, String] =
+        baseFormatter.unbind(key, value.toString)
+    }
+
   private[mappings] def booleanFormatter(requiredKey: String, invalidKey: String): Formatter[Boolean] =
     new Formatter[Boolean] {
 

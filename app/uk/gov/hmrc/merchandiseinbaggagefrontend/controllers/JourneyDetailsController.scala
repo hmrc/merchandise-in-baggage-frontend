@@ -19,21 +19,22 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.JourneyDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.JourneyDetailsPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TravellerDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           repo: DeclarationJourneyRepository,
-                                           view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class JourneyDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                         actionProvider: DeclarationJourneyActionProvider,
+                                         repo: DeclarationJourneyRepository,
+                                         view: JourneyDetailsPage)
+                                        (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(form)(details => form.fill(details))))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -41,9 +42,10 @@ class TravellerDetailsController @Inject()(override val controllerComponents: Me
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
-        value =>
-          repo.upsert(request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(value))).map { _ =>
-            Redirect(routes.JourneyDetailsController.onPageLoad())
+        journeyDetailsEntry =>
+          repo.upsert(request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry))).map { _ =>
+            if (journeyDetailsEntry.placeOfArrival.vehiclePort) Redirect(routes.GoodsInVehicleController.onPageLoad())
+            else Redirect(routes.CheckYourAnswersController.onPageLoad())
           }
       )
   }

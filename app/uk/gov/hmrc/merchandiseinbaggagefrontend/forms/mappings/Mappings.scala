@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings
 
+import java.time.LocalDate
+
 import enumeratum.EnumEntry
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
@@ -24,20 +26,23 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required"): FieldMapping[String] =
+  private val requiredKey = "error.required"
+  private val nonNumericKey = "error.nonNumeric"
+
+  protected def text(errorKey: String = requiredKey): FieldMapping[String] =
     of(stringFormatter(errorKey))
 
-  protected def boolean(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
+  protected def localDate(invalidKey: String): FieldMapping[LocalDate] = of(new LocalDateFormatter(invalidKey))
+
+  protected def boolean(requiredKey: String = requiredKey, invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
 
-  protected def yesNo(requiredKey: String = "error.required",
-                        invalidKey: String = "error.boolean"): FieldMapping[YesNo] =
+  protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.boolean"): FieldMapping[YesNo] =
     of(yesNoFormatter(requiredKey, invalidKey))
 
-  protected def bigDecimal(requiredKey: String = "error.required", nonNumericKey: String = "error.nonNumeric"): FieldMapping[BigDecimal] =
+  protected def bigDecimal(requiredKey: String = requiredKey, nonNumericKey: String = nonNumericKey): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))
 
-  protected def enum[A <: EnumEntry](enum: Enum[A], requiredKey: String = "error.required", invalidKey: String = "error.invalid"): FieldMapping[A] =
+  protected def enum[A <: EnumEntry](enum: Enum[A], requiredKey: String = requiredKey, invalidKey: String = "error.invalid"): FieldMapping[A] =
     of(enumFormatter[A](enum, requiredKey, invalidKey))
 }

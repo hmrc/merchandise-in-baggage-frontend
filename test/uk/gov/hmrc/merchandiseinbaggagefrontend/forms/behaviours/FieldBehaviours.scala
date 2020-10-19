@@ -16,11 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours
 
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
+
+import enumeratum.EnumEntry
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.FormSpec
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.LocalDateFormatter.{dayBlankErrorKey, monthBlankErrorKey, yearBlankErrorKey}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.generators.Generators
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
@@ -47,4 +54,66 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       result.errors mustEqual Seq(requiredError)
     }
   }
+
+  def anEnumField(form: Form[_], fieldName: String, enum: Enum[_ <: EnumEntry], invalidMessageKey: String): Unit = {
+    "bind all valid values" in {
+      for (value <- enum.values) {
+        form.bind(Map(fieldName -> value.entryName)).apply(fieldName).value.value mustEqual value.entryName
+      }
+    }
+
+    "not bind invalid values" in {
+      val generator = stringsExceptSpecificValues(enum.values.map(_.entryName))
+
+      forAll(generator -> "invalidValue") { value =>
+        form.bind(Map(fieldName -> value)).apply(fieldName).errors mustEqual Seq(FormError(fieldName, invalidMessageKey))
+      }
+    }
+  }
+
+  def aMandatoryDateField(form: Form[_], key: String): Unit =
+    "fail to bind an empty date" in {
+      val result = form.bind(Map.empty[String, String])
+
+      result.errors must contain allElementsOf List(
+        FormError(s"$key.day", dayBlankErrorKey),
+        FormError(s"$key.month", monthBlankErrorKey),
+        FormError(s"$key.year", yearBlankErrorKey),
+      )
+    }
+
+  def aDateFieldWithMin(form: Form[_], key: String, min: LocalDate, error: String): Unit =
+    s"fail to bind a date earlier than ${min.format(DateTimeFormatter.ISO_LOCAL_DATE)}" in {
+
+      val generator = datesBetween(min.minusYears(10), min.minusDays(1))
+
+      forAll(generator -> "invalid dates") { date =>
+        val data = Map(
+          s"$key.day" -> date.getDayOfMonth.toString,
+          s"$key.month" -> date.getMonthValue.toString,
+          s"$key.year" -> date.getYear.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors.contains(FormError(key, error)) mustBe true
+      }
+    }
+
+  def aDateFieldWithMax(form: Form[_], key: String, max: LocalDate, error: String): Unit =
+    s"fail to bind a date greater than ${max.format(ISO_LOCAL_DATE)}" in {
+      val generator = datesBetween(max.plusDays(1), max.plusYears(10))
+
+      forAll(generator -> "invalid dates") { date =>
+        val data = Map(
+          s"$key.day" -> date.getDayOfMonth.toString,
+          s"$key.month" -> date.getMonthValue.toString,
+          s"$key.year" -> date.getYear.toString
+        )
+
+        val result = form.bind(data)
+
+        result.errors.contains(FormError(key, error)) mustBe true
+      }
+    }
 }

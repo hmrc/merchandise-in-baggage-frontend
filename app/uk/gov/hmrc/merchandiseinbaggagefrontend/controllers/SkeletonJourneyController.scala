@@ -37,10 +37,6 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   extends FrontendController(mcc) {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
-  val journeyDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"journeyDetails.title", routes.GoodsInVehicleController.onPageLoad()))
-  }
-
   val vehicleRegistrationNumber: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(page(s"vehicleRegistrationNumber.title", routes.CheckYourAnswersController.onPageLoad()))
   }

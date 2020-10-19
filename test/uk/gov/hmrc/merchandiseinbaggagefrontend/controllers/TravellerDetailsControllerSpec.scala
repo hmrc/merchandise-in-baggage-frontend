@@ -88,7 +88,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.journeyDetails().toString
+        redirectLocation(result).get mustEqual routes.JourneyDetailsController.onPageLoad().toString
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeNameOfPersonCarryingTheGoods mustBe Some(name)
       }
     }

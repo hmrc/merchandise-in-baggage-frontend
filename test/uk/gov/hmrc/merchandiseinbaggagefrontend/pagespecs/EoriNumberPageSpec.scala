@@ -16,17 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class EoriNumberPageSpec extends BasePageSpec with CoreTestData {
-
-  private def createDeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
-    testOnlyDeclarationJourneyPage.open()
-    testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
-    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
-  }
-
+class EoriNumberPageSpec extends BasePageSpec {
   "/enter-eori-number" should {
     "render correctly for agent" in {
       createDeclarationJourney(completedDeclarationJourney)

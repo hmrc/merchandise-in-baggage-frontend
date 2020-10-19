@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.generators
 
+import java.time.ZoneOffset.UTC
+import java.time.{Instant, LocalDate}
+
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.{alphaStr, choose}
 
-import scala.math.BigDecimal.RoundingMode
+import scala.math.BigDecimal.RoundingMode.HALF_UP
 
 trait Generators {
 
@@ -36,31 +39,29 @@ trait Generators {
       .suchThat (_ != "Yes")
       .suchThat (_ != "No")
 
-  def nonEmptyString: Gen[String] =
-    arbitrary[String] suchThat (_.nonEmpty)
+  def nonEmptyString: Gen[String] = arbitrary[String] suchThat (_.nonEmpty)
 
-  def nonNumerics: Gen[String] =
-    alphaStr suchThat (_.size > 0)
+  def nonNumerics: Gen[String] = alphaStr suchThat (_.nonEmpty)
 
   def positiveBigDecimalsWith3dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
     } yield {
-      value.setScale(3, RoundingMode.HALF_UP)
+      value.setScale(3, HALF_UP)
     }
 
   def zeroOrNegativeBigDecimalsWith3dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd <= 0)
     } yield {
-      value.setScale(3, RoundingMode.HALF_UP)
+      value.setScale(3, HALF_UP)
     }
 
   def positiveBigDecimalsWithMoreThan3dp: Gen[BigDecimal] =
     for {
       value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
     } yield {
-      value.setScale(4, RoundingMode.HALF_UP)
+      value.setScale(4, HALF_UP)
     }
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
@@ -74,4 +75,11 @@ trait Generators {
       choose(0, vector.size - 1).flatMap(vector(_))
     }
 
+  def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
+    def toMillis(date: LocalDate): Long = date.atStartOfDay.atZone(UTC).toInstant.toEpochMilli
+
+    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
+      Instant.ofEpochMilli(millis).atOffset(UTC).toLocalDate
+    }
+  }
 }

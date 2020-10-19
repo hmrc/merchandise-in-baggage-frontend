@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
@@ -41,24 +41,24 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     "include the price string as entered" in {
       val currency = Currency("country", "currency", "ccy")
 
-      PurchaseDetails( "1", currency ).toString mustBe "1, country currency (ccy)"
-      PurchaseDetails( "1.", currency ).toString mustBe "1., country currency (ccy)"
-      PurchaseDetails( "1.0", currency ).toString mustBe "1.0, country currency (ccy)"
-      PurchaseDetails( "1.00", currency ).toString mustBe "1.00, country currency (ccy)"
-      PurchaseDetails( "1.000", currency ).toString mustBe "1.000, country currency (ccy)"
+      PurchaseDetails("1", currency).toString mustBe "1, country currency (ccy)"
+      PurchaseDetails("1.", currency).toString mustBe "1., country currency (ccy)"
+      PurchaseDetails("1.0", currency).toString mustBe "1.0, country currency (ccy)"
+      PurchaseDetails("1.00", currency).toString mustBe "1.00, country currency (ccy)"
+      PurchaseDetails("1.000", currency).toString mustBe "1.000, country currency (ccy)"
 
-      PurchaseDetails( "01", currency ).toString mustBe "01, country currency (ccy)"
-      PurchaseDetails( "01.", currency ).toString mustBe "01., country currency (ccy)"
-      PurchaseDetails( "01.0", currency ).toString mustBe "01.0, country currency (ccy)"
-      PurchaseDetails( "01.00", currency ).toString mustBe "01.00, country currency (ccy)"
-      PurchaseDetails( "01.000", currency ).toString mustBe "01.000, country currency (ccy)"
+      PurchaseDetails("01", currency).toString mustBe "01, country currency (ccy)"
+      PurchaseDetails("01.", currency).toString mustBe "01., country currency (ccy)"
+      PurchaseDetails("01.0", currency).toString mustBe "01.0, country currency (ccy)"
+      PurchaseDetails("01.00", currency).toString mustBe "01.00, country currency (ccy)"
+      PurchaseDetails("01.000", currency).toString mustBe "01.000, country currency (ccy)"
 
-      PurchaseDetails( "0.1", currency ).toString mustBe "0.1, country currency (ccy)"
-      PurchaseDetails( "0.10", currency ).toString mustBe "0.10, country currency (ccy)"
-      PurchaseDetails( "0.100", currency ).toString mustBe "0.100, country currency (ccy)"
+      PurchaseDetails("0.1", currency).toString mustBe "0.1, country currency (ccy)"
+      PurchaseDetails("0.10", currency).toString mustBe "0.10, country currency (ccy)"
+      PurchaseDetails("0.100", currency).toString mustBe "0.100, country currency (ccy)"
 
-      PurchaseDetails( ".01", currency ).toString mustBe ".01, country currency (ccy)"
-      PurchaseDetails( ".001", currency ).toString mustBe ".001, country currency (ccy)"
+      PurchaseDetails(".01", currency).toString mustBe ".01, country currency (ccy)"
+      PurchaseDetails(".001", currency).toString mustBe ".001, country currency (ccy)"
     }
   }
 
@@ -191,19 +191,19 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival does not require vehicle checks" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate))
+          maybeJourneyDetailsEntry = Some(heathrowJourneyEntry)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyViaFootPassengerOnlyPort(Heathrow, journeyDate)
       }
 
       "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(No)
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry), maybeTravellingByVehicle = Some(No)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFootViaVehiclePort(Dover, journeyDate)
       }
 
       "the place of arrival requires vehicle checks and the trader has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = Some(vehicleRegistrationNumber)
@@ -218,13 +218,13 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = None
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry), maybeTravellingByVehicle = None
         ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(No)
         ).declarationIfRequiredAndComplete mustBe None
@@ -232,7 +232,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = None
         ).declarationIfRequiredAndComplete mustBe None
@@ -240,7 +240,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
+          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = None

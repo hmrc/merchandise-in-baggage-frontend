@@ -17,14 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
 
 class InvoiceNumberFormSpec extends FieldBehaviours {
-
-  val form = InvoiceNumberForm.form
-
   ".value" must {
-
     val fieldName = "value"
     val requiredKey = "invoiceNumber.error.required"
 
@@ -34,5 +31,4 @@ class InvoiceNumberFormSpec extends FieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }

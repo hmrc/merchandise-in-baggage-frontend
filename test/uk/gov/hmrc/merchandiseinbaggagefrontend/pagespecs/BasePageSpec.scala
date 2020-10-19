@@ -18,10 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, WireMockSupport}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
-trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport {
+trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
   implicit lazy val webDriver: HtmlUnitDriver = new HtmlUnitDriver(false)
 
   lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
@@ -31,11 +32,18 @@ trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport {
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
+  lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
   def startImportJourney(): Unit = {
     startImportPage.open()
     startImportPage.clickOnStartNowButton()
+  }
+
+  def createDeclarationJourney(declarationJourney: DeclarationJourney = completedDeclarationJourney): Unit = {
+    testOnlyDeclarationJourneyPage.open()
+    testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
+    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
   }
 }
 

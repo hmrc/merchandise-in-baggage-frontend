@@ -17,14 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.EoriNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
 
 class EoriNumberFormSpec extends FieldBehaviours {
-
-  val form = EoriNumberForm.form
-
   ".value" must {
-
     val fieldName = "eori"
     val requiredKey = "eoriNumber.error.required"
 
@@ -34,5 +31,4 @@ class EoriNumberFormSpec extends FieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }
