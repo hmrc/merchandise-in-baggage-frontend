@@ -60,7 +60,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterEoriNumber().url
+        redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad().url
 
         startedDeclarationJourney.maybeCustomsAgentAddress mustBe None
         declarationJourneyRepository

@@ -221,6 +221,18 @@ travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 
+# EoriNumber
+eoriNumber.trader.title = What is your EORI number?
+eoriNumber.trader.heading = What is your EORI number?
+eoriNumber.agent.title = What is the EORI number of the company importing the goods?
+eoriNumber.agent.heading = What is the EORI number of the company importing the goods?
+eoriNumber.hint = For example, GB123467800000
+eoriNumber.p = You need an EORI number to make a declaration using this service.
+eoriNumber.a.text = Apply for an EORI number now.
+eoriNumber.a.href = https://www.gov.uk/eori
+eoriNumber.error.required = Enter an EORI number
+eoriNumber.error.invalid = Enter a valid EORI number
+
 
 # CannotUseService
 cannotUseService.title = You need to submit a full customs declaration

@@ -84,7 +84,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.enterEoriNumber().toString
+        redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad().toString
 
         startedDeclarationJourney.maybeIsACustomsAgent mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeIsACustomsAgent mustBe Some(YesNo.No)

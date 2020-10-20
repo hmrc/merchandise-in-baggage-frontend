@@ -24,26 +24,6 @@ import scala.concurrent.Future
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
 
-  "enterEoriNumber" should {
-    val url = routes.SkeletonJourneyController.enterEoriNumber().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "What is your EORI number?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.enterEoriNumber(getRequest), title, routes.TravellerDetailsController.onPageLoad())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.enterEoriNumber(buildGet(url)))
-      }
-    }
-  }
-
   "journeyDetails" should {
     val url = routes.SkeletonJourneyController.journeyDetails().url
 
