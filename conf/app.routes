@@ -9,7 +9,6 @@ GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefronten
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
 GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.journeyDetails
-GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.goodsInVehicle
 GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleSize
 GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleRegistrationNumber
 
@@ -88,6 +87,10 @@ GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggagefronten
 # EoriNumber
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onPageLoad
 POST       /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onSubmit
+
+# GoodsInVehicle
+GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsInVehicleController.onPageLoad
+POST       /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsInVehicleController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

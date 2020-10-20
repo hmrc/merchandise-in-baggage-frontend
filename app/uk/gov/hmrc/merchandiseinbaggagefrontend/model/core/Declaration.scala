@@ -154,7 +154,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeCustomsAgentAddress: Option[Address] = None,
                               maybeEori: Option[Eori] = None,
                               maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
-                              maybeTravellingByVehicle: Option[Boolean] = None,
+                              maybeTravellingByVehicle: Option[YesNo] = None,
                               maybeTravellingBySmallVehicle: Option[Boolean] = None,
                               maybeRegistrationNumber: Option[String] = None) {
 
@@ -170,9 +170,9 @@ case class DeclarationJourney(sessionId: SessionId,
     (journeyDetailsEntry.placeOfArrival, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
       case (port:FootPassengerOnlyPort, _, _, _) =>
         Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(false), _, _) =>
+      case (port:VehiclePort, Some(YesNo.No), _, _) =>
         Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(true), Some(true), Some(registrationNumber)) =>
+      case (port:VehiclePort, Some(YesNo.Yes), Some(true), Some(registrationNumber)) =>
         Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
       case _ => None
     }

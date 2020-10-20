@@ -233,6 +233,10 @@ eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.error.required = Enter an EORI number
 eoriNumber.error.invalid = Enter a valid EORI number
 
+# GoodsInVehicle
+goodsInVehicle.title = Are you travelling by vehicle?
+goodsInVehicle.heading = Are you travelling by vehicle?
+goodsInVehicle.error.required = Select one of the options below
 
 # CannotUseService
 cannotUseService.title = You need to submit a full customs declaration

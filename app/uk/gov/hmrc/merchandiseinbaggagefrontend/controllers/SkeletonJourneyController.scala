@@ -38,11 +38,7 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val journeyDetails: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"journeyDetails.title", routes.SkeletonJourneyController.goodsInVehicle()))
-  }
-
-  val goodsInVehicle: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"goodsInVehicle.title", routes.SkeletonJourneyController.vehicleSize()))
+    Ok(page(s"journeyDetails.title", routes.GoodsInVehicleController.onPageLoad()))
   }
 
   val vehicleSize: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
