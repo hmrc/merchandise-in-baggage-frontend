@@ -197,14 +197,14 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(false)
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(YesNo.No)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFootViaVehiclePort(Dover, journeyDate)
       }
 
       "the place of arrival requires vehicle checks and the trader has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(true),
+          maybeTravellingByVehicle = Some(YesNo.Yes),
           maybeTravellingBySmallVehicle = Some(true),
           maybeRegistrationNumber = Some(vehicleRegistrationNumber)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
@@ -225,7 +225,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(true),
+          maybeTravellingByVehicle = Some(YesNo.Yes),
           maybeTravellingBySmallVehicle = Some(false)
         ).declarationIfRequiredAndComplete mustBe None
       }
@@ -233,7 +233,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(true),
+          maybeTravellingByVehicle = Some(YesNo.Yes),
           maybeTravellingBySmallVehicle = None
         ).declarationIfRequiredAndComplete mustBe None
       }
@@ -241,7 +241,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(true),
+          maybeTravellingByVehicle = Some(YesNo.Yes),
           maybeTravellingBySmallVehicle = Some(true),
           maybeRegistrationNumber = None
         ).declarationIfRequiredAndComplete mustBe None

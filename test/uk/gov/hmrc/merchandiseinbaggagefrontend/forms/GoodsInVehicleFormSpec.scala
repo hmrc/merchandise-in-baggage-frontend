@@ -16,21 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import play.api.data.Form
-import play.api.data.validation.{Constraint, Invalid, Valid}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsInVehicleForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
 
-object EoriNumberForm extends Mappings {
+class GoodsInVehicleFormSpec extends BooleanFieldBehaviours {
 
-  private val eoriRegex: String = "^GB[0-9]{12,15}$"
+  val requiredKey = "goodsInVehicle.error.required"
+  val invalidKey = "error.boolean"
 
-  private val isValidEori: Constraint[String] = Constraint { value: String =>
-    if(value matches(eoriRegex)) Valid
-    else Invalid("eoriNumber.error.invalid")
+  ".value" must {
+
+    val fieldName = "value"
+
+    behave like booleanField(
+      form,
+      fieldName,
+      invalidError = FormError(fieldName, invalidKey)
+    )
+
+    behave like mandatoryField(
+      form,
+      fieldName,
+      requiredError = FormError(fieldName, requiredKey)
+    )
   }
-
-  val form: Form[String] = Form(
-    "eori" -> text("eoriNumber.error.required").verifying(isValidEori)
-  )
-
 }

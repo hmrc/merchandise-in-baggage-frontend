@@ -33,33 +33,13 @@ class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
         val getRequest = buildGet(url, sessionId)
 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.journeyDetails(getRequest), title, routes.SkeletonJourneyController.goodsInVehicle())
+        ensure(controller.journeyDetails(getRequest), title, routes.GoodsInVehicleController.onPageLoad())
       }
     }
 
     "redirect to /invalid-request" when {
       "a declaration journey has not been started" in {
         ensureRedirectToInvalidRequestPage(controller.journeyDetails(buildGet(url)))
-      }
-    }
-  }
-
-  "goodsInVehicle" should {
-    val url = routes.SkeletonJourneyController.goodsInVehicle().url
-
-    "render the page" when {
-      "a declaration journey has been started" in {
-        val title = "Are you travelling by vehicle?"
-        val getRequest = buildGet(url, sessionId)
-
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
-        ensure(controller.goodsInVehicle(getRequest), title, routes.SkeletonJourneyController.vehicleSize())
-      }
-    }
-
-    "redirect to /invalid-request" when {
-      "a declaration journey has not been started" in {
-        ensureRedirectToInvalidRequestPage(controller.goodsInVehicle(buildGet(url)))
       }
     }
   }
