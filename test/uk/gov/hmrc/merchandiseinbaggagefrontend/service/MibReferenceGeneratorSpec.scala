@@ -22,7 +22,7 @@ class MibReferenceGeneratorSpec extends BaseSpec {
 
   "generate 10 digits mib reference" in new MibReferenceGenerator {
 
-    BigDecimal(mibReference.get).precision mustBe 10
+    mibReference.get.matches(referenceFormat) mustBe true
   }
 
 }

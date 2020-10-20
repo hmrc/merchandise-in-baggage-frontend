@@ -20,12 +20,13 @@ import scala.util.Try
 
 trait MibReferenceGenerator {
 
-  protected val referenceFormat = """^X([A-Z])MB(\d{10})$""".r
+  protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
+  protected val referenceFormatRegex = referenceFormat.r
   private def uniqueId: String = java.util.UUID.randomUUID().toString
 
-  def mibReference: Try[Long] =
+  def mibReference: Try[String] =
     for {
       bytes <- Try(java.nio.ByteBuffer.wrap(uniqueId.getBytes))
-      truncate <- Try(bytes.asLongBuffer().get().toString.take(10).toLong)
-    } yield truncate
+      truncate <- Try(bytes.asLongBuffer().get().toString.take(10))
+    } yield s"XXMB$truncate" //TODO prefix Letters hard coded
 }
