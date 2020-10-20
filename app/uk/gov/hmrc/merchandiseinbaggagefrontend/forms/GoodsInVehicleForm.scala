@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
 object GoodsInVehicleForm extends Mappings {
 
-  val form = Form(
+  val form: Form[Boolean] = Form(
     "value" -> boolean("goodsInVehicle.error.required")
   )
 

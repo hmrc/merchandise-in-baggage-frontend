@@ -29,7 +29,7 @@ object EoriNumberForm extends Mappings {
     else Invalid("eoriNumber.error.invalid")
   }
 
-  val form = Form(
+  val form: Form[String] = Form(
     "eori" -> text("eoriNumber.error.required").verifying(isValidEori)
   )
 
