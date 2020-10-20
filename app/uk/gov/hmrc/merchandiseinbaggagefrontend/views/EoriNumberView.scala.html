@@ -29,9 +29,9 @@ button: components.button
 
 @(form: Form[_], isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@conditionalKey = @{if(YesNo.to(isAgent)) "agent" else "trader"}
+@agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
-@layout(pageTitle = Some(messages(s"eoriNumber.$conditionalKey.title"))) {
+@layout(pageTitle = Some(messages(s"eoriNumber.$agentOrTrader.title"))) {
     @formHelper(action = EoriNumberController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
@@ -40,7 +40,7 @@ button: components.button
             form = form,
             id = "eori",
             name = "eori",
-            label = messages(s"eoriNumber.$conditionalKey.heading"),
+            label = messages(s"eoriNumber.$agentOrTrader.heading"),
             isPageHeading = true,
             classes = Some("govuk-input--width-20"),
             hint = Some("eoriNumber.hint")
