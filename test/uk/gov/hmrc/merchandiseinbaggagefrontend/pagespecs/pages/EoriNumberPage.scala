@@ -19,8 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import play.api.libs.json.Json.{prettyPrint, toJson}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 
 class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
 

@@ -20,6 +20,8 @@ import enumeratum.EnumEntry
 import play.api.data.FormError
 import play.api.data.format.Formatter
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -53,6 +55,23 @@ trait Formatters {
         }
 
       def unbind(key: String, value: Boolean) = Map(key -> value.toString)
+    }
+
+  private[mappings] def yesNoFormatter(requiredKey: String, invalidKey: String): Formatter[YesNo] =
+    new Formatter[YesNo] {
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], YesNo] =
+        baseFormatter
+          .bind(key, data)
+          .right.flatMap {
+          case "Yes" => Right(Yes)
+          case "No" => Right(No)
+          case _ => Left(Seq(FormError(key, invalidKey)))
+        }
+
+      def unbind(key: String, value: YesNo) = Map(key -> value.toString)
     }
 
   private[mappings] def bigDecimalFormatter(

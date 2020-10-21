@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.RemoveGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.RemoveGoodsView
 
@@ -47,7 +48,7 @@ class RemoveGoodsController @Inject()(
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category))),
           removeGoods => {
-            if(removeGoods) {
+            if(removeGoods == Yes) {
               repo.upsert(
                 request.declarationJourney.copy(
                   goodsEntries = request.declarationJourney.goodsEntries.remove(idx)

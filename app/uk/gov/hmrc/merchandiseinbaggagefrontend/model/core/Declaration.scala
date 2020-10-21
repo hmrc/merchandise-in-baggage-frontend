@@ -144,9 +144,9 @@ object JourneyDetailsEntry {
 }
 
 case class DeclarationJourney(sessionId: SessionId,
-                              maybeExciseOrRestrictedGoods: Option[Boolean] = None,
+                              maybeExciseOrRestrictedGoods: Option[YesNo] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
-                              maybeValueWeightOfGoodsExceedsThreshold: Option[Boolean] = None,
+                              maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
                               maybeIsACustomsAgent: Option[YesNo] = None,
@@ -170,9 +170,9 @@ case class DeclarationJourney(sessionId: SessionId,
     (journeyDetailsEntry.placeOfArrival, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
       case (port:FootPassengerOnlyPort, _, _, _) =>
         Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(YesNo.No), _, _) =>
+      case (port:VehiclePort, Some(No), _, _) =>
         Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(YesNo.Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
+      case (port:VehiclePort, Some(Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
         Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
       case _ => None
     }
@@ -181,8 +181,8 @@ case class DeclarationJourney(sessionId: SessionId,
   val declarationIfRequiredAndComplete: Option[Declaration] = {
     val discardedAnswersAreCompleteAndRequireADeclaration =
       maybeGoodsDestination.isDefined &&
-        maybeExciseOrRestrictedGoods.contains(false) &&
-        maybeValueWeightOfGoodsExceedsThreshold.contains(false) &&
+        maybeExciseOrRestrictedGoods.contains(No) &&
+        maybeValueWeightOfGoodsExceedsThreshold.contains(No) &&
         maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
 
     for {
@@ -279,9 +279,9 @@ object YesNo extends Enum[YesNo] {
     case No => false
   }
 
-  case object No extends YesNo
-
   case object Yes extends YesNo
+  
+  case object No extends YesNo
 
 }
 

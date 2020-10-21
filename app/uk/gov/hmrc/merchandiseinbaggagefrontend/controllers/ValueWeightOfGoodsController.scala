@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ValueWeightOfGoodsView
 
@@ -49,9 +50,9 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
           .bindFromRequest()
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, dest)),
-            value => {
-              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(value))).map { _ =>
-                if (value) Redirect(routes.CannotUseServiceController.onPageLoad())
+            exceedsThreshold => {
+              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold))).map { _ =>
+                if (exceedsThreshold == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
                 else Redirect(routes.SearchGoodsController.onPageLoad(1))
               }
             }

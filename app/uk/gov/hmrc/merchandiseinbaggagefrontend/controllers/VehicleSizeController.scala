@@ -20,7 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.VehicleSizeForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
@@ -34,7 +34,7 @@ class VehicleSizeController @Inject()(
                                         )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(a => form.fill(YesNo.to(a)))))
+    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(form.fill)))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -45,8 +45,8 @@ class VehicleSizeController @Inject()(
         isSmallVehicle =>
           repo.upsert(
             request.declarationJourney.copy(
-              maybeTravellingBySmallVehicle = Some(YesNo.from(isSmallVehicle)))).map { _ =>
-            if (isSmallVehicle) Redirect(routes.SkeletonJourneyController.vehicleRegistrationNumber())
+              maybeTravellingBySmallVehicle = Some(isSmallVehicle))).map { _ =>
+            if (isSmallVehicle == Yes) Redirect(routes.SkeletonJourneyController.vehicleRegistrationNumber())
             else Redirect(routes.CannotUseServiceController.onPageLoad())
           }
       )

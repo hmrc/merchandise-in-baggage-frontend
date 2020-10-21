@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
 
@@ -44,7 +45,7 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
         formWithErrors => Future successful BadRequest(view(formWithErrors)),
         value => {
           repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
-            if (value) Redirect(routes.CannotUseServiceController.onPageLoad())
+            if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
             else Redirect(routes.GoodsDestinationController.onPageLoad())
           }
         }

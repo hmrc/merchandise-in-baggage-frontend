@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ValueWeightOfGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -80,7 +81,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney
           .copy(
             maybeGoodsDestination = Some(NorthernIreland),
-            maybeValueWeightOfGoodsExceedsThreshold = Some(true)))
+            maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
 
@@ -97,25 +98,25 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /search-goods" when {
-      "a declaration is started and false is submitted" in {
+      "a declaration is started and No is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(1).toString
 
         startedDeclarationJourney.maybeValueWeightOfGoodsExceedsThreshold mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeValueWeightOfGoodsExceedsThreshold mustBe Some(false)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeValueWeightOfGoodsExceedsThreshold mustBe Some(No)
       }
     }
 
     "Redirect to /cannot-use-service" when {
-      "a declaration is started and true is submitted" in {
+      "a declaration is started and Yes is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER

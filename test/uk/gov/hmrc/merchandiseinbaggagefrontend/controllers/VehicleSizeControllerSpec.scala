@@ -16,13 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
@@ -48,7 +46,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney
-          .copy(maybeTravellingBySmallVehicle = Some(YesNo.Yes)))
+          .copy(maybeTravellingBySmallVehicle = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
 
@@ -64,32 +62,32 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /cannot-use-service" when {
-      "a declaration is started and false is submitted" in {
+      "a declaration is started and No is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.CannotUseServiceController.onPageLoad().toString
 
         startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(YesNo.No)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(No)
       }
     }
 
     "Redirect to /vehicle-registration-number" when {
-      "a declaration is started and true is submitted" in {
+      "a declaration is started and Yes is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SkeletonJourneyController.vehicleRegistrationNumber().toString
 
         startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(YesNo.Yes)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(Yes)
       }
     }
 

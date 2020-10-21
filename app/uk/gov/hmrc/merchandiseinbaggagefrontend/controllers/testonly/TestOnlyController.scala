@@ -31,6 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.testonly.DeclarationJourne
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.{Address, Country}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Dover
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -79,9 +80,9 @@ object TestOnlyController {
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
-      maybeExciseOrRestrictedGoods = Some(false),
+      maybeExciseOrRestrictedGoods = Some(No),
       maybeGoodsDestination = Some(NorthernIreland),
-      maybeValueWeightOfGoodsExceedsThreshold = Some(false),
+      maybeValueWeightOfGoodsExceedsThreshold = Some(No),
       goodsEntries = GoodsEntries(
         Seq(
           completedGoodsEntry,
@@ -92,13 +93,13 @@ object TestOnlyController {
             Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))),
             Some("1234560")))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
-      maybeIsACustomsAgent = Some(YesNo.Yes),
+      maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),
       maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, now())),
-      maybeTravellingByVehicle = Some(YesNo.Yes),
-      maybeTravellingBySmallVehicle = Some(YesNo.Yes),
+      maybeTravellingByVehicle = Some(Yes),
+      maybeTravellingBySmallVehicle = Some(Yes),
       maybeRegistrationNumber = Some("T5 RRY")
     )
 }

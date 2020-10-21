@@ -15,6 +15,7 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components.inputRadio
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 @this(inputRadio: inputRadio)
 
@@ -33,16 +34,12 @@
     hintKey = hintKey,
     classes = classes,
     inline = inline,
-    items = Seq(
+    items = YesNo.values map { value =>
         RadioItem(
-            value = Some(true.toString),
-            content = Text(messages("site.yes")),
-            checked = form("value").value.contains(true.toString)
-        ),
-        RadioItem(
-            value = Some(false.toString),
-            content = Text(messages("site.no")),
-            checked = form("value").value.contains(false.toString)
+            id = Some(value.toString),
+            value = Some(value.toString),
+            content = Text(messages(value.messageKey)),
+            checked = form("value").value.contains(value.toString)
         )
-    )
+    }
 )

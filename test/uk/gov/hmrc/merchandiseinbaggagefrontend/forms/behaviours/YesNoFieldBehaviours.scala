@@ -17,28 +17,29 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours
 
 import play.api.data.{Form, FormError}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 
-trait BooleanFieldBehaviours extends FieldBehaviours {
+trait YesNoFieldBehaviours extends FieldBehaviours {
 
-  def booleanField(form: Form[_],
-                   fieldName: String,
-                   invalidError: FormError): Unit = {
+  def yesNoField(form: Form[_],
+                 fieldName: String,
+                 invalidError: FormError): Unit = {
 
-    "bind true" in {
-      val result = form.bind(Map(fieldName -> "true"))
-      result.value.value mustBe true
+    "bind Yes" in {
+      val result = form.bind(Map(fieldName -> "Yes"))
+      result.value.value mustBe Yes
     }
 
-    "bind false" in {
-      val result = form.bind(Map(fieldName -> "false"))
-      result.value.value mustBe false
+    "bind No" in {
+      val result = form.bind(Map(fieldName -> "No"))
+      result.value.value mustBe No
     }
 
-    "not bind non-booleans" in {
+    "not bind nonYesNos" in {
 
-      forAll(nonBooleans -> "nonBoolean") {
-        nonBoolean =>
-          val result = form.bind(Map(fieldName -> nonBoolean)).apply(fieldName)
+      forAll(nonYesNos -> "nonYesNo") {
+        nonYesNo =>
+          val result = form.bind(Map(fieldName -> nonYesNo)).apply(fieldName)
           result.errors mustEqual Seq(invalidError)
       }
     }
