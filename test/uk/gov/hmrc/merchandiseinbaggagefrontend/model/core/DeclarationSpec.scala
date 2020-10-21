@@ -205,7 +205,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(true),
+          maybeTravellingBySmallVehicle = Some(YesNo.Yes),
           maybeRegistrationNumber = Some(vehicleRegistrationNumber)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
       }
@@ -226,7 +226,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(false)
+          maybeTravellingBySmallVehicle = Some(YesNo.No)
         ).declarationIfRequiredAndComplete mustBe None
       }
 
@@ -242,7 +242,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
           maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(true),
+          maybeTravellingBySmallVehicle = Some(YesNo.Yes),
           maybeRegistrationNumber = None
         ).declarationIfRequiredAndComplete mustBe None
       }

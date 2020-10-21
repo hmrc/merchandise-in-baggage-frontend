@@ -19,22 +19,22 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsInVehicleForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.VehicleSizeForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsInVehicleView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsInVehicleController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
-                                        view: GoodsInVehicleView,
-                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+class VehicleSizeController @Inject()(
+                                          override val controllerComponents: MessagesControllerComponents,
+                                          actionProvider: DeclarationJourneyActionProvider,
+                                          repo: DeclarationJourneyRepository,
+                                          view: VehicleSizeView,
+                                        )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(a => form.fill(YesNo.to(a)))))
+    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(a => form.fill(YesNo.to(a)))))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -42,12 +42,12 @@ class GoodsInVehicleController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors)),
-        goodsInVehicle =>
+        isSmallVehicle =>
           repo.upsert(
             request.declarationJourney.copy(
-              maybeTravellingByVehicle = Some(YesNo.from(goodsInVehicle)))).map { _ =>
-            if (goodsInVehicle) Redirect(routes.VehicleSizeController.onPageLoad())
-            else Redirect(routes.CheckYourAnswersController.onPageLoad())
+              maybeTravellingBySmallVehicle = Some(YesNo.from(isSmallVehicle)))).map { _ =>
+            if (isSmallVehicle) Redirect(routes.SkeletonJourneyController.vehicleRegistrationNumber())
+            else Redirect(routes.CannotUseServiceController.onPageLoad())
           }
       )
   }

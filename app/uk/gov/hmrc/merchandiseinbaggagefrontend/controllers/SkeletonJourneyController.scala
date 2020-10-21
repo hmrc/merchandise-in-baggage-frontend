@@ -41,10 +41,6 @@ class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
     Ok(page(s"journeyDetails.title", routes.GoodsInVehicleController.onPageLoad()))
   }
 
-  val vehicleSize: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(page(s"vehicleSize.title", routes.SkeletonJourneyController.vehicleRegistrationNumber()))
-  }
-
   val vehicleRegistrationNumber: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(page(s"vehicleRegistrationNumber.title", routes.CheckYourAnswersController.onPageLoad()))
   }

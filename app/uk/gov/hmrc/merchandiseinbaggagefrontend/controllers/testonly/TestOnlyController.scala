@@ -98,7 +98,7 @@ object TestOnlyController {
       maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, now())),
       maybeTravellingByVehicle = Some(YesNo.Yes),
-      maybeTravellingBySmallVehicle = Some(true),
+      maybeTravellingBySmallVehicle = Some(YesNo.Yes),
       maybeRegistrationNumber = Some("T5 RRY")
     )
 }

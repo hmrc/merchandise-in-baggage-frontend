@@ -155,7 +155,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeEori: Option[Eori] = None,
                               maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
                               maybeTravellingByVehicle: Option[YesNo] = None,
-                              maybeTravellingBySmallVehicle: Option[Boolean] = None,
+                              maybeTravellingBySmallVehicle: Option[YesNo] = None,
                               maybeRegistrationNumber: Option[String] = None) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
@@ -172,7 +172,7 @@ case class DeclarationJourney(sessionId: SessionId,
         Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
       case (port:VehiclePort, Some(YesNo.No), _, _) =>
         Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(YesNo.Yes), Some(true), Some(registrationNumber)) =>
+      case (port:VehiclePort, Some(YesNo.Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
         Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
       case _ => None
     }

@@ -19,30 +19,19 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsInVehicleView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
+class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller =
-    new GoodsInVehicleController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[GoodsInVehicleView])
-
-  private def ensureContent(result: Future[Result]) = {
-    val content = contentAsString(result)
-
-    content must include("Are you travelling by vehicle?")
-    content must include("Yes")
-    content must include("No")
-    content must include("Continue")
-
-    content
-  }
+    new VehicleSizeController(
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[VehicleSizeView])
 
   "onPageLoad" must {
-    val url = routes.GoodsInVehicleController.onPageLoad().url
+    val url = routes.VehicleSizeController.onPageLoad().url
     val request = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
@@ -55,28 +44,26 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
 
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney
-          .copy(maybeTravellingByVehicle = Some(YesNo.Yes)))
+          .copy(maybeTravellingBySmallVehicle = Some(YesNo.Yes)))
 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
     }
   }
 
   "onSubmit" must {
-    val url = routes.GoodsInVehicleController.onSubmit().url
+    val url = routes.VehicleSizeController.onSubmit().url
     val postRequest = buildPost(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /check-your-answers" when {
+    "Redirect to /cannot-use-service" when {
       "a declaration is started and false is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
@@ -84,14 +71,14 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.CannotUseServiceController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeTravellingByVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(YesNo.No)
+        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(YesNo.No)
       }
     }
 
-    "Redirect to /vehicle-size" when {
+    "Redirect to /vehicle-registration-number" when {
       "a declaration is started and true is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
@@ -99,10 +86,10 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.VehicleSizeController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.vehicleRegistrationNumber().toString
 
-        startedDeclarationJourney.maybeTravellingByVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(YesNo.Yes)
+        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(YesNo.Yes)
       }
     }
 
@@ -113,7 +100,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Select one of the options below")
+        contentAsString(result) must include("Select one of the options below")
       }
     }
   }
