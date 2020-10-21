@@ -21,8 +21,12 @@ import java.time.LocalDate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Heathrow
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = PayApiRequest(
@@ -44,7 +48,9 @@ trait CoreTestData {
 
   val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
 
-  val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
+  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
+
+  val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(aCategoryQuantityOfGoods))
 
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
@@ -56,4 +62,13 @@ trait CoreTestData {
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(heathrowJourneyEntry))
+    completedDeclarationJourney.copy(
+      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
+
+  val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))
+  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, "EU", aPurchaseDetails, "123")
+
+  val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
+  val aTaxCalculation = TaxCalculation(aGoods, aCalculationResult)
+  val taxCalculations = TaxCalculations(Seq(aTaxCalculation))
 }
