@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -29,32 +30,39 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentController @Inject()(mcc: MessagesControllerComponents, paymentPage: PaymentPage, connector: PaymentConnector,
-                                  calculationService: CalculationService)
+class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvider,
+                                  override val controllerComponents: MessagesControllerComponents,
+                                  paymentPage: PaymentPage, connector: PaymentConnector, calculationService: CalculationService)
                                  (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends FrontendController(mcc) {
+  extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
   }
 
-  def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
-    def onError(): Future[Result] = Future successful BadRequest("something WRONG")
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    val entries = request.declarationJourney.goodsEntries
+    val ifComplete = entries.declarationGoodsIfComplete
 
-    form.bindFromRequest().fold(_ => onError(),
-      answers => {
-        //TODO hard coded data for now
-        val body = PayApiRequest(
+    ifComplete.fold(actionProvider.invalidRequestF)(goods => {
+      val eventualResponse = for {
+        taxDue <- calculationService.taxCalculation(goods)
+        body = PayApiRequest(
           MibReference("MIBI1234567890"),
-          answers.taxDue,
-          answers.taxDue,
-          answers.taxDue
+          taxDue.totalTaxDue,
+          AmountInPence(123),
+          AmountInPence(123)
         )
-        connector.makePayment(body).map { response => Redirect(connector.extractUrl(response).nextUrl.value) }
-          .recoverWith {
-            case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-          }
-      })
+        response <- connector.makePayment(body)
+      } yield response
+
+
+      eventualResponse.map(res =>
+        Redirect(connector.extractUrl(res).nextUrl.value)).recoverWith {
+        case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+      }
+    }
+    )
   }
 }
 

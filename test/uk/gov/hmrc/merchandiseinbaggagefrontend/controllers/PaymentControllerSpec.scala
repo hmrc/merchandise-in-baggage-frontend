@@ -20,10 +20,11 @@ import play.api.i18n.Messages
 import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionKeys}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.ErrorHandler
-import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, SessionId, TaxCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.{ErrorTemplate, PaymentPage}
 
@@ -36,7 +37,8 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val component = injector.instanceOf[MessagesControllerComponents]
   private lazy val errorHandlerTemplate = injector.instanceOf[ErrorTemplate]
-  private lazy val calculationService = injector.instanceOf[CalculationService]
+  private lazy val connector = injector.instanceOf[CurrencyConversionConnector]
+  private lazy val provider = injector.instanceOf[DeclarationJourneyActionProvider]
   private implicit lazy val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
 
   private def messages[A](fakeRequest: FakeRequest[A]): Messages = messagesApi.preferred(fakeRequest)
@@ -49,21 +51,25 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "on submit will trigger a call to pay-api to make payment and render the response" in {
+    val sessionId = SessionId()
     val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
+    givenADeclarationJourneyIsPersisted(completedDeclarationJourney.copy(sessionId = sessionId))
 
     val testConnector = new PaymentConnector(httpClient, ""){
       override def makePayment(requestBody: PayApiRequest)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-        import requestBody._
-        amountInPence.value mustBe vatAmountInPence.value + dutyAmountInPence.value
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
         Future.successful(HttpResponse(201, stubbedApiResponse))
-      }
     }
 
-    val controller = new PaymentController(component, view, testConnector, calculationService)
+    val calculationService = new CalculationService(connector) {
+      override def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
+        Future.successful(TaxCalculations(Seq()))
+    }
+
+    val controller = new PaymentController(provider, component, view, testConnector, calculationService)
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url)
-      .withFormUrlEncodedBody("taxDue" -> "1011")
+      .withSession(SessionKeys.sessionId -> sessionId.value)
     val eventualResult = controller.onSubmit()(postRequest)
 
     status(eventualResult) mustBe 303
@@ -71,15 +77,24 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "on submit will return error page if call to pay-api fails" in {
+    val sessionId = SessionId()
     val testConnector = new PaymentConnector(httpClient, ""){
       override def makePayment(requestBody: PayApiRequest)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
         Future.failed(new Exception("Something wrong"))
     }
 
-    val controller = new PaymentController(component, view, testConnector, calculationService)
+    givenADeclarationJourneyIsPersisted(completedDeclarationJourney.copy(sessionId = sessionId))
 
-    val postRequest = buildPost(routes.PaymentController.onSubmit().url).withFormUrlEncodedBody("taxDue" -> "10")
+    val calculationService = new CalculationService(connector) {
+      override def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
+        Future.successful(TaxCalculations(Seq()))
+    }
+
+    val controller = new PaymentController(provider, component, view, testConnector, calculationService)
+
+    val postRequest = buildPost(routes.PaymentController.onSubmit().url)
+      .withSession(SessionKeys.sessionId -> sessionId.value)
     val eventualResult = controller.onSubmit()(postRequest)
 
     status(eventualResult) mustBe 500

@@ -49,7 +49,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
           TaxCalculation(
             good,
             CalculationResult(
-              AmountInPence(259 + 1619),
+              AmountInPence(7835),
               AmountInPence(259),
               AmountInPence(1619)
             )
