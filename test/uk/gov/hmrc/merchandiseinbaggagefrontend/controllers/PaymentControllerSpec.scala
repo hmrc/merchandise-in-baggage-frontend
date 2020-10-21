@@ -24,6 +24,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.ErrorHandler
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.{ErrorTemplate, PaymentPage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -35,6 +36,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val component = injector.instanceOf[MessagesControllerComponents]
   private lazy val errorHandlerTemplate = injector.instanceOf[ErrorTemplate]
+  private lazy val calculationService = injector.instanceOf[CalculationService]
   private implicit lazy val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
 
   private def messages[A](fakeRequest: FakeRequest[A]): Messages = messagesApi.preferred(fakeRequest)
@@ -51,11 +53,14 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
 
     val testConnector = new PaymentConnector(httpClient, ""){
       override def makePayment(requestBody: PayApiRequest)
-                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+                              (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+        import requestBody._
+        amountInPence.value mustBe vatAmountInPence.value + dutyAmountInPence.value
         Future.successful(HttpResponse(201, stubbedApiResponse))
+      }
     }
 
-    val controller = new PaymentController(component, view, testConnector)
+    val controller = new PaymentController(component, view, testConnector, calculationService)
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url)
       .withFormUrlEncodedBody("taxDue" -> "1011")
@@ -72,7 +77,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
         Future.failed(new Exception("Something wrong"))
     }
 
-    val controller = new PaymentController(component, view, testConnector)
+    val controller = new PaymentController(component, view, testConnector, calculationService)
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url).withFormUrlEncodedBody("taxDue" -> "10")
     val eventualResult = controller.onSubmit()(postRequest)

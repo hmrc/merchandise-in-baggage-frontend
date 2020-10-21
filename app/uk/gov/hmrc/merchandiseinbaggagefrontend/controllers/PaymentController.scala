@@ -22,13 +22,15 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PaymentController @Inject()(mcc: MessagesControllerComponents, paymentPage: PaymentPage, connector: PaymentConnector)
+class PaymentController @Inject()(mcc: MessagesControllerComponents, paymentPage: PaymentPage, connector: PaymentConnector,
+                                  calculationService: CalculationService)
                                  (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
   extends FrontendController(mcc) {
 
