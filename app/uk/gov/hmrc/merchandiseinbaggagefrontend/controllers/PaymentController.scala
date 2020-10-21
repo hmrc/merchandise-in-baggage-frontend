@@ -20,12 +20,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -50,8 +47,8 @@ class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvid
         body = PayApiRequest(
           MibReference("MIBI1234567890"),
           taxDue.totalTaxDue,
-          AmountInPence(123),
-          AmountInPence(123)
+          taxDue.totalDutyDue,
+          taxDue.totalVatDue
         )
         response <- connector.makePayment(body)
       } yield response
