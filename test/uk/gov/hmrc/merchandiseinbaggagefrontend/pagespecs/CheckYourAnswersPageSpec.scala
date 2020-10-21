@@ -17,25 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, TaxCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
 import scala.concurrent.Future
 
-class CheckYourAnswersPageSpec extends BasePageSpec with CoreTestData {
+class CheckYourAnswersPageSpec extends BasePageSpec {
   private val calculationService = injector.instanceOf[CalculationService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
     webDriver.manage().deleteAllCookies()
-  }
-
-  def createDeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
-    testOnlyDeclarationJourneyPage.open()
-    testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
-    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
   }
 
   def createDeclarationAndCalculateTaxDue(declarationJourney: DeclarationJourney): Future[TaxCalculations] = {

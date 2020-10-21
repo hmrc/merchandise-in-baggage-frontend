@@ -17,11 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend
 
 import java.time.LocalDate
-import java.time.LocalDate.now
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Heathrow
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 
@@ -50,9 +49,14 @@ trait CoreTestData {
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
 
-  val journeyDate: LocalDate = now
+  val journeyYear: Int = 2020
+  val journeyMonth: Int = 10
+  val journeyDay: Int = 20
+  val journeyDate: LocalDate = LocalDate.of(journeyYear, journeyMonth, journeyDay)
+
+  val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Dover, journeyDate)
+  val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Heathrow, journeyDate)
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
-    completedDeclarationJourney.copy(
-      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
+    completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(heathrowJourneyEntry))
 }

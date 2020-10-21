@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec with CoreTestData {
+class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec {
   "the page" should {
     "render correctly" in {
       testOnlyDeclarationJourneyPage.open()

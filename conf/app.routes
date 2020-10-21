@@ -8,7 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.journeyDetails
 GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleRegistrationNumber
 
 
@@ -86,6 +85,10 @@ GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggagefronten
 # EoriNumber
 GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onPageLoad
 POST       /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onSubmit
+
+# JourneyDetails
+GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.JourneyDetailsController.onPageLoad
+POST       /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.JourneyDetailsController.onSubmit
 
 # GoodsInVehicle
 GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsInVehicleController.onPageLoad

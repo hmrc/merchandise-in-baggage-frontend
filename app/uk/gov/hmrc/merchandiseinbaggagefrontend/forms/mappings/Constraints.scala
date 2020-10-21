@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings
 
+import java.time.LocalDate
+
 import play.api.data.validation.{Constraint, Invalid, Valid}
 
 trait Constraints {
@@ -24,8 +26,20 @@ trait Constraints {
     if (options.contains(value)) Valid else Invalid(errorKey)
   }
 
+  protected def existInRange(range: Range, errorKey: String): Constraint[Int] = Constraint { value =>
+    if (range.contains(value)) Valid else Invalid(errorKey)
+  }
+
   protected def greaterThan[A](minimum: A, errorKey: String)(implicit ev: Ordering[A]): Constraint[A] = Constraint { value =>
     import ev._
     if (value > minimum) Valid else Invalid(errorKey)
+  }
+
+  protected def withinTheNextFiveDays(errorKey: String): Constraint[LocalDate] = Constraint { value: LocalDate =>
+    val today = LocalDate.now
+    val fiveDaysTime = today.plusDays(5)
+
+    if (value.isBefore(today) || value.isAfter(fiveDaysTime)) Invalid(errorKey)
+    else Valid
   }
 }
