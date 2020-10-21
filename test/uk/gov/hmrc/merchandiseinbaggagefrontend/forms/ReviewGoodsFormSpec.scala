@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 class ReviewGoodsFormSpec extends YesNoFieldBehaviours {
 
   val requiredKey = "reviewGoods.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "error.yesNo"
 
   ".value" must {
 

@@ -16,25 +16,35 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
+import java.time.LocalDate
+
 import play.api.data.Form
-import play.api.data.Forms.mapping
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import play.api.data.Forms.{mapping, of}
+import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.{LocalDateFormatter, Mappings}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{JourneyDetailsEntry, Port, Ports}
 
 object JourneyDetailsForm extends Mappings {
   val placeOfArrival = "placeOfArrival"
   val dateOfArrival = "dateOfArrival"
 
+  private val dateErrorKey = "journeyDetails.dateOfArrival.error"
+  private val placeErrorKey = "journeyDetails.placeOfArrival.error"
+
+  private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
+
+  private val withinTheNextFiveDays = Constraint { value: LocalDate =>
+    val today = LocalDate.now
+    val fiveDaysTime = today.plusDays(5)
+
+    if (value.isBefore(today) || value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+    else Valid
+  }
+
   val form: Form[JourneyDetailsEntry] = Form(
     mapping(
-      placeOfArrival ->
-        enum[Port](
-          Ports,
-          "journeyDetails.placeOfArrival.error.required",
-          "journeyDetails.placeOfArrival.error.invalid"),
-      dateOfArrival ->
-        localDate("journeyDetails.dateOfArrival.error.invalid")
-          .verifying(withinTheNextFiveDays("journeyDetails.dateOfArrival.error.notWithinTheNext5Days"))
+      placeOfArrival -> enum[Port](Ports, s"$placeErrorKey.required", s"$placeErrorKey.invalid"),
+      dateOfArrival -> localDate.verifying(withinTheNextFiveDays)
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 }

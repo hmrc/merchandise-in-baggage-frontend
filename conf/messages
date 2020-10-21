@@ -26,6 +26,7 @@ error.date.month_blank = Enter a month
 error.date.month_invalid = Enter a month using numbers 1 to 12
 error.date.year_blank = Enter a year
 error.date.year_invalid = Enter a real year
+error.yesNo = Please enter Yes or No
 
 site.yes = Yes
 site.no = No
@@ -37,9 +38,6 @@ site.remove = Remove
 
 payment.button = Pay now
 next.button = Next
-
-enum.Yes = Yes
-enum.No = No
 
 reviewGoods.title = Review your goods
 removeGoods.title = Are you sure you want to remove the x?
