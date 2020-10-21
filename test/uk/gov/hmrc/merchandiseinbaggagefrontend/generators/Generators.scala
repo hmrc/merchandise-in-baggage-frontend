@@ -30,6 +30,12 @@ trait Generators {
       .suchThat (_ != "true")
       .suchThat (_ != "false")
 
+  def nonYesNos: Gen[String] =
+    arbitrary[String]
+      .suchThat (_.nonEmpty)
+      .suchThat (_ != "Yes")
+      .suchThat (_ != "No")
+
   def nonEmptyString: Gen[String] =
     arbitrary[String] suchThat (_.nonEmpty)
 

@@ -16,68 +16,52 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
-class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
+class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller =
-    new ExciseAndRestrictedGoodsController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[ExciseAndRestrictedGoodsView])
-
-  private def ensureContent(result: Future[Result]) = {
-    val content = contentAsString(result)
-
-    content must include("Are you bringing in excise goods or restricted goods?")
-    content must include("Excise goods are alcohol, tobacco, or fuel. You can")
-    content must include("check if your goods are restricted (opens in new tab or window).")
-    content must include("https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage")
-    content must include("Continue")
-
-    content
-  }
+    new VehicleSizeController(
+      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[VehicleSizeView])
 
   "onPageLoad" must {
-    val url = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
+    val url = routes.VehicleSizeController.onPageLoad().url
     val request = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
 
     "return OK and render the view" when {
+
       "a declaration has been started" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
-    }
 
-    "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)))
+        givenADeclarationJourneyIsPersisted(startedDeclarationJourney
+          .copy(maybeTravellingBySmallVehicle = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
     }
   }
 
   "onSubmit" must {
-    val url = routes.ExciseAndRestrictedGoodsController.onSubmit().url
+    val url = routes.VehicleSizeController.onSubmit().url
     val postRequest = buildPost(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /goods-destination" when {
+    "Redirect to /cannot-use-service" when {
       "a declaration is started and No is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
@@ -85,14 +69,14 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.GoodsDestinationController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.CannotUseServiceController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeExciseOrRestrictedGoods mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeExciseOrRestrictedGoods mustBe Some(No)
+        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(No)
       }
     }
 
-    "Redirect to /cannot-use-service" when {
+    "Redirect to /vehicle-registration-number" when {
       "a declaration is started and Yes is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
@@ -100,7 +84,10 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.CannotUseServiceController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.vehicleRegistrationNumber().toString
+
+        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(Yes)
       }
     }
 
@@ -111,7 +98,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Select one of the options below")
+        contentAsString(result) must include("Select one of the options below")
       }
     }
   }

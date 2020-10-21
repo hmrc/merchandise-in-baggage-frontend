@@ -18,9 +18,9 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomsAgentForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.BooleanFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.YesNoFieldBehaviours
 
-class CustomsAgentFormSpec extends BooleanFieldBehaviours {
+class CustomsAgentFormSpec extends YesNoFieldBehaviours {
 
   val requiredKey = "customsAgent.error.required"
   val invalidKey = "error.boolean"
@@ -29,7 +29,7 @@ class CustomsAgentFormSpec extends BooleanFieldBehaviours {
 
     val fieldName = "value"
 
-    behave like booleanField(
+    behave like yesNoField(
       form,
       fieldName,
       invalidError = FormError(fieldName, invalidKey)

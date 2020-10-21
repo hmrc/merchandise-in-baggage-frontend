@@ -79,10 +79,10 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /tax-calculation" when {
-      "a declaration is started and false is submitted" in {
+      "a declaration is started and No is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
@@ -91,10 +91,10 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "Redirect to /search-goods" when {
-      "a declaration is started and true is submitted" in {
+      "a declaration is started and Yes is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER

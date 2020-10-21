@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsInVehicleView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -60,7 +60,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
 
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney
-          .copy(maybeTravellingByVehicle = Some(YesNo.Yes)))
+          .copy(maybeTravellingByVehicle = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
 
@@ -77,32 +77,32 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /check-your-answers" when {
-      "a declaration is started and false is submitted" in {
+      "a declaration is started and No is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad().toString
 
         startedDeclarationJourney.maybeTravellingByVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(YesNo.No)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(No)
       }
     }
 
     "Redirect to /vehicle-size" when {
-      "a declaration is started and true is submitted" in {
+      "a declaration is started and Yes is submitted" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.vehicleSize().toString
+        redirectLocation(result).get mustEqual routes.VehicleSizeController.onPageLoad().toString
 
         startedDeclarationJourney.maybeTravellingByVehicle mustBe None
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(YesNo.Yes)
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingByVehicle mustBe Some(Yes)
       }
     }
 

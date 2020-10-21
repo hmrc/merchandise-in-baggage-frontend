@@ -16,26 +16,25 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.VehicleSizeForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-@Singleton
-class ExciseAndRestrictedGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                                   actionProvider: DeclarationJourneyActionProvider,
-                                                   repo: DeclarationJourneyRepository,
-                                                   view: ExciseAndRestrictedGoodsView)
-                                                  (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class VehicleSizeController @Inject()(
+                                          override val controllerComponents: MessagesControllerComponents,
+                                          actionProvider: DeclarationJourneyActionProvider,
+                                          repo: DeclarationJourneyRepository,
+                                          view: VehicleSizeView,
+                                        )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(form.fill)))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -43,12 +42,13 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors)),
-        value => {
-          repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
-            if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
-            else Redirect(routes.GoodsDestinationController.onPageLoad())
+        isSmallVehicle =>
+          repo.upsert(
+            request.declarationJourney.copy(
+              maybeTravellingBySmallVehicle = Some(isSmallVehicle))).map { _ =>
+            if (isSmallVehicle == Yes) Redirect(routes.SkeletonJourneyController.vehicleRegistrationNumber())
+            else Redirect(routes.CannotUseServiceController.onPageLoad())
           }
-        }
       )
   }
 }

@@ -238,6 +238,12 @@ goodsInVehicle.title = Are you travelling by vehicle?
 goodsInVehicle.heading = Are you travelling by vehicle?
 goodsInVehicle.error.required = Select one of the options below
 
+# VehicleSize
+vehicleSize.title = Are you bringing the goods in a small vehicle?
+vehicleSize.heading = Are you bringing the goods in a small vehicle?
+vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
+vehicleSize.error.required = Select one of the options below
+
 # CannotUseService
 cannotUseService.title = You need to submit a full customs declaration
 cannotUseService.heading = You need to submit a full customs declaration

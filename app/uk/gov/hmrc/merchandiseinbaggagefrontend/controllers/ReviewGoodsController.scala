@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
@@ -47,7 +48,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods))),
           declareMoreGoods =>
-            if (declareMoreGoods) {
+            if (declareMoreGoods == Yes) {
               val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
 
               repo.upsert(

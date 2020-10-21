@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 object CustomsAgentForm extends Mappings {
 
-  //TODO make it Form[YesNo] or any other type as soon pattern is established
-  val form: Form[Boolean] =
+  val form: Form[YesNo] =
     Form(
-      "value" -> boolean("customsAgent.error.required")
+      "value" -> yesNo("customsAgent.error.required")
     )
 
 }

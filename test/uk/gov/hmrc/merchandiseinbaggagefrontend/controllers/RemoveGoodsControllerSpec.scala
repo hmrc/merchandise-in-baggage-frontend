@@ -75,11 +75,11 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
     "Redirect to /review-goods" when {
-      "a declaration is started and false is submitted" in {
+      "a declaration is started and No is submitted" in {
         val before = startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
         givenADeclarationJourneyIsPersisted(before)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "false"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit(1)(request)
 
         status(result) mustEqual SEE_OTHER
@@ -92,11 +92,11 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "Redirect to /review-goods" when {
-      "a declaration is started and true is submitted and goods still exist in the journey" in {
+      "a declaration is started and Yes is submitted and goods still exist in the journey" in {
         val before = startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
         givenADeclarationJourneyIsPersisted(before)
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit(1)(request)
 
         status(result) mustEqual SEE_OTHER
@@ -109,10 +109,10 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "Redirect to /goods-removed" when {
-      "a declaration is started and true is submitted and no more goods exist in the journey" in {
+      "a declaration is started and Yes is submitted and no more goods exist in the journey" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
 
-        val request = postRequest.withFormUrlEncodedBody(("value", "true"))
+        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit(1)(request)
 
         status(result) mustEqual SEE_OTHER

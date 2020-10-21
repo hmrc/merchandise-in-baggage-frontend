@@ -16,29 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.YesNoFieldBehaviours
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
+object VehicleSizeForm extends Mappings {
 
-  val requiredKey = "valueWeightOfGoods.error.required"
-  val invalidKey = "error.boolean"
+  val form: Form[YesNo] = Form(
+    "value" -> yesNo("vehicleSize.error.required")
+  )
 
-  ".value" must {
-
-    val fieldName = "value"
-
-    behave like yesNoField(
-      form,
-      fieldName,
-      invalidError = FormError(fieldName, invalidKey)
-    )
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
 }

@@ -20,7 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CustomsAgentForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CustomsAgentView
 
@@ -34,7 +34,7 @@ class CustomsAgentController @Inject()(
                                       )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(asw => form.fill(YesNo.to(asw)))))
+    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill)))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -45,8 +45,8 @@ class CustomsAgentController @Inject()(
         isCustomsAgent =>
           repo.upsert(
             request.declarationJourney.copy(
-              maybeIsACustomsAgent = Some(YesNo.from(isCustomsAgent)))).map { _ =>
-            if (isCustomsAgent) Redirect(routes.AgentDetailsController.onPageLoad())
+              maybeIsACustomsAgent = Some(isCustomsAgent))).map { _ =>
+            if (isCustomsAgent == Yes) Redirect(routes.AgentDetailsController.onPageLoad())
             else Redirect(routes.EoriNumberController.onPageLoad())
           }
       )

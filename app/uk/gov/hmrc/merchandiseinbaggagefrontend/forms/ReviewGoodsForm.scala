@@ -18,12 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 object ReviewGoodsForm extends Mappings {
 
-  val form: Form[Boolean] =
+  val form: Form[YesNo] =
     Form(
-      "value" -> boolean("reviewGoods.error.required")
+      "value" -> yesNo("reviewGoods.error.required")
     )
 
 }

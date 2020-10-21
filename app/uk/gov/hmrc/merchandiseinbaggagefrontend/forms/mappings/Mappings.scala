@@ -20,6 +20,7 @@ import enumeratum.EnumEntry
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 trait Mappings extends Formatters with Constraints {
 
@@ -29,6 +30,10 @@ trait Mappings extends Formatters with Constraints {
   protected def boolean(requiredKey: String = "error.required",
                         invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
     of(booleanFormatter(requiredKey, invalidKey))
+
+  protected def yesNo(requiredKey: String = "error.required",
+                        invalidKey: String = "error.boolean"): FieldMapping[YesNo] =
+    of(yesNoFormatter(requiredKey, invalidKey))
 
   protected def bigDecimal(requiredKey: String = "error.required", nonNumericKey: String = "error.nonNumeric"): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))

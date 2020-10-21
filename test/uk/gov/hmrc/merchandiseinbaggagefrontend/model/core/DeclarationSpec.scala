@@ -18,12 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
-  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.from(false)))
+  private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
 
   private val goods =
     Goods(
@@ -197,15 +197,15 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(YesNo.No)
+          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)), maybeTravellingByVehicle = Some(No)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFootViaVehiclePort(Dover, journeyDate)
       }
 
       "the place of arrival requires vehicle checks and the trader has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(true),
+          maybeTravellingByVehicle = Some(Yes),
+          maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = Some(vehicleRegistrationNumber)
         ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
       }
@@ -225,15 +225,15 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(false)
+          maybeTravellingByVehicle = Some(Yes),
+          maybeTravellingBySmallVehicle = Some(No)
         ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(YesNo.Yes),
+          maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = None
         ).declarationIfRequiredAndComplete mustBe None
       }
@@ -241,8 +241,8 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, journeyDate)),
-          maybeTravellingByVehicle = Some(YesNo.Yes),
-          maybeTravellingBySmallVehicle = Some(true),
+          maybeTravellingByVehicle = Some(Yes),
+          maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = None
         ).declarationIfRequiredAndComplete mustBe None
       }
@@ -254,7 +254,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
 
       "the user has confirmed that they are carrying excise or restricted goods" in {
-        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(true)).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)).declarationIfRequiredAndComplete mustBe None
       }
 
       "the user has not confirmed the destination of the goods" in {
@@ -266,7 +266,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
 
       "the user has confirmed that the goods exceed the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(true)).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)).declarationIfRequiredAndComplete mustBe None
       }
 
       "the user has not entered any goods" in {
