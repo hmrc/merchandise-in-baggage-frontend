@@ -24,7 +24,7 @@ import play.api.data.Forms.of
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-trait Mappings extends Formatters with Constraints {
+trait Mappings extends Formatters {
 
   private val requiredKey = "error.required"
   private val nonNumericKey = "error.nonNumeric"
@@ -34,11 +34,8 @@ trait Mappings extends Formatters with Constraints {
 
   protected def localDate(invalidKey: String): FieldMapping[LocalDate] = of(new LocalDateFormatter(invalidKey))
 
-  protected def boolean(requiredKey: String = requiredKey, invalidKey: String = "error.boolean"): FieldMapping[Boolean] =
-    of(booleanFormatter(requiredKey, invalidKey))
-
-  protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.boolean"): FieldMapping[YesNo] =
-    of(yesNoFormatter(requiredKey, invalidKey))
+  protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.yesNo"): FieldMapping[YesNo] =
+    of(enumFormatter[YesNo](YesNo, requiredKey, invalidKey))
 
   protected def bigDecimal(requiredKey: String = requiredKey, nonNumericKey: String = nonNumericKey): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))

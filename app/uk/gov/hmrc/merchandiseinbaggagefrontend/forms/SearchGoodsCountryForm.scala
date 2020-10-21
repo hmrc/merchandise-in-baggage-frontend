@@ -17,14 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 
 object SearchGoodsCountryForm extends Mappings {
 
-  def form(options: List[String]): Form[String] =
-    Form(
-      "value" -> text("searchGoodsCountry.error.required")
-        .verifying(existInList(options, "searchGoodsCountry.error.invalid"))
-    )
+  def form(options: List[String]): Form[String] = {
+    val existInList: Constraint[String] = Constraint { value =>
+      if (options.contains(value)) Valid else Invalid("searchGoodsCountry.error.invalid")
+    }
 
+    Form(
+      "value" -> text("searchGoodsCountry.error.required").verifying(existInList)
+    )
+  }
 }

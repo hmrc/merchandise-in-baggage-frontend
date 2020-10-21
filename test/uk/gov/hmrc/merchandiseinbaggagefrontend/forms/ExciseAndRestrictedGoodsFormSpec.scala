@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsFo
 class ExciseAndRestrictedGoodsFormSpec extends YesNoFieldBehaviours {
 
   val requiredKey = "exciseAndRestrictedGoods.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "error.yesNo"
 
   ".value" must {
 

@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.YesNoFieldBehav
 class GoodsInVehicleFormSpec extends YesNoFieldBehaviours {
 
   val requiredKey = "goodsInVehicle.error.required"
-  val invalidKey = "error.boolean"
+  val invalidKey = "error.yesNo"
 
   ".value" must {
 

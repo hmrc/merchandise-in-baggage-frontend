@@ -265,11 +265,11 @@ object CustomsAgent {
 }
 
 sealed trait YesNo extends EnumEntry {
-  val messageKey = s"${YesNo.baseMessageKey}.$entryName"
+  val messageKey = s"${YesNo.baseMessageKey}.${entryName.toLowerCase}"
 }
 
 object YesNo extends Enum[YesNo] {
-  override val baseMessageKey: String = "enum"
+  override val baseMessageKey: String = "site"
   override val values: immutable.IndexedSeq[YesNo] = findValues
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No

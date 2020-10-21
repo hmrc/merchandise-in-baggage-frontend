@@ -33,7 +33,7 @@ object LocalDateFormatter {
   val yearInvalidErrorKey = "error.date.year_invalid"
 }
 
-private[mappings] class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with Formatters {
+class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with Formatters {
 
   private def toDate(key: String, day: Int, month: Int, year: Int): Either[Seq[FormError], LocalDate] =
     Try(LocalDate.of(year, month, day)) match {
