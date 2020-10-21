@@ -22,7 +22,7 @@ class MibReferenceGeneratorSpec extends BaseSpec {
 
   "generate 10 digits mib reference" in new MibReferenceGenerator {
 
-    mibReference.get.matches(referenceFormat) mustBe true
+    mibReference.get.value.matches(referenceFormat) mustBe true
   }
 
 }

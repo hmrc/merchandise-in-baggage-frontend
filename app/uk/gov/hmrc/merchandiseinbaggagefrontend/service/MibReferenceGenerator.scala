@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
+
 import scala.util.Try
 
 trait MibReferenceGenerator {
@@ -24,9 +26,9 @@ trait MibReferenceGenerator {
   protected val referenceFormatRegex = referenceFormat.r
   private def uniqueId: String = java.util.UUID.randomUUID().toString
 
-  def mibReference: Try[String] =
+  def mibReference: Try[MibReference] =
     for {
       bytes <- Try(java.nio.ByteBuffer.wrap(uniqueId.getBytes))
       truncate <- Try(bytes.asLongBuffer().get().toString.take(10))
-    } yield s"XXMB$truncate" //TODO prefix Letters hard coded
+    } yield MibReference(s"XXMB$truncate") //TODO prefix Letters hard coded
 }

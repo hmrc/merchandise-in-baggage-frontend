@@ -21,7 +21,7 @@ import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.{CalculationService, MibReferenceGenerator}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +31,7 @@ class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvid
                                   override val controllerComponents: MessagesControllerComponents,
                                   paymentPage: PaymentPage, connector: PaymentConnector, calculationService: CalculationService)
                                  (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends DeclarationJourneyUpdateController {
+  extends DeclarationJourneyUpdateController with MibReferenceGenerator {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
@@ -44,8 +44,9 @@ class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvid
     ifComplete.fold(actionProvider.invalidRequestF)(goods => {
       val eventualResponse = for {
         taxDue <- calculationService.taxCalculation(goods)
+        reference <- Future.fromTry(mibReference)
         body = PayApiRequest(
-          MibReference("MIBI1234567890"),
+          reference,
           taxDue.totalTaxDue,
           taxDue.totalDutyDue,
           taxDue.totalVatDue
