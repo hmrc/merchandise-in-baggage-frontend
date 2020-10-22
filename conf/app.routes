@@ -8,8 +8,6 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /payment                      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onPageLoad
 POST       /process-payment              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentController.onSubmit()
 
-GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SkeletonJourneyController.vehicleRegistrationNumber
-
 
 # Invalid journey state
 GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvalidRequestController.onPageLoad
@@ -97,6 +95,10 @@ POST       /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefronten
 # VehicleSize
 GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleSizeController.onPageLoad
 POST       /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleSizeController.onSubmit
+
+# VehicleRegistrationNumber
+GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleRegistrationNumberController.onPageLoad
+POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleRegistrationNumberController.onSubmit
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad

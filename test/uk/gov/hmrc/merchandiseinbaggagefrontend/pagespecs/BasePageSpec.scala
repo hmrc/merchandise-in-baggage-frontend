@@ -33,6 +33,7 @@ trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport with Cor
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
+  lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
   def startImportJourney(): Unit = {
