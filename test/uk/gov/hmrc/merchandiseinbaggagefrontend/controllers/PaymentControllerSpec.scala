@@ -63,7 +63,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
 
     val calculationService = new CalculationService(connector) {
       override def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
-        Future.successful(taxCalculations)
+        Future.successful(aTaxCalculations)
     }
 
     val controller = new PaymentController(provider, component, view, testConnector, calculationService)

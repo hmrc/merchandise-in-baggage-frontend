@@ -18,10 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.{CalculationService, MibReferenceGenerator}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,36 +33,25 @@ class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvid
                                   override val controllerComponents: MessagesControllerComponents,
                                   paymentPage: PaymentPage, connector: PaymentConnector, calculationService: CalculationService)
                                  (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends DeclarationJourneyUpdateController with MibReferenceGenerator {
+  extends DeclarationJourneyUpdateController with PayApiRequestBuilder {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok(paymentPage()))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    val entries = request.declarationJourney.goodsEntries
-    val ifComplete = entries.declarationGoodsIfComplete
-
-    ifComplete.fold(actionProvider.invalidRequestF)(goods => {
-      val eventualResponse = for {
-        taxDue <- calculationService.taxCalculation(goods)
-        reference <- Future.fromTry(mibReference)
-        body = PayApiRequest(
-          reference,
-          taxDue.totalTaxDue,
-          taxDue.totalDutyDue,
-          taxDue.totalVatDue
-        )
-        response <- connector.makePayment(body)
-      } yield response
-
-
-      eventualResponse.map(res =>
-        Redirect(connector.extractUrl(res).nextUrl.value)).recoverWith {
-        case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-      }
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
+      payment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
+        .recoverWith {
+          case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        }
+      })
     }
-    )
-  }
+
+  private def payment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+    for {
+      payApiRequest <- buildRequest(goods, calculationService.taxCalculation)
+      response      <- connector.makePayment(payApiRequest)
+    } yield response
 }
 
