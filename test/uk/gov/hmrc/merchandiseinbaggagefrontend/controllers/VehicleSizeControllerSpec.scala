@@ -84,7 +84,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SkeletonJourneyController.vehicleRegistrationNumber().toString
+        redirectLocation(result).get mustEqual routes.VehicleRegistrationNumberController.onPageLoad().toString
 
         startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(Yes)

@@ -36,6 +36,10 @@ site.start = Start now
 site.startAgain = Start again
 site.remove = Remove
 
+date.day = Day
+date.month = Month
+date.year = Year
+
 payment.button = Pay now
 next.button = Next
 
@@ -259,6 +263,12 @@ vehicleSize.title = Are you bringing the goods in a small vehicle?
 vehicleSize.heading = Are you bringing the goods in a small vehicle?
 vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
 vehicleSize.error.required = Select one of the options below
+
+# VehicleRegistrationNumber
+vehicleRegistrationNumber.title = What is the registration number of the vehicle?
+vehicleRegistrationNumber.heading = What is the registration number of the vehicle?
+vehicleRegistrationNumber.hint = You can find this on the number plate on the front and back of a vehicle.
+vehicleRegistrationNumber.error.required = Enter the Vehicle Registration Number
 
 # CannotUseService
 cannotUseService.title = You need to submit a full customs declaration

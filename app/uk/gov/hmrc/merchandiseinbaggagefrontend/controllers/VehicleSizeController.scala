@@ -46,7 +46,7 @@ class VehicleSizeController @Inject()(
           repo.upsert(
             request.declarationJourney.copy(
               maybeTravellingBySmallVehicle = Some(isSmallVehicle))).map { _ =>
-            if (isSmallVehicle == Yes) Redirect(routes.SkeletonJourneyController.vehicleRegistrationNumber())
+            if (isSmallVehicle == Yes) Redirect(routes.VehicleRegistrationNumberController.onPageLoad())
             else Redirect(routes.CannotUseServiceController.onPageLoad())
           }
       )

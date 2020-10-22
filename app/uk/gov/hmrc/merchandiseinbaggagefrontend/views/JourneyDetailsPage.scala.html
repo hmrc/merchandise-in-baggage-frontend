@@ -42,7 +42,7 @@
             if(selectEl){
                 accessibleAutocomplete.enhanceSelectElement({
                     autoselect: true,
-                    defaultValue: selectEl.options[selectEl.options.selectedIndex],
+                    defaultValue: selectEl.options[selectEl.options.selectedIndex].innerHtml,
                     minLength: 2,
                     selectElement: selectEl
                 })
@@ -63,7 +63,7 @@
     <div class="govuk-form-group">
       <label class="govuk-label" for="@placeOfArrival">@messages("journeyDetails.placeOfArrival")</label>
       <p class="govuk-hint">@messages("journeyDetails.placeOfArrival.hint")</p>
-      <div class="autocomplete-wrapper currency govuk-input--width-30">
+      <div class="autocomplete-wrapper govuk-input--width-30">
         <select name="@placeOfArrival" id="@placeOfArrival">
           @if(form(placeOfArrival).value.isEmpty) {
             <option id="@{placeOfArrival}-option-empty" value="" selected></option>
