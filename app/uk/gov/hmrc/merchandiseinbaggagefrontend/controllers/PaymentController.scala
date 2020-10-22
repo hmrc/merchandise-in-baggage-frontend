@@ -24,19 +24,18 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvider,
                                   override val controllerComponents: MessagesControllerComponents,
-                                  paymentPage: PaymentPage, connector: PaymentConnector, calculationService: CalculationService)
+                                  connector: PaymentConnector, calculationService: CalculationService)
                                  (implicit val ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
   extends DeclarationJourneyUpdateController with PayApiRequestBuilder {
 
   val onPageLoad: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Ok(paymentPage()))
+    Future.successful(Ok) //TODO remove the whole controller and make CYA controller trigger payment on submission
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>

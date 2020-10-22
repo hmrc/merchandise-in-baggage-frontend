@@ -26,14 +26,13 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionCo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, SessionId, TaxCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.{ErrorTemplate, PaymentPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ErrorTemplate
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private lazy val view = injector.instanceOf[PaymentPage]
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val component = injector.instanceOf[MessagesControllerComponents]
   private lazy val errorHandlerTemplate = injector.instanceOf[ErrorTemplate]
@@ -42,13 +41,6 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
   private implicit lazy val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
 
   private def messages[A](fakeRequest: FakeRequest[A]): Messages = messagesApi.preferred(fakeRequest)
-
-  "on page load will render PaymentPage template" in {
-    val controller =  injector.instanceOf[PaymentController]
-    val getRequest = buildGet(routes.PaymentController.onPageLoad().url)
-
-    contentAsString(controller.onPageLoad(getRequest)) mustBe view()(getRequest, messages(getRequest), appConfig).toString
-  }
 
   "on submit will trigger a call to pay-api to make payment and render the response" in {
     val sessionId = SessionId()
@@ -66,7 +58,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
         Future.successful(aTaxCalculations)
     }
 
-    val controller = new PaymentController(provider, component, view, testConnector, calculationService)
+    val controller = new PaymentController(provider, component, testConnector, calculationService)
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
@@ -91,7 +83,7 @@ class PaymentControllerSpec extends DeclarationJourneyControllerSpec {
         Future.successful(TaxCalculations(Seq()))
     }
 
-    val controller = new PaymentController(provider, component, view, testConnector, calculationService)
+    val controller = new PaymentController(provider, component, testConnector, calculationService)
 
     val postRequest = buildPost(routes.PaymentController.onSubmit().url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
