@@ -41,14 +41,14 @@ class PaymentController @Inject()(actionProvider: DeclarationJourneyActionProvid
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
-      payment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
+      makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
         .recoverWith {
           case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         }
       })
     }
 
-  private def payment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
       payApiRequest <- buildRequest(goods, calculationService.taxCalculation)
       response      <- connector.makePayment(payApiRequest)
