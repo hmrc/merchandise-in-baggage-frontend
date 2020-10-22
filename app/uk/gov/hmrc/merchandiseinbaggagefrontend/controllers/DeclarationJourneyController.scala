@@ -36,7 +36,7 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
 trait IndexedDeclarationJourneyController extends FrontendBaseController {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
-  def onPageLoad(idx: Int): Action[AnyContent]
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent]
 
   def withGoodsCategory(goodsEntry: GoodsEntry)(f: String => Future[Result]): Future[Result] =
     goodsEntry.maybeCategoryQuantityOfGoods match {
@@ -46,5 +46,5 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 }
 
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
-  def onSubmit(idx: Int): Action[AnyContent]
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent]
 }

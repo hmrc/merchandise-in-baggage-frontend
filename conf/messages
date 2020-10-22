@@ -35,6 +35,7 @@ site.confirm = Confirm
 site.start = Start now
 site.startAgain = Start again
 site.remove = Remove
+site.change = Change
 
 date.day = Day
 date.month = Month
@@ -180,6 +181,7 @@ reviewGoods.title = Review your goods
 reviewGoods.heading = Review your goods
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
+reviewGoods.list.vatRate = VAT Rate
 reviewGoods.list.country = Country
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number

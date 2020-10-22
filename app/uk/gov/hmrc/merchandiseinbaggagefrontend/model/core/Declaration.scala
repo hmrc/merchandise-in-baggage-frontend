@@ -217,24 +217,58 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
 
     SummaryList(Seq(
       SummaryListRow(
-        Key(Text(messages("reviewGoods.list.item"))),
-        Value(Text(categoryQuantityOfGoods.category))
+        key = Key(Text(messages("reviewGoods.list.item"))),
+        value = Value(Text(categoryQuantityOfGoods.category)),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(SearchGoodsController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.quantity"))),
-        Value(Text(categoryQuantityOfGoods.quantity))
+        Value(Text(categoryQuantityOfGoods.quantity)),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(SearchGoodsController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
+      ),
+      SummaryListRow(
+        Key(Text(messages("reviewGoods.list.vatRate"))),
+        Value(Text(s"${goodsVatRate.value}%")),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(GoodsVatRateController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.country"))),
-        Value(Text(countryOfPurchase))
+        Value(Text(countryOfPurchase)),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(SearchGoodsCountryController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.price"))),
-        Value(Text(purchaseDetails.toString))
+        Value(Text(purchaseDetails.toString)),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(PurchaseDetailsController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
       ),
       SummaryListRow(
         Key(Text(messages("reviewGoods.list.invoice"))),
-        Value(Text(invoiceNumber))
+        Value(Text(invoiceNumber)),
+        actions = Some(Actions(
+          items = Seq(
+            ActionItem(InvoiceNumberController.onPageLoad(idx, true).url, Text(messages("site.change")))
+          )
+        ))
       ),
       SummaryListRow(
         key = Key(

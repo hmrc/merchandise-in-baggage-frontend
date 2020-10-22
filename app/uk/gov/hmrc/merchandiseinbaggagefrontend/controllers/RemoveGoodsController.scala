@@ -35,13 +35,13 @@ class RemoveGoodsController @Inject()(
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       Future successful Ok(view(form, idx, category))
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       form
         .bindFromRequest()

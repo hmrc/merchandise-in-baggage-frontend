@@ -41,7 +41,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onPageLoad" must {
-    val url = routes.InvoiceNumberController.onPageLoad(1).url
+    val url = routes.InvoiceNumberController.onPageLoad(1, change = false).url
     val getRequest = buildGet(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
@@ -50,7 +50,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
-        val result = controller.onPageLoad(1)(getRequest)
+        val result = controller.onPageLoad(1, change = false)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result, completedGoodsEntry)
@@ -59,7 +59,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onSubmit" must {
-    val url = routes.InvoiceNumberController.onSubmit(1).url
+    val url = routes.InvoiceNumberController.onSubmit(1, change = false).url
     val postRequest = buildPost(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
@@ -70,7 +70,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
         val request = postRequest.withFormUrlEncodedBody(("value", "test invoice number"))
 
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
@@ -84,7 +84,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1, change = false)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result, startedGoodsEntry) must include("Enter an invoice number")

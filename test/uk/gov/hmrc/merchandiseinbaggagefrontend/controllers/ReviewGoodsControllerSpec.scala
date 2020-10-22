@@ -98,7 +98,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(2).toString
+        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(2, change = false).toString
       }
     }
 

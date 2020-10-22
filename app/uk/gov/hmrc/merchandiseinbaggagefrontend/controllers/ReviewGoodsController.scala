@@ -56,7 +56,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
                   goodsEntries = GoodsEntries(updatedGoodsEntries)
                 )
               ).map { _ =>
-                Redirect(routes.SearchGoodsController.onPageLoad(updatedGoodsEntries.size))
+                Redirect(routes.SearchGoodsController.onPageLoad(updatedGoodsEntries.size, false))
               }
             }
             else {

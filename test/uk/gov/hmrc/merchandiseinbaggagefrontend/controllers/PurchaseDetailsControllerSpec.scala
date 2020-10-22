@@ -38,7 +38,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
   }
 
   "onPageLoad" must {
-    val url = routes.SearchGoodsController.onPageLoad(1).url
+    val url = routes.SearchGoodsController.onPageLoad(1, change = false).url
     val getRequest = buildGet(url, sessionId)
 
     givenCurrenciesAreFound(wireMockServer)
@@ -49,7 +49,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
-        val result = controller.onPageLoad(1)(getRequest)
+        val result = controller.onPageLoad(1, change = false)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result, completedGoodsEntry)
@@ -58,7 +58,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
   }
 
   "onSubmit" must {
-    val url = routes.SearchGoodsController.onSubmit(1).url
+    val url = routes.SearchGoodsController.onSubmit(1, change = false).url
     val postRequest = buildPost(url, sessionId)
 
     givenCurrenciesAreFound(wireMockServer)
@@ -71,10 +71,10 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
         val request = postRequest.withFormUrlEncodedBody(("price", "100.0"), ("currency", "ARS"))
 
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvoiceNumberController.onPageLoad(1).toString
+        redirectLocation(result).get mustEqual routes.InvoiceNumberController.onPageLoad(1, change = false).toString
 
         declarationJourneyRepository
           .findBySessionId(sessionId)
@@ -92,7 +92,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
         //form.bindFromRequest()(postRequest)
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1, change = false)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result, completedGoodsEntry) must include("Enter an amount")

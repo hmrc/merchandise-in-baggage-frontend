@@ -38,21 +38,21 @@ class SearchGoodsCountryController @Inject()(
 
   val countriesForm: Form[String] = form(CountriesService.countries)
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(countriesForm)(countriesForm.fill)
 
-      Future successful Ok(view(preparedForm, idx, category))
+      Future successful Ok(view(preparedForm, idx, category, change))
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       countriesForm
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, change))),
           country => {
             repo.upsert(
               request.declarationJourney.copy(
@@ -62,7 +62,8 @@ class SearchGoodsCountryController @Inject()(
                 )
               )
             ).map { _ =>
-              Redirect(routes.PurchaseDetailsController.onPageLoad(idx))
+              if(change) Redirect(routes.ReviewGoodsController.onPageLoad())
+              else Redirect(routes.PurchaseDetailsController.onPageLoad(idx, change))
             }
           }
         )

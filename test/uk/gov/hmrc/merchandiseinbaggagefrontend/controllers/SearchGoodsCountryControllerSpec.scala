@@ -41,7 +41,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
   }
 
   "onPageLoad" must {
-    val url = routes.SearchGoodsCountryController.onPageLoad(1).url
+    val url = routes.SearchGoodsCountryController.onPageLoad(1, change = false).url
     val getRequest = buildGet(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
@@ -50,7 +50,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
-        val result = controller.onPageLoad(1)(getRequest)
+        val result = controller.onPageLoad(1, change = false)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result, completedGoodsEntry)
@@ -59,7 +59,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
   }
 
   "onSubmit" must {
-    val url = routes.SearchGoodsCountryController.onSubmit(1).url
+    val url = routes.SearchGoodsCountryController.onSubmit(1, change = false).url
     val postRequest = buildPost(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
@@ -70,10 +70,10 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Austria"))
 
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.PurchaseDetailsController.onPageLoad(1).toString
+        redirectLocation(result).get mustEqual routes.PurchaseDetailsController.onPageLoad(1, change = false).toString
 
         declarationJourneyWithStartedGoodsEntry.goodsEntries.entries.head mustBe GoodsEntry(Some(CategoryQuantityOfGoods("test good", "123")))
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeCountryOfPurchase mustBe Some("Austria")
@@ -84,7 +84,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1, change = false)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result, startedGoodsEntry) must include("Select a country")

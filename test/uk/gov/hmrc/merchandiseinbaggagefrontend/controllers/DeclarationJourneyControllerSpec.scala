@@ -94,14 +94,14 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val result = controller.onPageLoad(1)(buildGet(url))
+        val result = controller.onPageLoad(1, false)(buildGet(url))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
 
       "a declaration has not been started" in {
-        val result = controller.onPageLoad(1)(buildGet(url, sessionId))
+        val result = controller.onPageLoad(1, false)(buildGet(url, sessionId))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
@@ -114,14 +114,14 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       "no session id is set" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val result = controller.onSubmit(1)(buildPost(url))
+        val result = controller.onSubmit(1, false)(buildPost(url))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
       }
 
       "a declaration has not been started" in {
-        val result = controller.onSubmit(1)(buildPost(url, sessionId))
+        val result = controller.onSubmit(1, false)(buildPost(url, sessionId))
 
         status(result) mustBe SEE_OTHER
         redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url

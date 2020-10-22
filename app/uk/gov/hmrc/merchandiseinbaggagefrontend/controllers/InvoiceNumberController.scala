@@ -34,21 +34,21 @@ class InvoiceNumberController @Inject()(
                                        )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       val preparedForm = request.goodsEntry.maybeInvoiceNumber.fold(form)(form.fill)
 
-      Future successful Ok(view(preparedForm, idx, category))
+      Future successful Ok(view(preparedForm, idx, category, change))
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       form
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, change))),
           invoiceNumber => {
             repo.upsert(
               request.declarationJourney.copy(

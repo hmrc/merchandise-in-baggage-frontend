@@ -49,7 +49,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration has been started but a required answer is missing in the journey" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val result = controller.onPageLoad(1)(request)
+        val result = controller.onPageLoad(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.InvalidRequestController.onPageLoad().toString
@@ -60,7 +60,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration has been started" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
-        val result = controller.onPageLoad(1)(request)
+        val result = controller.onPageLoad(1, change = false)(request)
 
         status(result) mustEqual OK
         ensureContent(result, completedGoodsEntry)
@@ -80,7 +80,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
@@ -97,7 +97,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.ReviewGoodsController.onPageLoad().toString
@@ -113,7 +113,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsRemovedController.onPageLoad().toString
@@ -124,7 +124,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1, change = false)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result, completedGoodsEntry) must include("Select one of the options below")

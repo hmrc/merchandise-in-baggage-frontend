@@ -34,17 +34,17 @@ class SearchGoodsController @Inject()(
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
 
-    Ok(view(preparedForm, idx))
+    Ok(view(preparedForm, idx, change))
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, change))),
         categoryQuantityOfGoods => {
           repo.upsert(
             request.declarationJourney.copy(
@@ -54,7 +54,8 @@ class SearchGoodsController @Inject()(
               )
             )
           ).map { _ =>
-            Redirect(routes.GoodsVatRateController.onPageLoad(idx))
+            if(change) Redirect(routes.ReviewGoodsController.onPageLoad())
+            else Redirect(routes.GoodsVatRateController.onPageLoad(idx, change))
           }
         }
       )

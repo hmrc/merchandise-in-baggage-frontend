@@ -43,7 +43,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   private val goodsEntries = GoodsEntries(completedGoodsEntry)
 
   "onPageLoad" must {
-    val url = routes.SearchGoodsController.onPageLoad(1).url
+    val url = routes.SearchGoodsController.onPageLoad(1, change = false).url
     val getRequest = buildGet(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
@@ -52,7 +52,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration has been started" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val result = controller.onPageLoad(1)(getRequest)
+        val result = controller.onPageLoad(1, change = false)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result)
@@ -63,7 +63,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "a declaration has been started and a value saved" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
 
-        val result = controller.onPageLoad(1)(getRequest)
+        val result = controller.onPageLoad(1, change = false)(getRequest)
 
         status(result) mustEqual OK
         ensureContent(result)
@@ -72,7 +72,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   "onSubmit" must {
-    val url = routes.SearchGoodsController.onSubmit(1).url
+    val url = routes.SearchGoodsController.onSubmit(1, change = false).url
     val postRequest = buildPost(url, sessionId)
 
     behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
@@ -83,10 +83,10 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
 
-        val result = controller.onSubmit(1)(request)
+        val result = controller.onSubmit(1, change = false)(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad(1).toString
+        redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad(1, change = false).toString
 
         startedDeclarationJourney.goodsEntries mustBe GoodsEntries.empty
         declarationJourneyRepository
@@ -103,7 +103,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
       "no selection is made" in {
         givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1, change = false)(postRequest)
 
         status(result) mustEqual BAD_REQUEST
         ensureContent(result) must include("Enter the type of goods")

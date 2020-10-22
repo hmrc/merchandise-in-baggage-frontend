@@ -37,24 +37,24 @@ class PurchaseDetailsController @Inject()(
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onPageLoad(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().map { currencyPeriod =>
         val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-        Ok(view(preparedForm, idx, category, currencyPeriod.currencies))
+        Ok(view(preparedForm, idx, category, currencyPeriod.currencies, change))
       }
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int, change: Boolean): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().flatMap { currencyPeriod =>
         form
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies))),
+              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, change))),
             purchaseDetailsInput => {
               currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
                 .fold(actionProvider.invalidRequestF) { currency =>
@@ -68,7 +68,8 @@ class PurchaseDetailsController @Inject()(
                       )
                     )
                   ).map { _ =>
-                    Redirect(routes.InvoiceNumberController.onPageLoad(idx))
+                    if(change) Redirect(routes.ReviewGoodsController.onPageLoad())
+                    else Redirect(routes.InvoiceNumberController.onPageLoad(idx, change))
                   }
                 }
             }
