@@ -17,25 +17,46 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.SessionId
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionKeys}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.ErrorHandler
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, SessionId, TaxCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
+import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val calculationService = injector.instanceOf[CalculationService]
+  private lazy val httpClient = injector.instanceOf[HttpClient]
   private val page = injector.instanceOf[CheckYourAnswersPage]
+  private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
+  private implicit lazy val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
+  private val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
 
-  val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, calculationService, page)
+  val testConnector = new PaymentConnector(httpClient, ""){
+    override def makePayment(requestBody: PayApiRequest)
+                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      Future.successful(HttpResponse(201, stubbedApiResponse))
+  }
+
+  val stubbedCalculation = new CalculationService(conversionConnector) {
+    override def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
+      Future.successful(aTaxCalculations)
+  }
+
+  val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, stubbedCalculation, testConnector, page)
 
   "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney.copy(sessionId = sessionId))
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url).withSession(SessionKeys.sessionId -> sessionId.value)
 
-    status(controller.onSubmit()(request)) mustBe 200
+    val eventualResult = controller.onSubmit()(request)
+
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some("http://host")
   }
 }

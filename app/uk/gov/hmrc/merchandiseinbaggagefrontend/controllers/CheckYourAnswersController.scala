@@ -18,8 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequestBuilder
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
@@ -29,8 +33,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                            actionProvider: DeclarationJourneyActionProvider,
                                            calculationService: CalculationService,
+                                           connector: PaymentConnector,
                                            page: CheckYourAnswersPage)
-                                          (implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyController {
+                                          (implicit ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
+  extends DeclarationJourneyController with PayApiRequestBuilder {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
@@ -42,6 +48,17 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    Future.successful(Ok)
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
+      makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
+        .recoverWith {
+          case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        }
+    })
   }
+
+  private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+    for {
+      payApiRequest <- buildRequest(goods, calculationService.taxCalculation)
+      response      <- connector.makePayment(payApiRequest)
+    } yield response
 }
