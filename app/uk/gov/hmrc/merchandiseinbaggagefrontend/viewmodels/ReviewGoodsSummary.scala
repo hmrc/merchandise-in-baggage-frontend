@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.viewmodels
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
 
@@ -31,28 +31,58 @@ object ReviewGoodsSummary {
 
       SummaryList(Seq(
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.item"))),
-          Value(Text(categoryQuantityOfGoods.category))
+          key = Key(Text(messages("reviewGoods.list.item"))),
+          value = Value(Text(categoryQuantityOfGoods.category)),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.SearchGoodsController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.quantity"))),
-          Value(Text(categoryQuantityOfGoods.quantity))
+          key = Key(Text(messages("reviewGoods.list.quantity"))),
+          value = Value(Text(categoryQuantityOfGoods.quantity)),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.SearchGoodsController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.vatRate"))),
-          Value(Text(s"${goodsVatRate.value}%"))
+          key = Key(Text(messages("reviewGoods.list.vatRate"))),
+          value = Value(Text(s"${goodsVatRate.value}%")),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.GoodsVatRateController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.country"))),
-          Value(Text(countryOfPurchase))
+          key = Key(Text(messages("reviewGoods.list.country"))),
+          value = Value(Text(countryOfPurchase)),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.SearchGoodsCountryController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.price"))),
-          Value(Text(purchaseDetails.toString))
+          key = Key(Text(messages("reviewGoods.list.price"))),
+          value = Value(Text(purchaseDetails.toString)),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.PurchaseDetailsController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
-          Key(Text(messages("reviewGoods.list.invoice"))),
-          Value(Text(invoiceNumber))
+          key = Key(Text(messages("reviewGoods.list.invoice"))),
+          value = Value(Text(invoiceNumber)),
+          actions = Some(Actions(
+            items = Seq(
+              ActionItem(routes.InvoiceNumberController.onPageLoad(idx).url, Text(messages("site.change")))
+            )
+          ))
         ),
         SummaryListRow(
           key = Key(

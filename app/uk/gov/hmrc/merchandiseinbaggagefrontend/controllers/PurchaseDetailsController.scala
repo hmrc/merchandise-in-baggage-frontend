@@ -68,7 +68,13 @@ class PurchaseDetailsController @Inject()(
                       )
                     )
                   ).map { _ =>
-                    Redirect(routes.InvoiceNumberController.onPageLoad(idx))
+                    request
+                      .declarationJourney
+                      .goodsEntries
+                      .declarationGoodsIfComplete
+                      .fold(Redirect(routes.InvoiceNumberController.onPageLoad(idx))) { _ =>
+                        Redirect(routes.ReviewGoodsController.onPageLoad())
+                      }
                   }
                 }
             }
