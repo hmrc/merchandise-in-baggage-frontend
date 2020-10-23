@@ -26,7 +26,7 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
   private val expectedTitle = "Are you bringing in excise goods or restricted goods?"
 
   "the excise and restricted goods page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
     behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)

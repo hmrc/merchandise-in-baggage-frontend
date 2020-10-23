@@ -23,7 +23,7 @@ class AgentDetailsPageSpec extends BasePageSpec[AgentDetailsPage] {
   private val title = "Enter the business name of the customs agent"
 
   "the page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichRequiresADeclarationJourney()
 
     "allow the user to navigate to the /enter-agent-address" in {

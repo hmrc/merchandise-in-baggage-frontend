@@ -33,6 +33,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
   lazy val goodsDestinationPage: GoodsDestinationPage = wire[GoodsDestinationPage]
+  lazy val valueWeightOfGoodsPage: ValueWeightOfGoodsPage = wire[ValueWeightOfGoodsPage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
@@ -52,8 +53,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
-  def aPageWithSimpleRendering(setUp: => Unit = Unit, expectedTitle: String): Unit =
-    "render basic content" in {
+  def aPageWhichRenders(setUp: => Unit = Unit, expectedTitle: String): Unit =
+    s"render basic content with title '$expectedTitle''" in {
       setUp
       page.open()
       page.mustRenderBasicContent(expectedTitle)

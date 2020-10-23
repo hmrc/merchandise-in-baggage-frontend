@@ -26,7 +26,7 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
   private val expectedTitle = "Journey details"
 
   "the journey details page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
     behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)

@@ -17,12 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class ValueWeightOfGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends RadioButtonPage[YesNo](baseUrl) {
-  override val path: String = ValueWeightOfGoodsPage.path
+class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+  override val path: String = SearchGoodsPage.path
 }
 
-object ValueWeightOfGoodsPage {
-  val path = "/merchandise-in-baggage/value-weight-of-goods"
+object SearchGoodsPage {
+  val path: String = "/merchandise-in-baggage/search-goods/1"
 }

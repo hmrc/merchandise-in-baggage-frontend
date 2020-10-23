@@ -24,7 +24,7 @@ trait StartPageSpec[P <: StartPage] extends BasePageSpec[P]{
   def expectedTitle: String
 
   s"${page.path}" should {
-    behave like aPageWithSimpleRendering(expectedTitle = expectedTitle)
+    behave like aPageWhichRenders(expectedTitle = expectedTitle)
 
     s"allow the user to set up a declaration and redirect to ${page.nextPagePath}" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0

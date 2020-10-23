@@ -24,7 +24,7 @@ class VehicleRegistrationNumberPageSpec extends BasePageSpec[VehicleRegistration
   private val expectedTitle = "What is the registration number of the vehicle?"
 
   "the page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichRequiresADeclarationJourney()
 
     "redirect user to /check-your-answers onSubmit" in {
