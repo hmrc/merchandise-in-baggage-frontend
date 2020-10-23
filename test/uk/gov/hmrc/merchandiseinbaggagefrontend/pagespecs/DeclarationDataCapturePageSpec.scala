@@ -42,15 +42,28 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
       }
     }
 
-  def aPageWithConditionalRouting(setUp: => Unit = Unit, formData: F, expectedPath: String) : Unit = {
+  def aPageWithConditionalRouting(setUp: => Unit = Unit, formData: F, expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
       s"the form is filled with $formData" in {
-        setUp
-        page.open()
-        page.fillOutForm(formData)
-        page.clickOnCTA() mustBe expectedPath
+        fillAndSubmit(setUp, formData, expectedPath)
       }
     }
   }
 
+  def aPageWithSimpleRouting(setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
+    s"redirect to $expectedPath" when {
+      allFormData.foreach { formData =>
+        s"the form is filled with $formData" in {
+          fillAndSubmit(setUp, formData, expectedPath)
+        }
+      }
+    }
+  }
+
+  private def fillAndSubmit(setUp: => Unit = Unit, formData: F, expectedPath: String) = {
+    setUp
+    page.open()
+    page.fillOutForm(formData)
+    page.clickOnCTA() mustBe expectedPath
+  }
 }

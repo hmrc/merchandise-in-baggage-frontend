@@ -17,11 +17,26 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatest.Assertion
+import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
 
-class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends DeclarationDataCapturePage[GoodsDestination](baseUrl) {
+  import WebBrowser._
+
   override val path: String = GoodsDestinationPage.path
 
-  override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+  override val expectedTitle = "Where in the UK are the goods going?"
+
+  def radioButtonFor(goodsDestination: GoodsDestination): Element =
+    find(IdQuery(goodsDestination.entryName)).get
+
+  override def fillOutForm(goodsDestination: GoodsDestination): Unit =
+    click on radioButtonFor(goodsDestination)
+
+  override def previouslyEnteredValuesAreDisplayed(goodsDestination: GoodsDestination): Assertion =
+    radioButtonFor(goodsDestination).underlying.getAttribute("checked") mustBe "true"
 }
 
 object GoodsDestinationPage {
