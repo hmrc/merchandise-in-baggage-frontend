@@ -104,3 +104,4 @@ POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
 
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
+POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onSubmit

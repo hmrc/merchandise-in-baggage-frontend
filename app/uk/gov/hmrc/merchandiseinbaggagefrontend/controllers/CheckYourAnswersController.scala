@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -31,6 +31,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                            calculationService: CalculationService,
                                            page: CheckYourAnswersPage)
                                           (implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyController {
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
       calculationService.taxCalculation(declaration.declarationGoods).map { taxCalculations =>
@@ -38,5 +39,9 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
         Ok(page(form, declaration, taxDue))
       }
     }
+  }
+
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    Future.successful(Ok)
   }
 }
