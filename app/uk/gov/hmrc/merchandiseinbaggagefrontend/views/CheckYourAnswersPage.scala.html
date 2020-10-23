@@ -26,7 +26,7 @@
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title"))) {
 
- @helper.form(action = PaymentController.onSubmit()) {
+ @helper.form(action = CheckYourAnswersController.onSubmit()) {
 
   @helper.CSRF.formField
   @if(form.hasErrors) {

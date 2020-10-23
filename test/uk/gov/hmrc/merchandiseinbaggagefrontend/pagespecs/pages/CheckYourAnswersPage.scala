@@ -101,7 +101,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
 
     val redirectedTo = readPath()
     val successfulRedirectDependingOnWhetherPaymentIsAvailable =
-      redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/process-payment"
+      redirectedTo == "/pay/card-billing-address" || redirectedTo == "/merchandise-in-baggage/check-your-answers"
     successfulRedirectDependingOnWhetherPaymentIsAvailable mustBe true
   }
 
