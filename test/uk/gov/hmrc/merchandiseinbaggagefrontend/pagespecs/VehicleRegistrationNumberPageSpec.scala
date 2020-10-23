@@ -26,7 +26,7 @@ class VehicleRegistrationNumberPageSpec extends BasePageSpec[VehicleRegistration
     behave like aPageWhichRequiresADeclarationJourney()
 
     "redirect user to /check-your-answers onSubmit" in {
-      createDeclarationJourney()
+      givenACompleteDeclarationJourney()
 
       page.open()
       page.fillOutForm("AB51 CDE")

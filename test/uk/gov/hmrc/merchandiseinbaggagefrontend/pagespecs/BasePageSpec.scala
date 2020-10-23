@@ -43,11 +43,13 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     startImportPage.clickOnCTA()
   }
 
-  def createDeclarationJourney(declarationJourney: DeclarationJourney = completedDeclarationJourney): Unit = {
+  def givenADeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
     testOnlyDeclarationJourneyPage.open()
     testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
     testOnlyDeclarationJourneyPage.clickOnCTA()
   }
+
+  def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
   def aPageWithSimpleRendering(setUp: => Unit = Unit): Unit =
     "render basic content" in {
@@ -57,9 +59,9 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
 
   def aPageWhichRequiresADeclarationJourney() : Unit = {
-    "redirect to /merchandise-in-baggage/invalid-request" when {
+    s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration has not been started" in {
-        page.open() mustBe "/merchandise-in-baggage/invalid-request"
+        page.open() mustBe InvalidRequestPage.path
       }
     }
   }

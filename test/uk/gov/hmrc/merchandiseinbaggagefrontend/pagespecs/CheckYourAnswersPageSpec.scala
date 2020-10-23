@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, TaxCalculations}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
@@ -39,7 +39,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
 
     givenCurrencyIsFound("EUR", wireMockServer)
 
-    createDeclarationJourney(declarationJourney)
+    givenADeclarationJourney(declarationJourney)
 
     calculationService.taxCalculation(declarationJourney.declarationIfRequiredAndComplete.get.declarationGoods)
   }
@@ -69,13 +69,11 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
       }
     }
 
-    "redirect to /invalid-request" when {
+    s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration journey is not complete" in {
-        createDeclarationJourney(incompleteDeclarationJourney)
+        givenADeclarationJourney(incompleteDeclarationJourney)
 
-        page.open()
-
-        page.mustRedirectToInvalidRequest()
+        page.open() mustBe InvalidRequestPage.path
       }
     }
 

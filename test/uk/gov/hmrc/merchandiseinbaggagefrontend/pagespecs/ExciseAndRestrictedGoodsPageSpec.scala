@@ -16,57 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, ExciseAndRestrictedGoodsPage, GoodsDestinationPage}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-class ExciseAndRestrictedGoodsPageSpec extends BasePageSpec[ExciseAndRestrictedGoodsPage] {
+class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, ExciseAndRestrictedGoodsPage] {
   override lazy val page: ExciseAndRestrictedGoodsPage = exciseAndRestrictedGoodsPage
 
   "the excise and restricted goods page" should {
     behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-
-    "render correctly" when {
-      "a declaration has been completed" in {
-        val exciseAndRestrictedGoods = completedDeclarationJourney.maybeExciseOrRestrictedGoods.get
-        createDeclarationJourney(completedDeclarationJourney)
-
-        page.open()
-        page.previouslyEnteredValuesAreDisplayed(exciseAndRestrictedGoods)
-      }
-    }
-
-    s"update the persisted declaration journey and redirect to ${GoodsDestinationPage.path}" when {
-      "the user answers 'No'" in {
-        createDeclarationJourney()
-
-        page.open()
-        page.fillOutForm(No)
-        page.clickOnCTA() mustBe GoodsDestinationPage.path
-
-        ensurePersistedDetailsMatch(No)
-      }
-    }
-
-    s"update the persisted declaration journey and redirect to ${CannotUseServicePage.path}" when {
-      "the user answers 'Yes'" in {
-        createDeclarationJourney()
-
-        page.open()
-        page.fillOutForm(Yes)
-        page.clickOnCTA() mustBe CannotUseServicePage.path
-
-        ensurePersistedDetailsMatch(Yes)
-      }
-    }
+    behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)
+    behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), Yes, CannotUseServicePage.path)
   }
 
-  private def ensurePersistedDetailsMatch(exciseAndRestrictedGoods: YesNo) = {
-    val persistedJourneys = declarationJourneyRepository.findAll().futureValue
-    persistedJourneys.size mustBe 1
-    persistedJourneys.head.maybeExciseOrRestrictedGoods mustBe Some(exciseAndRestrictedGoods)
-  }
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =
+    declarationJourney.maybeExciseOrRestrictedGoods
 }

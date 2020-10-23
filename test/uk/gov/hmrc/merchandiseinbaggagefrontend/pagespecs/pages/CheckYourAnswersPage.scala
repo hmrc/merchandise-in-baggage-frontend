@@ -25,7 +25,7 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
 
   import WebBrowser._
 
-  override val path = "/merchandise-in-baggage/check-your-answers"
+  override val path: String = CheckYourAnswersPage.path
   override val expectedTitle = "Check your answers before making your declaration"
 
   private val expectedSectionHeaders =
@@ -107,4 +107,8 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
   }
 
   def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"
+}
+
+object CheckYourAnswersPage {
+  val path = "/merchandise-in-baggage/check-your-answers"
 }

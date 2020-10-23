@@ -26,21 +26,21 @@ class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
     behave like aPageWhichRequiresADeclarationJourney()
 
     "render correctly for agent" in {
-      createDeclarationJourney(completedDeclarationJourney)
+      givenADeclarationJourney(completedDeclarationJourney)
 
       page.open()
       page.mustRenderBasicContent()
     }
 
     "render correctly for trader" in {
-      createDeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
+      givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
 
       page.open()
       page.mustRenderBasicContent("What is your EORI number?")
     }
 
     "allow the user to enter their eori number and redirect to /traveller-details" in {
-      createDeclarationJourney(completedDeclarationJourney)
+      givenADeclarationJourney(completedDeclarationJourney)
 
       page.open()
       page.fillOutForm("GB123467800000")

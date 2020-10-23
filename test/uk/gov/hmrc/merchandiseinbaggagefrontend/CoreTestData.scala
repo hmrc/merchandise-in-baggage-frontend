@@ -49,10 +49,7 @@ trait CoreTestData {
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
 
-  val journeyYear: Int = 2020
-  val journeyMonth: Int = 10
-  val journeyDay: Int = 20
-  val journeyDate: LocalDate = LocalDate.of(journeyYear, journeyMonth, journeyDay)
+  val journeyDate: LocalDate = LocalDate.now
 
   val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Dover, journeyDate)
   val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Heathrow, journeyDate)
