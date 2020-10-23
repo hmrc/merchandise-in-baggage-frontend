@@ -23,12 +23,8 @@ import java.util.Locale.UK
 import java.util.UUID.randomUUID
 
 import enumeratum.EnumEntry
-import play.api.i18n.Messages
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.govukfrontend.views.Aliases._
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
@@ -212,38 +208,6 @@ case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
 
   val calculationRequest: CalculationRequest =
     CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency.currencyCode, goodsVatRate)
-
-  def toSummaryList(idx: Int)(implicit messages: Messages): SummaryList = {
-
-    SummaryList(Seq(
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.item"))),
-        Value(Text(categoryQuantityOfGoods.category))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.quantity"))),
-        Value(Text(categoryQuantityOfGoods.quantity))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.country"))),
-        Value(Text(countryOfPurchase))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.price"))),
-        Value(Text(purchaseDetails.toString))
-      ),
-      SummaryListRow(
-        Key(Text(messages("reviewGoods.list.invoice"))),
-        Value(Text(invoiceNumber))
-      ),
-      SummaryListRow(
-        key = Key(
-          HtmlContent(s"""<a style="font-weight: 400" href="${RemoveGoodsController.onPageLoad(idx).url}" class="govuk-link">${messages("site.remove")}</a>""")
-        ),
-        classes = "govuk-summary-list__row--no-border"
-      )
-    ))
-  }
 }
 
 object Goods {
