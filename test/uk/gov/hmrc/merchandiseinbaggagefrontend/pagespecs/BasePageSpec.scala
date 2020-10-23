@@ -55,5 +55,13 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       page.open()
       page.mustRenderBasicContent()
     }
+
+  def aPageWhichRequiresADeclarationJourney() : Unit = {
+    "redirect to /merchandise-in-baggage/invalid-request" when {
+      "the declaration has not been started" in {
+        page.open() mustBe "/merchandise-in-baggage/invalid-request"
+      }
+    }
+  }
 }
 

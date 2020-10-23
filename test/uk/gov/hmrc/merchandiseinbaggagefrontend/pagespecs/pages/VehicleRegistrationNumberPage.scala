@@ -20,7 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
   override val path = "/merchandise-in-baggage/vehicle-registration-number"
 
   override val expectedTitle = "What is the registration number of the vehicle?"

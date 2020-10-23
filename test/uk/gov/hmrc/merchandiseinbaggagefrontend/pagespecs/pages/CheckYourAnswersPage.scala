@@ -21,7 +21,7 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
 
-class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
 
   import WebBrowser._
 

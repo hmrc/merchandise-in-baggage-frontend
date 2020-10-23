@@ -32,6 +32,7 @@ class JourneyDetailsPageSpec extends BasePageSpec[JourneyDetailsPage] {
 
   "/journey-details" should {
     behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWhichRequiresADeclarationJourney()
 
     "render correctly" when {
       "a declaration has been completed" in {
@@ -52,7 +53,7 @@ class JourneyDetailsPageSpec extends BasePageSpec[JourneyDetailsPage] {
         page.fillOutForm(Heathrow, tomorrow)
         page.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/check-your-answers")
 
-        ensureJourneyEntryDetailsMatch(Heathrow, tomorrow)
+        ensurePersistedDetailsMatch(Heathrow, tomorrow)
       }
     }
 
@@ -63,15 +64,10 @@ class JourneyDetailsPageSpec extends BasePageSpec[JourneyDetailsPage] {
       page.fillOutForm(Dover, tomorrow)
       page.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-in-vehicle")
 
-      ensureJourneyEntryDetailsMatch(Dover, tomorrow)
+      ensurePersistedDetailsMatch(Dover, tomorrow)
     }
 
     "redirect to /invalid-request" when {
-      "the declaration has not been started" in {
-        page.open()
-        page.redirectsToInvalidRequest()
-      }
-
       "when a declaration for a foot passenger port is not complete" in {
         givenAnImportJourneyIsStarted()
 
@@ -82,7 +78,7 @@ class JourneyDetailsPageSpec extends BasePageSpec[JourneyDetailsPage] {
     }
   }
 
-  private def ensureJourneyEntryDetailsMatch(placeOfArrival: Port, dateOfArrival: LocalDate) = {
+  private def ensurePersistedDetailsMatch(placeOfArrival: Port, dateOfArrival: LocalDate) = {
     val persistedJourneys = declarationJourneyRepository.findAll().futureValue
     persistedJourneys.size mustBe 1
     persistedJourneys.head.maybeJourneyDetailsEntry.get.placeOfArrival mustBe placeOfArrival

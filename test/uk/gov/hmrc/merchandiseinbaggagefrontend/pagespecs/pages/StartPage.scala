@@ -18,6 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-abstract class StartPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+abstract class StartPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
   val nextPagePath: String
 }

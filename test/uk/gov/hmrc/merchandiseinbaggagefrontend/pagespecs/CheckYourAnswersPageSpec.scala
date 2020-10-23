@@ -45,6 +45,8 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
   }
 
   "the page" should {
+    behave like aPageWhichRequiresADeclarationJourney()
+
     "render correctly" when {
       "the declaration is complete" in {
         val taxDue = createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue

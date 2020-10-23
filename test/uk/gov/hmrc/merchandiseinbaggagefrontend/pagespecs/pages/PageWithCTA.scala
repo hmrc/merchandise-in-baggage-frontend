@@ -18,21 +18,17 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 import org.scalatestplus.selenium.WebBrowser
-import play.api.libs.json.Json.{prettyPrint, toJson}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.routes
 
-class TestOnlyDeclarationJourneyPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends StartPage(baseUrl) {
+abstract class PageWithCTA(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
 
   import WebBrowser._
 
-  override val path: String = routes.TestOnlyController.displayDeclarationJourneyPage().url
-  override val expectedTitle = "Create a test declaration journey"
-  override val ctaName: String = "submitButton"
-  override val nextPagePath: String = StartImportPage.path
+  val ctaName: String = "continue"
 
-  def fillOutForm(declarationJourney: DeclarationJourney): Unit = {
-    click on find(IdQuery("declarationJourney")).get
-    enter(prettyPrint(toJson(declarationJourney)))
+  def clickOnCTA(): String = {
+    val button = find(NameQuery(ctaName)).get
+    click on button
+
+    readPath()
   }
 }

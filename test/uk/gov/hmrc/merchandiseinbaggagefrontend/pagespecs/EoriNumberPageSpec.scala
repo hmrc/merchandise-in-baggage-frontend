@@ -23,6 +23,8 @@ class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
   override lazy val page: EoriNumberPage = eoriNumberPage
 
   "the eori number page" should {
+    behave like aPageWhichRequiresADeclarationJourney()
+
     "render correctly for agent" in {
       createDeclarationJourney(completedDeclarationJourney)
 

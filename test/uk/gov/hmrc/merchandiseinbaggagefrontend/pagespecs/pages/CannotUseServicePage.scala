@@ -17,25 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
 
-class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+class CannotUseServicePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+  override val path: String = CannotUseServicePage.path
+  override val expectedTitle = "You need to submit a full customs declaration"
+}
 
-  import WebBrowser._
-
-  override val path = "/merchandise-in-baggage/enter-eori-number"
-  override val expectedTitle = "What is the EORI number of the company importing the goods?"
-
-  def fillOutForm(eori: String): Unit = {
-    click on find(IdQuery("eori")).get
-    enter(eori)
-  }
-
-  def clickOnSubmitButton(): Assertion = {
-    val button = find(NameQuery("continue")).get
-    click on button
-
-    readPath() mustBe "/merchandise-in-baggage/traveller-details"
-  }
+object CannotUseServicePage {
+  val path = "/merchandise-in-baggage/cannot-use-service"
 }

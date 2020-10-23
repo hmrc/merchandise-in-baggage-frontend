@@ -23,6 +23,7 @@ class AgentDetailsPageSpec extends BasePageSpec[AgentDetailsPage] {
 
   "the page" should {
     behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWhichRequiresADeclarationJourney()
 
     "allow the user to navigate to the /enter-agent-address" in {
       givenAnImportJourneyIsStarted()

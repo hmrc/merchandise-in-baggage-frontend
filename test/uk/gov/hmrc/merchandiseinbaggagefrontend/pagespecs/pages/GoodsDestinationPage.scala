@@ -17,24 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
-  import WebBrowser._
-
-  override val path: String = ExciseAndRestrictedGoodsPage.path
+class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+  override val path: String = GoodsDestinationPage.path
 
   override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
-
-  def radioButtonFor(yesNo: YesNo): Element = find(IdQuery(yesNo.entryName)).get
-
-  def previouslyEnteredValuesAreDisplayed(exciseAndRestrictedGoods: YesNo): Unit =
-    radioButtonFor(exciseAndRestrictedGoods).underlying.getAttribute("checked") mustBe "true"
-
-  def fillOutForm(exciseAndRestrictedGoods: YesNo): Unit = click on radioButtonFor(exciseAndRestrictedGoods)
 }
 
-object ExciseAndRestrictedGoodsPage{
-  val path = "/merchandise-in-baggage/excise-and-restricted-goods"
+object GoodsDestinationPage {
+  val path = "/merchandise-in-baggage/goods-destination"
 }

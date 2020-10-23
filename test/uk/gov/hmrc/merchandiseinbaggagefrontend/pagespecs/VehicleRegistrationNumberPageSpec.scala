@@ -23,6 +23,7 @@ class VehicleRegistrationNumberPageSpec extends BasePageSpec[VehicleRegistration
 
   "the page" should {
     behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWhichRequiresADeclarationJourney()
 
     "redirect user to /check-your-answers onSubmit" in {
       createDeclarationJourney()

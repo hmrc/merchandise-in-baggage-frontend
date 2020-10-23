@@ -20,7 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
   override val path = "/merchandise-in-baggage/agent-details"
 
   override val expectedTitle = "Enter the business name of the customs agent"

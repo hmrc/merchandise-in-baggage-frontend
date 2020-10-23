@@ -37,7 +37,6 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
   val path: String
   val expectedTitle: String
-  val ctaName: String  = "continue"
 
   def mustRenderBasicContent(expectedTitle: String = expectedTitle): Unit = patiently{
     val expectedHeadingContent: String = expectedTitle
@@ -46,7 +45,10 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
     pageTitle mustBe expectedTitle
   }
 
-  def open(): Unit = WebBrowser.goTo(s"${baseUrl.value}$path")
+  def open(): String = {
+    WebBrowser.goTo(s"${baseUrl.value}$path")
+    readPath()
+  }
 
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 
@@ -57,13 +59,6 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
 
   def redirectsToInvalidRequest(): Assertion = patiently(readPath mustBe "/merchandise-in-baggage/invalid-request")
-
-  def clickOnCTA(): String = {
-    val button = find(NameQuery(ctaName)).get
-    click on button
-
-    readPath()
-  }
 
   def patiently[A](assertionsMayTimeOut: => A): A = eventually(assertionsMayTimeOut).withClue {
     s"""
