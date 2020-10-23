@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
+import org.openqa.selenium.WebDriver
 
-class AgentDetailsPageSpec extends BasePageSpec[AgentDetailsPage] {
-  override lazy val page: AgentDetailsPage = agentDetailsPage
-
-  "the page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
-
-    "allow the user to navigate to the /enter-agent-address" in {
-      givenAnImportJourneyIsStarted()
-
-      page.open()
-      page.fillOutForm("test agent")
-      page.mustRedirectToAddressLookupFromTheCTA()
-    }
-  }
+abstract class StartPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+  val nextPagePath: String
 }

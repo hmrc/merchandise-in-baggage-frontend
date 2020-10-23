@@ -20,29 +20,27 @@ import java.time.LocalDate
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Port
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.JourneyDetailsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class JourneyDetailsPageSpec extends BasePageSpec {
+class JourneyDetailsPageSpec extends BasePageSpec[JourneyDetailsPage] {
+  override lazy val page: JourneyDetailsPage = journeyDetailsPage
+
   private val today = LocalDate.now
   private val tomorrow = today.plusDays(1)
 
   "/journey-details" should {
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+
     "render correctly" when {
-      "a declaration has been started" in {
-        startImportJourney()
-
-        journeyDetailsPage.open()
-        journeyDetailsPage.mustRenderBasicContent()
-      }
-
       "a declaration has been completed" in {
         val journeyDetailsEntry = completedDeclarationJourney.maybeJourneyDetailsEntry.get
         createDeclarationJourney(completedDeclarationJourney)
 
-        journeyDetailsPage.open()
-        journeyDetailsPage.mustRenderBasicContent()
-        journeyDetailsPage.previouslyEnteredValuesAreDisplayed(journeyDetailsEntry.placeOfArrival, journeyDetailsEntry.dateOfArrival)
+        page.open()
+        page.mustRenderBasicContent()
+        page.previouslyEnteredValuesAreDisplayed(journeyDetailsEntry.placeOfArrival, journeyDetailsEntry.dateOfArrival)
       }
     }
 
@@ -50,36 +48,36 @@ class JourneyDetailsPageSpec extends BasePageSpec {
       "the declaration is complete" in {
         createDeclarationJourney()
 
-        journeyDetailsPage.open()
-        journeyDetailsPage.fillOutForm(Heathrow, tomorrow)
-        journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/check-your-answers")
+        page.open()
+        page.fillOutForm(Heathrow, tomorrow)
+        page.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/check-your-answers")
 
         ensureJourneyEntryDetailsMatch(Heathrow, tomorrow)
       }
     }
 
     "redirect to /goods-in-vehicle for a vehicle port" in {
-      startImportJourney()
+      givenAnImportJourneyIsStarted()
 
-      journeyDetailsPage.open()
-      journeyDetailsPage.fillOutForm(Dover, tomorrow)
-      journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-in-vehicle")
+      page.open()
+      page.fillOutForm(Dover, tomorrow)
+      page.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-in-vehicle")
 
       ensureJourneyEntryDetailsMatch(Dover, tomorrow)
     }
 
     "redirect to /invalid-request" when {
       "the declaration has not been started" in {
-        journeyDetailsPage.open()
-        journeyDetailsPage.redirectsToInvalidRequest()
+        page.open()
+        page.redirectsToInvalidRequest()
       }
 
       "when a declaration for a foot passenger port is not complete" in {
-        startImportJourney()
+        givenAnImportJourneyIsStarted()
 
-        journeyDetailsPage.open()
-        journeyDetailsPage.fillOutForm(Heathrow, today)
-        journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/invalid-request")
+        page.open()
+        page.fillOutForm(Heathrow, today)
+        page.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/invalid-request")
       }
     }
   }

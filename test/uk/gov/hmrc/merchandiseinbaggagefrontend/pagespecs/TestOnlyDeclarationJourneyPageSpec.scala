@@ -16,23 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TestOnlyDeclarationJourneyPage
 
-class TestOnlyDeclarationJourneyPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      testOnlyDeclarationJourneyPage.open()
-      testOnlyDeclarationJourneyPage.mustRenderBasicContent()
-    }
-
-    "allow the user to set up a declaration and redirect to the start import page" in {
-      declarationJourneyRepository.findAll().futureValue.size mustBe 0
-
-      testOnlyDeclarationJourneyPage.open()
-      testOnlyDeclarationJourneyPage.clickOnSubmitButton()
-      startImportPage.mustRenderBasicContent()
-
-      declarationJourneyRepository.findAll().futureValue.size mustBe 1
-    }
-  }
+class TestOnlyDeclarationJourneyPageSpec extends StartPageSpec[TestOnlyDeclarationJourneyPage] {
+  override lazy val page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
 }

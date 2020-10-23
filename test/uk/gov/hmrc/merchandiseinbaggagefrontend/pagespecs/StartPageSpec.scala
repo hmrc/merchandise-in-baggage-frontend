@@ -16,20 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartPage
 
-class AgentDetailsPageSpec extends BasePageSpec[AgentDetailsPage] {
-  override lazy val page: AgentDetailsPage = agentDetailsPage
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  "the page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+trait StartPageSpec[P <: StartPage] extends BasePageSpec[P]{
+  s"${page.path}" should {
+    behave like aPageWithSimpleRendering()
 
-    "allow the user to navigate to the /enter-agent-address" in {
-      givenAnImportJourneyIsStarted()
+    s"allow the user to set up a declaration and redirect to ${page.nextPagePath}" in {
+      declarationJourneyRepository.findAll().futureValue.size mustBe 0
 
       page.open()
-      page.fillOutForm("test agent")
-      page.mustRedirectToAddressLookupFromTheCTA()
+      page.clickOnCTA() mustBe page.nextPagePath
+
+      declarationJourneyRepository.findAll().futureValue.size mustBe 1
     }
   }
 }

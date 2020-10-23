@@ -16,17 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-class StartImportPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      startImportPage.open()
-      startImportPage.mustRenderBasicContent()
-    }
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartImportPage
 
-    "allow the user to navigate to the excise and restricted goods page" in {
-      startImportPage.open()
-      startImportPage.clickOnStartNowButton()
-      exciseAndRestrictedGoodsPage.mustRenderBasicContent()
-    }
-  }
+class StartImportPageSpec extends StartPageSpec[StartImportPage] {
+  override lazy val page: StartImportPage = startImportPage
 }

@@ -22,10 +22,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
-trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
+trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
   implicit lazy val webDriver: HtmlUnitDriver = new HtmlUnitDriver(false)
 
   lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
+
+  def page: P
 
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
@@ -36,15 +38,22 @@ trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport with Cor
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
-  def startImportJourney(): Unit = {
+  def givenAnImportJourneyIsStarted(): Unit = {
     startImportPage.open()
-    startImportPage.clickOnStartNowButton()
+    startImportPage.clickOnCTA()
   }
 
   def createDeclarationJourney(declarationJourney: DeclarationJourney = completedDeclarationJourney): Unit = {
     testOnlyDeclarationJourneyPage.open()
     testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
-    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
+    testOnlyDeclarationJourneyPage.clickOnCTA()
   }
+
+  def aPageWithSimpleRendering(setUp: => Unit = Unit): Unit =
+    "render basic content" in {
+      setUp
+      page.open()
+      page.mustRenderBasicContent()
+    }
 }
 

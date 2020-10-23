@@ -17,29 +17,32 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EoriNumberPage
 
-class EoriNumberPageSpec extends BasePageSpec {
-  "/enter-eori-number" should {
+class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
+  override lazy val page: EoriNumberPage = eoriNumberPage
+
+  "the eori number page" should {
     "render correctly for agent" in {
       createDeclarationJourney(completedDeclarationJourney)
 
-      eoriNumberPage.open()
-      eoriNumberPage.mustRenderBasicContent()
+      page.open()
+      page.mustRenderBasicContent()
     }
 
     "render correctly for trader" in {
       createDeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
 
-      eoriNumberPage.open()
-      eoriNumberPage.mustRenderBasicContent("What is your EORI number?")
+      page.open()
+      page.mustRenderBasicContent("What is your EORI number?")
     }
 
     "allow the user to enter their eori number and redirect to /traveller-details" in {
       createDeclarationJourney(completedDeclarationJourney)
 
-      eoriNumberPage.open()
-      eoriNumberPage.fillOutForm("GB123467800000")
-      eoriNumberPage.clickOnSubmitButton()
+      page.open()
+      page.fillOutForm("GB123467800000")
+      page.clickOnSubmitButton()
     }
   }
 }

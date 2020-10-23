@@ -18,13 +18,16 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
 import scala.concurrent.Future
 
-class CheckYourAnswersPageSpec extends BasePageSpec {
-  private val calculationService = injector.instanceOf[CalculationService]
+class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
+  override lazy val page: CheckYourAnswersPage = checkYourAnswersPage
+
+  private lazy val calculationService = injector.instanceOf[CalculationService]
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -57,10 +60,10 @@ class CheckYourAnswersPageSpec extends BasePageSpec {
         val declaration = sparseCompleteDeclarationJourney.declarationIfRequiredAndComplete.get
         val taxDue = createDeclarationAndCalculateTaxDue(sparseCompleteDeclarationJourney).futureValue
 
-        checkYourAnswersPage.open()
-        checkYourAnswersPage.mustRenderBasicContent()
+        page.open()
+        page.mustRenderBasicContent()
 
-        checkYourAnswersPage.mustRenderDetail(declaration, taxDue.totalTaxDue)
+        page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
     }
 
@@ -68,18 +71,18 @@ class CheckYourAnswersPageSpec extends BasePageSpec {
       "the declaration journey is not complete" in {
         createDeclarationJourney(incompleteDeclarationJourney)
 
-        checkYourAnswersPage.open()
+        page.open()
 
-        checkYourAnswersPage.mustRedirectToInvalidRequest()
+        page.mustRedirectToInvalidRequest()
       }
     }
 
     "allow the user to make a payment" in {
       createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
 
-      checkYourAnswersPage.open()
+      page.open()
 
-      checkYourAnswersPage.mustRedirectToPaymentFromTheCTA()
+      page.mustRedirectToPaymentFromTheCTA()
     }
   }
 }

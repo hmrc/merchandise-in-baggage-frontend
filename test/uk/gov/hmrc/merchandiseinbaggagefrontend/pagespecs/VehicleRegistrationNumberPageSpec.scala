@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-class VehicleRegistrationNumberPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      startImportJourney()
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.VehicleRegistrationNumberPage
 
-      vehicleRegistrationNumberPage.open()
-      vehicleRegistrationNumberPage.mustRenderBasicContent()
-    }
+class VehicleRegistrationNumberPageSpec extends BasePageSpec[VehicleRegistrationNumberPage] {
+  override lazy val page: VehicleRegistrationNumberPage = vehicleRegistrationNumberPage
+
+  "the page" should {
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
 
     "redirect user to /check-your-answers onSubmit" in {
       createDeclarationJourney()
 
-      vehicleRegistrationNumberPage.open()
-      vehicleRegistrationNumberPage.fillOutForm("AB51 CDE")
-      vehicleRegistrationNumberPage.mustRedirectToCheckYourAnswersFromTheCTA()
+      page.open()
+      page.fillOutForm("AB51 CDE")
+      page.mustRedirectToCheckYourAnswersFromTheCTA()
     }
   }
 }
