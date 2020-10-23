@@ -16,19 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationDataCapturePage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
-  def ensurePersistedDetailsMatch(formData: F): Assertion = {
-    val persistedJourneys = declarationJourneyRepository.findAll().futureValue
-    persistedJourneys.size mustBe 1
-    extractFormDataFrom(persistedJourneys.head) mustBe Some(formData)
-  }
-
   def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[F]
 
   def aPageWhichDisplaysPreviouslyEnteredAnswers(): Unit =
@@ -42,28 +35,36 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
       }
     }
 
-  def aPageWithConditionalRouting(setUp: => Unit = Unit, formData: F, expectedPath: String): Unit = {
+  def aDataCapturePageWithConditionalRouting(setUp: => Unit = Unit, formData: F, expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
       s"the form is filled with $formData" in {
-        fillAndSubmit(setUp, formData, expectedPath)
+        submitAndEnsurePersistence(setUp, formData, expectedPath)
       }
     }
   }
 
-  def aPageWithSimpleRouting(setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
+  def aDataCapturePageWithSimpleRouting(setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
       allFormData.foreach { formData =>
         s"the form is filled with $formData" in {
-          fillAndSubmit(setUp, formData, expectedPath)
+          submitAndEnsurePersistence(setUp, formData, expectedPath)
         }
       }
     }
   }
 
-  private def fillAndSubmit(setUp: => Unit = Unit, formData: F, expectedPath: String) = {
+  private def submitAndEnsurePersistence(setUp: => Unit = Unit, formData: F, expectedPath: String) = {
+    def ensurePersistence = {
+      val persistedJourneys = declarationJourneyRepository.findAll().futureValue
+      persistedJourneys.size mustBe 1
+      extractFormDataFrom(persistedJourneys.head) mustBe Some(formData)
+    }
+
     setUp
     page.open()
     page.fillOutForm(formData)
     page.clickOnCTA() mustBe expectedPath
+
+    ensurePersistence
   }
 }

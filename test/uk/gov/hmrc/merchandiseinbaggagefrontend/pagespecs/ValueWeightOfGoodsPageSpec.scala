@@ -32,13 +32,13 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, V
   private def givenAGreatBritainJourney(): Unit =
     givenADeclarationJourney(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
 
-  "the excise and restricted goods page" should {
+  "the value and weight of goods page" should {
     behave like aPageWhichRenders(givenANorthernIrelandJourney(), northernIrelandTitle)
     behave like aPageWhichRenders(givenAGreatBritainJourney(), greatBritainTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), No, SearchGoodsPage.path)
-    behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), Yes, CannotUseServicePage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), No, SearchGoodsPage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), Yes, CannotUseServicePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =

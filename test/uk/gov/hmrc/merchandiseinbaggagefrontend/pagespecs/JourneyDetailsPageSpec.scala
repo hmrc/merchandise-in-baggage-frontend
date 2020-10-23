@@ -29,9 +29,9 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
     behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
-    behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
-    behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[JourneyDetailsEntry] =

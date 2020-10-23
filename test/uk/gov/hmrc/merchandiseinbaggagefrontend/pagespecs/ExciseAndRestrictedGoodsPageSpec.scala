@@ -29,8 +29,8 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
     behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)
-    behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), Yes, CannotUseServicePage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), Yes, CannotUseServicePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =

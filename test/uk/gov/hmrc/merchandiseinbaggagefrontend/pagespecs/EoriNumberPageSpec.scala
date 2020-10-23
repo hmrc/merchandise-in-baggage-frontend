@@ -16,37 +16,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EoriNumberPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Eori}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EoriNumberPage, TravellerDetailsPage}
 
-class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
+class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumberPage] {
   override lazy val page: EoriNumberPage = eoriNumberPage
 
-  private val expectedTitle = "What is the EORI number of the company importing the goods?"
+  private val expectedAgentTitle = "What is the EORI number of the company importing the goods?"
+  private val expectedNonAgentTitle = "What is your EORI number?"
+  private val eori = Eori("GB123467800000")
+
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] =
+    declarationJourney.maybeEori
+
+  private def givenAnAgentJourney(): Unit =
+    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(Yes)))
+
+  private def givenANonAgentJourney(): Unit =
+    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)))
 
   "the eori number page" should {
+    behave like aPageWhichRenders(givenAnAgentJourney(), expectedAgentTitle)
+    behave like aPageWhichRenders(givenANonAgentJourney(), expectedNonAgentTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-
-    "render correctly for agent" in {
-      givenADeclarationJourney(completedDeclarationJourney)
-
-      page.open()
-      page.mustRenderBasicContent(expectedTitle)
-    }
-
-    "render correctly for trader" in {
-      givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
-
-      page.open()
-      page.mustRenderBasicContent("What is your EORI number?")
-    }
-
-    "allow the user to enter their eori number and redirect to /traveller-details" in {
-      givenADeclarationJourney(completedDeclarationJourney)
-
-      page.open()
-      page.fillOutForm("GB123467800000")
-      page.clickOnSubmitButton()
-    }
+    behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
   }
 }

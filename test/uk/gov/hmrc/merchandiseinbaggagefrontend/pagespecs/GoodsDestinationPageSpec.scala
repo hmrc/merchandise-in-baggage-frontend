@@ -24,11 +24,11 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
 
   private val expectedTitle = "Where in the UK are the goods going?"
 
-  "the excise and restricted goods page" should {
+  "the goods destination page" should {
     behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWithSimpleRouting(givenAnImportJourneyIsStarted(), GoodsDestinations.values, ValueWeightOfGoodsPage.path)
+    behave like aDataCapturePageWithSimpleRouting(givenAnImportJourneyIsStarted(), GoodsDestinations.values, ValueWeightOfGoodsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsDestination] =
