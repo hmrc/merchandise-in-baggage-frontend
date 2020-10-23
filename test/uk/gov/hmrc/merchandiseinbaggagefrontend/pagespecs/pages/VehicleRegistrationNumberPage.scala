@@ -23,8 +23,6 @@ import org.scalatestplus.selenium.WebBrowser
 class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
   override val path = "/merchandise-in-baggage/vehicle-registration-number"
 
-  override val expectedTitle = "What is the registration number of the vehicle?"
-
   import WebBrowser._
 
   def fillOutForm(value: String): Unit = {

@@ -20,7 +20,6 @@ import org.openqa.selenium.WebDriver
 
 class CannotUseServicePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
   override val path: String = CannotUseServicePage.path
-  override val expectedTitle = "You need to submit a full customs declaration"
 }
 
 object CannotUseServicePage {

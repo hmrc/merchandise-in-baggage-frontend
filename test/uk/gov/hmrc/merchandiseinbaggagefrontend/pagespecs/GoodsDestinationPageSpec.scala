@@ -22,8 +22,10 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinatio
 class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDestination, GoodsDestinationPage] {
   override lazy val page: GoodsDestinationPage = goodsDestinationPage
 
+  private val expectedTitle = "Where in the UK are the goods going?"
+
   "the excise and restricted goods page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
     behave like aPageWithSimpleRouting(givenAnImportJourneyIsStarted(), GoodsDestinations.values, ValueWeightOfGoodsPage.path)

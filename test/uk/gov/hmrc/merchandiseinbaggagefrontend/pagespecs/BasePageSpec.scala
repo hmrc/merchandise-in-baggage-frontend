@@ -52,11 +52,11 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
-  def aPageWithSimpleRendering(setUp: => Unit = Unit): Unit =
+  def aPageWithSimpleRendering(setUp: => Unit = Unit, expectedTitle: String): Unit =
     "render basic content" in {
       setUp
       page.open()
-      page.mustRenderBasicContent()
+      page.mustRenderBasicContent(expectedTitle)
     }
 
   def aPageWhichRequiresADeclarationJourney() : Unit = {

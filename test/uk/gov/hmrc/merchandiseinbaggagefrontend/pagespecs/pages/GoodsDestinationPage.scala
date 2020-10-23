@@ -23,8 +23,6 @@ class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   extends RadioButtonPage[GoodsDestination](baseUrl) {
 
   override val path: String = GoodsDestinationPage.path
-
-  override val expectedTitle = "Where in the UK are the goods going?"
 }
 
 object GoodsDestinationPage {

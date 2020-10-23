@@ -26,7 +26,6 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
   import WebBrowser._
 
   override val path: String = CheckYourAnswersPage.path
-  override val expectedTitle = "Check your answers before making your declaration"
 
   private val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")

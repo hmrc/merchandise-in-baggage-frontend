@@ -27,7 +27,6 @@ class TestOnlyDeclarationJourneyPage(baseUrl: BaseUrl)(implicit webDriver: WebDr
   import WebBrowser._
 
   override val path: String = routes.TestOnlyController.displayDeclarationJourneyPage().url
-  override val expectedTitle = "Create a test declaration journey"
   override val ctaName: String = "submitButton"
   override val nextPagePath: String = StartImportPage.path
 

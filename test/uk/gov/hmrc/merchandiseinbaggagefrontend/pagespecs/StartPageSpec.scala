@@ -21,8 +21,10 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartPage
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait StartPageSpec[P <: StartPage] extends BasePageSpec[P]{
+  def expectedTitle: String
+
   s"${page.path}" should {
-    behave like aPageWithSimpleRendering()
+    behave like aPageWithSimpleRendering(expectedTitle = expectedTitle)
 
     s"allow the user to set up a declaration and redirect to ${page.nextPagePath}" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0

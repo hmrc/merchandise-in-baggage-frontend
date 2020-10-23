@@ -20,8 +20,6 @@ import org.openqa.selenium.WebDriver
 
 class ValueWeightOfGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
   override val path: String = ValueWeightOfGoodsPage.path
-
-  override val expectedTitle = ""
 }
 
 object ValueWeightOfGoodsPage {

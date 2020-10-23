@@ -20,7 +20,6 @@ import org.openqa.selenium.WebDriver
 
 class StartImportPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends StartPage(baseUrl) {
   override val path: String = StartImportPage.path
-  override val expectedTitle = "Declaring goods in your baggage you're bringing to the UK to sell"
   override val nextPagePath: String = ExciseAndRestrictedGoodsPage.path
   override val ctaName: String = "startNow"
 }

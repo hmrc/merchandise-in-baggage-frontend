@@ -23,8 +23,10 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServic
 class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, ExciseAndRestrictedGoodsPage] {
   override lazy val page: ExciseAndRestrictedGoodsPage = exciseAndRestrictedGoodsPage
 
+  private val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+
   "the excise and restricted goods page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
     behave like aPageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)

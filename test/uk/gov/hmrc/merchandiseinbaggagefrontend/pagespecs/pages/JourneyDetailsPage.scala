@@ -29,7 +29,6 @@ class JourneyDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   import WebBrowser._
 
   override val path = "/merchandise-in-baggage/journey-details"
-  override val expectedTitle = "Journey details"
 
   def selectPlaceOfArrival: Select = new Select(find(IdQuery(placeOfArrival)).get.underlying)
 

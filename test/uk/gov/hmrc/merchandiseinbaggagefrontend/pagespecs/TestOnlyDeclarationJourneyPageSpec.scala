@@ -19,5 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TestOnlyDeclarationJourneyPage
 
 class TestOnlyDeclarationJourneyPageSpec extends StartPageSpec[TestOnlyDeclarationJourneyPage] {
+  override def expectedTitle: String = "Create a test declaration journey"
+
   override lazy val page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
 }

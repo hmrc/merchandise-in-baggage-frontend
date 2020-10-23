@@ -25,7 +25,6 @@ class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends Pa
   import WebBrowser._
 
   override val path = "/merchandise-in-baggage/enter-eori-number"
-  override val expectedTitle = "What is the EORI number of the company importing the goods?"
 
   def fillOutForm(eori: String): Unit = {
     click on find(IdQuery("eori")).get

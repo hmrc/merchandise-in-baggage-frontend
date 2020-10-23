@@ -29,6 +29,8 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
 
   private lazy val calculationService = injector.instanceOf[CalculationService]
 
+  private val expectedTitle = "Check your answers before making your declaration"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     webDriver.manage().deleteAllCookies()
@@ -53,7 +55,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
         val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
         checkYourAnswersPage.open()
-        checkYourAnswersPage.mustRenderBasicContent()
+        checkYourAnswersPage.mustRenderBasicContent(expectedTitle)
 
         checkYourAnswersPage.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
@@ -63,7 +65,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
         val taxDue = createDeclarationAndCalculateTaxDue(sparseCompleteDeclarationJourney).futureValue
 
         page.open()
-        page.mustRenderBasicContent()
+        page.mustRenderBasicContent(expectedTitle)
 
         page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }

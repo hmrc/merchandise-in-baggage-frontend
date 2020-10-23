@@ -23,8 +23,10 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswer
 class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
   override lazy val page: JourneyDetailsPage = journeyDetailsPage
 
+  private val expectedTitle = "Journey details"
+
   "the journey details page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
     behave like aPageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)

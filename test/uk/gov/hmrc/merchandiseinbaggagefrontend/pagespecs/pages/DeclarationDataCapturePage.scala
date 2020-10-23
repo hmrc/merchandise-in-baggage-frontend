@@ -21,6 +21,7 @@ import org.scalatest.Assertion
 
 abstract class DeclarationDataCapturePage[F](baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   extends PageWithCTA(baseUrl: BaseUrl) {
+
   def fillOutForm(formData: F): Unit
 
   def previouslyEnteredValuesAreDisplayed(formData: F): Assertion

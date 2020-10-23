@@ -20,8 +20,6 @@ import org.openqa.selenium.WebDriver
 
 class InvalidRequestPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
   override val path: String = InvalidRequestPage.path
-
-  override val expectedTitle = ""
 }
 
 object InvalidRequestPage{

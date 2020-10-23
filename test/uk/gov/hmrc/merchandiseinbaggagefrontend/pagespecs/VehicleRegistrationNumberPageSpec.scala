@@ -21,8 +21,10 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.VehicleRegistrat
 class VehicleRegistrationNumberPageSpec extends BasePageSpec[VehicleRegistrationNumberPage] {
   override lazy val page: VehicleRegistrationNumberPage = vehicleRegistrationNumberPage
 
+  private val expectedTitle = "What is the registration number of the vehicle?"
+
   "the page" should {
-    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted())
+    behave like aPageWithSimpleRendering(givenAnImportJourneyIsStarted(), expectedTitle)
     behave like aPageWhichRequiresADeclarationJourney()
 
     "redirect user to /check-your-answers onSubmit" in {

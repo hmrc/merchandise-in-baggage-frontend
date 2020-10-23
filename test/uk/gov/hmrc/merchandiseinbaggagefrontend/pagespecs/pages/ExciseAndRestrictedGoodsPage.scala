@@ -23,8 +23,6 @@ class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriv
   extends RadioButtonPage[YesNo](baseUrl) {
 
   override val path: String = ExciseAndRestrictedGoodsPage.path
-
-  override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
 }
 
 object ExciseAndRestrictedGoodsPage{

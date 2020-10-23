@@ -22,6 +22,8 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EoriNumberPage
 class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
   override lazy val page: EoriNumberPage = eoriNumberPage
 
+  private val expectedTitle = "What is the EORI number of the company importing the goods?"
+
   "the eori number page" should {
     behave like aPageWhichRequiresADeclarationJourney()
 
@@ -29,7 +31,7 @@ class EoriNumberPageSpec extends BasePageSpec[EoriNumberPage] {
       givenADeclarationJourney(completedDeclarationJourney)
 
       page.open()
-      page.mustRenderBasicContent()
+      page.mustRenderBasicContent(expectedTitle)
     }
 
     "render correctly for trader" in {

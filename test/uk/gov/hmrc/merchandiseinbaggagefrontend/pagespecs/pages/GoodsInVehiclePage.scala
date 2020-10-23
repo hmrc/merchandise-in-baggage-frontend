@@ -20,8 +20,6 @@ import org.openqa.selenium.WebDriver
 
 class GoodsInVehiclePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
   override val path: String = GoodsInVehiclePage.path
-
-  override val expectedTitle = ""
 }
 
 object GoodsInVehiclePage {
