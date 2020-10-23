@@ -16,17 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
+import enumeratum.EnumEntry
 import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
+import org.scalatest.Assertion
+import org.scalatestplus.selenium.WebBrowser
 
-class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends RadioButtonPage[GoodsDestination](baseUrl) {
+abstract class RadioButtonPage[E <: EnumEntry](baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends DeclarationDataCapturePage[E](baseUrl: BaseUrl) {
 
-  override val path: String = GoodsDestinationPage.path
+  import WebBrowser._
 
-  override val expectedTitle = "Where in the UK are the goods going?"
-}
+  def radioButtonFor(enum: E): Element = find(IdQuery(enum.entryName)).get
 
-object GoodsDestinationPage {
-  val path = "/merchandise-in-baggage/goods-destination"
+  override def fillOutForm(enum: E): Unit = click on radioButtonFor(enum)
+
+  override def previouslyEnteredValuesAreDisplayed(enum: E): Assertion =
+    radioButtonFor(enum).underlying.getAttribute("checked") mustBe "true"
 }

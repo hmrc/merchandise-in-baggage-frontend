@@ -24,6 +24,6 @@ class ValueWeightOfGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) ex
   override val expectedTitle = ""
 }
 
-object ValueWeightOfGoodsPage{
+object ValueWeightOfGoodsPage {
   val path = "/merchandise-in-baggage/value-weight-of-goods"
 }

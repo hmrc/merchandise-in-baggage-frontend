@@ -17,24 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
 class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[YesNo](baseUrl) {
-  import WebBrowser._
+  extends RadioButtonPage[YesNo](baseUrl) {
 
   override val path: String = ExciseAndRestrictedGoodsPage.path
 
   override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
-
-  def radioButtonFor(yesNo: YesNo): Element = find(IdQuery(yesNo.entryName)).get
-
-  override def previouslyEnteredValuesAreDisplayed(exciseAndRestrictedGoods: YesNo): Assertion =
-    radioButtonFor(exciseAndRestrictedGoods).underlying.getAttribute("checked") mustBe "true"
-
-  override def fillOutForm(exciseAndRestrictedGoods: YesNo): Unit = click on radioButtonFor(exciseAndRestrictedGoods)
 }
 
 object ExciseAndRestrictedGoodsPage{
