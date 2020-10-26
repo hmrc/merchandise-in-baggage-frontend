@@ -32,6 +32,14 @@ case class TaxCalculations(taxCalculations: Seq[TaxCalculation]) {
     taxCalculations.map(_.calculationResult.taxDue.value).sum
   )
 
+  def totalDutyDue: AmountInPence = AmountInPence(
+    taxCalculations.map(_.calculationResult.duty.value).sum
+  )
+
+  def totalVatDue: AmountInPence = AmountInPence(
+    taxCalculations.map(_.calculationResult.vat.value).sum
+  )
+
   def toTable(implicit messages: Messages): Table = {
     val tableRows: Seq[Seq[TableRow]] = taxCalculations.map { tc =>
       Seq(

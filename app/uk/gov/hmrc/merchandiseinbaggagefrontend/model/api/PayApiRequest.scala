@@ -17,8 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.MibReferenceGenerator
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
+
+import scala.concurrent.{ExecutionContext, Future}
 
 
 case class MibReference(value: String)
@@ -28,6 +31,16 @@ object MibReference {
 
 case class PayApiRequest(mibReference: MibReference, amountInPence: AmountInPence, vatAmountInPence: AmountInPence,
                          dutyAmountInPence: AmountInPence)
+
 object PayApiRequest {
   implicit val format: Format[PayApiRequest] = Json.format[PayApiRequest]
+}
+
+trait PayApiRequestBuilder extends MibReferenceGenerator {
+  def buildRequest(declarationGoods: DeclarationGoods, taxCalculation: DeclarationGoods => Future[TaxCalculations])
+                  (implicit ec: ExecutionContext): Future[PayApiRequest] =
+    for {
+      taxDue    <- taxCalculation(declarationGoods)
+      reference <- Future.fromTry(mibReference)
+    } yield PayApiRequest(reference, taxDue.totalTaxDue, taxDue.totalDutyDue, taxDue.totalVatDue)
 }

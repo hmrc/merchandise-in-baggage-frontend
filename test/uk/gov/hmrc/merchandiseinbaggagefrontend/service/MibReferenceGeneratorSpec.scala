@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,17 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
-@this(layout: Layout, button: components.button)
+import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+class MibReferenceGeneratorSpec extends BaseSpec {
 
-@layout(pageTitle = Some("merchandise-in-baggage-frontend")) {
-    <h1 class="govuk-heading-xl">merchandise-in-baggage-frontend payment</h1>
+  "generate 10 digits mib reference" in new MibReferenceGenerator {
 
-    @button(messages("payment.button"), href = Some(PaymentController.onSubmit().url), classes = Some("govuk-button"))
+    mibReference.get.value.matches(referenceFormat) mustBe true
+  }
+
 }
