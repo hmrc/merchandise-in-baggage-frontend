@@ -16,7 +16,7 @@
 
 @this(govukDateInput: GovukDateInput)
 
-@(form: Form[_], legendContent: String, id: String, hintText: String)(implicit messages: Messages)
+@(form: Form[_], legendContent: String, id: String, hintText: String, legendClasses: String = "govuk-fieldset__legend--xl")(implicit messages: Messages)
 
 @govukDateInput(DateInput(
     fieldset = Some(Fieldset(
@@ -24,7 +24,7 @@
             Legend(
                 content = Text(messages(legendContent)),
                 isPageHeading = false,
-                classes = "govuk-fieldset__legend--xl"
+                classes = legendClasses
             )
         )
     )),

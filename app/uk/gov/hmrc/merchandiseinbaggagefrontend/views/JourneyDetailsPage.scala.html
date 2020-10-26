@@ -58,12 +58,12 @@
 ) {
   @formHelper(action =  JourneyDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
-    @h1(messages("journeyDetails.heading"))
+    @h1(messages("journeyDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
     <div class="govuk-form-group">
       <label class="govuk-label" for="@placeOfArrival">@messages("journeyDetails.placeOfArrival")</label>
       <p class="govuk-hint">@messages("journeyDetails.placeOfArrival.hint")</p>
-      <div class="autocomplete-wrapper govuk-input--width-30">
+      <div class="autocomplete-wrapper govuk-input--width-20">
         <select name="@placeOfArrival" id="@placeOfArrival">
           @if(form(placeOfArrival).value.isEmpty) {
             <option id="@{placeOfArrival}-option-empty" value="" selected></option>
@@ -84,7 +84,8 @@
         form = form,
         legendContent = messages("journeyDetails.dateOfArrival"),
         id = dateOfArrival,
-        hintText = messages("journeyDetails.dateOfArrival.hint")
+        hintText = messages("journeyDetails.dateOfArrival.hint"),
+        legendClasses = "govuk-fieldset__legend--s govuk-!-font-weight-regular"
     )
 
     @button("site.continue", name = Some("continue"))
