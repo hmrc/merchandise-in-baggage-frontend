@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.viewmodels.ReviewGoodsSummary
 
 @this(
 layout: Layout,
@@ -38,8 +39,8 @@ button: components.button
 
         @h1(messages("reviewGoods.heading"))
 
-        @for((goods, idx) <- goods.goods.zipWithIndex) {
-            @summaryList(goods.toSummaryList(idx + 1))
+        @for(list <- ReviewGoodsSummary.summaryList(goods)) {
+            @summaryList(list)
         }
 
         @h3(messages("reviewGoods.h3"))
@@ -51,6 +52,6 @@ button: components.button
             classes = "govuk-visually-hidden"
         )
 
-        @button("site.continue")
+        @button("site.continue", name = Some("continue"))
     }
 }

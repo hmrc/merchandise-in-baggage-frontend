@@ -17,11 +17,35 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatest.Assertion
+import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
-class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path: String = SearchGoodsPage.path
+class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends DeclarationDataCapturePage[CategoryQuantityOfGoods](baseUrl) {
+
+  import WebBrowser._
+
+  override val path: String = SearchGoodsPage.path()
+
+  def categoryInput: Element = find(NameQuery("category")).get
+
+  def quantityInput: Element = find(NameQuery("quantity")).get
+
+  override def fillOutForm(formData: CategoryQuantityOfGoods): Unit = {
+    categoryInput.underlying.clear()
+    categoryInput.underlying.sendKeys(formData.category)
+
+    quantityInput.underlying.clear()
+    quantityInput.underlying.sendKeys(formData.quantity)
+  }
+
+  override def previouslyEnteredValuesAreDisplayed(formData: CategoryQuantityOfGoods): Assertion = {
+    categoryInput.underlying.getAttribute("value") mustEqual formData.category
+    quantityInput.underlying.getAttribute("value") mustEqual formData.quantity
+  }
 }
 
 object SearchGoodsPage {
-  val path: String = "/merchandise-in-baggage/search-goods/1"
+  def path(idx: Int = 1): String = s"/merchandise-in-baggage/search-goods/$idx"
 }

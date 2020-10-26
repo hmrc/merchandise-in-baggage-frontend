@@ -62,7 +62,13 @@ class SearchGoodsCountryController @Inject()(
                 )
               )
             ).map { _ =>
-              Redirect(routes.PurchaseDetailsController.onPageLoad(idx))
+              request
+                .declarationJourney
+                .goodsEntries
+                .declarationGoodsIfComplete
+                .fold(Redirect(routes.PurchaseDetailsController.onPageLoad(idx))) { _ =>
+                  Redirect(routes.ReviewGoodsController.onPageLoad())
+                }
             }
           }
         )

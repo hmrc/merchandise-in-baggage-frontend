@@ -42,6 +42,11 @@ object CurrencyConversionStub {
       |      "countryName": "Brazil",
       |      "currencyName": "Real",
       |      "currencyCode": "BRL"
+      |    },
+      |    {
+      |      "countryName": "Eurozone",
+      |      "currencyName": "Euro",
+      |      "currencyCode": "EUR"
       |    }
       |  ]
       |}

@@ -58,7 +58,13 @@ class GoodsVatRateController @Inject()(
                 )
               )
             ).map { _ =>
-              Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
+              request
+                .declarationJourney
+                .goodsEntries
+                .declarationGoodsIfComplete
+                .fold(Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))) { _ =>
+                  Redirect(routes.ReviewGoodsController.onPageLoad())
+                }
             }
           }
         )
