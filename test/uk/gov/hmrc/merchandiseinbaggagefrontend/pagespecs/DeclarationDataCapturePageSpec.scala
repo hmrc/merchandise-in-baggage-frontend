@@ -24,11 +24,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
   def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[F]
 
-  def aPageWhichDisplaysPreviouslyEnteredAnswers(): Unit =
+  def aPageWhichDisplaysPreviouslyEnteredAnswers(setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
     "render correctly" when {
       "a declaration has been completed" in {
         val expectedData = extractFormDataFrom(completedDeclarationJourney).get
-        givenADeclarationJourney(completedDeclarationJourney)
+        setup
 
         page.open()
         page.previouslyEnteredValuesAreDisplayed(expectedData)

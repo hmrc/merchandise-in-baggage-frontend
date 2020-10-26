@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsVatRate}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsVatRatePage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsVatRate, GoodsVatRates}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsCountryPage}
 
 class GoodsVatRatePageSpec extends DeclarationDataCapturePageSpec[GoodsVatRate, GoodsVatRatePage] {
   override lazy val page: GoodsVatRatePage = goodsVatRatePage
@@ -28,7 +28,7 @@ class GoodsVatRatePageSpec extends DeclarationDataCapturePageSpec[GoodsVatRate, 
     behave like aPageWhichRenders(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
     behave like aPageWhichRequiresADeclarationJourney()
-    //behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Twenty, SearchGoodsCountryPage.path)
+    behave like aDataCapturePageWithSimpleRouting(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), GoodsVatRates.values, SearchGoodsCountryPage.path())
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsVatRate] =
