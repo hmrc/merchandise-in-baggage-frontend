@@ -30,5 +30,5 @@ trait MibReferenceGenerator {
     for {
       bytes <- Try(java.nio.ByteBuffer.wrap(uniqueId.getBytes))
       truncate <- Try(bytes.asLongBuffer().get().toString.take(10))
-    } yield MibReference(s"XXMB$truncate") //TODO prefix Letters hard coded
+    } yield MibReference(s"XXMB$truncate") //TODO prefix Letters hard coded + need more refinement
 }
