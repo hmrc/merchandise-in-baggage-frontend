@@ -37,10 +37,11 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)))
 
   "the eori number page" should {
+    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aPageWhichRequiresACustomsAgentDeclaration()
     behave like aPageWhichRenders(givenAnAgentJourney(), expectedAgentTitle)
     behave like aPageWhichRenders(givenANonAgentJourney(), expectedNonAgentTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
     behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
   }
 }

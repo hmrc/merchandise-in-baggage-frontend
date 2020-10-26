@@ -28,11 +28,13 @@ class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
   override val path = "/merchandise-in-baggage/enter-eori-number"
 
+  private def input: Element = find(IdQuery("eori")).get
+
   override def previouslyEnteredValuesAreDisplayed(eori: Eori): Assertion =
-    find(IdQuery("eori")).get.attribute("value") mustBe Some(eori.value)
+    input.attribute("value") mustBe Some(eori.value)
 
   override def fillOutForm(eori: Eori): Unit = {
-    click on find(IdQuery("eori")).get
+    click on input
     enter(eori.value)
   }
 }

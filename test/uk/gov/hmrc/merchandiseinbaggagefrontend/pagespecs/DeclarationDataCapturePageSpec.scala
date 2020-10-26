@@ -38,7 +38,7 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
   def aDataCapturePageWithConditionalRouting(setUp: => Unit = Unit, formData: F, expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
       s"the form is filled with $formData" in {
-        submitAndEnsurePersistence(setUp, formData, expectedPath)
+        submitAndEnsurePersistence(setUp, formData) mustBe expectedPath
       }
     }
   }
@@ -47,13 +47,13 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
     s"redirect to $expectedPath" when {
       allFormData.foreach { formData =>
         s"the form is filled with $formData" in {
-          submitAndEnsurePersistence(setUp, formData, expectedPath)
+          submitAndEnsurePersistence(setUp, formData) mustBe expectedPath
         }
       }
     }
   }
 
-  private def submitAndEnsurePersistence(setUp: => Unit = Unit, formData: F, expectedPath: String) = {
+  def submitAndEnsurePersistence(setUp: => Unit = Unit, formData: F): String = {
     def ensurePersistence = {
       val persistedJourneys = declarationJourneyRepository.findAll().futureValue
       persistedJourneys.size mustBe 1
@@ -63,8 +63,10 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
     setUp
     page.open()
     page.fillOutForm(formData)
-    page.clickOnCTA() mustBe expectedPath
+    val path = page.clickOnCTA()
 
     ensurePersistence
+
+    path
   }
 }
