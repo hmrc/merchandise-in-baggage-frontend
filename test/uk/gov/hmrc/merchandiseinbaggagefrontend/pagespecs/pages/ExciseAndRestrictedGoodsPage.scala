@@ -17,9 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path = "/merchandise-in-baggage/excise-and-restricted-goods"
+class ExciseAndRestrictedGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends RadioButtonPage[YesNo](baseUrl) {
 
-  override val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+  override val path: String = ExciseAndRestrictedGoodsPage.path
+}
+
+object ExciseAndRestrictedGoodsPage{
+  val path = "/merchandise-in-baggage/excise-and-restricted-goods"
 }

@@ -21,12 +21,11 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
 
-class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
 
   import WebBrowser._
 
-  override val path = "/merchandise-in-baggage/check-your-answers"
-  override val expectedTitle = "Check your answers before making your declaration"
+  override val path: String = CheckYourAnswersPage.path
 
   private val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
@@ -107,4 +106,8 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
   }
 
   def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"
+}
+
+object CheckYourAnswersPage {
+  val path = "/merchandise-in-baggage/check-your-answers"
 }

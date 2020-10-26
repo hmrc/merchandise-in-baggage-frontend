@@ -18,12 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
 import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SkeletonPage
+import play.api.mvc.{MessagesControllerComponents, Request}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
-import scala.concurrent.ExecutionContext
 
 /**
  * Controller serving skeleton pages
@@ -31,9 +27,10 @@ import scala.concurrent.ExecutionContext
  * It is envisaged this controller will be re-factored away action-by-action as we build out the journey
  */
 class SkeletonJourneyController @Inject()(mcc: MessagesControllerComponents,
-                                          actionProvider: DeclarationJourneyActionProvider,
-                                          page: SkeletonPage)
-                                         (implicit val ec: ExecutionContext, appConfig: AppConfig)
+                                         // actionProvider: DeclarationJourneyActionProvider,
+                                         // page: SkeletonPage
+                                         )
+                                         //(implicit val ec: ExecutionContext, appConfig: AppConfig)
   extends FrontendController(mcc) {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 

@@ -19,23 +19,20 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Eori
 
-class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends DeclarationDataCapturePage[Eori](baseUrl) {
 
   import WebBrowser._
 
   override val path = "/merchandise-in-baggage/enter-eori-number"
-  override val expectedTitle = "What is the EORI number of the company importing the goods?"
 
-  def fillOutForm(eori: String): Unit = {
+  override def previouslyEnteredValuesAreDisplayed(eori: Eori): Assertion =
+    find(IdQuery("eori")).get.attribute("value") mustBe Some(eori.value)
+
+  override def fillOutForm(eori: Eori): Unit = {
     click on find(IdQuery("eori")).get
-    enter(eori)
-  }
-
-  def clickOnSubmitButton(): Assertion = {
-    val button = find(NameQuery("continue")).get
-    click on button
-
-    readPath() mustBe "/merchandise-in-baggage/traveller-details"
+    enter(eori.value)
   }
 }

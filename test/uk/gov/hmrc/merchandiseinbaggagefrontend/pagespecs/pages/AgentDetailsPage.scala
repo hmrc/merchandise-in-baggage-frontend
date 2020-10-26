@@ -20,10 +20,8 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path = "/merchandise-in-baggage/agent-details"
-
-  override val expectedTitle = "Enter the business name of the customs agent"
+class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+  override val path: String = AgentDetailsPage.path
 
   import WebBrowser._
 
@@ -40,4 +38,8 @@ class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends 
       redirectedTo == "/merchandise-in-baggage/enter-agent-address" || redirectedTo.startsWith("/lookup-address")
     successfulRedirectDependingOnWhetherAddressLookupIsAvailable mustBe true
   }
+}
+
+object AgentDetailsPage {
+  val path = "/merchandise-in-baggage/agent-details"
 }

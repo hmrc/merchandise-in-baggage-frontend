@@ -36,16 +36,18 @@ abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
   )
 
   val path: String
-  val expectedTitle: String
 
-  def mustRenderBasicContent(expectedTitle: String = expectedTitle): Unit = patiently{
+  def mustRenderBasicContent(expectedTitle: String): Unit = patiently{
     val expectedHeadingContent: String = expectedTitle
     readPath() mustBe path
     headerText() mustBe expectedHeadingContent
     pageTitle mustBe expectedTitle
   }
 
-  def open(): Unit = WebBrowser.goTo(s"${baseUrl.value}$path")
+  def open(): String = {
+    WebBrowser.goTo(s"${baseUrl.value}$path")
+    readPath()
+  }
 
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 

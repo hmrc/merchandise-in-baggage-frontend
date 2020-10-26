@@ -16,30 +16,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Eori}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EoriNumberPage, TravellerDetailsPage}
 
-class EoriNumberPageSpec extends BasePageSpec {
-  "/enter-eori-number" should {
-    "render correctly for agent" in {
-      createDeclarationJourney(completedDeclarationJourney)
+class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumberPage] {
+  override lazy val page: EoriNumberPage = eoriNumberPage
 
-      eoriNumberPage.open()
-      eoriNumberPage.mustRenderBasicContent()
-    }
+  private val expectedAgentTitle = "What is the EORI number of the company importing the goods?"
+  private val expectedNonAgentTitle = "What is your EORI number?"
+  private val eori = Eori("GB123467800000")
 
-    "render correctly for trader" in {
-      createDeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] =
+    declarationJourney.maybeEori
 
-      eoriNumberPage.open()
-      eoriNumberPage.mustRenderBasicContent("What is your EORI number?")
-    }
+  private def givenAnAgentJourney(): Unit =
+    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(Yes)))
 
-    "allow the user to enter their eori number and redirect to /traveller-details" in {
-      createDeclarationJourney(completedDeclarationJourney)
+  private def givenANonAgentJourney(): Unit =
+    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)))
 
-      eoriNumberPage.open()
-      eoriNumberPage.fillOutForm("GB123467800000")
-      eoriNumberPage.clickOnSubmitButton()
-    }
+  "the eori number page" should {
+    behave like aPageWhichRenders(givenAnAgentJourney(), expectedAgentTitle)
+    behave like aPageWhichRenders(givenANonAgentJourney(), expectedNonAgentTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
+    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
   }
 }

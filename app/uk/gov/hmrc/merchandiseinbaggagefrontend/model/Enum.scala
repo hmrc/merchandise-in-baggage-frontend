@@ -47,6 +47,7 @@ trait EnumEntryRadioItemSupport {
 
   def radioItem(form: Form[_], baseMessageKey: String)(implicit messages: Messages): RadioItem =
     RadioItem(
+      id = Some(entryName),
       value = Some(entryName),
       content = Text(messages(s"$baseMessageKey.$entryName")),
       checked = form("value").value.contains(entryName),

@@ -16,24 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.{Call, Result}
-import play.api.test.Helpers._
-
-import scala.concurrent.Future
-
 class SkeletonJourneyControllerSpec extends DeclarationJourneyControllerSpec {
-  private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
-
-  private def ensure(eventualResponse: Future[Result], title: String, call: Call) = {
-    val content = contentAsString(eventualResponse)
-
-    status(eventualResponse) mustBe OK
-    content must include(title)
-    content must include(call.url)
-  }
-
-  private def ensureRedirectToInvalidRequestPage(eventualResponse: Future[Result]) = {
-    status(eventualResponse) mustBe 303
-    redirectLocation(eventualResponse).get mustBe routes.InvalidRequestController.onPageLoad().url
-  }
+//  private lazy val controller = app.injector.instanceOf[SkeletonJourneyController]
+//
+//  private def ensure(eventualResponse: Future[Result], title: String, call: Call) = {
+//    val content = contentAsString(eventualResponse)
+//
+//    status(eventualResponse) mustBe OK
+//    content must include(title)
+//    content must include(call.url)
+//  }
+//
+//  private def ensureRedirectToInvalidRequestPage(eventualResponse: Future[Result]) = {
+//    status(eventualResponse) mustBe 303
+//    redirectLocation(eventualResponse).get mustBe routes.InvalidRequestController.onPageLoad().url
+//  }
 }

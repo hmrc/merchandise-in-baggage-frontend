@@ -16,10 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TestOnlyDeclarationJourneyPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartPage
 
-class TestOnlyDeclarationJourneyPageSpec extends StartPageSpec[TestOnlyDeclarationJourneyPage] {
-  override def expectedTitle: String = "Create a test declaration journey"
+import scala.concurrent.ExecutionContext.Implicits.global
 
-  override lazy val page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
+trait StartPageSpec[P <: StartPage] extends BasePageSpec[P]{
+  def expectedTitle: String
+
+  s"${page.path}" should {
+    behave like aPageWhichRenders(expectedTitle = expectedTitle)
+
+    s"allow the user to set up a declaration and redirect to ${page.nextPagePath}" in {
+      declarationJourneyRepository.findAll().futureValue.size mustBe 0
+
+      page.open()
+      page.clickOnCTA() mustBe page.nextPagePath
+
+      declarationJourneyRepository.findAll().futureValue.size mustBe 1
+    }
+  }
 }

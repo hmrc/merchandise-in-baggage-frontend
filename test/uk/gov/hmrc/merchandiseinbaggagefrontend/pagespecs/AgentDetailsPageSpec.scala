@@ -16,21 +16,22 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-class AgentDetailsPageSpec extends BasePageSpec {
-  "the page" should {
-    "render correctly" in {
-      startImportJourney()
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
 
-      agentDetailsPage.open()
-      agentDetailsPage.mustRenderBasicContent()
-    }
+class AgentDetailsPageSpec extends BasePageSpec[AgentDetailsPage] {
+  override lazy val page: AgentDetailsPage = agentDetailsPage
+  private val title = "Enter the business name of the customs agent"
+
+  "the page" should {
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichRequiresADeclarationJourney()
 
     "allow the user to navigate to the /enter-agent-address" in {
-      startImportJourney()
+      givenAnImportJourneyIsStarted()
 
-      agentDetailsPage.open()
-      agentDetailsPage.fillOutForm("test agent")
-      agentDetailsPage.mustRedirectToAddressLookupFromTheCTA()
+      page.open()
+      page.fillOutForm("test agent")
+      page.mustRedirectToAddressLookupFromTheCTA()
     }
   }
 }

@@ -16,23 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
+import enumeratum.EnumEntry
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
-  override val path = "/merchandise-in-baggage/vehicle-registration-number"
+abstract class RadioButtonPage[E <: EnumEntry](baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends DeclarationDataCapturePage[E](baseUrl: BaseUrl) {
 
   import WebBrowser._
 
-  def fillOutForm(value: String): Unit = {
-    click on find(NameQuery("value")).get
-    enter(value)
-  }
+  def radioButtonFor(enum: E): Element = find(IdQuery(enum.entryName)).get
 
-  def mustRedirectToCheckYourAnswersFromTheCTA(): Assertion = {
-    click on find(NameQuery("continue")).get
+  override def fillOutForm(enum: E): Unit = click on radioButtonFor(enum)
 
-    readPath() mustBe "/merchandise-in-baggage/check-your-answers"
-  }
+  override def previouslyEnteredValuesAreDisplayed(enum: E): Assertion =
+    radioButtonFor(enum).underlying.getAttribute("checked") mustBe "true"
 }

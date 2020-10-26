@@ -22,29 +22,50 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
-trait BasePageSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
+trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
   implicit lazy val webDriver: HtmlUnitDriver = new HtmlUnitDriver(false)
 
   lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
 
+  def page: P
+
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
+  lazy val goodsDestinationPage: GoodsDestinationPage = wire[GoodsDestinationPage]
+  lazy val valueWeightOfGoodsPage: ValueWeightOfGoodsPage = wire[ValueWeightOfGoodsPage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
-  def startImportJourney(): Unit = {
+  def givenAnImportJourneyIsStarted(): Unit = {
     startImportPage.open()
-    startImportPage.clickOnStartNowButton()
+    startImportPage.clickOnCTA()
   }
 
-  def createDeclarationJourney(declarationJourney: DeclarationJourney = completedDeclarationJourney): Unit = {
+  def givenADeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
     testOnlyDeclarationJourneyPage.open()
     testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
-    testOnlyDeclarationJourneyPage.clickOnSubmitButton()
+    testOnlyDeclarationJourneyPage.clickOnCTA()
+  }
+
+  def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
+
+  def aPageWhichRenders(setUp: => Unit = Unit, expectedTitle: String): Unit =
+    s"render basic content with title '$expectedTitle''" in {
+      setUp
+      page.open()
+      page.mustRenderBasicContent(expectedTitle)
+    }
+
+  def aPageWhichRequiresADeclarationJourney() : Unit = {
+    s"redirect to ${InvalidRequestPage.path}" when {
+      "the declaration has not been started" in {
+        page.open() mustBe InvalidRequestPage.path
+      }
+    }
   }
 }
 
