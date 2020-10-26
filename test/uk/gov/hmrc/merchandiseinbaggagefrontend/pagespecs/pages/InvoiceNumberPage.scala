@@ -20,12 +20,9 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class InvoiceNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[String](baseUrl) {
+class InvoiceNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
 
   import WebBrowser._
-
-  override val path: String = InvoiceNumberPage.path()
 
   def invoiceNumberInput: Element = find(NameQuery("value")).get
 
@@ -41,4 +38,6 @@ class InvoiceNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
 object InvoiceNumberPage {
   def path(idx: Int = 1): String = s"/merchandise-in-baggage/invoice-number/$idx"
+
+  val title = "What is the invoice number for the test good?"
 }

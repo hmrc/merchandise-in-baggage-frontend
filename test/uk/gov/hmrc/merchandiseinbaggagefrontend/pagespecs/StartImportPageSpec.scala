@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartImportPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{ExciseAndRestrictedGoodsPage, StartImportPage}
 
 class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def expectedTitle: String = "Declaring goods in your baggage you're bringing to the UK to sell"
+  override def page: StartImportPage = startImportPage
 
-  override lazy val page: StartImportPage = startImportPage
+  "the Start Import page " should {
+    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, ExciseAndRestrictedGoodsPage.path)
+  }
 }

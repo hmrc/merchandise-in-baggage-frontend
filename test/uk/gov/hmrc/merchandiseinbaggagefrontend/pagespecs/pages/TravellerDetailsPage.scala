@@ -18,9 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class TravellerDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path: String = CannotUseServicePage.path
-}
+class TravellerDetailsPage(implicit webDriver: WebDriver) extends BasePage
 
 object TravellerDetailsPage {
   val path: String = "/merchandise-in-baggage/traveller-details"

@@ -21,8 +21,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-abstract class RadioButtonPage[E <: EnumEntry](baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[E](baseUrl: BaseUrl) {
+class RadioButtonPage[E <: EnumEntry](implicit webDriver: WebDriver) extends DeclarationDataCapturePage[E] {
 
   import WebBrowser._
 

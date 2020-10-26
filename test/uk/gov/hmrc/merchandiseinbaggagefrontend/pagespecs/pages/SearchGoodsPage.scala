@@ -21,12 +21,9 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
-class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[CategoryQuantityOfGoods](baseUrl) {
+class SearchGoodsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[CategoryQuantityOfGoods] {
 
   import WebBrowser._
-
-  override val path: String = SearchGoodsPage.path()
 
   def categoryInput: Element = find(NameQuery("category")).get
 
@@ -48,4 +45,6 @@ class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
 object SearchGoodsPage {
   def path(idx: Int = 1): String = s"/merchandise-in-baggage/search-goods/$idx"
+
+  val title = "What type of goods are you bringing into the UK?"
 }

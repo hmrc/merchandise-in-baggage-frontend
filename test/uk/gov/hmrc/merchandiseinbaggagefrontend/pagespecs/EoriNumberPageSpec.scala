@@ -19,12 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Eori}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EoriNumberPage, TravellerDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EoriNumberPage._
 
 class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumberPage] {
   override lazy val page: EoriNumberPage = eoriNumberPage
 
-  private val expectedAgentTitle = "What is the EORI number of the company importing the goods?"
-  private val expectedNonAgentTitle = "What is your EORI number?"
   private val eori = Eori("GB123467800000")
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] =
@@ -37,11 +36,11 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)))
 
   "the eori number page" should {
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWhichRequiresACustomsAgentDeclaration()
-    behave like aPageWhichRenders(givenAnAgentJourney(), expectedAgentTitle)
-    behave like aPageWhichRenders(givenANonAgentJourney(), expectedNonAgentTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichRequiresACustomsAgentDeclaration(path)
+    behave like aPageWhichRenders(path, givenAnAgentJourney(), expectedAgentTitle)
+    behave like aPageWhichRenders(path, givenANonAgentJourney(), expectedNonAgentTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aDataCapturePageWithSimpleRouting(path, givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
   }
 }

@@ -20,8 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String](baseUrl) {
-  override val path: String = AgentDetailsPage.path
+class AgentDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
 
   import WebBrowser._
 
@@ -38,4 +37,5 @@ class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends 
 
 object AgentDetailsPage {
   val path = "/merchandise-in-baggage/agent-details"
+  val title = "Enter the business name of the customs agent"
 }

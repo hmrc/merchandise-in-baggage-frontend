@@ -16,12 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-
-class InvalidRequestPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path: String = InvalidRequestPage.path
-}
-
 object InvalidRequestPage{
   val path: String = "/merchandise-in-baggage/invalid-request"
 }

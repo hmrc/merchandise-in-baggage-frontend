@@ -18,7 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination, GoodsVatRate, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
@@ -29,13 +30,20 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
   def page: P
 
+  def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
+
+  def open(path: String): String = {
+    WebBrowser.goTo(s"${baseUrl.value}$path")
+    readPath()
+  }
+
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
-  lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
-  lazy val goodsDestinationPage: GoodsDestinationPage = wire[GoodsDestinationPage]
-  lazy val valueWeightOfGoodsPage: ValueWeightOfGoodsPage = wire[ValueWeightOfGoodsPage]
+  lazy val exciseAndRestrictedGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
+  lazy val goodsDestinationPage:   RadioButtonPage[GoodsDestination] = wire[RadioButtonPage[GoodsDestination]]
+  lazy val valueWeightOfGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val searchGoodsPage: SearchGoodsPage = wire[SearchGoodsPage]
-  lazy val goodsVatRatePage: GoodsVatRatePage = wire[GoodsVatRatePage]
+  lazy val goodsVatRatePage: RadioButtonPage[GoodsVatRate] = wire[RadioButtonPage[GoodsVatRate]]
   lazy val searchGoodsCountryPage: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
   lazy val purchaseDetailsPage: PurchaseDetailsPage = wire[PurchaseDetailsPage]
   lazy val invoiceNumberPage: InvoiceNumberPage = wire[InvoiceNumberPage]
@@ -47,38 +55,38 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
   def givenAnImportJourneyIsStarted(): Unit = {
-    startImportPage.open()
+    open(StartImportPage.path)
     startImportPage.clickOnCTA()
   }
 
   def givenADeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
-    testOnlyDeclarationJourneyPage.open()
+    open(TestOnlyDeclarationJourneyPage.path)
     testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
     testOnlyDeclarationJourneyPage.clickOnCTA()
   }
 
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
-  def aPageWhichRenders(setUp: => Unit = Unit, expectedTitle: String): Unit =
+  def aPageWhichRenders(path: String, setUp: => Unit = Unit, expectedTitle: String): Unit =
     s"render basic content with title '$expectedTitle''" in {
       setUp
-      page.open()
-      page.mustRenderBasicContent(expectedTitle)
+      open(path)
+      page.mustRenderBasicContent(path, expectedTitle)
     }
 
-  def aPageWhichRequiresADeclarationJourney() : Unit = {
+  def aPageWhichRequiresADeclarationJourney(path: String): Unit = {
     s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration has not been started" in {
-        page.open() mustBe InvalidRequestPage.path
+        open(path) mustBe InvalidRequestPage.path
       }
     }
   }
 
-  def aPageWhichRequiresACustomsAgentDeclaration() : Unit = {
+  def aPageWhichRequiresACustomsAgentDeclaration(path: String): Unit = {
     s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration has been started but the user has not declared whether or not they are a customs agent" in {
         givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
-        page.open() mustBe InvalidRequestPage.path
+        open(path) mustBe InvalidRequestPage.path
       }
     }
   }

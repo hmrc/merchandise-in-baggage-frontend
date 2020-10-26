@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
@@ -28,8 +29,6 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
   override lazy val page: CheckYourAnswersPage = checkYourAnswersPage
 
   private lazy val calculationService = injector.instanceOf[CalculationService]
-
-  private val expectedTitle = "Check your answers before making your declaration"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -47,16 +46,16 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
   }
 
   "the page" should {
-    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aPageWhichRequiresADeclarationJourney(path)
 
     "render correctly" when {
       "the declaration is complete" in {
         val taxDue = createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
         val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
-        checkYourAnswersPage.open()
-        checkYourAnswersPage.mustRenderBasicContent(expectedTitle)
+        open(path)
 
+        checkYourAnswersPage.mustRenderBasicContent(path, title)
         checkYourAnswersPage.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
 
@@ -64,9 +63,9 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
         val declaration = sparseCompleteDeclarationJourney.declarationIfRequiredAndComplete.get
         val taxDue = createDeclarationAndCalculateTaxDue(sparseCompleteDeclarationJourney).futureValue
 
-        page.open()
-        page.mustRenderBasicContent(expectedTitle)
+        open(path)
 
+        page.mustRenderBasicContent(path, title)
         page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
     }
@@ -75,14 +74,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
       "the declaration journey is not complete" in {
         givenADeclarationJourney(incompleteDeclarationJourney)
 
-        page.open() mustBe InvalidRequestPage.path
+        open(path) mustBe InvalidRequestPage.path
       }
     }
 
     "allow the user to make a payment" in {
       createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
 
-      page.open()
+      open(path)
 
       page.mustRedirectToPaymentFromTheCTA()
     }

@@ -18,19 +18,18 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, ExciseAndRestrictedGoodsPage, GoodsDestinationPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ExciseAndRestrictedGoodsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, GoodsDestinationPage, RadioButtonPage}
 
-class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, ExciseAndRestrictedGoodsPage] {
-  override lazy val page: ExciseAndRestrictedGoodsPage = exciseAndRestrictedGoodsPage
-
-  private val expectedTitle = "Are you bringing in excise goods or restricted goods?"
+class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
+  override lazy val page: RadioButtonPage[YesNo] = exciseAndRestrictedGoodsPage
 
   "the excise and restricted goods page" should {
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)
-    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), Yes, CannotUseServicePage.path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), No, GoodsDestinationPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), Yes, CannotUseServicePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =

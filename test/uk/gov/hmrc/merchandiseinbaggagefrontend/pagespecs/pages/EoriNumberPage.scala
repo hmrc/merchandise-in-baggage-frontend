@@ -21,12 +21,9 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Eori
 
-class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[Eori](baseUrl) {
+class EoriNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Eori] {
 
   import WebBrowser._
-
-  override val path = "/merchandise-in-baggage/enter-eori-number"
 
   private def input: Element = find(IdQuery("eori")).get
 
@@ -37,4 +34,10 @@ class EoriNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
     click on input
     enter(eori.value)
   }
+}
+
+object EoriNumberPage {
+  val path = "/merchandise-in-baggage/enter-eori-number"
+  val expectedAgentTitle = "What is the EORI number of the company importing the goods?"
+  val expectedNonAgentTitle = "What is your EORI number?"
 }

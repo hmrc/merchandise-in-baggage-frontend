@@ -16,12 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-
-class CannotUseServicePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
-  override val path: String = CannotUseServicePage.path
-}
-
 object CannotUseServicePage {
   val path = "/merchandise-in-baggage/cannot-use-service"
 }
