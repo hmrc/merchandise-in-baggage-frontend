@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, PurchaseDetailsInput}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PurchaseDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPage, PurchaseDetailsPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 
 class PurchaseDetailsPageSpec extends DeclarationDataCapturePageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
@@ -36,7 +36,7 @@ class PurchaseDetailsPageSpec extends DeclarationDataCapturePageSpec[PurchaseDet
     behave like aPageWhichRenders(givenJourneyAndCurrenciesFound(declarationJourneyWithStartedGoodsEntry), expectedTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(givenJourneyAndCurrenciesFound(completedDeclarationJourney))
     behave like aPageWhichRequiresADeclarationJourney()
-    //behave like aDataCapturePageWithSimpleRouting(givenStartedGoodsEntryAndCurrenciesFound(), Seq(PurchaseDetailsInput("100", "EUR")), InvoiceNumberPage.path())
+    behave like aDataCapturePageWithSimpleRouting(givenJourneyAndCurrenciesFound(declarationJourneyWithStartedGoodsEntry), Seq(PurchaseDetailsInput("100", "EUR")), InvoiceNumberPage.path())
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[PurchaseDetailsInput] =
