@@ -18,21 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
 
-class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
-  override val path = "/merchandise-in-baggage/vehicle-registration-number"
+abstract class DeclarationDataCapturePage[F](baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+  extends PageWithCTA(baseUrl: BaseUrl) {
 
-  import WebBrowser._
+  def fillOutForm(formData: F): Unit
 
-  def fillOutForm(value: String): Unit = {
-    click on find(NameQuery("value")).get
-    enter(value)
-  }
-
-  def mustRedirectToCheckYourAnswersFromTheCTA(): Assertion = {
-    click on find(NameQuery("continue")).get
-
-    readPath() mustBe "/merchandise-in-baggage/check-your-answers"
-  }
+  def previouslyEnteredValuesAreDisplayed(formData: F): Assertion
 }

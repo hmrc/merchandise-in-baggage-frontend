@@ -16,78 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import java.time.LocalDate
+import org.scalatest.concurrent.ScalaFutures
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, JourneyDetailsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage}
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Port
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
+class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
+  override lazy val page: JourneyDetailsPage = journeyDetailsPage
 
-import scala.concurrent.ExecutionContext.Implicits.global
+  private val expectedTitle = "Journey details"
 
-class JourneyDetailsPageSpec extends BasePageSpec {
-  private val today = LocalDate.now
-  private val tomorrow = today.plusDays(1)
-
-  "/journey-details" should {
-    "render correctly" when {
-      "a declaration has been started" in {
-        startImportJourney()
-
-        journeyDetailsPage.open()
-        journeyDetailsPage.mustRenderBasicContent()
-      }
-
-      "a declaration has been completed" in {
-        val journeyDetailsEntry = completedDeclarationJourney.maybeJourneyDetailsEntry.get
-        createDeclarationJourney(completedDeclarationJourney)
-
-        journeyDetailsPage.open()
-        journeyDetailsPage.mustRenderBasicContent()
-        journeyDetailsPage.previouslyEnteredValuesAreDisplayed(journeyDetailsEntry.placeOfArrival, journeyDetailsEntry.dateOfArrival)
-      }
-    }
-
-    "redirect to /check-your-answers for a foot passenger port" when {
-      "the declaration is complete" in {
-        createDeclarationJourney()
-
-        journeyDetailsPage.open()
-        journeyDetailsPage.fillOutForm(Heathrow, tomorrow)
-        journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/check-your-answers")
-
-        ensureJourneyEntryDetailsMatch(Heathrow, tomorrow)
-      }
-    }
-
-    "redirect to /goods-in-vehicle for a vehicle port" in {
-      startImportJourney()
-
-      journeyDetailsPage.open()
-      journeyDetailsPage.fillOutForm(Dover, tomorrow)
-      journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-in-vehicle")
-
-      ensureJourneyEntryDetailsMatch(Dover, tomorrow)
-    }
-
-    "redirect to /invalid-request" when {
-      "the declaration has not been started" in {
-        journeyDetailsPage.open()
-        journeyDetailsPage.redirectsToInvalidRequest()
-      }
-
-      "when a declaration for a foot passenger port is not complete" in {
-        startImportJourney()
-
-        journeyDetailsPage.open()
-        journeyDetailsPage.fillOutForm(Heathrow, today)
-        journeyDetailsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/invalid-request")
-      }
-    }
+  "the journey details page" should {
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
+    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
+    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
   }
 
-  private def ensureJourneyEntryDetailsMatch(placeOfArrival: Port, dateOfArrival: LocalDate) = {
-    val persistedJourneys = declarationJourneyRepository.findAll().futureValue
-    persistedJourneys.size mustBe 1
-    persistedJourneys.head.maybeJourneyDetailsEntry.get.placeOfArrival mustBe placeOfArrival
-    persistedJourneys.head.maybeJourneyDetailsEntry.get.dateOfArrival mustBe dateOfArrival
-  }
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[JourneyDetailsEntry] =
+    declarationJourney.maybeJourneyDetailsEntry
 }

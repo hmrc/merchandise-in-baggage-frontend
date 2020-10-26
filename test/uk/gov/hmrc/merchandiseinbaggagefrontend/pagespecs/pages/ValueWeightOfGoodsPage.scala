@@ -17,22 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
-  override val path = "/merchandise-in-baggage/vehicle-registration-number"
+class ValueWeightOfGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends RadioButtonPage[YesNo](baseUrl) {
+  override val path: String = ValueWeightOfGoodsPage.path
+}
 
-  import WebBrowser._
-
-  def fillOutForm(value: String): Unit = {
-    click on find(NameQuery("value")).get
-    enter(value)
-  }
-
-  def mustRedirectToCheckYourAnswersFromTheCTA(): Assertion = {
-    click on find(NameQuery("continue")).get
-
-    readPath() mustBe "/merchandise-in-baggage/check-your-answers"
-  }
+object ValueWeightOfGoodsPage {
+  val path = "/merchandise-in-baggage/value-weight-of-goods"
 }

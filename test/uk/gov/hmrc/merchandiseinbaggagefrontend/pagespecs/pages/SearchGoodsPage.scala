@@ -17,37 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
 class SearchGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+  override val path: String = SearchGoodsPage.path
+}
 
-  import WebBrowser._
-
-  override val path = "/merchandise-in-baggage/search-goods/1"
-  override val expectedTitle = "What type of goods are you bringing into the UK?"
-
-  def categoryInput: Element = find(NameQuery("category")).get
-  def quantityInput: Element = find(NameQuery("quantity")).get
-
-  def fillOutForm(catQuan: CategoryQuantityOfGoods): Unit = {
-    click on categoryInput
-    enter(catQuan.category)
-
-    click on quantityInput
-    enter(catQuan.quantity)
-  }
-
-  def previouslyEnteredValuesAreDisplayed(catQuan: CategoryQuantityOfGoods): Unit = {
-    categoryInput.underlying.getAttribute("value") mustBe catQuan.category
-    quantityInput.underlying.getAttribute("value") mustBe catQuan.quantity
-  }
-
-  def clickOnSubmitButtonMustRedirectTo(path: String): Assertion = patiently {
-    val button = find(NameQuery("continue")).get
-    click on button
-
-    readPath() mustBe path
-  }
+object SearchGoodsPage {
+  val path: String = "/merchandise-in-baggage/search-goods/1"
 }
