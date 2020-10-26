@@ -20,24 +20,20 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+class AgentDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String](baseUrl) {
   override val path: String = AgentDetailsPage.path
 
   import WebBrowser._
 
-  def fillOutForm(value: String): Unit = {
-    click on find(NameQuery("value")).get
-    enter(value)
+  private def input = find(NameQuery("value")).get
+
+  override def fillOutForm(agentDetails: String): Unit = {
+    click on input
+    enter(agentDetails)
   }
 
-  def mustRedirectToAddressLookupFromTheCTA(): Assertion = {
-    click on find(NameQuery("continue")).get
-
-    val redirectedTo = readPath()
-    val successfulRedirectDependingOnWhetherAddressLookupIsAvailable =
-      redirectedTo == "/merchandise-in-baggage/enter-agent-address" || redirectedTo.startsWith("/lookup-address")
-    successfulRedirectDependingOnWhetherAddressLookupIsAvailable mustBe true
-  }
+  override def previouslyEnteredValuesAreDisplayed(agentDetails: String): Assertion =
+    input.attribute("value") mustBe Some(agentDetails)
 }
 
 object AgentDetailsPage {

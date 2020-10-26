@@ -73,5 +73,14 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       }
     }
   }
+
+  def aPageWhichRequiresACustomsAgentDeclaration() : Unit = {
+    s"redirect to ${InvalidRequestPage.path}" when {
+      "the declaration has been started but the user has not declared whether or not they are a customs agent" in {
+        givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
+        page.open() mustBe InvalidRequestPage.path
+      }
+    }
+  }
 }
 
