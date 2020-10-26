@@ -16,81 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
 
-class SearchGoodsPageSpec extends BasePageSpec {
+class SearchGoodsPageSpec extends DeclarationDataCapturePageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
+  override def page: SearchGoodsPage = searchGoodsPage
 
-  "/search-goods/:idx" should {
-    "render correctly" when {
-      "a declaration has been started" in {
-        startImportJourney()
+  private val expectedTitle = "What type of goods are you bringing into the UK?"
 
-        searchGoodsPage.open()
-        searchGoodsPage.mustRenderBasicContent()
-      }
-
-      "a declaration has been completed" in {
-        val expected = completedDeclarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods.get
-        createDeclarationJourney(completedDeclarationJourney)
-
-        searchGoodsPage.open()
-        searchGoodsPage.mustRenderBasicContent()
-        searchGoodsPage.previouslyEnteredValuesAreDisplayed(expected)
-      }
-    }
-
-    "redirect to /goods-vat-rate" when {
-      "form is submitted for the first time" in {
-        val input = completedDeclarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods.get
-
-        startImportJourney()
-
-        searchGoodsPage.open()
-        searchGoodsPage.fillOutForm(input)
-        searchGoodsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-vat-rate/1")
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head mustBe GoodsEntry(Some(input))
-      }
-    }
-
-    "redirect to /review-goods" when {
-      "form is submitted as part of a change" in {
-        val input = CategoryQuantityOfGoods("clothes", "10")
-
-        createDeclarationJourney(completedDeclarationJourney)
-
-        val before = completedDeclarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods.get
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head
-          .maybeCategoryQuantityOfGoods
-          .get mustBe before
-
-        searchGoodsPage.open()
-        searchGoodsPage.fillOutForm(input)
-        searchGoodsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/review-goods")
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head
-          .maybeCategoryQuantityOfGoods
-          .get mustBe input
-      }
-    }
+  "the search goods page" should {
+    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
+    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aDataCapturePageWithSimpleRouting(givenAnImportJourneyIsStarted(), Seq(CategoryQuantityOfGoods("test good", "123")), GoodsVatRatePage.path())
   }
+
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[CategoryQuantityOfGoods] =
+    declarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods
 }

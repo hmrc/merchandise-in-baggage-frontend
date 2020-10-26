@@ -34,6 +34,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val exciseAndRestrictedGoodsPage: ExciseAndRestrictedGoodsPage = wire[ExciseAndRestrictedGoodsPage]
   lazy val goodsDestinationPage: GoodsDestinationPage = wire[GoodsDestinationPage]
   lazy val valueWeightOfGoodsPage: ValueWeightOfGoodsPage = wire[ValueWeightOfGoodsPage]
+  lazy val searchGoodsPage: SearchGoodsPage = wire[SearchGoodsPage]
+  lazy val goodsVatRatePage: GoodsVatRatePage = wire[GoodsVatRatePage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]

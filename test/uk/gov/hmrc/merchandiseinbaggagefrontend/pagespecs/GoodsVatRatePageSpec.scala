@@ -16,88 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry, GoodsVatRates}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsVatRatePage
 
-class GoodsVatRatePageSpec extends BasePageSpec {
+class GoodsVatRatePageSpec extends DeclarationDataCapturePageSpec[GoodsVatRate, GoodsVatRatePage] {
+  override lazy val page: GoodsVatRatePage = goodsVatRatePage
 
-  def pre() = {
-    startImportJourney()
-    searchGoodsPage.open()
-    searchGoodsPage.fillOutForm(CategoryQuantityOfGoods("clothes", "1"))
-    searchGoodsPage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/goods-vat-rate/1")
+  private val expectedTitle = "Check which VAT rate applies to the test good"
+
+  "the goods vat rate page" should {
+    behave like aPageWhichRenders(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), expectedTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
+    behave like aPageWhichRequiresADeclarationJourney()
+    //behave like aDataCapturePageWithSimpleRouting(givenACompleteDeclarationJourney(), Twenty, SearchGoodsCountryPage.path)
   }
 
-  "/goods-vat-rate/:idx" should {
-    "render correctly" when {
-      "a declaration has been started" in {
-        pre()
-
-        goodsVatRatePage.open()
-        goodsVatRatePage.mustRenderBasicContent(s"${goodsVatRatePage.expectedTitle} clothes")
-      }
-
-      "a declaration has been completed" in {
-        val expected = completedDeclarationJourney.goodsEntries.entries.head.maybeGoodsVatRate.get
-        createDeclarationJourney(completedDeclarationJourney)
-
-        goodsVatRatePage.open()
-        goodsVatRatePage.mustRenderBasicContent(s"${goodsVatRatePage.expectedTitle} wine")
-        goodsVatRatePage.previouslySelectedOptionIsChecked(expected)
-      }
-    }
-
-    "redirect to /search-goods-country/1" when {
-      "form is submitted for the first time" in {
-        val input = completedDeclarationJourney.goodsEntries.entries.head.maybeGoodsVatRate.get
-
-        pre()
-
-        goodsVatRatePage.open()
-        goodsVatRatePage.selectOption(input)
-        goodsVatRatePage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/search-goods-country/1")
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head mustBe GoodsEntry(Some(CategoryQuantityOfGoods("clothes", "1")), Some(input))
-      }
-    }
-
-    "redirect to /review-goods" when {
-      "form is submitted as part of a change" in {
-        val input = GoodsVatRates.Five
-
-        createDeclarationJourney(completedDeclarationJourney)
-
-        val before = completedDeclarationJourney.goodsEntries.entries.head.maybeGoodsVatRate.get
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head
-          .maybeGoodsVatRate
-          .get mustBe before
-
-        goodsVatRatePage.open()
-        goodsVatRatePage.selectOption(input)
-        goodsVatRatePage.clickOnSubmitButtonMustRedirectTo("/merchandise-in-baggage/review-goods")
-
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head
-          .maybeGoodsVatRate
-          .get mustBe input
-      }
-    }
-  }
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsVatRate] =
+    declarationJourney.goodsEntries.entries.head.maybeGoodsVatRate
 }
