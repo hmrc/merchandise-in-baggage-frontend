@@ -50,8 +50,6 @@ abstract class BasePage(implicit webDriver: WebDriver)
 
   def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
 
-  def redirectsToInvalidRequest(): Assertion = patiently(readPath mustBe "/merchandise-in-baggage/invalid-request")
-
   def patiently[A](assertionsMayTimeOut: => A): A = eventually(assertionsMayTimeOut).withClue {
     s"""
        |>>>page text was:

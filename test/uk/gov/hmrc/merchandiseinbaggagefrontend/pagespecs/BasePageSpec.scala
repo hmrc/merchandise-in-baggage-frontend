@@ -68,14 +68,14 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
   def aPageWhichRenders(path: String, setUp: => Unit = Unit, expectedTitle: String): Unit =
-    s"render basic content with title '$expectedTitle''" in {
+    s"render basic content with path $path title '$expectedTitle''" in {
       setUp
       open(path)
       page.mustRenderBasicContent(path, expectedTitle)
     }
 
   def aPageWhichRequiresADeclarationJourney(path: String): Unit = {
-    s"redirect to ${InvalidRequestPage.path}" when {
+    s"redirect from $path to ${InvalidRequestPage.path}" when {
       "the declaration has not been started" in {
         open(path) mustBe InvalidRequestPage.path
       }

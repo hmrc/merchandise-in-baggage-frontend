@@ -20,10 +20,9 @@ import java.time.LocalDate
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.Heathrow
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -54,6 +53,15 @@ trait CoreTestData {
 
   val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
+
+  val declarationJourneyWithOneCompleteAndOneStartedGoodsEntry: DeclarationJourney =
+    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, startedGoodsEntry)))
+
+  val declarationJourneyWithOneCompleteGoodsEntry: DeclarationJourney =
+    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry))
+
+  val declarationJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
+    startedDeclarationJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
   val journeyDate: LocalDate = LocalDate.now
 

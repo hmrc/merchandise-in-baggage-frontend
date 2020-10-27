@@ -16,28 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, DeclarationJourney}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, ReviewGoodsPage, SearchGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage.{path, title}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
 
-class SearchGoodsPageSpec extends DeclarationDataCapturePageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
+class SearchGoodsPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
   override def page: SearchGoodsPage = searchGoodsPage
 
   "the search goods page" should {
-    val path = SearchGoodsPage.path()
-    val categoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
-
-    behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportJourneyIsStarted(), categoryQuantityOfGoods, GoodsVatRatePage.path())
-
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenACompleteDeclarationJourney(), categoryQuantityOfGoods, ReviewGoodsPage.path)
+    behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path))
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[CategoryQuantityOfGoods] =
-    declarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[CategoryQuantityOfGoods] = goodsEntry.maybeCategoryQuantityOfGoods
 }

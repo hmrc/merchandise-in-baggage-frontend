@@ -17,6 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 object GoodsVatRatePage {
-  def path(idx: Int = 1) = s"/merchandise-in-baggage/goods-vat-rate/$idx"
+  def path(idx: Int) = s"/merchandise-in-baggage/goods-vat-rate/$idx"
   val title = "Check which VAT rate applies to the test good"
 }
