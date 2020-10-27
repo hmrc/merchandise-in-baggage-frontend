@@ -9,10 +9,9 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvalidRequestController.onPageLoad
 
 
-# Start
-GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartExport
-GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartImport
-POST       /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onSubmit
+# StartImport
+GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onPageLoad
+POST       /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onSubmit
 
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad
