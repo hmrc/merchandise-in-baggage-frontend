@@ -25,5 +25,5 @@ trait SessionIdGenerator {
   def addSessionId(headerCarrier: HeaderCarrier): HeaderCarrier =
     headerCarrier.withExtraHeaders(HeaderNames.xSessionId -> generateSessionId)
 
-  protected def generateSessionId: String = UUID.randomUUID().toString
+  def generateSessionId: String = UUID.randomUUID().toString
 }

@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
 
 import scala.concurrent.Future
 
@@ -80,10 +81,12 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
 
     "allow the user to make a payment" in {
       createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
+      givenTaxArePaid(wireMockServer)
 
       open(path)
 
       page.mustRedirectToPaymentFromTheCTA()
+      page.mustHaveOneRequestAndSessionId(wireMockServer)
     }
   }
 }
