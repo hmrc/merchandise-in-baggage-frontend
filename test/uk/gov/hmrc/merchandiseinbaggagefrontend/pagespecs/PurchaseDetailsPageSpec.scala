@@ -17,35 +17,23 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, PurchaseDetailsInput}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPage, PurchaseDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PurchaseDetailsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPage, PurchaseDetailsPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 
-class PurchaseDetailsPageSpec extends DeclarationDataCapturePageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
+class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
   override lazy val page: PurchaseDetailsPage = purchaseDetailsPage
 
-  private def givenJourneyAndCurrenciesFound(journey: DeclarationJourney): Unit = {
+  override def beforeEach(): Unit = {
+    super.beforeEach()
     givenCurrenciesAreFound(wireMockServer)
-
-    givenADeclarationJourney(journey)
   }
 
   "the purchase details page" should {
-    val path = PurchaseDetailsPage.path()
-
-    behave like aPageWhichRenders(path, givenJourneyAndCurrenciesFound(declarationJourneyWithStartedGoodsEntry), title)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path, givenJourneyAndCurrenciesFound(completedDeclarationJourney))
-    behave like aPageWhichRequiresADeclarationJourney(path)
-
-    behave like
-      aDataCapturePageWithSimpleRouting(
-        path,
-        givenJourneyAndCurrenciesFound(declarationJourneyWithStartedGoodsEntry),
-        Seq(PurchaseDetailsInput("100", "EUR")),
-        InvoiceNumberPage.path())
+    behave like aGoodsEntryPage(path, title, PurchaseDetailsInput("100", "EUR"), Some(InvoiceNumberPage.path))
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[PurchaseDetailsInput] =
-    declarationJourney.goodsEntries.entries.head.maybePurchaseDetails map (_.purchaseDetailsInput)
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[PurchaseDetailsInput] =
+    goodsEntry.maybePurchaseDetails map (_.purchaseDetailsInput)
 }

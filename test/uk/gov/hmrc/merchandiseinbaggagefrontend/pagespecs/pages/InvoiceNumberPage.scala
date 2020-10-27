@@ -37,7 +37,7 @@ class InvoiceNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCa
 }
 
 object InvoiceNumberPage {
-  def path(idx: Int = 1): String = s"/merchandise-in-baggage/invoice-number/$idx"
+  def path(idx: Int): String = s"/merchandise-in-baggage/invoice-number/$idx"
 
   val title = "What is the invoice number for the test good?"
 }

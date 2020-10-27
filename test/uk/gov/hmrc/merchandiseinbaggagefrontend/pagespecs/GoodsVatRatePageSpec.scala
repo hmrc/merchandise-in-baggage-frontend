@@ -16,24 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsVatRate, GoodsVatRates}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, GoodsVatRate}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsVatRatePage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, RadioButtonPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, SearchGoodsCountryPage}
 
-class GoodsVatRatePageSpec extends DeclarationDataCapturePageSpec[GoodsVatRate, RadioButtonPage[GoodsVatRate]] {
+class GoodsVatRatePageSpec extends GoodsEntryPageSpec[GoodsVatRate, RadioButtonPage[GoodsVatRate]] {
   override lazy val page: RadioButtonPage[GoodsVatRate] = goodsVatRatePage
 
   "the goods vat rate page" should {
-    val path = GoodsVatRatePage.path()
-
-    behave like aPageWhichRenders(path, givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), title)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like
-      aDataCapturePageWithSimpleRouting(
-        path, givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), GoodsVatRates.values, SearchGoodsCountryPage.path())
+    behave like aGoodsEntryPage(path, title, Twenty, Some(SearchGoodsCountryPage.path))
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsVatRate] =
-    declarationJourney.goodsEntries.entries.head.maybeGoodsVatRate
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[GoodsVatRate] = goodsEntry.maybeGoodsVatRate
 }

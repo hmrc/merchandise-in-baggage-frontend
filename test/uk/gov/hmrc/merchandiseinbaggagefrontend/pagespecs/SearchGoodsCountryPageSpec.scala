@@ -17,24 +17,17 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsCountryPage.title
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsCountryPage.{path, title}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService.countries
 
-class SearchGoodsCountryPageSpec extends DeclarationDataCapturePageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
+class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = searchGoodsCountryPage
 
   "the search goods country page" should {
-    val path = SearchGoodsCountryPage.path()
-    def givenAGoodsEntryIsStarted(): Unit = givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
-
-    behave like aPageWhichRenders(path, givenAGoodsEntryIsStarted(), title)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aDataCapturePageWithSimpleRouting(path, givenAGoodsEntryIsStarted(), countries.take(3), PurchaseDetailsPage.path())
+    behave like aGoodsEntryPage(path, title, countries.head, Some(PurchaseDetailsPage.path))
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[String] =
-    declarationJourney.goodsEntries.entries.head.maybeCountryOfPurchase
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase
 }
