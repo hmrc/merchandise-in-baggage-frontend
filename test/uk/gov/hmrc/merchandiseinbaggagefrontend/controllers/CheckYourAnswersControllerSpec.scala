@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionKeys}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.ErrorHandler
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, SessionId, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, SessionId, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
@@ -43,8 +43,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   val stubbedCalculation = new CalculationService(conversionConnector) {
-    override def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
-      Future.successful(aTaxCalculations)
+    override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+      Future.successful(aPaymentCalculations)
   }
 
   val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, stubbedCalculation, testConnector, page)

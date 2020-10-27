@@ -39,9 +39,9 @@ class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
     readPath() mustBe SearchGoodsPage.path(journey.goodsEntries.entries.size + 1)
   }
 
-  def mustRedirectToTaxCalculation(): Assertion = {
+  def mustRedirectToPaymentCalculation() = {
     click on find(NameQuery("continue")).get
-    readPath() mustBe "/merchandise-in-baggage/tax-calculation"
+    readPath() mustBe "/merchandise-in-baggage/payment-calculation"
   }
 
   def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"

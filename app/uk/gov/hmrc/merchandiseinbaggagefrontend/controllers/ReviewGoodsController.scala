@@ -60,7 +60,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
               }
             }
             else {
-              Future.successful(Redirect(routes.TaxCalculationController.onPageLoad()))
+              Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
             }
         )
     }

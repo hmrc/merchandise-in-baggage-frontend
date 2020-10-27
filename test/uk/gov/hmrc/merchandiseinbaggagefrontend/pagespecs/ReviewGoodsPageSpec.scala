@@ -60,7 +60,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
         open(path)
         reviewGoodsPage.fillOutForm(No)
-        reviewGoodsPage.mustRedirectToTaxCalculation()
+        reviewGoodsPage.mustRedirectToPaymentCalculation()
       }
     }
   }

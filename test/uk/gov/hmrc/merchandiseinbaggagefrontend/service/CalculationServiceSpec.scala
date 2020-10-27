@@ -29,8 +29,8 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
   private val service = injector.instanceOf[CalculationService]
 
-  "taxCalculation" must {
-    "take a sequence of DeclarationGoods and return TaxCalculations" in {
+  "paymentCalculation" must {
+    "take a sequence of DeclarationGoods and return PaymentCalculations" in {
 
       givenCurrencyIsFound("EUR", wireMockServer)
 
@@ -42,11 +42,11 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
         "123456"
       )
 
-      val result: TaxCalculations = service.taxCalculation(DeclarationGoods(good)).futureValue
+      val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue
 
-      val expected: TaxCalculations = TaxCalculations(
+      val expected: PaymentCalculations = PaymentCalculations(
         Seq(
-          TaxCalculation(
+          PaymentCalculation(
             good,
             CalculationResult(
               AmountInPence(7835),

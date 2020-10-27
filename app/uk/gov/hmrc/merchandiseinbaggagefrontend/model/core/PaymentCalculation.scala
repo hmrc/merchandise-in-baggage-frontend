@@ -21,27 +21,27 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
 
-case class TaxCalculation(goods: Goods, calculationResult: CalculationResult)
+case class PaymentCalculation(goods: Goods, calculationResult: CalculationResult)
 
-case class TaxCalculations(taxCalculations: Seq[TaxCalculation]) {
+case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
   def totalGbpValue: AmountInPence = AmountInPence(
-    taxCalculations.map(_.calculationResult.gbpAmount.value).sum
+    paymentCalculations.map(_.calculationResult.gbpAmount.value).sum
   )
 
   def totalTaxDue: AmountInPence = AmountInPence(
-    taxCalculations.map(_.calculationResult.taxDue.value).sum
+    paymentCalculations.map(_.calculationResult.taxDue.value).sum
   )
 
   def totalDutyDue: AmountInPence = AmountInPence(
-    taxCalculations.map(_.calculationResult.duty.value).sum
+    paymentCalculations.map(_.calculationResult.duty.value).sum
   )
 
   def totalVatDue: AmountInPence = AmountInPence(
-    taxCalculations.map(_.calculationResult.vat.value).sum
+    paymentCalculations.map(_.calculationResult.vat.value).sum
   )
 
   def toTable(implicit messages: Messages): Table = {
-    val tableRows: Seq[Seq[TableRow]] = taxCalculations.map { tc =>
+    val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
       Seq(
         TableRow(
           Text(tc.goods.categoryQuantityOfGoods.category)
@@ -52,7 +52,7 @@ case class TaxCalculations(taxCalculations: Seq[TaxCalculation]) {
         TableRow(
           Text(
             messages(
-              "taxCalculation.table.col3.row",
+              "paymentCalculation.table.col3.row",
               tc.calculationResult.vat.formattedInPounds,
               tc.goods.goodsVatRate.value
             )
@@ -64,7 +64,7 @@ case class TaxCalculations(taxCalculations: Seq[TaxCalculation]) {
       )
     } :+ Seq(
       TableRow(
-        content = Text(messages("taxCalculation.table.total")),
+        content = Text(messages("paymentCalculation.table.total")),
         classes = "govuk-table__header",
         colspan = Some(3),
         attributes = Map("style" -> "border: none")
@@ -80,16 +80,16 @@ case class TaxCalculations(taxCalculations: Seq[TaxCalculation]) {
       rows = tableRows,
       head = Some(Seq(
         HeadCell(
-          Text(messages("taxCalculation.table.col1.head"))
+          Text(messages("paymentCalculation.table.col1.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col2.head"))
+          Text(messages("paymentCalculation.table.col2.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col3.head"))
+          Text(messages("paymentCalculation.table.col3.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col4.head"))
+          Text(messages("paymentCalculation.table.col4.head"))
         )
       ))
     )

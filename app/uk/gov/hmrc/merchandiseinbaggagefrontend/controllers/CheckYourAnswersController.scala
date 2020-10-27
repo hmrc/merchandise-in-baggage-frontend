@@ -40,8 +40,8 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
-      calculationService.taxCalculation(declaration.declarationGoods).map { taxCalculations =>
-        val taxDue = taxCalculations.totalTaxDue
+      calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
+        val taxDue = paymentCalculations.totalTaxDue
         Ok(page(form, declaration, taxDue))
       }
     }
@@ -58,7 +58,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
-      payApiRequest <- buildRequest(goods, calculationService.taxCalculation)
+      payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
       response      <- connector.makePayment(payApiRequest)
     } yield response
 }

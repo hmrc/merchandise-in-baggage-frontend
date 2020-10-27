@@ -78,6 +78,6 @@ trait CoreTestData {
 
   val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)
-  val aTaxCalculation: TaxCalculation = TaxCalculation(aGoods, aCalculationResult)
-  val aTaxCalculations: TaxCalculations = TaxCalculations(Seq(aTaxCalculation))
+  val aPaymentCalculation: PaymentCalculation = PaymentCalculation(aGoods, aCalculationResult)
+  val aPaymentCalculations: PaymentCalculations = PaymentCalculations(Seq(aPaymentCalculation))
 }
