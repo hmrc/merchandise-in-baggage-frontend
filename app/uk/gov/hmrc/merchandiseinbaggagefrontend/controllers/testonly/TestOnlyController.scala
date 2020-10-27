@@ -80,6 +80,7 @@ object TestOnlyController {
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
+      declarationType = DeclarationType.Import,
       maybeExciseOrRestrictedGoods = Some(No),
       maybeGoodsDestination = Some(NorthernIreland),
       maybeValueWeightOfGoodsExceedsThreshold = Some(No),

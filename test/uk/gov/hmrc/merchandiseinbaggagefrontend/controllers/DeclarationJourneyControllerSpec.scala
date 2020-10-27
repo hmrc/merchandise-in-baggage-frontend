@@ -52,7 +52,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: DeclarationJourneyController, url: String): Unit = {
     "redirect to /invalid-request" when {
       "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(buildGet(url))
 
@@ -72,7 +72,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: DeclarationJourneyUpdateController, url: String): Unit = {
     "redirect to /invalid-request" when {
       "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(buildPost(url))
 
@@ -92,7 +92,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: IndexedDeclarationJourneyController, url: String): Unit = {
     "redirect to /invalid-request" when {
       "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad(1)(buildGet(url))
 
@@ -112,7 +112,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: IndexedDeclarationJourneyUpdateController, url: String): Unit = {
     "redirect to /invalid-request" when {
       "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit(1)(buildPost(url))
 

@@ -23,7 +23,7 @@ h1: components.h1,
 p: components.p
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(startAgainUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("goodsRemoved.title"))) {
     @h1("goodsRemoved.heading")
@@ -32,6 +32,6 @@ p: components.p
 
     <p class="govuk-body"><a href="@SearchGoodsController.onPageLoad(1)" class="govuk-link">@messages("goodsRemoved.link")</a></p>
 
-    <p><a href="#" class="govuk-button button-start">@messages("site.startAgain")</a></p>
+    <p><a href="@startAgainUrl" class="govuk-button button-start">@messages("site.startAgain")</a></p>
 
 }

@@ -38,7 +38,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
     "redirect to address-lookup-frontend" when {
       "a declaration journey has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, sessionId)
         val result = controller.onPageLoad()(request)
 
@@ -55,14 +55,14 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
     "store address and redirect to /enter-eori-number" when {
       "a declaration journey has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, sessionId)
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad().url
 
-        startedDeclarationJourney.maybeCustomsAgentAddress mustBe None
+        startedImportJourney.maybeCustomsAgentAddress mustBe None
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue

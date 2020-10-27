@@ -49,7 +49,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad(1)(getRequest)
 
@@ -67,7 +67,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /search-goods-country" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Twenty"))
 
@@ -76,14 +76,14 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SearchGoodsCountryController.onPageLoad(1).toString
 
-        startedDeclarationJourney.goodsEntries.entries.head mustBe GoodsEntry.empty
+        startedImportJourney.goodsEntries.entries.head mustBe GoodsEntry.empty
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.goodsEntries.entries.head.maybeGoodsVatRate mustBe Some(Twenty)
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
 
         val result = controller.onSubmit(1)(postRequest)
 

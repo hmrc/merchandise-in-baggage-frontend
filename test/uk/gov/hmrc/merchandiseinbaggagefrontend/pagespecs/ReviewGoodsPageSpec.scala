@@ -38,7 +38,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
     s"redirect to ${InvalidRequestPage.path}" when {
       "there are incomplete goods entries" in {
-        givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
 
         open(path) mustBe InvalidRequestPage.path
       }

@@ -22,14 +22,14 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{DeclarationData
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
-  def givenAGoodsEntryIsStarted(): Unit = givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+  def givenAGoodsEntryIsStarted(): Unit = givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
 
   def givenASecondGoodsEntryIsStarted(): Unit =
-    givenADeclarationJourney(declarationJourneyWithOneCompleteAndOneStartedGoodsEntry)
+    givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
 
-  def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+  def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
 
-  def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+  def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
 
   def extractFormDataFrom(declarationJourney: DeclarationJourney, index: Int): Option[F] =
     extractFormDataFrom(declarationJourney.goodsEntries.entries(index -1))

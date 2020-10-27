@@ -48,7 +48,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad(1)(getRequest)
 
@@ -66,7 +66,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /review-goods" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "test invoice number"))
 
@@ -82,7 +82,7 @@ class InvoiceNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
 
         val result = controller.onSubmit(1)(postRequest)
 

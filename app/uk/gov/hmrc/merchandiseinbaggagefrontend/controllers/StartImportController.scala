@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId, DeclarationType}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartImportView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -41,7 +41,7 @@ class StartImportController @Inject()(override val controllerComponents: Message
       Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
 
     def newDeclarationJourney(sessionId: SessionId) = {
-      val declarationJourney = DeclarationJourney(sessionId = sessionId)
+      val declarationJourney = DeclarationJourney(sessionId = sessionId, DeclarationType.Import)
 
       repo.insert(declarationJourney).map { _ =>
         next(sessionId)

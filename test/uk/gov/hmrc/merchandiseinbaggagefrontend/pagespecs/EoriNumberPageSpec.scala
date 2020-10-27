@@ -30,10 +30,10 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     declarationJourney.maybeEori
 
   private def givenAnAgentJourney(): Unit =
-    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(Yes)))
+    givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(Yes)))
 
   private def givenANonAgentJourney(): Unit =
-    givenADeclarationJourney(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)))
+    givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(No)))
 
   "the eori number page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)

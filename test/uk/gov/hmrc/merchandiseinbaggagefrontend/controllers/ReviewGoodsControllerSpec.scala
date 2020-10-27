@@ -50,7 +50,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /invalid-request" when {
       "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(request)
 
@@ -61,7 +61,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started with and goods have been entered" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
         val result = controller.onPageLoad()(request)
 
@@ -80,7 +80,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /tax-calculation" when {
       "a declaration is started and No is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
@@ -92,7 +92,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /search-goods" when {
       "a declaration is started and Yes is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
@@ -104,7 +104,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
         val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)

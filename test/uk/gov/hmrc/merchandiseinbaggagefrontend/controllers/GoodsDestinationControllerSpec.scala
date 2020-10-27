@@ -50,7 +50,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -61,7 +61,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.values.head)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.values.head)))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -79,7 +79,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /value-weight-of-goods" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", NorthernIreland.toString))
 
@@ -93,7 +93,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

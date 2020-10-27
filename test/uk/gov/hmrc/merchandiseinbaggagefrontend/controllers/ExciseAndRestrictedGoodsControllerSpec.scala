@@ -50,7 +50,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(request)
 
@@ -61,7 +61,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
 
@@ -79,7 +79,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
     "Redirect to /goods-destination" when {
       "a declaration is started and No is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
@@ -87,14 +87,14 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsDestinationController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeExciseOrRestrictedGoods mustBe None
+        startedImportJourney.maybeExciseOrRestrictedGoods mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeExciseOrRestrictedGoods mustBe Some(No)
       }
     }
 
     "Redirect to /cannot-use-service" when {
       "a declaration is started and Yes is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
@@ -106,7 +106,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

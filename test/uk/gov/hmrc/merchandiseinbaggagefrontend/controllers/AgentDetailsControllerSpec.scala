@@ -46,7 +46,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -57,7 +57,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeCustomsAgentName = Some("test agent")))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeCustomsAgentName = Some("test agent")))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -75,7 +75,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /enter-agent-address" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "test agent"))
 
@@ -84,7 +84,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.EnterAgentAddressController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeCustomsAgentName mustBe None
+        startedImportJourney.maybeCustomsAgentName mustBe None
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue
@@ -95,7 +95,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

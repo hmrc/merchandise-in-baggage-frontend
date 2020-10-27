@@ -74,7 +74,7 @@ class StartImportControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /excise-and-restricted-goods" when {
       "a session is supplied and a declaration journey is associated with it" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(requestWithSessionId)
 
