@@ -21,6 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, PaymentCalculation, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.ConversionRatePeriod
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,5 +53,11 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
         PaymentCalculation(good, result)
       }
     }.map(PaymentCalculations)
+
+  def getConversionRates(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[Seq[ConversionRatePeriod]] = {
+    val codes = declarationGoods.goods.map(_.purchaseDetails.currency.currencyCode).distinct.mkString("&cc=")
+
+    connector.getConversionRate(codes)
+  }
 
 }

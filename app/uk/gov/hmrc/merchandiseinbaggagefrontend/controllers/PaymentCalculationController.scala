@@ -34,9 +34,10 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
-      calculationService.paymentCalculation(goods).map { paymentCalculations =>
-        Ok(view(paymentCalculations, routes.CustomsAgentController.onPageLoad()))
-      }
+      for {
+        paymentCalculations <- calculationService.paymentCalculation(goods)
+        rates <- calculationService.getConversionRates(goods)
+      } yield Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad()))
     }
   }
 }
