@@ -16,15 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestination
-
-class GoodsDestinationPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends RadioButtonPage[GoodsDestination](baseUrl) {
-
-  override val path: String = GoodsDestinationPage.path
-}
-
 object GoodsDestinationPage {
   val path = "/merchandise-in-baggage/goods-destination"
+  val title = "Where in the UK are the goods going?"
 }

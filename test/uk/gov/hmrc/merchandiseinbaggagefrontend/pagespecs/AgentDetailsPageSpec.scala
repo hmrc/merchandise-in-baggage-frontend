@@ -18,18 +18,18 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage._
 
 class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentDetailsPage] {
   override lazy val page: AgentDetailsPage = agentDetailsPage
-  private val title = "Enter the business name of the customs agent"
 
   "the page" should {
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), title)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
 
     "allow the user to navigate to the /enter-agent-address" in {
-      val redirectedPath = submitAndEnsurePersistence(givenAnImportJourneyIsStarted(), "test agent")
+      val redirectedPath = submitAndEnsurePersistence(path, givenAnImportJourneyIsStarted(), "test agent")
 
       val successfulRedirectDependingOnWhetherAddressLookupIsAvailable =
         redirectedPath == "/merchandise-in-baggage/enter-agent-address" || redirectedPath.startsWith("/lookup-address")

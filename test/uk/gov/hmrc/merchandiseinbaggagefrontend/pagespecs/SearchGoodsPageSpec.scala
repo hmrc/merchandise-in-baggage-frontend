@@ -16,21 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage.{path, title}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
 
-class SearchGoodsPageSpec extends DeclarationDataCapturePageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
+class SearchGoodsPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
   override def page: SearchGoodsPage = searchGoodsPage
 
-  private val expectedTitle = "What type of goods are you bringing into the UK?"
-
   "the search goods page" should {
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithSimpleRouting(givenAnImportJourneyIsStarted(), Seq(CategoryQuantityOfGoods("test good", "123")), GoodsVatRatePage.path())
+    behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path))
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[CategoryQuantityOfGoods] =
-    declarationJourney.goodsEntries.entries.head.maybeCategoryQuantityOfGoods
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[CategoryQuantityOfGoods] = goodsEntry.maybeCategoryQuantityOfGoods
 }

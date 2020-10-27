@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TestOnlyDeclarationJourneyPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{StartImportPage, TestOnlyDeclarationJourneyPage}
 
 class TestOnlyDeclarationJourneyPageSpec extends StartPageSpec[TestOnlyDeclarationJourneyPage] {
-  override def expectedTitle: String = "Create a test declaration journey"
+  override def page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
 
-  override lazy val page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
+  "the test-only Declaration page " should {
+    behave like aStartImportPage(TestOnlyDeclarationJourneyPage.path, TestOnlyDeclarationJourneyPage.title, StartImportPage.path)
+  }
 }

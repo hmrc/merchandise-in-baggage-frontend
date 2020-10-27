@@ -19,26 +19,25 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, SearchGoodsPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ValueWeightOfGoodsPage.{greatBritainTitle, northernIrelandTitle, path}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, RadioButtonPage, SearchGoodsPage}
 
-class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, ValueWeightOfGoodsPage] {
-  override lazy val page: ValueWeightOfGoodsPage = valueWeightOfGoodsPage
-
-  private val northernIrelandTitle = "Is the total value of the goods over £873 or 1000 kilograms (kg)?"
-  private val greatBritainTitle = "Is the total value of the goods over £1500 or 1000 kilograms (kg)?"
+class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
+  override lazy val page: RadioButtonPage[YesNo] = valueWeightOfGoodsPage
 
   private def givenANorthernIrelandJourney(): Unit =
     givenADeclarationJourney(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+
   private def givenAGreatBritainJourney(): Unit =
     givenADeclarationJourney(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
 
   "the value and weight of goods page" should {
-    behave like aPageWhichRenders(givenANorthernIrelandJourney(), northernIrelandTitle)
-    behave like aPageWhichRenders(givenAGreatBritainJourney(), greatBritainTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), No, SearchGoodsPage.path())
-    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), Yes, CannotUseServicePage.path)
+    behave like aPageWhichRenders(path, givenANorthernIrelandJourney(), northernIrelandTitle)
+    behave like aPageWhichRenders(path, givenAGreatBritainJourney(), greatBritainTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), No, SearchGoodsPage.path())
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), Yes, CannotUseServicePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =

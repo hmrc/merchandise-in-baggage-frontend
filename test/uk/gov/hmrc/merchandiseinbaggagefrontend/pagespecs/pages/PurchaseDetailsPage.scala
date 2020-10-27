@@ -22,12 +22,9 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PurchaseDetailsInput
 
-class PurchaseDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[PurchaseDetailsInput](baseUrl) {
+class PurchaseDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[PurchaseDetailsInput] {
 
   import WebBrowser._
-
-  override val path = PurchaseDetailsPage.path()
 
   def priceInput: Element = find(NameQuery("price")).get
 
@@ -50,5 +47,7 @@ class PurchaseDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 }
 
 object PurchaseDetailsPage {
-  def path(idx: Int = 1): String = s"/merchandise-in-baggage/purchase-details/$idx"
+  def path(idx: Int): String = s"/merchandise-in-baggage/purchase-details/$idx"
+
+  val title = "How much did you pay for the test good?"
 }

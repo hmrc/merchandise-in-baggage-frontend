@@ -20,15 +20,11 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage.expectedSectionHeaders
 
-class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
+class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   import WebBrowser._
-
-  override val path: String = CheckYourAnswersPage.path
-
-  private val expectedSectionHeaders =
-    Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
 
   def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
     findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
@@ -110,4 +106,8 @@ class CheckYourAnswersPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) exte
 
 object CheckYourAnswersPage {
   val path = "/merchandise-in-baggage/check-your-answers"
+  val title = "Check your answers before making your declaration"
+
+  val expectedSectionHeaders =
+    Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
 }

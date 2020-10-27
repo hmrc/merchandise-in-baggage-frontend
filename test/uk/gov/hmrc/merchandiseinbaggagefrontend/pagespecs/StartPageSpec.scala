@@ -16,21 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.StartPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PageWithCTA
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait StartPageSpec[P <: StartPage] extends BasePageSpec[P]{
-  def expectedTitle: String
+trait StartPageSpec[P <: PageWithCTA] extends BasePageSpec[P] {
+  def aStartImportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
+    behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
 
-  s"${page.path}" should {
-    behave like aPageWhichRenders(expectedTitle = expectedTitle)
-
-    s"allow the user to set up a declaration and redirect to ${page.nextPagePath}" in {
+    s"allow the user to set up a declaration and redirect to $expectedNextPage" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0
 
-      page.open()
-      page.clickOnCTA() mustBe page.nextPagePath
+      open(path)
+      page.clickOnCTA() mustBe expectedNextPage
 
       declarationJourneyRepository.findAll().futureValue.size mustBe 1
     }
