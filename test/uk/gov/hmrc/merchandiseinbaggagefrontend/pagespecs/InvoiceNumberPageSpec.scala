@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsEntry, PurchaseDetailsInput}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPage, ReviewGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage._
 
 class InvoiceNumberPageSpec extends GoodsEntryPageSpec[String, InvoiceNumberPage] with ScalaFutures {
