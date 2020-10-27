@@ -37,10 +37,10 @@ object PayApiRequest {
 }
 
 trait PayApiRequestBuilder extends MibReferenceGenerator {
-  def buildRequest(declarationGoods: DeclarationGoods, taxCalculation: DeclarationGoods => Future[PaymentCalculations])
+  def buildRequest(declarationGoods: DeclarationGoods, paymentCalculations: DeclarationGoods => Future[PaymentCalculations])
                   (implicit ec: ExecutionContext): Future[PayApiRequest] =
     for {
-      taxDue    <- taxCalculation(declarationGoods)
+      taxDue    <- paymentCalculations(declarationGoods)
       reference <- Future.fromTry(mibReference)
     } yield PayApiRequest(reference, taxDue.totalTaxDue, taxDue.totalDutyDue, taxDue.totalVatDue)
 }

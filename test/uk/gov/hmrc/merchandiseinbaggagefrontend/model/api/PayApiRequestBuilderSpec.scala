@@ -30,7 +30,7 @@ class PayApiRequestBuilderSpec extends BaseSpec with CoreTestData with ScalaFutu
     import aCalculationResult._
     val stubbedReference = super.mibReference
     override def mibReference: Try[MibReference] = stubbedReference
-    val stubbedService: DeclarationGoods => Future[PaymentCalculations] = _ => Future.successful(aTaxCalculations)
+    val stubbedService: DeclarationGoods => Future[PaymentCalculations] = _ => Future.successful(aPaymentCalculations)
     val totalDue: Long = duty.value + vat.value
 
     val expected: PayApiRequest = PayApiRequest(stubbedReference.get, AmountInPence(totalDue), duty, vat)

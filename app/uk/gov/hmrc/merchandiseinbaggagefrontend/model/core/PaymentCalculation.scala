@@ -52,7 +52,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
         TableRow(
           Text(
             messages(
-              "taxCalculation.table.col3.row",
+              "paymentCalculation.table.col3.row",
               tc.calculationResult.vat.formattedInPounds,
               tc.goods.goodsVatRate.value
             )
@@ -64,7 +64,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       )
     } :+ Seq(
       TableRow(
-        content = Text(messages("taxCalculation.table.total")),
+        content = Text(messages("paymentCalculation.table.total")),
         classes = "govuk-table__header",
         colspan = Some(3),
         attributes = Map("style" -> "border: none")
@@ -80,16 +80,16 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       rows = tableRows,
       head = Some(Seq(
         HeadCell(
-          Text(messages("taxCalculation.table.col1.head"))
+          Text(messages("paymentCalculation.table.col1.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col2.head"))
+          Text(messages("paymentCalculation.table.col2.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col3.head"))
+          Text(messages("paymentCalculation.table.col3.head"))
         ),
         HeadCell(
-          Text(messages("taxCalculation.table.col4.head"))
+          Text(messages("paymentCalculation.table.col4.head"))
         )
       ))
     )

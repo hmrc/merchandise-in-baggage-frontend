@@ -44,7 +44,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
   val stubbedCalculation = new CalculationService(conversionConnector) {
     override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
-      Future.successful(aTaxCalculations)
+      Future.successful(aPaymentCalculations)
   }
 
   val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, stubbedCalculation, testConnector, page)
