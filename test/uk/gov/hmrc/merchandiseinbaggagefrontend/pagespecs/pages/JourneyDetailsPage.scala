@@ -23,12 +23,9 @@ import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.JourneyDetailsForm._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.JourneyDetailsEntry
 
-class JourneyDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[JourneyDetailsEntry](baseUrl) {
+class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[JourneyDetailsEntry] {
 
   import WebBrowser._
-
-  override val path = "/merchandise-in-baggage/journey-details"
 
   def selectPlaceOfArrival: Select = new Select(find(IdQuery(placeOfArrival)).get.underlying)
 
@@ -70,4 +67,10 @@ class JourneyDetailsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
     readPath() mustBe path
   }
+}
+
+object JourneyDetailsPage {
+  val path = "/merchandise-in-baggage/journey-details"
+
+  val title = "Journey details"
 }

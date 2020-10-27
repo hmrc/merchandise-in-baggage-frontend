@@ -18,19 +18,21 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsCountryPage.title
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService.countries
 
 class SearchGoodsCountryPageSpec extends DeclarationDataCapturePageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = searchGoodsCountryPage
 
-  private val expectedTitle = "In what country did you buy the test good?"
-
   "the search goods country page" should {
-    behave like aPageWhichRenders(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithSimpleRouting(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), CountriesService.countries.take(3), PurchaseDetailsPage.path())
+    val path = SearchGoodsCountryPage.path()
+    def givenAGoodsEntryIsStarted(): Unit = givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+
+    behave like aPageWhichRenders(path, givenAGoodsEntryIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aDataCapturePageWithSimpleRouting(path, givenAGoodsEntryIsStarted(), countries.take(3), PurchaseDetailsPage.path())
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[String] =

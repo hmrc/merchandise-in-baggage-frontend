@@ -19,19 +19,18 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, JourneyDetailsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.JourneyDetailsPage._
 
 class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
   override lazy val page: JourneyDetailsPage = journeyDetailsPage
 
-  private val expectedTitle = "Journey details"
-
   "the journey details page" should {
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
-    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
-    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[JourneyDetailsEntry] =

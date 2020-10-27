@@ -19,16 +19,16 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage._
 
 class InvoiceNumberPageSpec extends DeclarationDataCapturePageSpec[String, InvoiceNumberPage] with ScalaFutures {
   override lazy val page: InvoiceNumberPage = invoiceNumberPage
 
-  private val expectedTitle = "What is the invoice number for the test good?"
-
   "the invoice number page" should {
-    behave like aPageWhichRenders(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
+    val path = InvoiceNumberPage.path()
+    behave like aPageWhichRenders(path, givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry),title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
     //behave like aDataCapturePageWithSimpleRouting(givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry), Seq("123456789"), ReviewGoodsPage.path())
   }
 

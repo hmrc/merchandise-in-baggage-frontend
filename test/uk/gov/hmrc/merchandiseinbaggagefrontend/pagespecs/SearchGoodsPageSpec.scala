@@ -17,18 +17,25 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, DeclarationJourney}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, ReviewGoodsPage, SearchGoodsPage}
 
 class SearchGoodsPageSpec extends DeclarationDataCapturePageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
   override def page: SearchGoodsPage = searchGoodsPage
 
-  private val expectedTitle = "What type of goods are you bringing into the UK?"
-
   "the search goods page" should {
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aDataCapturePageWithSimpleRouting(givenAnImportJourneyIsStarted(), Seq(CategoryQuantityOfGoods("test good", "123")), GoodsVatRatePage.path())
+    val path = SearchGoodsPage.path()
+    val categoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
+
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+
+    behave like aDataCapturePageWithConditionalRouting(
+      path, givenAnImportJourneyIsStarted(), categoryQuantityOfGoods, GoodsVatRatePage.path())
+
+    behave like aDataCapturePageWithConditionalRouting(
+      path, givenACompleteDeclarationJourney(), categoryQuantityOfGoods, ReviewGoodsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[CategoryQuantityOfGoods] =

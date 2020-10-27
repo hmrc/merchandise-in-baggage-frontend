@@ -17,40 +17,37 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 
-class ReviewGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
 
   import WebBrowser._
 
-  override val path: String = ReviewGoodsPage.path
-
-  def mustRenderDetail(journey: DeclarationJourney) = patiently {
+  def mustRenderDetail(journey: DeclarationJourney): Assertion = patiently {
     val goodsSummaries = findAll(ClassNameQuery("govuk-summary-list"))
     goodsSummaries.size mustBe journey.goodsEntries.entries.size
 
     //TODO figure out a way to actually assert the content
   }
 
-  def fillOutForm(input: YesNo) = {
-    click on find(IdQuery(input.entryName)).get
-  }
+  def fillOutForm(input: YesNo): Unit = click on find(IdQuery(input.entryName)).get
 
-  def mustRedirectToSearchGoods(journey: DeclarationJourney) = {
+  def mustRedirectToSearchGoods(journey: DeclarationJourney): Assertion = {
     click on find(NameQuery("continue")).get
     readPath() mustBe SearchGoodsPage.path(journey.goodsEntries.entries.size + 1)
   }
 
-  def mustRedirectToTaxCalculation() = {
+  def mustRedirectToTaxCalculation(): Assertion = {
     click on find(NameQuery("continue")).get
     readPath() mustBe "/merchandise-in-baggage/tax-calculation"
   }
 
-  def mustRedirectToInvalidRequest() =
-    readPath() mustBe "/merchandise-in-baggage/invalid-request"
+  def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"
 }
 
 object ReviewGoodsPage {
   val path: String = "/merchandise-in-baggage/review-goods"
+  val title = "Review your goods"
 }

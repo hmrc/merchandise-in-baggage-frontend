@@ -22,16 +22,19 @@ import play.api.libs.json.Json.{prettyPrint, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.routes
 
-class TestOnlyDeclarationJourneyPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends StartPage(baseUrl) {
+class TestOnlyDeclarationJourneyPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   import WebBrowser._
 
-  override val path: String = routes.TestOnlyController.displayDeclarationJourneyPage().url
   override val ctaName: String = "submitButton"
-  override val nextPagePath: String = StartImportPage.path
 
   def fillOutForm(declarationJourney: DeclarationJourney): Unit = {
     click on find(IdQuery("declarationJourney")).get
     enter(prettyPrint(toJson(declarationJourney)))
   }
+}
+
+object TestOnlyDeclarationJourneyPage {
+  val path: String = routes.TestOnlyController.displayDeclarationJourneyPage().url
+  val title: String = "Create a test declaration journey"
 }

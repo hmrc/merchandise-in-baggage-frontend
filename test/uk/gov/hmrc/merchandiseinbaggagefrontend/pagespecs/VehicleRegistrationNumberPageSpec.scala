@@ -17,20 +17,20 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.VehicleRegistrationNumberPage.{path, title}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage, VehicleRegistrationNumberPage}
 
 class VehicleRegistrationNumberPageSpec extends DeclarationDataCapturePageSpec[String, VehicleRegistrationNumberPage] {
   override lazy val page: VehicleRegistrationNumberPage = vehicleRegistrationNumberPage
 
-  private val expectedTitle = "What is the registration number of the vehicle?"
   private val registrationNumber = "reg 123"
 
   "the page" should {
-    behave like aPageWhichRequiresADeclarationJourney()
-    behave like aPageWhichRenders(givenAnImportJourneyIsStarted(), expectedTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers()
-    behave like aDataCapturePageWithConditionalRouting(givenACompleteDeclarationJourney(), registrationNumber, CheckYourAnswersPage.path)
-    behave like aDataCapturePageWithConditionalRouting(givenAnImportJourneyIsStarted(), registrationNumber, InvalidRequestPage.path)
+    behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), registrationNumber, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), registrationNumber, InvalidRequestPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[String] =

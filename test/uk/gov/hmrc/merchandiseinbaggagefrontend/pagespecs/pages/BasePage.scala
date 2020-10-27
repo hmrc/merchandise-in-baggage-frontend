@@ -25,28 +25,21 @@ import org.scalatestplus.selenium.WebBrowser
 
 final case class BaseUrl(value: String)
 
-abstract class BasePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
+abstract class BasePage(implicit webDriver: WebDriver)
   extends Matchers with Eventually with IntegrationPatience with AppendedClues {
 
   import WebBrowser._
 
   override implicit val patienceConfig: PatienceConfig = PatienceConfig(
-    timeout  = scaled(Span(2, Seconds)),
+    timeout = scaled(Span(2, Seconds)),
     interval = scaled(Span(150, Millis))
   )
 
-  val path: String
-
-  def mustRenderBasicContent(expectedTitle: String): Unit = patiently{
+  def mustRenderBasicContent(path: String, expectedTitle: String): Unit = patiently {
     val expectedHeadingContent: String = expectedTitle
     readPath() mustBe path
     headerText() mustBe expectedHeadingContent
     pageTitle mustBe expectedTitle
-  }
-
-  def open(): String = {
-    WebBrowser.goTo(s"${baseUrl.value}$path")
-    readPath()
   }
 
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText

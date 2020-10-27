@@ -21,12 +21,9 @@ import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class SearchGoodsCountryPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends DeclarationDataCapturePage[String](baseUrl) {
+class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
 
   import WebBrowser._
-
-  override val path = SearchGoodsCountryPage.path()
 
   def selectCountry: Select = new Select(find(IdQuery("country-auto-complete")).get.underlying)
 
@@ -43,4 +40,6 @@ class SearchGoodsCountryPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
 
 object SearchGoodsCountryPage {
   def path(idx: Int = 1): String = s"/merchandise-in-baggage/search-goods-country/$idx"
+
+  val title = "In what country did you buy the test good?"
 }

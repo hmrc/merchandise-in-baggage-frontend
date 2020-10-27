@@ -20,8 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 
-class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String](baseUrl) {
-  override val path = "/merchandise-in-baggage/vehicle-registration-number"
+class VehicleRegistrationNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
 
   import WebBrowser._
 
@@ -34,4 +33,9 @@ class VehicleRegistrationNumberPage(baseUrl: BaseUrl)(implicit webDriver: WebDri
 
   override def previouslyEnteredValuesAreDisplayed(registrationNumber: String): Assertion =
     input.attribute("value") mustBe Some(registrationNumber)
+}
+
+object VehicleRegistrationNumberPage {
+  val path = "/merchandise-in-baggage/vehicle-registration-number"
+  val title = "What is the registration number of the vehicle?"
 }

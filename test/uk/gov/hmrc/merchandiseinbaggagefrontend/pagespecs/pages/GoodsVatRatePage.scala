@@ -16,15 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRate
-
-class GoodsVatRatePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver)
-  extends RadioButtonPage[GoodsVatRate](baseUrl) {
-
-  override val path = GoodsVatRatePage.path()
-}
-
 object GoodsVatRatePage {
   def path(idx: Int = 1) = s"/merchandise-in-baggage/goods-vat-rate/$idx"
+  val title = "Check which VAT rate applies to the test good"
 }

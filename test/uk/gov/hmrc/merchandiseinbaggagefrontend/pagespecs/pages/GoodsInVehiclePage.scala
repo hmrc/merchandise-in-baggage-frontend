@@ -16,12 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-
-class GoodsInVehiclePage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends PageWithCTA(baseUrl) {
-  override val path: String = GoodsInVehiclePage.path
-}
-
 object GoodsInVehiclePage {
   val path: String = "/merchandise-in-baggage/goods-in-vehicle"
 }

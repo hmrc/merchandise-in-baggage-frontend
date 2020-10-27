@@ -18,21 +18,20 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvalidRequestPage, ReviewGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = reviewGoodsPage
 
-  private val expectedTitle = "Review your goods"
-
   "the review goods page" should {
-    behave like aPageWhichRequiresADeclarationJourney()
+    behave like aPageWhichRequiresADeclarationJourney(path)
 
     "render correctly" when {
       "the goods entries are all complete" in {
         givenACompleteDeclarationJourney()
 
-        reviewGoodsPage.open()
-        reviewGoodsPage.mustRenderBasicContent(expectedTitle)
+        open(path)
+        reviewGoodsPage.mustRenderBasicContent(path, title)
         reviewGoodsPage.mustRenderDetail(completedDeclarationJourney)
       }
     }
@@ -41,7 +40,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       "there are incomplete goods entries" in {
         givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
 
-        reviewGoodsPage.open() mustBe InvalidRequestPage.path
+        open(path) mustBe InvalidRequestPage.path
       }
     }
 
@@ -49,7 +48,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       "Yes is selected" in {
         givenACompleteDeclarationJourney()
 
-        reviewGoodsPage.open()
+        open(path)
         reviewGoodsPage.fillOutForm(Yes)
         reviewGoodsPage.mustRedirectToSearchGoods(completedDeclarationJourney)
       }
@@ -59,7 +58,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       "No is selected" in {
         givenACompleteDeclarationJourney()
 
-        reviewGoodsPage.open()
+        open(path)
         reviewGoodsPage.fillOutForm(No)
         reviewGoodsPage.mustRedirectToTaxCalculation()
       }

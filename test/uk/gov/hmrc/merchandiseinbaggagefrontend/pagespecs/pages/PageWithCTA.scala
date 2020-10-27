@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatestplus.selenium.WebBrowser
 
-abstract class PageWithCTA(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends BasePage(baseUrl) {
+abstract class PageWithCTA(implicit webDriver: WebDriver) extends BasePage() {
 
   import WebBrowser._
 
