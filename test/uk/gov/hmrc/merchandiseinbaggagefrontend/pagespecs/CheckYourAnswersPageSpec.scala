@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
@@ -36,14 +36,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
     webDriver.manage().deleteAllCookies()
   }
 
-  def createDeclarationAndCalculateTaxDue(declarationJourney: DeclarationJourney): Future[TaxCalculations] = {
+  def createDeclarationAndCalculateTaxDue(declarationJourney: DeclarationJourney): Future[PaymentCalculations] = {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     givenCurrencyIsFound("EUR", wireMockServer)
 
     givenADeclarationJourney(declarationJourney)
 
-    calculationService.taxCalculation(declarationJourney.declarationIfRequiredAndComplete.get.declarationGoods)
+    calculationService.paymentCalculation(declarationJourney.declarationIfRequiredAndComplete.get.declarationGoods)
   }
 
   "the page" should {

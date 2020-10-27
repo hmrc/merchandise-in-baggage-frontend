@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.TaxCalculations
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.PaymentCalculations
 
 @this(
 layout: Layout,
@@ -26,23 +26,23 @@ table: GovukTable,
 button: components.button
 )
 
-@(taxCalculations: TaxCalculations, next: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(paymentCalculations: PaymentCalculations, next: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("taxCalculation.title", taxCalculations.totalTaxDue.formattedInPounds))) {
- @h1(messages("taxCalculation.heading", taxCalculations.totalTaxDue.formattedInPounds))
+@layout(pageTitle = Some(messages("paymentCalculation.title", paymentCalculations.totalTaxDue.formattedInPounds))) {
+ @h1(messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds))
 
- @table(taxCalculations.toTable)
+ @table(paymentCalculations.toTable)
 
- @h3(messages("taxCalculation.h3"))
+ @h3(messages("paymentCalculation.h3"))
 
- @p(Html(messages("taxCalculation.p1")))
+ @p(Html(messages("paymentCalculation.p1")))
 
  <p class="govuk-body">
-  @messages("taxCalculation.p2.1")
-  <a href="@messages("taxCalculation.p2.a.href")" class="govuk-link" target="_blank">
-   @messages("taxCalculation.p2.a.text")
+  @messages("paymentCalculation.p2.1")
+  <a href="@messages("paymentCalculation.p2.a.href")" class="govuk-link" target="_blank">
+   @messages("paymentCalculation.p2.a.text")
   </a>
-  @messages("taxCalculation.p2.2")
+  @messages("paymentCalculation.p2.2")
  </p>
 
  @button("site.continue", href = Some(next.url))

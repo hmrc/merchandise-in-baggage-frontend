@@ -58,7 +58,7 @@ POST       /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRemovedController.onPageLoad
 
 # TaxCalculation
-GET        /tax-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TaxCalculationController.onPageLoad
+GET        /payment-calculation              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentCalculationController.onPageLoad
 
 # TraderDetalis
 GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onPageLoad

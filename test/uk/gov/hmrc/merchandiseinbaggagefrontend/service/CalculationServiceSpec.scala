@@ -42,11 +42,11 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
         "123456"
       )
 
-      val result: TaxCalculations = service.taxCalculation(DeclarationGoods(good)).futureValue
+      val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue
 
-      val expected: TaxCalculations = TaxCalculations(
+      val expected: PaymentCalculations = PaymentCalculations(
         Seq(
-          TaxCalculation(
+          PaymentCalculation(
             good,
             CalculationResult(
               AmountInPence(7835),

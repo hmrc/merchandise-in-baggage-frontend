@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.MibReferenceGenerator
 import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
@@ -37,7 +37,7 @@ object PayApiRequest {
 }
 
 trait PayApiRequestBuilder extends MibReferenceGenerator {
-  def buildRequest(declarationGoods: DeclarationGoods, taxCalculation: DeclarationGoods => Future[TaxCalculations])
+  def buildRequest(declarationGoods: DeclarationGoods, taxCalculation: DeclarationGoods => Future[PaymentCalculations])
                   (implicit ec: ExecutionContext): Future[PayApiRequest] =
     for {
       taxDue    <- taxCalculation(declarationGoods)

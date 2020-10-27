@@ -42,9 +42,9 @@ class ReviewGoodsPage(baseUrl: BaseUrl)(implicit webDriver: WebDriver) extends B
     readPath() mustBe SearchGoodsPage.path(journey.goodsEntries.entries.size + 1)
   }
 
-  def mustRedirectToTaxCalculation() = {
+  def mustRedirectToPaymentCalculation() = {
     click on find(NameQuery("continue")).get
-    readPath() mustBe "/merchandise-in-baggage/tax-calculation"
+    readPath() mustBe "/merchandise-in-baggage/payment-calculation"
   }
 
   def mustRedirectToInvalidRequest() =

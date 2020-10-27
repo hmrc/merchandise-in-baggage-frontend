@@ -21,12 +21,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub._
 
-class TaxCalculationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
+class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
 
-  private lazy val controller = injector.instanceOf[TaxCalculationController]
+  private lazy val controller = injector.instanceOf[PaymentCalculationController]
 
   "onPageLoad" must {
-    val url = routes.TaxCalculationController.onPageLoad().url
+    val url = routes.PaymentCalculationController.onPageLoad().url
     val request = buildGet(url, sessionId)
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)

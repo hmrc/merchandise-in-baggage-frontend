@@ -20,14 +20,14 @@ import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, TaxCalculation, TaxCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, PaymentCalculation, PaymentCalculations}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CalculationService @Inject()(connector: CurrencyConversionConnector)(implicit ec: ExecutionContext) {
 
-  def taxCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[TaxCalculations] =
+  def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
     Future.traverse(declarationGoods.goods) { good =>
       val code = good.purchaseDetails.currency.currencyCode
       connector.getConversionRate(code).map { rates =>
@@ -49,8 +49,8 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
           AmountInPence((vat * 100).toLong)
         )
 
-        TaxCalculation(good, result)
+        PaymentCalculation(good, result)
       }
-    }.map(TaxCalculations)
+    }.map(PaymentCalculations)
 
 }

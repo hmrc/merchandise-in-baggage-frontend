@@ -44,18 +44,6 @@ date.year = Year
 payment.button = Pay now
 next.button = Next
 
-reviewGoods.title = Review your goods
-removeGoods.title = Are you sure you want to remove the x?
-goodsRemoved.title = You removed your goods
-taxCalculation.title = Tax due on these goods £x
-agentDetails.title = Enter the business name of the customs agent
-enterAgentAddress.title = Find your address
-selectAgentAddress.title = Select your address
-enterEoriNumber.title = What is your EORI number?
-goodsInVehicle.title = Are you travelling by vehicle?
-vehicleSize.title = Are you bringing the goods in a small vehicle?
-vehicleRegistrationNumber.title = Enter the vehicle registration number
-
 
 # Invalid request page
 invalidRequest.title = Invalid request
@@ -199,21 +187,21 @@ goodsRemoved.heading = You removed your goods
 goodsRemoved.p1 = You have no goods to declare.
 goodsRemoved.link = Add other goods
 
-# TaxCalculation
-taxCalculation.title = Tax due on these goods {0}
-taxCalculation.heading = Tax due on these goods {0}
-taxCalculation.table.col1.head = Type of goods
-taxCalculation.table.col2.head = Customs Duty
-taxCalculation.table.col3.head = VAT
-taxCalculation.table.col4.head = Total
-taxCalculation.table.col3.row = {0} at {1}%
-taxCalculation.table.total = Tax due
-taxCalculation.h3 = How we calculate your tax
-taxCalculation.p1 = Custom Duty on goods is charged at a flat rate of 3.3%. VAT is then charged on top of that at the appropriate rate.
-taxCalculation.p2.1 = We use
-taxCalculation.p2.a.text = HMRC’s monthly exchange rates (opens in new tab).
-taxCalculation.p2.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-taxCalculation.p2.2 = We use the rates of the month in which you make your declaration.
+# PaymentCalculation
+paymentCalculation.title = Tax due on these goods {0}
+paymentCalculation.heading = Tax due on these goods {0}
+paymentCalculation.table.col1.head = Type of goods
+paymentCalculation.table.col2.head = Customs Duty
+paymentCalculation.table.col3.head = VAT
+paymentCalculation.table.col4.head = Total
+paymentCalculation.table.col3.row = {0} at {1}%
+paymentCalculation.table.total = Tax due
+paymentCalculation.h3 = How we calculate your tax
+paymentCalculation.p1 = Custom Duty on goods is charged at a flat rate of 3.3%. VAT is then charged on top of that at the appropriate rate.
+paymentCalculation.p2.1 = We use
+paymentCalculation.p2.a.text = HMRC’s monthly exchange rates (opens in new tab).
+paymentCalculation.p2.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
+paymentCalculation.p2.2 = We use the rates of the month in which you make your declaration.
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
