@@ -21,7 +21,6 @@ import java.time.LocalDate
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, get, okJson, urlPathEqualTo}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub.stubbedResponse
 
 object CurrencyConversionStub {
   val currencyConversionResponse: String =
