@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvalidRequestPage, ReviewGoodsPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvalidRequestPage, PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, SearchGoodsPage}
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = reviewGoodsPage
@@ -27,40 +27,106 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
     behave like aPageWhichRequiresADeclarationJourney(path)
 
     "render correctly" when {
-      "the goods entries are all complete" in {
-        givenACompleteDeclarationJourney()
-
+      "a single goods entry is complete" in {
+        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
         open(path)
+
         reviewGoodsPage.mustRenderBasicContent(path, title)
-        reviewGoodsPage.mustRenderDetail(completedDeclarationJourney)
+
+        reviewGoodsPage.goodsSummariesAsMap mustBe
+          Seq(
+            Map(
+              "Price paid" -> "99.99, Eurozone Euro (EUR)",
+              "Type of goods" -> "wine",
+              "Country" -> "France",
+              "VAT Rate" -> "20%",
+              "Remove" -> "",
+              "Number of items" -> "1",
+              "Invoice number" -> "1234560"))
+      }
+
+      "multiple goods entries are complete" in {
+        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        open(path)
+
+        reviewGoodsPage.mustRenderBasicContent(path, title)
+
+        reviewGoodsPage.goodsSummariesAsMap mustBe
+          Seq(
+            Map(
+              "Price paid" -> "99.99, Eurozone Euro (EUR)",
+              "Type of goods" -> "wine",
+              "Country" -> "France",
+              "VAT Rate" -> "20%",
+              "Remove" -> "",
+              "Number of items" -> "1",
+              "Invoice number" -> "1234560"),
+            Map(
+              "Price paid" -> "199.99, Eurozone Euro (EUR)",
+              "Type of goods" -> "cheese",
+              "Country" -> "France",
+              "VAT Rate" -> "20%",
+              "Remove" -> "",
+              "Number of items" -> "3",
+              "Invoice number" -> "1234560"))
+      }
+    }
+
+    "enable the user to remove goods" when {
+      "there is a single goods entry" in {
+        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+        open(path)
+
+        reviewGoodsPage.remove(0) mustBe RemoveGoodsPage.path(1)
+      }
+
+      "there are multiple goods entries" in {
+        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        open(path)
+
+        reviewGoodsPage.remove(1) mustBe RemoveGoodsPage.path(2)
       }
     }
 
     s"redirect to ${InvalidRequestPage.path}" when {
-      "there are incomplete goods entries" in {
-        givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+      "there are no started goods entries" in {
+        givenADeclarationJourney(startedDeclarationJourney)
+        open(path) mustBe InvalidRequestPage.path
+      }
 
+      "there is no complete goods entries" in {
+        givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+        open(path) mustBe InvalidRequestPage.path
+      }
+
+      "there are incomplete goods entries" in {
+        givenADeclarationJourney(declarationJourneyWithOneCompleteAndOneStartedGoodsEntry)
         open(path) mustBe InvalidRequestPage.path
       }
     }
 
     s"redirect to /search-goods/:idx" when {
-      "Yes is selected" in {
-        givenACompleteDeclarationJourney()
-
+      "the user elects to make a second goods entry" in {
+        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
         open(path)
-        reviewGoodsPage.fillOutForm(Yes)
-        reviewGoodsPage.mustRedirectToSearchGoods(completedDeclarationJourney)
+
+        reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(2)
+      }
+
+      "the user elects to make a third goods entry" in {
+        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        open(path)
+
+        reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(3)
       }
     }
 
     s"redirect to /tax-calculation" when {
-      "No is selected" in {
-        givenACompleteDeclarationJourney()
+      "the user elects not to make another goods entry" in {
+        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
 
         open(path)
-        reviewGoodsPage.fillOutForm(No)
-        reviewGoodsPage.mustRedirectToPaymentCalculation()
+        reviewGoodsPage.completeAndSubmitForm(No) mustBe PaymentCalculationPage.path
       }
     }
   }
