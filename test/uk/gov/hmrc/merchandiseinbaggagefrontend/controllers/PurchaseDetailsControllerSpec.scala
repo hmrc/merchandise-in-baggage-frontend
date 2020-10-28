@@ -47,7 +47,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad(1)(getRequest)
 
@@ -67,7 +67,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "Redirect to /invoice-number" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
 
         val request = postRequest.withFormUrlEncodedBody(("price", "100.0"), ("currency", "ARS"))
 
@@ -89,7 +89,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
         //form.bindFromRequest()(postRequest)
 
         val result = controller.onSubmit(1)(postRequest)

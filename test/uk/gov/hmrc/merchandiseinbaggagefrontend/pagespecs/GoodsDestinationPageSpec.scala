@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination, GoodsDestinations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsDestinationPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{ExciseAndRestrictedGoodsPage, GoodsRouteDestinationPage, RadioButtonPage}
 
 class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDestination, RadioButtonPage[GoodsDestination]] {
   override lazy val page: RadioButtonPage[GoodsDestination] = goodsDestinationPage
@@ -28,9 +29,10 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
 
-    behave like
-      aDataCapturePageWithSimpleRouting(
-        path, givenAnImportJourneyIsStarted(), GoodsDestinations.values, ValueWeightOfGoodsPage.path)
+    behave like aDataCapturePageWithConditionalRouting(
+        path, givenAnImportJourneyIsStarted(), NorthernIreland, GoodsRouteDestinationPage.path)
+    behave like aDataCapturePageWithConditionalRouting(
+      path, givenAnImportJourneyIsStarted(), GreatBritain, ExciseAndRestrictedGoodsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsDestination] =

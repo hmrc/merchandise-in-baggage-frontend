@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsDestinationForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
@@ -45,7 +46,8 @@ class GoodsDestinationController @Inject()(
           Future.successful(BadRequest(view(formWithErrors))),
         value =>
           repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(value))).map {_ =>
-            Redirect(routes.ValueWeightOfGoodsController.onPageLoad())
+            if(value == NorthernIreland) Redirect(routes.GoodsRouteDestinationController.onPageLoad())
+            else Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
           }
       )
   }

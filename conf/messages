@@ -50,36 +50,84 @@ invalidRequest.title = Invalid request
 invalidRequest.heading = Invalid request
 
 
-# Start
-start.title.export = Declaring goods in your baggage you''re taking out of the UK to sell
-start.heading.export = Declaring goods in your baggage you''re taking out of the UK to sell
-start.title.import = Declaring goods in your baggage you''re bringing to the UK to sell
-start.heading.import = Declaring goods in your baggage you''re bringing to the UK to sell
-start.desc.p = Merchandise in baggage are commercial goods (for trade or business use) where:
-start.desc.li1 = a commercial transport operator does not carry them for you
-start.desc.li2 = you’ve travelled to or from the UK carrying goods in your baggage
-start.cannot.p = You cannot use this service if you are carrying:
-start.cannot.li1 = alcohol, tobacco or fuel
-start.cannot.li2.text = restricted goods
-start.cannot.li2.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-start.can.p = Use this service to:
-start.can.li1 = check the customs duty and VAT due on goods you bring into the UK
-start.can.li2 = declare your goods and make a payment online if you are importing goods to the UK
-start.can.li3 = declare goods you are exporting from the UK
-start.before.p = Before you start you will need to know:
-start.before.li1 = an EORI number that starts with GB at least 48 hours before travelling if your business does not have one already
-start.before.li2 = the price of your goods in the currency used
-start.before.li3 = the quantity or weight of your goods
-start.before.li4 = your payment details if paying by card
-start.p1 = You have 5 days to declare your goods before you travel.
-start.related.h4 = Related content
-start.related.li1.text = Bringing goods into the UK
-start.related.li1.href = #
-start.related.li2.text = Restricted and banned items
-start.related.li2.href = #
-start.related.li3.text = Other ways to declare and pay
-start.related.li3.href = #
+# StartImport
+startImport.title = Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles
+startImport.heading = Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles
+startImport.p1 = What you need to do if you’re bringing commercial goods that weigh less than 1,000 kilograms, or have a total value of less than £1,500 (to Great Britain) and less than £873 (to Northern Ireland).
+startImport.p2 = You can use this service to check the duty and tax due on goods you intend to bring with you to the UK (in your luggage or small vehicle). You can then declare and pay what you owe.
+startImport.inset = You must
+startImport.inset.a.text = declare goods you’re taking out of the UK for trade or business use.
+startImport.p3 = All goods you bring into the UK to sell, or for business use, must be declared. There is a different way to
+startImport.p3.a.text = declare goods that are for personal use.
+startImport.p3.a.href = #
+startImport.before = Before you start
+startImport.p4.1 = You need an EORI number to declare goods using this service.
+startImport.p4.a.text = Apply for your EORI number in advance.
+startImport.p4.a.href = https://www.gov.uk/eori
+startImport.p4.2 = It can take up to a week to get one.
+startImport.p5.1 = You can only use this service to declare and pay
+startImport.p5.2 = 5 days
+startImport.p5.3 = before your departure.
+startImport.use = Use this service to declare goods:
+startImport.use.li1 = you are bringing into the UK for trade or business use
+startImport.use.li2 = that have a total value of £1,500 or less (if you're bringing the goods to Great Britain)
+startImport.use.li3 = that have a total value of £873 or less (if you’re bringing the goods to Northern Ireland)
+startImport.use.li4 = that weigh a total of 1,000 kilograms or less
+startImport.use.li5 = not subject to excise duty (alcohol, tobacco, fuel)
+startImport.use.li6.1 = that are not
+startImport.use.li6.a1.text = controlled goods
+startImport.use.li6.a1.href = https://www.gov.uk/guidance/list-of-goods-imported-into-great-britain-from-the-eu-that-are-controlled
+startImport.use.li6.2 = or
+startImport.use.li6.a2.text = restricted goods
+startImport.use.li6.a2.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+startImport.use.li7 = in a vehicle that can carry no more than nine people and weighs less than 3.5 tonnes
+startImport.p6 = If you cannot use this service, you need to make a
+startImport.p6.a.text = full import declaration.
+startImport.p6.a.href = https://www.gov.uk/guidance/customs-declarations-for-goods-brought-into-the-eu
+startImport.info = Information you need
+startImport.info.li1 = the EORI number of the business bringing the goods to the UK
+startImport.info.li2 = the name of the person carrying the goods
+startImport.info.li3 = name and address (if you are a customs agent)
+startImport.info.li4 = a description of the item, including the total value and weight
+startImport.info.li5 = the VAT rates applied to the goods (flat, reduced, or standard rate)
+startImport.info.li6 = invoice numbers for all the goods
+startImport.info.li7 = card payment details
+startImport.info.li8 = the vehicle registration number (if the goods are arriving in the UK by vehicle)
+startImport.after = After you’ve declared your goods
+startImport.p7 = Go through the green channel (nothing to declare) when you travel. Take your declaration and invoices with you.
 
+# StartExport
+startExport.title = Declare commercial goods you’re taking out of the UK in accompanied baggage or small vehicles
+startExport.heading = Declare commercial goods you’re taking out of the UK in accompanied baggage or small vehicles
+startExport.p1 = What you need to do if you’re taking goods for business use or to sell, that are less than 1,000 kilograms, or are under the value of £1,500 (out of Great Britain) and £873 (out of Northern Ireland).
+startExport.p2 = You can use this service to declare commercial goods you intend to take out of the UK in your luggage or small vehicle.
+startExport.inset = There is a different way to
+startExport.inset.a.text = declare goods you’re bringing into the UK for trade or business use.
+startExport.before = Before you start
+startExport.p3 = You need an EORI number to declare goods using this service. Apply for your EORI number in advance. It can take up to a week to get one.
+startExport.use = Use this service to declare goods:
+startExport.use.li1 = you are taking out of the UK for trade or business use
+startExport.use.li2 = that have a total value of £1,500 or less (if you're taking the goods out of Great Britain)
+startExport.use.li3 = that have a total value of £873 or less (if you’re taking the goods out of Northern Ireland)
+startExport.use.li4 = that weigh a total of 1,000 kilograms or less
+startExport.use.li5 = not subject to excise duty (alcohol, tobacco, fuel)
+startExport.use.li6.1 = that are not
+startExport.use.li6.a1.text = controlled goods
+startExport.use.li6.a1.href = https://www.gov.uk/guidance/list-of-goods-imported-into-great-britain-from-the-eu-that-are-controlled
+startExport.use.li6.2 = or
+startExport.use.li6.a2.text = restricted goods
+startExport.use.li6.a2.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+startExport.use.li7 = in a vehicle that can carry no more than nine people and weighs less than 3.5 tonnes
+startExport.info = Information you need
+startExport.info.li1 = the EORI number of the business taking the goods out of the UK
+startExport.info.li2 = the name of the person carrying the goods
+startExport.info.li3 = a description of the item, including the total value and weight
+startExport.info.li4 = business name and address (if you are a customs agent)
+startExport.info.li5 = the vehicle registration number (if the goods are leaving the UK by vehicle)
+startExport.when = When to make a declaration
+startExport.p4.1 = You can only use this service to declare your goods
+startExport.p4.2 = 5 days
+startExport.p4.3 = before you leave the UK, not before.
 
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
@@ -98,6 +146,14 @@ goodsDestination.NorthernIreland = Northern Ireland
 goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland or Wales
 goodsDestination.error.required = Select one of the options below
+
+
+# GoodsRouteDestination
+goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
+goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
+goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
+goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
+goodsRouteDestination.error.required = Select one of the options below
 
 
 # ValueWeightOfGoods
@@ -268,6 +324,19 @@ cannotUseService.heading = You need to submit a full customs declaration
 cannotUseService.p1 = For excise, restricted and goods over the threshold you must make a full custom declaration.
 cannotUseService.a = Make a full custom declaration
 cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+
+# CannotUseServiceIreland
+cannotUseServiceIreland.title = You need to submit a full import declaration
+cannotUseServiceIreland.heading = You need to submit a full import declaration
+cannotUseServiceIreland.p1 = You cannot use this service.
+cannotUseServiceIreland.p2 = If your goods are going to enter the Republic of Ireland you must
+cannotUseServiceIreland.p2.a.text = make a full import declaration.
+cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+
+# NoDeclarationNeeded
+noDeclarationNeeded.title = You do not need to make a declaration
+noDeclarationNeeded.heading = You do not need to make a declaration
+noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do not need to be declared.
 
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods

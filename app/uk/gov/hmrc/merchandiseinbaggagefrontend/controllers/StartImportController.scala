@@ -20,32 +20,28 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId, DeclarationType}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartImportView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class StartController @Inject()( override val controllerComponents: MessagesControllerComponents,
-                                 repo: DeclarationJourneyRepository,
-                                 view: StartView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
+class StartImportController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                      repo: DeclarationJourneyRepository,
+                                      view: StartImportView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
 
-  def onStartExport(): Action[AnyContent] = Action { implicit request =>
-    Ok(view("start.title.export", "start.heading.export"))
-  }
-
-  def onStartImport(): Action[AnyContent] = Action { implicit request =>
-    Ok(view("start.title.import", "start.heading.import"))
+  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+    Ok(view())
   }
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
     def next(sessionId: SessionId) =
-      Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
+      Redirect(routes.GoodsDestinationController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
 
     def newDeclarationJourney(sessionId: SessionId) = {
-      val declarationJourney = DeclarationJourney(sessionId = sessionId)
+      val declarationJourney = DeclarationJourney(sessionId = sessionId, DeclarationType.Import)
 
       repo.insert(declarationJourney).map { _ =>
         next(sessionId)

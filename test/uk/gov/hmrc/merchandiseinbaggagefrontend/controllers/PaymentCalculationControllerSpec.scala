@@ -35,7 +35,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
     "redirect to /invalid-request" when {
       "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(request)
 
@@ -46,7 +46,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return OK and render the view" when {
       "a declaration has been started and goods have been entered" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad()(request)
 

@@ -59,7 +59,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
       json => {
         Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
           repository.insert(declarationJourney).map { _ =>
-            Redirect(controllers.routes.StartController.onStartImport())
+            Redirect(controllers.routes.StartImportController.onPageLoad())
               .addingToSession((sessionId, declarationJourney.sessionId.value))
           }
         }
@@ -80,6 +80,7 @@ object TestOnlyController {
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
+      declarationType = DeclarationType.Import,
       maybeExciseOrRestrictedGoods = Some(No),
       maybeGoodsDestination = Some(NorthernIreland),
       maybeValueWeightOfGoodsExceedsThreshold = Some(No),

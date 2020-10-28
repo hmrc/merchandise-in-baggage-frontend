@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartImportPage}
+import org.openqa.selenium.WebDriver
 
-class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def page: StartImportPage = startImportPage
+class StartExportPage(implicit webDriver: WebDriver) extends PageWithCTA {
+  override val ctaName: String = "startNow"
+}
 
-  "the Start Import page " should {
-    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, GoodsDestinationPage.path)
-  }
+object StartExportPage {
+  val path = "/merchandise-in-baggage/start-export"
+  val title: String = "Declare commercial goods you’re taking out of the UK in accompanied baggage or small vehicles"
 }

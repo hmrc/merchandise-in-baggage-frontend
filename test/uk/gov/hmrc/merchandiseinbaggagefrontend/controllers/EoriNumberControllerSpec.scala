@@ -36,7 +36,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /invalid-request" when {
       "a declaration has been started but required answer has not been provided" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -47,7 +47,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and user is a trader" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeIsACustomsAgent = Some(YesNo.No)))
 
         val result = controller.onPageLoad()(getRequest)
         val content = contentAsString(result)
@@ -57,7 +57,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       "a declaration has been started and user is an agent" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeIsACustomsAgent = Some(YesNo.Yes)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeIsACustomsAgent = Some(YesNo.Yes)))
 
         val result = controller.onPageLoad()(getRequest)
         val content = contentAsString(result)
@@ -67,7 +67,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
           maybeIsACustomsAgent = Some(YesNo.No),
           maybeEori = Some(Eori("GB123467800000"))
         ))
@@ -89,7 +89,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /traveller-details" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
           maybeIsACustomsAgent = Some(YesNo.No)
         ))
 
@@ -100,14 +100,14 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.TravellerDetailsController.onPageLoad().url
 
-        startedDeclarationJourney.maybeEori mustBe None
+        startedImportJourney.maybeEori mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeEori mustBe Some(Eori("GB123467800000"))
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "nothing is entered" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
           maybeIsACustomsAgent = Some(YesNo.No)
         ))
 
@@ -119,7 +119,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       "invalid value entered" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
           maybeIsACustomsAgent = Some(YesNo.No)
         ))
 

@@ -24,5 +24,5 @@ class StartImportPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
 object StartImportPage {
   val path = "/merchandise-in-baggage/start-import"
-  val title: String = "Declaring goods in your baggage you're bringing to the UK to sell"
+  val title: String = "Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles"
 }

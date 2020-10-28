@@ -46,7 +46,7 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
         value => {
           repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
             if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
-            else Redirect(routes.GoodsDestinationController.onPageLoad())
+            else Redirect(routes.ValueWeightOfGoodsController.onPageLoad())
           }
         }
       )

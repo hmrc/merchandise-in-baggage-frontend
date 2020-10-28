@@ -37,7 +37,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
     "return OK and render the view" when {
 
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(request)
 
@@ -45,7 +45,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney
+        givenADeclarationJourneyIsPersisted(startedImportJourney
           .copy(maybeTravellingBySmallVehicle = Some(Yes)))
 
         val result = controller.onPageLoad()(request)
@@ -63,7 +63,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /cannot-use-service" when {
       "a declaration is started and No is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
@@ -71,14 +71,14 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.CannotUseServiceController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        startedImportJourney.maybeTravellingBySmallVehicle mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(No)
       }
     }
 
     "Redirect to /vehicle-registration-number" when {
       "a declaration is started and Yes is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
@@ -86,14 +86,14 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.VehicleRegistrationNumberController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeTravellingBySmallVehicle mustBe None
+        startedImportJourney.maybeTravellingBySmallVehicle mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeTravellingBySmallVehicle mustBe Some(Yes)
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

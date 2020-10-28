@@ -21,29 +21,17 @@ import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.StartImportView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class StartControllerSpec extends DeclarationJourneyControllerSpec {
-  private lazy val view = injector.instanceOf[StartView]
-  private lazy val controller = new StartController(controllerComponents, declarationJourneyRepository, view)
-
-  "onStartExport" must {
-    "render the start export page" in {
-      val getRequest = buildGet(routes.StartController.onStartExport().url)
-      val result = controller.onStartExport()(getRequest)
-      val content = contentAsString(result)
-
-      status(result) mustEqual OK
-      content must include("Declaring goods in your baggage you&#x27;re taking out of the UK to sell")
-      content must include("Start now")
-    }
-  }
+class StartImportControllerSpec extends DeclarationJourneyControllerSpec {
+  private lazy val view = injector.instanceOf[StartImportView]
+  private lazy val controller = new StartImportController(controllerComponents, declarationJourneyRepository, view)
 
   "onSubmit" must {
-    val url = routes.StartController.onSubmit().url
-    val nextUrl = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
+    val url = routes.StartImportController.onSubmit().url
+    val nextUrl = routes.GoodsDestinationController.onPageLoad().url
     val existingSessionKey = "existingSessionKey"
     val existingSessionValue = "existingSessionValue"
     val existingSession = (existingSessionKey, existingSessionValue)
@@ -86,7 +74,7 @@ class StartControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /excise-and-restricted-goods" when {
       "a session is supplied and a declaration journey is associated with it" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(requestWithSessionId)
 

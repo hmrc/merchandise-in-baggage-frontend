@@ -15,23 +15,25 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 
 @this(
 layout: Layout,
 h1: components.h1,
-p: components.p
+p: components.p,
+link: components.link
 )
 
-@(startAgainUrl: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("goodsRemoved.title"))) {
-    @h1("goodsRemoved.heading")
+@layout(pageTitle = Some(messages("cannotUseServiceIreland.title"))) {
+    @h1("cannotUseServiceIreland.heading")
 
-    @p(Html(messages("goodsRemoved.p1")))
+    @p(Html(messages("cannotUseServiceIreland.p1")))
 
-    <p class="govuk-body"><a href="@SearchGoodsController.onPageLoad(1)" class="govuk-link">@messages("goodsRemoved.link")</a></p>
-
-    <p><a href="@startAgainUrl" class="govuk-button button-start">@messages("site.startAgain")</a></p>
-
+    <p class="govuk-body">
+        @messages("cannotUseServiceIreland.p2")
+        <a class="govuk-link" href="@messages("cannotUseServiceIreland.p2.a.href")">
+            @messages("cannotUseServiceIreland.p2.a.text")
+        </a>
+    </p>
 }

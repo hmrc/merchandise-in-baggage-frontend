@@ -35,7 +35,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -45,7 +45,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeRegistrationNumber = Some("AB51 CDE")))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeRegistrationNumber = Some("AB51 CDE")))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -62,7 +62,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
     "redirect to /check-your-answers" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "AB51 CDE"))
 
@@ -71,7 +71,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad().toString
 
-        startedDeclarationJourney.maybeRegistrationNumber mustBe None
+        startedImportJourney.maybeRegistrationNumber mustBe None
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue
@@ -82,7 +82,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

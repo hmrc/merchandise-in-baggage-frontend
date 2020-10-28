@@ -47,7 +47,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /invalid-request" when {
       "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad(1)(request)
 
@@ -58,7 +58,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
 
         val result = controller.onPageLoad(1)(request)
 
@@ -76,7 +76,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /review-goods" when {
       "a declaration is started and No is submitted" in {
-        val before = startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
+        val before = startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
@@ -93,7 +93,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /review-goods" when {
       "a declaration is started and Yes is submitted and goods still exist in the journey" in {
-        val before = startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
+        val before = startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
         givenADeclarationJourneyIsPersisted(before)
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
@@ -110,7 +110,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Redirect to /goods-removed" when {
       "a declaration is started and Yes is submitted and no more goods exist in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit(1)(request)
@@ -122,7 +122,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry))))
 
         val result = controller.onSubmit(1)(postRequest)
 

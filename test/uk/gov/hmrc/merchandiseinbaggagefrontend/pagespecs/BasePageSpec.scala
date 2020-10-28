@@ -39,8 +39,10 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
+  lazy val startExportPage: StartExportPage = wire[StartExportPage]
   lazy val exciseAndRestrictedGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val goodsDestinationPage:   RadioButtonPage[GoodsDestination] = wire[RadioButtonPage[GoodsDestination]]
+  lazy val goodsRouteDestinationPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val valueWeightOfGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val searchGoodsPage: SearchGoodsPage = wire[SearchGoodsPage]
   lazy val goodsVatRatePage: RadioButtonPage[GoodsVatRate] = wire[RadioButtonPage[GoodsVatRate]]
@@ -57,6 +59,11 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   def givenAnImportJourneyIsStarted(): Unit = {
     open(StartImportPage.path)
     startImportPage.clickOnCTA()
+  }
+
+  def givenAnExportJourneyIsStarted(): Unit = {
+    open(StartExportPage.path)
+    startExportPage.clickOnCTA()
   }
 
   def givenADeclarationJourney(declarationJourney: DeclarationJourney): Unit = {

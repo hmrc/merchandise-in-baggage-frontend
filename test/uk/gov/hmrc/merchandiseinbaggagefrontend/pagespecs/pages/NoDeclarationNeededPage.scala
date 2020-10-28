@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartImportPage}
-
-class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def page: StartImportPage = startImportPage
-
-  "the Start Import page " should {
-    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, GoodsDestinationPage.path)
-  }
+object NoDeclarationNeededPage {
+  val path = "/merchandise-in-baggage/no-declaration-needed"
 }

@@ -28,7 +28,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
     "render correctly" when {
       "a single goods entry is complete" in {
-        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+        givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
         reviewGoodsPage.mustRenderBasicContent(path, title)
@@ -46,7 +46,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       }
 
       "multiple goods entries are complete" in {
-        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
         reviewGoodsPage.mustRenderBasicContent(path, title)
@@ -74,14 +74,14 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
     "enable the user to remove goods" when {
       "there is a single goods entry" in {
-        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+        givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
         reviewGoodsPage.remove(0) mustBe RemoveGoodsPage.path(1)
       }
 
       "there are multiple goods entries" in {
-        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
         reviewGoodsPage.remove(1) mustBe RemoveGoodsPage.path(2)
@@ -90,31 +90,31 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
     s"redirect to ${InvalidRequestPage.path}" when {
       "there are no started goods entries" in {
-        givenADeclarationJourney(startedDeclarationJourney)
+        givenADeclarationJourney(startedImportJourney)
         open(path) mustBe InvalidRequestPage.path
       }
 
       "there is no complete goods entries" in {
-        givenADeclarationJourney(declarationJourneyWithStartedGoodsEntry)
+        givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
         open(path) mustBe InvalidRequestPage.path
       }
 
       "there are incomplete goods entries" in {
-        givenADeclarationJourney(declarationJourneyWithOneCompleteAndOneStartedGoodsEntry)
+        givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
         open(path) mustBe InvalidRequestPage.path
       }
     }
 
     s"redirect to /search-goods/:idx" when {
       "the user elects to make a second goods entry" in {
-        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+        givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
         reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(2)
       }
 
       "the user elects to make a third goods entry" in {
-        givenADeclarationJourney(declarationJourneyWithTwoCompleteGoodsEntries)
+        givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
         reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(3)
@@ -123,7 +123,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
     s"redirect to /tax-calculation" when {
       "the user elects not to make another goods entry" in {
-        givenADeclarationJourney(declarationJourneyWithOneCompleteGoodsEntry)
+        givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
 
         open(path)
         reviewGoodsPage.completeAndSubmitForm(No) mustBe PaymentCalculationPage.path

@@ -26,10 +26,10 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, R
   override lazy val page: RadioButtonPage[YesNo] = valueWeightOfGoodsPage
 
   private def givenANorthernIrelandJourney(): Unit =
-    givenADeclarationJourney(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+    givenADeclarationJourney(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
   private def givenAGreatBritainJourney(): Unit =
-    givenADeclarationJourney(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
+    givenADeclarationJourney(startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
 
   "the value and weight of goods page" should {
     behave like aPageWhichRenders(path, givenANorthernIrelandJourney(), northernIrelandTitle)

@@ -171,6 +171,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.declarationIfRequiredAndComplete mustBe
           Some(Declaration(
             sessionId,
+            DeclarationType.Import,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeCustomsAgent,

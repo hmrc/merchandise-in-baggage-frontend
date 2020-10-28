@@ -30,7 +30,7 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when{
       "a declaration journey has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, sessionId)
         val result = controller.onPageLoad()(request)
         val content = contentAsString(result)

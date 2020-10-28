@@ -50,7 +50,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad(1)(getRequest)
 
@@ -61,7 +61,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(goodsEntries = goodsEntries))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
         val result = controller.onPageLoad(1)(getRequest)
 
@@ -79,7 +79,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "redirect to /goods-vat-rate" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
 
@@ -88,7 +88,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad(1).toString
 
-        startedDeclarationJourney.goodsEntries mustBe GoodsEntries.empty
+        startedImportJourney.goodsEntries mustBe GoodsEntries.empty
         declarationJourneyRepository
           .findBySessionId(sessionId)
           .futureValue
@@ -101,7 +101,7 @@ class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit(1)(postRequest)
 

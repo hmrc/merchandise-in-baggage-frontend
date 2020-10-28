@@ -14,14 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartImportPage}
+import enumeratum.EnumEntry
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
+import scala.collection.immutable
 
-class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def page: StartImportPage = startImportPage
+sealed trait DeclarationType extends EnumEntry {
+  val messageKey = s"${DeclarationType.baseMessageKey}.${entryName.toLowerCase}"
+}
 
-  "the Start Import page " should {
-    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, GoodsDestinationPage.path)
-  }
+object DeclarationType extends Enum[DeclarationType] {
+  override val baseMessageKey: String = "declarationType"
+  override val values: immutable.IndexedSeq[DeclarationType] = findValues
+
+  case object Import extends DeclarationType
+  case object Export extends DeclarationType
 }

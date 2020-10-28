@@ -38,7 +38,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
         val content = contentAsString(result)
@@ -54,7 +54,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and trader name persisted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(name)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(name)))
 
         val result = controller.onPageLoad()(getRequest)
         val content = contentAsString(result)
@@ -79,7 +79,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "Persist the submitted details and redirect to /enter-trader-address" when {
       "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody((firstName, name.firstName), (lastName, name.lastName))
 
@@ -95,7 +95,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return BAD_REQUEST and errors" when {
       "no entry is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         form.bindFromRequest()(postRequest)
 

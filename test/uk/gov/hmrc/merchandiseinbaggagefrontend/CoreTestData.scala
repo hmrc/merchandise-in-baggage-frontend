@@ -37,7 +37,7 @@ trait CoreTestData {
 
   val sessionId: SessionId = SessionId()
 
-  val startedDeclarationJourney: DeclarationJourney = DeclarationJourney(sessionId)
+  val startedImportJourney: DeclarationJourney = DeclarationJourney(sessionId, DeclarationType.Import)
 
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 
@@ -51,17 +51,17 @@ trait CoreTestData {
 
   val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(aCategoryQuantityOfGoods))
 
-  val declarationJourneyWithStartedGoodsEntry: DeclarationJourney =
-    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
+  val importJourneyWithStartedGoodsEntry: DeclarationJourney =
+    startedImportJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
 
-  val declarationJourneyWithOneCompleteAndOneStartedGoodsEntry: DeclarationJourney =
-    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, startedGoodsEntry)))
+  val importJourneyWithOneCompleteAndOneStartedGoodsEntry: DeclarationJourney =
+    startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, startedGoodsEntry)))
 
-  val declarationJourneyWithOneCompleteGoodsEntry: DeclarationJourney =
-    startedDeclarationJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry))
+  val importJourneyWithOneCompleteGoodsEntry: DeclarationJourney =
+    startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry))
 
-  val declarationJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
-    startedDeclarationJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
+  val importJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
+    startedImportJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
   val journeyDate: LocalDate = LocalDate.now
 

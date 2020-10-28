@@ -9,10 +9,13 @@ GET        /assets/*file                 controllers.Assets.versioned(path = "/p
 GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvalidRequestController.onPageLoad
 
 
-# Start
-GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartExport
-GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onStartImport
-POST       /start                        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartController.onSubmit
+# StartImport
+GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onPageLoad
+POST       /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onSubmit
+
+# StartExport
+GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onPageLoad
+POST       /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onSubmit
 
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad
@@ -21,6 +24,10 @@ POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefronten
 # GoodsDestination
 GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad
 POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onSubmit
+
+# GoodsRouteDestination
+GET        /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onPageLoad
+POST       /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onSubmit
 
 # ValueWeightOfGoods
 GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onPageLoad
@@ -98,6 +105,12 @@ POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefronten
 
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
+
+# CannotUseServiceIreland
+GET        /cannot-use-service-ireland   uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceIrelandController.onPageLoad
+
+# NoDeclarationNeeded
+GET        /no-declaration-needed        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.NoDeclarationNeededController.onPageLoad
 
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
 POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onSubmit

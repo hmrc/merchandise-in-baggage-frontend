@@ -140,6 +140,7 @@ object JourneyDetailsEntry {
 }
 
 case class DeclarationJourney(sessionId: SessionId,
+                              declarationType: DeclarationType,
                               maybeExciseOrRestrictedGoods: Option[YesNo] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
@@ -189,7 +190,7 @@ case class DeclarationJourney(sessionId: SessionId,
 
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(sessionId, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
+      Declaration(sessionId, declarationType, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
     }
   }
 }
@@ -283,6 +284,7 @@ object JourneyInSmallVehicle {
 }
 
 case class Declaration(sessionId: SessionId,
+                       declarationType: DeclarationType,
                        declarationGoods: DeclarationGoods,
                        nameOfPersonCarryingTheGoods: Name,
                        maybeCustomsAgent: Option[CustomsAgent],

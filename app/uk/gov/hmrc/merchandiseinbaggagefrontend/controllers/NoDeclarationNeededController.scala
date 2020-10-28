@@ -19,21 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsRemovedView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.NoDeclarationNeededView
 
 @Singleton
-class GoodsRemovedController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       view: GoodsRemovedView)(implicit val appConfig: AppConfig)
+class NoDeclarationNeededController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                              actionProvider: DeclarationJourneyActionProvider,
+                                              view: NoDeclarationNeededView)(implicit val appConfig: AppConfig)
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    val startAgainUrl = request.declarationJourney.declarationType match {
-      case Import => routes.StartImportController.onPageLoad().url
-      case Export => "#" //TODO
-    }
-
-    Ok(view(startAgainUrl))
+    Ok(view())
   }
 }

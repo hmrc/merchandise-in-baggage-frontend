@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartImportPage}
+object GoodsRouteDestinationPage {
+  val path: String = "/merchandise-in-baggage/goods-route-destination"
 
-class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def page: StartImportPage = startImportPage
-
-  "the Start Import page " should {
-    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, GoodsDestinationPage.path)
-  }
+  val importTitle = "Is the final destination of the goods the Republic of Ireland?"
+  val exportTitle = "Are you taking these goods to the European Union?"
 }
+

@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -50,7 +50,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -61,7 +61,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when {
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.values.head)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.values.head)))
 
         val result = controller.onPageLoad()(getRequest)
 
@@ -77,23 +77,35 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /value-weight-of-goods" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+    "Redirect to the correct page" when {
+      "a declaration is started and NorthernIreland submitted" in {
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", NorthernIreland.toString))
 
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.ValueWeightOfGoodsController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.GoodsRouteDestinationController.onPageLoad().toString
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeGoodsDestination mustBe Some(NorthernIreland)
+      }
+
+      "a declaration is started and GreatBritain submitted" in {
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
+
+        val request = postRequest.withFormUrlEncodedBody(("value", GreatBritain.toString))
+
+        val result = controller.onSubmit()(request)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.ExciseAndRestrictedGoodsController.onPageLoad().toString
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeGoodsDestination mustBe Some(GreatBritain)
       }
     }
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onSubmit()(postRequest)
 

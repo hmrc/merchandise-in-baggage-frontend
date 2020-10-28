@@ -49,7 +49,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
     "redirect to /goods-destination" when {
       "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val result = controller.onPageLoad()(request)
 
@@ -60,7 +60,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return OK and render the view" when {
       "a declaration has been started with a destination of Northern Ireland" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
         val result = controller.onPageLoad()(request)
 
@@ -69,7 +69,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
       }
 
       "a declaration has been started with a destination of England, Wales or Scotland" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
 
         val result = controller.onPageLoad()(request)
 
@@ -78,7 +78,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
       }
 
       "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney
+        givenADeclarationJourneyIsPersisted(startedImportJourney
           .copy(
             maybeGoodsDestination = Some(NorthernIreland),
             maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)))
@@ -99,7 +99,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
     "Redirect to /search-goods" when {
       "a declaration is started and No is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "No"))
         val result = controller.onSubmit()(request)
@@ -107,14 +107,14 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(1).toString
 
-        startedDeclarationJourney.maybeValueWeightOfGoodsExceedsThreshold mustBe None
+        startedImportJourney.maybeValueWeightOfGoodsExceedsThreshold mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeValueWeightOfGoodsExceedsThreshold mustBe Some(No)
       }
     }
 
     "Redirect to /cannot-use-service" when {
       "a declaration is started and Yes is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
         val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
         val result = controller.onSubmit()(request)
@@ -126,7 +126,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
-        givenADeclarationJourneyIsPersisted(startedDeclarationJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))
 
         val result = controller.onSubmit()(postRequest)
 
