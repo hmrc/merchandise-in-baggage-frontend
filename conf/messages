@@ -325,6 +325,19 @@ cannotUseService.p1 = For excise, restricted and goods over the threshold you mu
 cannotUseService.a = Make a full custom declaration
 cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
+# CannotUseServiceIreland
+cannotUseServiceIreland.title = You need to submit a full import declaration
+cannotUseServiceIreland.heading = You need to submit a full import declaration
+cannotUseServiceIreland.p1 = You cannot use this service.
+cannotUseServiceIreland.p2 = If your goods are going to enter the Republic of Ireland you must
+cannotUseServiceIreland.p2.a.text = make a full import declaration.
+cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+
+# NoDeclarationNeeded
+noDeclarationNeeded.title = You do not need to make a declaration
+noDeclarationNeeded.heading = You do not need to make a declaration
+noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do not need to be declared.
+
 checkYourAnswers.title = Check your answers before making your declaration
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods

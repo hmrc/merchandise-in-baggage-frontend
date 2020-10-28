@@ -44,8 +44,8 @@ class GoodsRouteDestinationController @Inject()(
         value =>
           (value, request.declarationJourney.declarationType) match {
             case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
-            case (_, Import) => Ok("/cannot-use-service-ireland")
-            case (_, Export) => Ok("/no-declaration-needed")
+            case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
+            case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
           }
       )
   }

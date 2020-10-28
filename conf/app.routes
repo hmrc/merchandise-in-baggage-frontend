@@ -106,5 +106,11 @@ POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefronten
 # CannotUseService
 GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
 
+# CannotUseServiceIreland
+GET        /cannot-use-service-ireland   uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceIrelandController.onPageLoad
+
+# NoDeclarationNeeded
+GET        /no-declaration-needed        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.NoDeclarationNeededController.onPageLoad
+
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
 POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onSubmit
