@@ -13,6 +13,10 @@ GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onPageLoad
 POST       /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onSubmit
 
+# StartExport
+GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onPageLoad
+POST       /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onSubmit
+
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad
 POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onSubmit

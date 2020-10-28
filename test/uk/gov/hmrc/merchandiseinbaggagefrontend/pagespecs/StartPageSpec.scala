@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PageWithCTA
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,6 +32,21 @@ trait StartPageSpec[P <: PageWithCTA] extends BasePageSpec[P] {
       page.clickOnCTA() mustBe expectedNextPage
 
       declarationJourneyRepository.findAll().futureValue.size mustBe 1
+      declarationJourneyRepository.findAll().futureValue.head.declarationType mustBe DeclarationType.Import
+    }
+  }
+
+  def aStartExportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
+    behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
+
+    s"allow the user to set up a declaration and redirect to $expectedNextPage" in {
+      declarationJourneyRepository.findAll().futureValue.size mustBe 0
+
+      open(path)
+      page.clickOnCTA() mustBe expectedNextPage
+
+      declarationJourneyRepository.findAll().futureValue.size mustBe 1
+      declarationJourneyRepository.findAll().futureValue.head.declarationType mustBe DeclarationType.Export
     }
   }
 }
