@@ -16,35 +16,51 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
+import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
+
+import scala.collection.JavaConverters._
+import scala.collection.mutable
 
 class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
 
   import WebBrowser._
 
-  def mustRenderDetail(journey: DeclarationJourney): Assertion = patiently {
-    val goodsSummaries = findAll(ClassNameQuery("govuk-summary-list"))
-    goodsSummaries.size mustBe journey.goodsEntries.entries.size
+  def goodsSummaries: Seq[Element] = findAll(ClassNameQuery("govuk-summary-list")).toSeq
 
-    //TODO figure out a way to actually assert the content
+  def rows(goodsSummary: Element): mutable.Seq[WebElement] =
+    goodsSummary.underlying.findElements(By.className("govuk-summary-list__row")).asScala
+
+  def goodsSummariesAsMap: Seq[Map[String, String]] = patiently {
+    goodsSummaries.map { goodsSummary =>
+      rows(goodsSummary).map { row =>
+        row.findElement(By.className("govuk-summary-list__key")).getText ->
+          row.findElement(By.className("govuk-summary-list__value")).getText
+      }.toMap
+    }
   }
 
-  def fillOutForm(input: YesNo): Unit = click on find(IdQuery(input.entryName)).get
+  def remove(index: Int): String = patiently {
+    val goodsSummary = goodsSummaries(index)
 
-  def mustRedirectToSearchGoods(journey: DeclarationJourney): Assertion = {
+    val removeLinkRow = rows(goodsSummary).filter { row =>
+      row.findElement(By.className("govuk-summary-list__key")).getText == "Remove"
+    }.head
+
+    val removeLink = removeLinkRow.findElement(By.tagName("a"))
+
+    click on removeLink
+
+    readPath()
+  }
+
+
+  def completeAndSubmitForm(input: YesNo): String = {
+    click on find(IdQuery(input.entryName)).get
     click on find(NameQuery("continue")).get
-    readPath() mustBe SearchGoodsPage.path(journey.goodsEntries.entries.size + 1)
+    readPath()
   }
-
-  def mustRedirectToPaymentCalculation() = {
-    click on find(NameQuery("continue")).get
-    readPath() mustBe "/merchandise-in-baggage/payment-calculation"
-  }
-
-  def mustRedirectToInvalidRequest(): Assertion = readPath() mustBe "/merchandise-in-baggage/invalid-request"
 }
 
 object ReviewGoodsPage {
