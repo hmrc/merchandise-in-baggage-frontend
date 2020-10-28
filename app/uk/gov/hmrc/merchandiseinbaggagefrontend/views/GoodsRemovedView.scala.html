@@ -30,8 +30,8 @@ p: components.p
 
     @p(Html(messages("goodsRemoved.p1")))
 
-    <p class="govuk-body"><a href="@SearchGoodsController.onPageLoad(1)" class="govuk-link">@messages("goodsRemoved.link")</a></p>
+    <p class="govuk-body"><a id="addMoreGoods" href="@SearchGoodsController.onPageLoad(1)" class="govuk-link">@messages("goodsRemoved.link")</a></p>
 
-    <p><a href="@startAgainUrl" class="govuk-button button-start">@messages("site.startAgain")</a></p>
+    <p><a  id="startAgain" href="@startAgainUrl" class="govuk-button button-start">@messages("site.startAgain")</a></p>
 
 }

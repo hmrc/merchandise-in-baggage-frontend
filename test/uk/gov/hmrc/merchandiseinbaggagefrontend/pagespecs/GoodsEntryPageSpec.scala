@@ -27,10 +27,6 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
   def givenASecondGoodsEntryIsStarted(): Unit =
     givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
 
-  def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
-
-  def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
-
   def extractFormDataFrom(declarationJourney: DeclarationJourney, index: Int): Option[F] =
     extractFormDataFrom(declarationJourney.goodsEntries.entries(index -1))
 

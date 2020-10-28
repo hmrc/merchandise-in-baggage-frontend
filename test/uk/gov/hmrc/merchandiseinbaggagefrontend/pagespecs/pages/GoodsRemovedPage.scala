@@ -16,8 +16,25 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-object RemoveGoodsPage {
-  def path(index: Int): String = s"/merchandise-in-baggage/remove-goods/$index"
+import org.openqa.selenium.WebDriver
+import org.scalatestplus.selenium.WebBrowser
 
-  def title(goodsCategory: String): String = s"Are you sure you want to remove the $goodsCategory?"
+class GoodsRemovedPage(implicit webDriver: WebDriver) extends PageWithCTA {
+
+  import WebBrowser._
+
+  def addMoreGoods(): String = {
+    click on find(IdQuery("addMoreGoods")).get
+    readPath()
+  }
+
+  def startAgain(): String = {
+    click on find(IdQuery("startAgain")).get
+    readPath()
+  }
+}
+
+object GoodsRemovedPage {
+  val path: String = s"/merchandise-in-baggage/goods-removed"
+  val title: String = "You removed your goods"
 }

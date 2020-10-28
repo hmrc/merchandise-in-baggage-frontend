@@ -44,7 +44,7 @@ class SearchGoodsPage(implicit webDriver: WebDriver) extends DeclarationDataCapt
 }
 
 object SearchGoodsPage {
-  def path(idx: Int = 1): String = s"/merchandise-in-baggage/search-goods/$idx"
+  def path(idx: Int): String = s"/merchandise-in-baggage/search-goods/$idx"
 
   val title = "What type of goods are you bringing into the UK?"
 }
