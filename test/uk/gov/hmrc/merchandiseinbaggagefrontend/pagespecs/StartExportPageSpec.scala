@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{ExciseAndRestrictedGoodsPage, StartExportPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartExportPage}
 
 class StartExportPageSpec extends StartPageSpec[StartExportPage] {
   override def page: StartExportPage = startExportPage
 
   "the Start Import page " should {
-    behave like aStartExportPage(StartExportPage.path, StartExportPage.title, ExciseAndRestrictedGoodsPage.path)
+    behave like aStartExportPage(StartExportPage.path, StartExportPage.title, GoodsDestinationPage.path)
   }
 }

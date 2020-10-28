@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
+package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsDestinationPage, StartImportPage}
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 
-class StartImportPageSpec extends StartPageSpec[StartImportPage] {
-  override def page: StartImportPage = startImportPage
+object GoodsRouteDestinationForm extends Mappings {
 
-  "the Start Import page " should {
-    behave like aStartImportPage(StartImportPage.path, StartImportPage.title, GoodsDestinationPage.path)
-  }
+  val form: Form[YesNo] = Form(
+    "value" -> yesNo("goodsRouteDestination.error.required")
+  )
+
 }

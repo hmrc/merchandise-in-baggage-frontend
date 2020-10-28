@@ -148,6 +148,14 @@ goodsDestination.GreatBritain.hint = England, Scotland or Wales
 goodsDestination.error.required = Select one of the options below
 
 
+# GoodsRouteDestination
+goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
+goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
+goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
+goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
+goodsRouteDestination.error.required = Select one of the options below
+
+
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.GreatBritain.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?

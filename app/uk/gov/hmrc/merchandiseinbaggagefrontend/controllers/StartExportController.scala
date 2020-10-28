@@ -38,7 +38,7 @@ class StartExportController @Inject()(override val controllerComponents: Message
 
   def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
     def next(sessionId: SessionId) =
-      Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
+      Redirect(routes.GoodsDestinationController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
 
     def newDeclarationJourney(sessionId: SessionId) = {
       val declarationJourney = DeclarationJourney(sessionId = sessionId, DeclarationType.Export)

@@ -31,7 +31,7 @@ class StartImportControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" must {
     val url = routes.StartImportController.onSubmit().url
-    val nextUrl = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
+    val nextUrl = routes.GoodsDestinationController.onPageLoad().url
     val existingSessionKey = "existingSessionKey"
     val existingSessionValue = "existingSessionValue"
     val existingSession = (existingSessionKey, existingSessionValue)

@@ -25,6 +25,10 @@ POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad
 POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onSubmit
 
+# GoodsRouteDestination
+GET        /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onPageLoad
+POST       /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onSubmit
+
 # ValueWeightOfGoods
 GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onPageLoad
 POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onSubmit

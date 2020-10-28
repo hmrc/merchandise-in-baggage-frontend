@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsDestinationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -77,8 +77,8 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
 
-    "Redirect to /value-weight-of-goods" when {
-      "a declaration is started and a valid selection submitted" in {
+    "Redirect to the correct page" when {
+      "a declaration is started and NorthernIreland submitted" in {
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
         val request = postRequest.withFormUrlEncodedBody(("value", NorthernIreland.toString))
@@ -86,8 +86,20 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.ValueWeightOfGoodsController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.GoodsRouteDestinationController.onPageLoad().toString
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeGoodsDestination mustBe Some(NorthernIreland)
+      }
+
+      "a declaration is started and GreatBritain submitted" in {
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
+
+        val request = postRequest.withFormUrlEncodedBody(("value", GreatBritain.toString))
+
+        val result = controller.onSubmit()(request)
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).get mustEqual routes.ExciseAndRestrictedGoodsController.onPageLoad().toString
+        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeGoodsDestination mustBe Some(GreatBritain)
       }
     }
 

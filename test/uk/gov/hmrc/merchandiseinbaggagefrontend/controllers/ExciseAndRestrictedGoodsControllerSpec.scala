@@ -85,7 +85,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onSubmit()(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.GoodsDestinationController.onPageLoad().toString
+        redirectLocation(result).get mustEqual routes.ValueWeightOfGoodsController.onPageLoad().toString
 
         startedImportJourney.maybeExciseOrRestrictedGoods mustBe None
         declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeExciseOrRestrictedGoods mustBe Some(No)
