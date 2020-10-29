@@ -32,7 +32,7 @@ class PurchaseDetailsFormSpec extends FieldBehaviours {
     }
 
     "bind all big decimal values with decimal places <= 3" in {
-      forAll(positiveBigDecimalsWith3dp -> "bigDecimals") { bigDecimal: BigDecimal =>
+      forAll(positiveBigDecimalsWithMaximum3dp -> "bigDecimals") { bigDecimal: BigDecimal =>
         val result = form.bind(Map(fieldName -> bigDecimal.toString)).apply(fieldName)
         result.errors mustEqual Seq.empty
       }
@@ -45,8 +45,13 @@ class PurchaseDetailsFormSpec extends FieldBehaviours {
       }
     }
 
-    "not bind zero or negative numbers" in {
-      forAll(zeroOrNegativeBigDecimalsWith3dp -> "bigDecimals") { bigDecimal: BigDecimal =>
+    "not bind zero" in {
+      val result = form.bind(Map(fieldName -> "0")).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, "error.must.be.positive"))
+    }
+
+    "not bind negative numbers" in {
+      forAll(negativeBigDecimals -> "bigDecimals") { bigDecimal: BigDecimal =>
         val result = form.bind(Map(fieldName -> bigDecimal.toString)).apply(fieldName)
         result.errors mustEqual Seq(FormError(fieldName, "error.must.be.positive"))
       }
