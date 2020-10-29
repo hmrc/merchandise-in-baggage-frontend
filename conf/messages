@@ -329,11 +329,25 @@ vehicleRegistrationNumber.hint = You can find this on the number plate on the fr
 vehicleRegistrationNumber.error.required = Enter the Vehicle Registration Number
 
 # CannotUseService
-cannotUseService.title = You need to submit a full customs declaration
-cannotUseService.heading = You need to submit a full customs declaration
-cannotUseService.p1 = For excise, restricted and goods over the threshold you must make a full custom declaration.
-cannotUseService.a = Make a full custom declaration
-cannotUseService.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+cannotUseService.Export.title = You need to submit a full export declaration
+cannotUseService.Export.heading = You need to submit a full export declaration
+cannotUseService.Import.title = You need to submit a full import declaration
+cannotUseService.Import.heading = You need to submit a full import declaration
+cannotUseService.Export.p1 = You have told us you are taking out goods that you cannot declare using this service.
+cannotUseService.Export.p2 = You need to make a full export declaration if you are taking out (any of the following):
+cannotUseService.Import.p1 = You have told us you are bringing in goods that you cannot declare using this service.
+cannotUseService.Import.p2 = You need to make a full import declaration if you are bringing (any of the following):
+cannotUseService.li1 = goods over the value of {0}
+cannotUseService.li2 = goods that weigh more than 1,000 kilograms
+cannotUseService.li3 = alcohol, tobacco or fuel
+cannotUseService.li4.a.text = restricted goods (opens in new tab)
+cannotUseService.li4.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+cannotUseService.li5 = goods that need a licence (controlled goods)
+cannotUseService.li6 = a vehicle that weighs over 3.5 tonnes and can carry no more than 9 people
+cannotUseService.Export.link.text = Make a full export declaration
+cannotUseService.Export.link.href = https://www.gov.uk/guidance/making-a-full-export-declaration
+cannotUseService.Import.link.text = Make a full import declaration
+cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.title = You need to submit a full import declaration

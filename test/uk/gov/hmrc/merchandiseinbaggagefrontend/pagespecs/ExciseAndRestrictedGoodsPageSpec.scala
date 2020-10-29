@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServic
 class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = exciseAndRestrictedGoodsPage
 
-  private def setup: Unit =
+  private def setup(): Unit =
     givenADeclarationJourney(startedImportJourney.copy(
       maybeGoodsDestination = Some(GreatBritain)
     ))

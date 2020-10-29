@@ -22,7 +22,9 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.{Enum, EnumFormat, EnumEnt
 
 import scala.collection.immutable
 
-sealed trait GoodsDestination extends EnumEntry with EnumEntryRadioItemSupport
+sealed trait GoodsDestination extends EnumEntry with EnumEntryRadioItemSupport {
+  def threshold: AmountInPence
+}
 
 object GoodsDestination {
   implicit val format: Format[GoodsDestination] = EnumFormat(GoodsDestinations)
@@ -32,9 +34,12 @@ object GoodsDestinations extends Enum[GoodsDestination] with RadioSupport[GoodsD
   override val baseMessageKey: String = "goodsDestination"
   override val values: immutable.IndexedSeq[GoodsDestination] = findValues
 
-  case object NorthernIreland extends GoodsDestination
+  case object NorthernIreland extends GoodsDestination {
+    override val threshold: AmountInPence = AmountInPence(87300)
+  }
 
   case object GreatBritain extends GoodsDestination {
+    override val threshold: AmountInPence = AmountInPence(150000)
     override val maybeHintMessageKey: Option[String] = Some(s"$baseMessageKey.$entryName.hint")
   }
 }
