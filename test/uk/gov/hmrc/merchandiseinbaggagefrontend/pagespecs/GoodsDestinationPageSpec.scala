@@ -25,7 +25,8 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
   override lazy val page: RadioButtonPage[GoodsDestination] = goodsDestinationPage
 
   "the goods destination page" should {
-    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
+    behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
 

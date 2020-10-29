@@ -35,14 +35,14 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
   extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill), request.declarationJourney.declarationType))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors)),
+        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
         value => {
           repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
             if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())

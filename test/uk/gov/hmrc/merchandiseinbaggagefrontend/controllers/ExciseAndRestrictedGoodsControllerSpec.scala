@@ -16,31 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val controller =
     new ExciseAndRestrictedGoodsController(
       controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[ExciseAndRestrictedGoodsView])
-
-  private def ensureContent(result: Future[Result]) = {
-    val content = contentAsString(result)
-
-    content must include("Are you bringing in excise goods or restricted goods?")
-    content must include("Excise goods are alcohol, tobacco, or fuel. You can")
-    content must include("check if your goods are restricted (opens in new tab or window).")
-    content must include("https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage")
-    content must include("Continue")
-
-    content
-  }
 
   "onPageLoad" must {
     val url = routes.ExciseAndRestrictedGoodsController.onPageLoad().url
@@ -55,7 +41,6 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
     }
 
@@ -66,7 +51,6 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onPageLoad()(request)
 
         status(result) mustEqual OK
-        ensureContent(result)
       }
     }
   }
@@ -111,7 +95,6 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Select one of the options below")
       }
     }
   }
