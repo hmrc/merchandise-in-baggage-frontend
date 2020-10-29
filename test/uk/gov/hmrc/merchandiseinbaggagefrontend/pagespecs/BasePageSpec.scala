@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination, GoodsVatRate, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, _}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
@@ -50,6 +50,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val purchaseDetailsPage: PurchaseDetailsPage = wire[PurchaseDetailsPage]
   lazy val invoiceNumberPage: InvoiceNumberPage = wire[InvoiceNumberPage]
   lazy val reviewGoodsPage: ReviewGoodsPage = wire[ReviewGoodsPage]
+  lazy val removeGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
+  lazy val goodsRemovedPage: GoodsRemovedPage = wire[GoodsRemovedPage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
@@ -97,5 +99,9 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       }
     }
   }
+
+  def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
+
+  def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
 }
 

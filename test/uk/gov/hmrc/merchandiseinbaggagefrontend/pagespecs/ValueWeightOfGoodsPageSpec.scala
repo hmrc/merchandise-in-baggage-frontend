@@ -36,7 +36,7 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, R
     behave like aPageWhichRenders(path, givenAGreatBritainJourney(), greatBritainTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), No, SearchGoodsPage.path())
+    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), No, SearchGoodsPage.path(1))
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), Yes, CannotUseServicePage.path)
   }
 
