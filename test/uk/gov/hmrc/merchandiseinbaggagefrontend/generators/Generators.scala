@@ -43,26 +43,15 @@ trait Generators {
 
   def nonNumerics: Gen[String] = alphaStr suchThat (_.nonEmpty)
 
-  def positiveBigDecimalsWith3dp: Gen[BigDecimal] =
-    for {
-      value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
-    } yield {
-      value.setScale(3, HALF_UP)
-    }
+  def positiveBigDecimalsWithMaximum3dp: Gen[BigDecimal] =
+    arbitrary[BigDecimal] retryUntil (bd => bd > 0 && bd.scale <= 3)
 
-  def zeroOrNegativeBigDecimalsWith3dp: Gen[BigDecimal] =
-    for {
-      value <- arbitrary[BigDecimal] suchThat (bd => bd <= 0)
-    } yield {
-      value.setScale(3, HALF_UP)
-    }
+
+  def negativeBigDecimals: Gen[BigDecimal] =
+    arbitrary[BigDecimal] retryUntil (bd => bd < 0)
 
   def positiveBigDecimalsWithMoreThan3dp: Gen[BigDecimal] =
-    for {
-      value <- arbitrary[BigDecimal] suchThat (bd => bd >= 1)
-    } yield {
-      value.setScale(4, HALF_UP)
-    }
+    arbitrary[BigDecimal] retryUntil (bd => bd > 0 && bd.scale > 3)
 
   def stringsExceptSpecificValues(excluded: Seq[String]): Gen[String] =
     nonEmptyString suchThat (!excluded.contains(_))
