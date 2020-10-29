@@ -15,36 +15,54 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 errorSummary: components.errorSummary,
 h1: components.h1,
+details: components.details,
 inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("exciseAndRestrictedGoods.title"))) {
+@layout(pageTitle = Some(messages(s"exciseAndRestrictedGoods.$declarationType.title"))) {
     @formHelper(action = ExciseAndRestrictedGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
-        @h1("exciseAndRestrictedGoods.heading")
+        @h1(s"exciseAndRestrictedGoods.$declarationType.heading")
 
-        <p class="govuk-hint">
-            @messages("exciseAndRestrictedGoods.hint")
-            <a href="@messages("exciseAndRestrictedGoods.hint.href")" class="govuk-link" target="_blank">
-                @messages("exciseAndRestrictedGoods.hint.a")
-            </a>
-        </p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>@messages("exciseAndRestrictedGoods.li1")</li>
+            <li>@messages("exciseAndRestrictedGoods.li2")</li>
+        </ul>
+
+        @details(
+            summaryText = messages("exciseAndRestrictedGoods.details")
+        ) {
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">@messages("exciseAndRestrictedGoods.details.excise")</span>
+                @messages("exciseAndRestrictedGoods.details.excise.p")
+            </p>
+
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">@messages("exciseAndRestrictedGoods.details.restricted")</span>
+                @messages("exciseAndRestrictedGoods.details.restricted.p")
+                <a class="govuk-link" target="_blank" href="@messages("exciseAndRestrictedGoods.details.restricted.p.a.href")">
+                    @messages("exciseAndRestrictedGoods.details.restricted.p.a.text")
+                </a>
+            </p>
+        }
 
         @inputYesNo(
             form = form,
-            legend = messages("exciseAndRestrictedGoods.heading"),
+            legend = messages(s"exciseAndRestrictedGoods.$declarationType.heading"),
             legendAsHeading = false,
             classes = "govuk-visually-hidden",
         )

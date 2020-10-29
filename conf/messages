@@ -130,18 +130,28 @@ startExport.p4.2 = 5 days
 startExport.p4.3 = before you leave the UK, not before.
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.title = Are you bringing in excise goods or restricted goods?
-exciseAndRestrictedGoods.heading = Are you bringing in excise goods or restricted goods?
-exciseAndRestrictedGoods.hint = Excise goods are alcohol, tobacco, or fuel. You can
-exciseAndRestrictedGoods.hint.a = check if your goods are restricted (opens in new tab or window).
-exciseAndRestrictedGoods.hint.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
+exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to the UK?
+exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to the UK?
+exciseAndRestrictedGoods.Export.title = Are you taking any of the following goods out of the UK?
+exciseAndRestrictedGoods.Export.heading = Are you taking any of the following goods out of the UK?
+exciseAndRestrictedGoods.li1 = Alcohol, tobacco or fuel (excise goods).
+exciseAndRestrictedGoods.li2 = Controlled or restricted goods.
+exciseAndRestrictedGoods.details = What are excise, controlled and restricted goods
+exciseAndRestrictedGoods.details.excise = Excise goods:
+exciseAndRestrictedGoods.details.excise.p = products containing alcohol including beers, wines and spirits; tobacco products including cigarettes, cigars and loose tobacco; energy products including hydrocarbon oils and biofuels for use as motor or heating fuel.
+exciseAndRestrictedGoods.details.restricted = Controlled or restricted goods:
+exciseAndRestrictedGoods.details.restricted.p = Goods that need a licence, or are subject to health or environmental controls. For example, firearms, explosives and ammunition.
+exciseAndRestrictedGoods.details.restricted.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
+exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
 exciseAndRestrictedGoods.error.required = Select one of the options below
 exciseAndRestrictedGoods.error.enum = Select one of the options below
 
 
 # GoodsDestination
-goodsDestination.title = Where in the UK are the goods going?
-goodsDestination.heading = Where in the UK are the goods going?
+goodsDestination.Import.title = Where in the UK are the goods going to?
+goodsDestination.Import.heading = Where in the UK are the goods going to?
+goodsDestination.Export.title = Where in the UK are the goods leaving from?
+goodsDestination.Export.heading = Where in the UK are the goods leaving from?
 goodsDestination.NorthernIreland = Northern Ireland
 goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland or Wales

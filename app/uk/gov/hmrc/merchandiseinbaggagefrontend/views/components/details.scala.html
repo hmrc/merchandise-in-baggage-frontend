@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,12 +12,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
+@this(govukDetails: GovukDetails)
 
-object ExciseAndRestrictedGoodsPage {
-  val path = "/merchandise-in-baggage/excise-and-restricted-goods"
-  val importTitle = "Are you bringing any of the following goods to the UK?"
-  val exportTitle = "Are you taking any of the following goods out of the UK?"
-}
+@(
+        summaryText: String,
+        id: Option[String] = None,
+        open: Boolean = false,
+        classes: Option[String] = None
+)(content: Html)
+
+<div class="form-group">
+    <details
+    @if(open){ open}
+    @if(id){ id="@id"}
+        class="govuk-details @if(classes){@classes}">
+    <summary class="govuk-details__summary">
+        <span class="govuk-details__summary-text">
+        @summaryText
+        </span>
+    </summary>
+    <div class="govuk-details__text">
+    @content
+</div>
+    </details>
+</div>

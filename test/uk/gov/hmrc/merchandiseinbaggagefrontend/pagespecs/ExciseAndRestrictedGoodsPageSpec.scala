@@ -31,7 +31,8 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
     ))
 
   "the excise and restricted goods page" should {
-    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
+    behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aDataCapturePageWithConditionalRouting(path, setup, No, ValueWeightOfGoodsPage.path)

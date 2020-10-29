@@ -35,7 +35,7 @@ class GoodsDestinationController @Inject()(
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeGoodsDestination.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeGoodsDestination.fold(form)(form.fill), request.declarationJourney.declarationType))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -43,7 +43,7 @@ class GoodsDestinationController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
         value =>
           repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(value))).map {_ =>
             if(value == NorthernIreland) Redirect(routes.GoodsRouteDestinationController.onPageLoad())
