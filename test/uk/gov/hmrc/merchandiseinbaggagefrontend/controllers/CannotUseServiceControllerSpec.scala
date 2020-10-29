@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CannotUseServiceView
 
 class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
@@ -30,15 +31,11 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
 
     "return OK and render the view" when{
       "a declaration journey has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
+        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain)))
         val request = buildGet(url, sessionId)
         val result = controller.onPageLoad()(request)
-        val content = contentAsString(result)
 
         status(result) mustEqual OK
-        content must include("You need to submit a full customs declaration")
-        content must include("For excise, restricted and goods over the threshold you must make a full custom declaration.")
-        content must include("https://www.gov.uk/guidance/making-a-full-import-declaration")
       }
     }
   }
