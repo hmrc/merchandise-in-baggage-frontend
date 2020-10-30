@@ -57,6 +57,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
+  lazy val customsAgentPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   def givenAnImportJourneyIsStarted(): Unit = {
     open(StartImportPage.path)

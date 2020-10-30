@@ -69,7 +69,6 @@ trait CoreTestData {
   val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Heathrow, journeyDate)
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
-    completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(heathrowJourneyEntry))
     completedDeclarationJourney.copy(
       maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
 
