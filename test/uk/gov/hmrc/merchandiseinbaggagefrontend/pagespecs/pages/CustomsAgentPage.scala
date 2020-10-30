@@ -16,14 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatestplus.selenium.WebBrowser
-
-class CustomsAgentPage(implicit webDriver: WebDriver) extends PageWithCTA {
-
-  import WebBrowser._
-
-}
 
 object CustomsAgentPage {
   val path = "/merchandise-in-baggage/customs-agent"
