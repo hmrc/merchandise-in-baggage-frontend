@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.InvoiceNumberPage._
 
 class InvoiceNumberPageSpec extends GoodsEntryPageSpec[String, InvoiceNumberPage] with ScalaFutures {
-  override lazy val page: InvoiceNumberPage = invoiceNumberPage
+  override lazy val page: InvoiceNumberPage = wire[InvoiceNumberPage]
 
   "the invoice number page" should {
     behave like aGoodsEntryPage(path, title, "Invoice123", None)

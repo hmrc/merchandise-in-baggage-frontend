@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage._
 
 class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentDetailsPage] {
-  override lazy val page: AgentDetailsPage = agentDetailsPage
+  override lazy val page: AgentDetailsPage = wire[AgentDetailsPage]
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)

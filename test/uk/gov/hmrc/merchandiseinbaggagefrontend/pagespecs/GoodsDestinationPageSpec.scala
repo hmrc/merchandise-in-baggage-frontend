@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsDestinationPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{ExciseAndRestrictedGoodsPage, GoodsRouteDestinationPage, RadioButtonPage}
 
 class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDestination, RadioButtonPage[GoodsDestination]] {
-  override lazy val page: RadioButtonPage[GoodsDestination] = goodsDestinationPage
+  override lazy val page: RadioButtonPage[GoodsDestination] = wire[RadioButtonPage[GoodsDestination]]
 
   "the goods destination page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)

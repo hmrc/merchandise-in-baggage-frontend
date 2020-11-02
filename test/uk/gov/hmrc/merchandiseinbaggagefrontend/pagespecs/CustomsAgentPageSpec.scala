@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
@@ -23,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CustomsAgentPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{AgentDetailsPage, EoriNumberPage, RadioButtonPage}
 
 class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] with CoreTestData {
-  override lazy val page: RadioButtonPage[YesNo] = customsAgentPage
+  override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
 
   "the page" should {
@@ -36,7 +37,7 @@ class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBu
         givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
         open(path)
 
-        customsAgentPage.mustRenderBasicContent(path, title)
+        page.mustRenderBasicContent(path, title)
       }
     }
   }

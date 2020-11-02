@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PurchaseDetailsPage._
@@ -23,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPa
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
-  override lazy val page: PurchaseDetailsPage = purchaseDetailsPage
+  override lazy val page: PurchaseDetailsPage = wire[PurchaseDetailsPage]
 
   override def beforeEach(): Unit = {
     super.beforeEach()

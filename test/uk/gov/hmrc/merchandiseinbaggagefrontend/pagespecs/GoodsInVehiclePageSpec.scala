@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsInVehiclePage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, RadioButtonPage, VehicleSizePage}
 
 class GoodsInVehiclePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
-  override lazy val page: RadioButtonPage[YesNo] = goodsInVehiclePage
+  override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   "the excise and restricted goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
