@@ -106,6 +106,13 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
     readPath() mustBe "/pay/initiate-journey"
   }
 
+  def mustRedirectToDeclarationConfirmation(): Unit = {
+    val button = find(NameQuery("makeDeclarationButton")).get
+    click on button
+
+    readPath() mustBe "/pay/initiate-journey"
+  }
+
   def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
     val payApiRequestCapture = server.getAllServeEvents.asScala
       .find(_.getRequest.getAbsoluteUrl.contains("pay-api/mib-frontend/mib/journey/start"))

@@ -387,5 +387,6 @@ checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my decl
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.payButton = Accept and Pay
+checkYourAnswers.makeDeclarationButton = Make declaration
 
 
