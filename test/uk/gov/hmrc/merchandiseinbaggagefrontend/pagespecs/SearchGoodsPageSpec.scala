@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage.{path, title}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
 
 class SearchGoodsPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
-  override def page: SearchGoodsPage = searchGoodsPage
+  override def page: SearchGoodsPage = wire[SearchGoodsPage]
 
   "the search goods page" should {
     behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path))

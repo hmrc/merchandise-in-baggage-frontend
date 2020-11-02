@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
@@ -23,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ValueWeightOfGoo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, RadioButtonPage, SearchGoodsPage}
 
 class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
-  override lazy val page: RadioButtonPage[YesNo] = valueWeightOfGoodsPage
+  override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   private def givenANorthernIrelandJourney(): Unit =
     givenADeclarationJourney(startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland)))

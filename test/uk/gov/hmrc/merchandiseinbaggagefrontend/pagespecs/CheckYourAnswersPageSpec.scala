@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation{
-  override lazy val page: CheckYourAnswersPage = checkYourAnswersPage
+  override lazy val page: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -33,8 +34,8 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
         open(path)
 
-        checkYourAnswersPage.mustRenderBasicContent(path, title)
-        checkYourAnswersPage.mustRenderDetail(declaration, taxDue.totalTaxDue)
+        page.mustRenderBasicContent(path, title)
+        page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
 
       "the declaration is complete but sparse" in {

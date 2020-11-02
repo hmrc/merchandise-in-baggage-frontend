@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage}
 
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
-  override def page: PaymentCalculationPage = paymentCalculationPage
+  override def page: PaymentCalculationPage = wire[PaymentCalculationPage]
 
   private def setUpTaxCalculationAndOpenPage() = {
     val taxCalculation = givenADeclarationWithTaxDue(importJourneyWithTwoCompleteGoodsEntries).futureValue

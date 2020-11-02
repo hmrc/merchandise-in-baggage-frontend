@@ -16,15 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, YesNo}
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.RemoveGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsRemovedPage, RadioButtonPage, ReviewGoodsPage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
-  override def page: RadioButtonPage[YesNo] = removeGoodsPage
+  override def page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   "the remove goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path(1))

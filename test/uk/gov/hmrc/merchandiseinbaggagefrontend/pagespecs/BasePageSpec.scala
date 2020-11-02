@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination, GoodsVatRate, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, TravellerDetailsPage, _}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
@@ -40,26 +40,6 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage = wire[TestOnlyDeclarationJourneyPage]
   lazy val startImportPage: StartImportPage = wire[StartImportPage]
   lazy val startExportPage: StartExportPage = wire[StartExportPage]
-  lazy val exciseAndRestrictedGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
-  lazy val goodsDestinationPage:   RadioButtonPage[GoodsDestination] = wire[RadioButtonPage[GoodsDestination]]
-  lazy val goodsRouteDestinationPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
-  lazy val valueWeightOfGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
-  lazy val searchGoodsPage: SearchGoodsPage = wire[SearchGoodsPage]
-  lazy val goodsVatRatePage: RadioButtonPage[GoodsVatRate] = wire[RadioButtonPage[GoodsVatRate]]
-  lazy val searchGoodsCountryPage: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
-  lazy val purchaseDetailsPage: PurchaseDetailsPage = wire[PurchaseDetailsPage]
-  lazy val invoiceNumberPage: InvoiceNumberPage = wire[InvoiceNumberPage]
-  lazy val reviewGoodsPage: ReviewGoodsPage = wire[ReviewGoodsPage]
-  lazy val removeGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
-  lazy val goodsRemovedPage: GoodsRemovedPage = wire[GoodsRemovedPage]
-  lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
-  lazy val paymentCalculationPage: PaymentCalculationPage = wire[PaymentCalculationPage]
-  lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
-  lazy val travellerDetailsPage: TravellerDetailsPage = wire[TravellerDetailsPage]
-  lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
-  lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
-  lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
-  lazy val customsAgentPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   def givenAnImportJourneyIsStarted(): Unit = {
     open(StartImportPage.path)

@@ -19,23 +19,23 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ExciseAndRestrictedGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, RadioButtonPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsInVehiclePage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, RadioButtonPage, VehicleSizePage}
 
-class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
+class GoodsInVehiclePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
-  private def setup(): Unit = givenADeclarationJourney(startedImportToGreatBritainJourney)
-
   "the excise and restricted goods page" should {
-    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
-    behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
-    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup(), No, ValueWeightOfGoodsPage.path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, CannotUseServicePage.path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), Yes, VehicleSizePage.path)
+    behave like aDataCapturePageWithConditionalRouting(
+      path,
+      givenADeclarationJourney(completedDeclarationJourney.copy(maybeTravellingByVehicle = None)),
+      No,
+      CheckYourAnswersPage.path)
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =
-    declarationJourney.maybeExciseOrRestrictedGoods
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeTravellingByVehicle
 }

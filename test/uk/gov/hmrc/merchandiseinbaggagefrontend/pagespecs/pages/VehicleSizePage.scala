@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-object CustomsAgentPage {
-  val path = "/merchandise-in-baggage/customs-agent"
-  val title = "Are you a customs agent?"
+object VehicleSizePage{
+  val path = "/merchandise-in-baggage/vehicle-size"
+  val title = "Are you bringing the goods in a small vehicle?"
 }

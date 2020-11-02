@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, JourneyDetailsEntry}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.JourneyDetailsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage}
 
 class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
-  override lazy val page: JourneyDetailsPage = journeyDetailsPage
+  override lazy val page: JourneyDetailsPage = wire[JourneyDetailsPage]
 
   "the journey details page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)

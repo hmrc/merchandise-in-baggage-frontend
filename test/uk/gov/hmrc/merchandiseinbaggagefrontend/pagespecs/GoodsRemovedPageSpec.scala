@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsRemovedPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsRemovedPage, SearchGoodsPage, StartImportPage}
 
 class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
-  override def page: GoodsRemovedPage = goodsRemovedPage
+  override def page: GoodsRemovedPage = wire[GoodsRemovedPage]
 
   "the goods removed page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)

@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, SearchGoodsPage}
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
-  override lazy val page: ReviewGoodsPage = reviewGoodsPage
+  override lazy val page: ReviewGoodsPage = wire[ReviewGoodsPage]
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -32,9 +33,9 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
-        reviewGoodsPage.mustRenderBasicContent(path, title)
+        page.mustRenderBasicContent(path, title)
 
-        reviewGoodsPage.goodsSummariesAsMap mustBe
+        page.goodsSummariesAsMap mustBe
           Seq(
             Map(
               "Price paid" -> "99.99, Eurozone Euro (EUR)",
@@ -50,9 +51,9 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
-        reviewGoodsPage.mustRenderBasicContent(path, title)
+        page.mustRenderBasicContent(path, title)
 
-        reviewGoodsPage.goodsSummariesAsMap mustBe
+        page.goodsSummariesAsMap mustBe
           Seq(
             Map(
               "Price paid" -> "99.99, Eurozone Euro (EUR)",
@@ -78,14 +79,14 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
-        reviewGoodsPage.remove(0) mustBe RemoveGoodsPage.path(1)
+        page.remove(0) mustBe RemoveGoodsPage.path(1)
       }
 
       "there are multiple goods entries" in {
         givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
-        reviewGoodsPage.remove(1) mustBe RemoveGoodsPage.path(2)
+        page.remove(1) mustBe RemoveGoodsPage.path(2)
       }
     }
 
@@ -94,14 +95,14 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
-        reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(2)
+        page.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(2)
       }
 
       "the user elects to make a third goods entry" in {
         givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
-        reviewGoodsPage.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(3)
+        page.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(3)
       }
     }
 
@@ -110,7 +111,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
 
         open(path)
-        reviewGoodsPage.completeAndSubmitForm(No) mustBe PaymentCalculationPage.path
+        page.completeAndSubmitForm(No) mustBe PaymentCalculationPage.path
       }
     }
   }
