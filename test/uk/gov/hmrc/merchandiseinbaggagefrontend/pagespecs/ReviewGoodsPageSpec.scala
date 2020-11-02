@@ -18,13 +18,14 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvalidRequestPage, PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, SearchGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, SearchGoodsPage}
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = reviewGoodsPage
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageThatRequiresACompletedGoodsEntry(path)
 
     "render correctly" when {
       "a single goods entry is complete" in {
@@ -85,23 +86,6 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         open(path)
 
         reviewGoodsPage.remove(1) mustBe RemoveGoodsPage.path(2)
-      }
-    }
-
-    s"redirect to ${InvalidRequestPage.path}" when {
-      "there are no started goods entries" in {
-        givenADeclarationJourney(startedImportJourney)
-        open(path) mustBe InvalidRequestPage.path
-      }
-
-      "there is no complete goods entries" in {
-        givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
-        open(path) mustBe InvalidRequestPage.path
-      }
-
-      "there are incomplete goods entries" in {
-        givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
-        open(path) mustBe InvalidRequestPage.path
       }
     }
 

@@ -16,42 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrencyIsFound
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
 
-import scala.concurrent.Future
-
-class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
+class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation{
   override lazy val page: CheckYourAnswersPage = checkYourAnswersPage
-
-  private lazy val calculationService = injector.instanceOf[CalculationService]
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    webDriver.manage().deleteAllCookies()
-  }
-
-  def createDeclarationAndCalculateTaxDue(declarationJourney: DeclarationJourney): Future[PaymentCalculations] = {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-
-    givenCurrencyIsFound("EUR", wireMockServer)
-
-    givenADeclarationJourney(declarationJourney)
-
-    calculationService.paymentCalculation(declarationJourney.declarationIfRequiredAndComplete.get.declarationGoods)
-  }
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
 
     "render correctly" when {
       "the declaration is complete" in {
-        val taxDue = createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
+        val taxDue = givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
         val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
         open(path)
@@ -62,7 +39,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
 
       "the declaration is complete but sparse" in {
         val declaration = sparseCompleteDeclarationJourney.declarationIfRequiredAndComplete.get
-        val taxDue = createDeclarationAndCalculateTaxDue(sparseCompleteDeclarationJourney).futureValue
+        val taxDue = givenADeclarationWithTaxDue(sparseCompleteDeclarationJourney).futureValue
 
         open(path)
 
@@ -80,7 +57,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] {
     }
 
     "allow the user to make a payment" in {
-      createDeclarationAndCalculateTaxDue(completedDeclarationJourney).futureValue
+      givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
       givenTaxArePaid(wireMockServer)
 
       open(path)
