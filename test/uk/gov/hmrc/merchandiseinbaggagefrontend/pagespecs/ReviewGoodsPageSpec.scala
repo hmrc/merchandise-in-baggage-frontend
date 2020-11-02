@@ -33,7 +33,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
-        page.mustRenderBasicContent(path, title)
+        page.headerText() mustBe title
 
         page.goodsSummariesAsMap mustBe
           Seq(
@@ -51,7 +51,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
-        page.mustRenderBasicContent(path, title)
+        page.headerText() mustBe title
 
         page.goodsSummariesAsMap mustBe
           Seq(

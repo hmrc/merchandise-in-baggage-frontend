@@ -20,10 +20,11 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.http.HeaderNames._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage.expectedSectionHeaders
-import collection.JavaConverters._
-import uk.gov.hmrc.http.HeaderNames._
+
+import scala.collection.JavaConverters._
 
 class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
@@ -31,6 +32,10 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
     findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
+
+    def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
+
+    def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
 
     declaration.declarationGoods.goods.zipWithIndex.foreach { goodsWithIndex =>
       val goods = goodsWithIndex._1

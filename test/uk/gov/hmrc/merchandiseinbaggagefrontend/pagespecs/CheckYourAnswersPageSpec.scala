@@ -34,7 +34,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
         open(path)
 
-        page.mustRenderBasicContent(path, title)
+        page.headerText() mustBe title
         page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
 
@@ -44,7 +44,6 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
         open(path)
 
-        page.mustRenderBasicContent(path, title)
         page.mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
     }

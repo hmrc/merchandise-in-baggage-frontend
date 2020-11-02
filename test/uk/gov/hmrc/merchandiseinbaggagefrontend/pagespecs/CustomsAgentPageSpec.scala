@@ -26,20 +26,11 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{AgentDetailsPag
 class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] with CoreTestData {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
-
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, AgentDetailsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, EoriNumberPage.path)
-
-    "render correctly" when {
-      "the declaration has missing customs agent answer" in {
-        givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
-        open(path)
-
-        page.mustRenderBasicContent(path, title)
-      }
-    }
   }
 
   private def setup(): Unit =
