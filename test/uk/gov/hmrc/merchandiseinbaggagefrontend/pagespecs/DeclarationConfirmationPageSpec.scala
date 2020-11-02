@@ -29,9 +29,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     "render correctly" when {
       "make declaration" in {
         givenADeclarationJourney(completedDeclarationJourney.copy(declarationType = DeclarationType.Export))
-        //        val taxDue = givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
-        //        val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
-
         open(path)
 
         declarationConfirmationPage.mustRenderBasicContent(path, title)
