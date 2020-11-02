@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsDestination, GoodsVatRate, YesNo}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, _}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, TravellerDetailsPage, _}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
@@ -55,6 +55,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
   lazy val paymentCalculationPage: PaymentCalculationPage = wire[PaymentCalculationPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
+  lazy val travellerDetailsPage: TravellerDetailsPage = wire[TravellerDetailsPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]

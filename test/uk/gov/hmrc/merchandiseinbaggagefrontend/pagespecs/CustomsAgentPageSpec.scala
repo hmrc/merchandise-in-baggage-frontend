@@ -28,8 +28,8 @@ class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBu
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup, Yes, AgentDetailsPage.path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup, No, EoriNumberPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, AgentDetailsPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), No, EoriNumberPage.path)
 
     "render correctly" when {
       "the declaration has missing customs agent answer" in {
