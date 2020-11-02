@@ -389,4 +389,6 @@ checkYourAnswers.sendDeclaration.warning.message = If you do not declare all you
 checkYourAnswers.payButton = Accept and Pay
 checkYourAnswers.makeDeclarationButton = Make declaration
 
+declarationConfirmation.title = Confirmation page
+
 
