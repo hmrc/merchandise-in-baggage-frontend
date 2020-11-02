@@ -63,7 +63,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     s"render basic content with path $path title '$expectedTitle''" in {
       setUp
       open(path)
-      page.mustRenderBasicContent(path, expectedTitle)
+      readPath() mustBe path
+      page.headerText() mustBe expectedTitle
     }
 
   def aPageWhichRequiresADeclarationJourney(path: String): Unit = {

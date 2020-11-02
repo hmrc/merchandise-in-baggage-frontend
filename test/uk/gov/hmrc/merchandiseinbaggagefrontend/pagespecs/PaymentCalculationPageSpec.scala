@@ -39,7 +39,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
       val taxCalculation = setUpTaxCalculationAndOpenPage()
       val paymentCalculations = taxCalculation.paymentCalculations
 
-      page.mustRenderBasicContent(path, title(taxCalculation.totalTaxDue))
+      page.headerText() mustBe title(taxCalculation.totalTaxDue)
       page.summaryHeaders mustBe Seq("Type of goods", "Customs Duty", "VAT", "Total")
 
       Range(0, 1).foreach { index =>
