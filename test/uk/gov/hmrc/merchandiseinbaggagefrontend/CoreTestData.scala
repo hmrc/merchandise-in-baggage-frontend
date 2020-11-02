@@ -21,6 +21,8 @@ import java.time.LocalDate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
@@ -37,7 +39,10 @@ trait CoreTestData {
 
   val sessionId: SessionId = SessionId()
 
-  val startedImportJourney: DeclarationJourney = DeclarationJourney(sessionId, DeclarationType.Import)
+  val startedImportJourney: DeclarationJourney = DeclarationJourney(sessionId, Import)
+
+  val startedImportToGreatBritainJourney: DeclarationJourney =
+    startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain))
 
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 

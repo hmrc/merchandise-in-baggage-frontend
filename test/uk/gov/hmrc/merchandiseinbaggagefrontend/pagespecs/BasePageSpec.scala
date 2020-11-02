@@ -57,6 +57,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val travellerDetailsPage: TravellerDetailsPage = wire[TravellerDetailsPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
+  lazy val goodsInVehiclePage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
+  lazy val vehicleSizePage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
   lazy val checkYourAnswersPage: CheckYourAnswersPage = wire[CheckYourAnswersPage]
   lazy val customsAgentPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]

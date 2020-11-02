@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ExciseAndRestrictedGoodsPage._
@@ -25,18 +24,15 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServic
 class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = exciseAndRestrictedGoodsPage
 
-  private def setup(): Unit =
-    givenADeclarationJourney(startedImportJourney.copy(
-      maybeGoodsDestination = Some(GreatBritain)
-    ))
+  private def setup(): Unit = givenADeclarationJourney(startedImportToGreatBritainJourney)
 
   "the excise and restricted goods page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
     behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup, No, ValueWeightOfGoodsPage.path)
-    behave like aDataCapturePageWithConditionalRouting(path, setup, Yes, CannotUseServicePage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), No, ValueWeightOfGoodsPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, CannotUseServicePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =
