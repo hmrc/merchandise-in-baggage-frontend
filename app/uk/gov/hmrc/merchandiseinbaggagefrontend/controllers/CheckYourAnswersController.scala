@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequestBuilder
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
@@ -48,12 +49,16 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
-      makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
-        .recoverWith {
-          case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        }
-    })
+    request.declarationJourney.declarationType match {
+      case Export => Future.successful(Redirect("declaration-confirmation"))
+      case Import =>
+        request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
+          makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
+            .recoverWith {
+              case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+            }
+        })
+    }
   }
 
   private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =

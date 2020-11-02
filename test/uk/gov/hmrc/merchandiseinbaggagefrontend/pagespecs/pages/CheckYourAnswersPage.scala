@@ -110,7 +110,7 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
     val button = find(NameQuery("makeDeclarationButton")).get
     click on button
 
-    readPath() mustBe "/pay/initiate-journey"
+    readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
   }
 
   def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
