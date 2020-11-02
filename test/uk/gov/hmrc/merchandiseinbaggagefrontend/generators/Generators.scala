@@ -23,8 +23,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.{alphaStr, choose}
 
-import scala.math.BigDecimal.RoundingMode.HALF_UP
-
 trait Generators {
 
   def nonBooleans: Gen[String] =

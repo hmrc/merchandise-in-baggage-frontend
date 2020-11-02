@@ -53,6 +53,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   lazy val removeGoodsPage: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
   lazy val goodsRemovedPage: GoodsRemovedPage = wire[GoodsRemovedPage]
   lazy val agentDetailsPage: AgentDetailsPage = wire[AgentDetailsPage]
+  lazy val paymentCalculationPage: PaymentCalculationPage = wire[PaymentCalculationPage]
   lazy val eoriNumberPage: EoriNumberPage = wire[EoriNumberPage]
   lazy val journeyDetailsPage: JourneyDetailsPage = wire[JourneyDetailsPage]
   lazy val vehicleRegistrationNumberPage: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
@@ -96,6 +97,25 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration has been started but the user has not declared whether or not they are a customs agent" in {
         givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
+        open(path) mustBe InvalidRequestPage.path
+      }
+    }
+  }
+
+  def aPageThatRequiresACompletedGoodsEntry(path: String): Unit = {
+    s"redirect to ${InvalidRequestPage.path}" when {
+      "there are no started goods entries" in {
+        givenADeclarationJourney(startedImportJourney)
+        open(path) mustBe InvalidRequestPage.path
+      }
+
+      "there is no complete goods entries" in {
+        givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
+        open(path) mustBe InvalidRequestPage.path
+      }
+
+      "there are incomplete goods entries" in {
+        givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
         open(path) mustBe InvalidRequestPage.path
       }
     }

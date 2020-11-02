@@ -16,6 +16,37 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
+import org.openqa.selenium.{By, WebDriver}
+import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
+
+import scala.collection.JavaConverters._
+
+class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
+
+  import WebBrowser._
+
+  def clickOnCTA(): String = {
+    val button = find(ClassNameQuery("govuk-button")).get
+    click on button
+
+    readPath()
+  }
+
+  def summaryHeaders: Seq[String] = {
+    val tableHead = find(ClassNameQuery("govuk-table__head")).head.underlying
+    tableHead.findElements(By.className("govuk-table__header")).asScala.map(_.getText)
+  }
+
+  def summaryRow(index: Int): Seq[String] = {
+    val tableBody = find(ClassNameQuery("govuk-table__body")).head.underlying
+    val tableRows = tableBody.findElements(By.className("govuk-table__row")).asScala
+    tableRows(index).findElements(By.className("govuk-table__cell")).asScala.map(_.getText)
+  }
+}
+
 object PaymentCalculationPage {
   val path: String = "/merchandise-in-baggage/payment-calculation"
+
+  def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
 }
