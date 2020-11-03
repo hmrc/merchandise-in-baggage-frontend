@@ -16,97 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-
-  private lazy val controller =
-    new SearchGoodsController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[SearchGoodsView])
-
-  private def ensureContent(result: Future[Result]) = {
-    val content = contentAsString(result)
-
-    content must include("What type of goods are you bringing into the UK?")
-    content must include("Add your goods by their type or category. For example, clothes, electronics, or food.")
-    content must include("Continue")
-
-    content
-  }
-
-  private val goodsEntries = GoodsEntries(completedGoodsEntry)
-
-  "onPageLoad" must {
-    val url = routes.SearchGoodsController.onPageLoad(1).url
-    val getRequest = buildGet(url, sessionId)
-
-    behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "return OK and render the view" when {
-      "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad(1)(getRequest)
-
-        status(result) mustEqual OK
-        ensureContent(result)
-      }
-    }
-
-    "return OK and render the view" when {
-      "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
-
-        val result = controller.onPageLoad(1)(getRequest)
-
-        status(result) mustEqual OK
-        ensureContent(result)
-      }
-    }
-  }
-
   "onSubmit" must {
-    val url = routes.SearchGoodsController.onSubmit(1).url
-    val postRequest = buildPost(url, sessionId)
-
-    behave like anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
-
-    "redirect to /goods-vat-rate" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val request = postRequest.withFormUrlEncodedBody(("category", "test category"), ("quantity", "100"))
-
-        val result = controller.onSubmit(1)(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.GoodsVatRateController.onPageLoad(1).toString
-
-        startedImportJourney.goodsEntries mustBe GoodsEntries.empty
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .goodsEntries
-          .entries
-          .head mustBe GoodsEntry(Some(CategoryQuantityOfGoods("test category", "100")))
-      }
-    }
-
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
+        val controller =
+          new SearchGoodsController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[SearchGoodsView])
+
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        val result = controller.onSubmit(1)(postRequest)
+        val result = controller.onSubmit(1)(buildPost(routes.SearchGoodsController.onSubmit(1).url, sessionId))
+        val content = contentAsString(result)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Enter the type of goods")
+
+        content must include("What type of goods are you bringing into the UK?")
+        content must include("Add your goods by their type or category. For example, clothes, electronics, or food.")
+        content must include("Continue")
       }
     }
   }

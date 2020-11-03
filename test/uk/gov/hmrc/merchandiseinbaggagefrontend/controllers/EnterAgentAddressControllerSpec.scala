@@ -25,31 +25,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.AddressLookupFrontendStub.
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
-  private val connector = injector.instanceOf[AddressLookupFrontendConnector]
-  private val controller = new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
-
-  private val address =
-    Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), Country("GB", Some("United Kingdom")))
-
-  "onPageLoad" must {
-    val url = routes.EnterAgentAddressController.onPageLoad().url
-
-    givenInitJourney(wireMockServer)
-
-    "redirect to address-lookup-frontend" when {
-      "a declaration journey has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-        val request = buildGet(url, sessionId)
-        val result = controller.onPageLoad()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result) mustBe Some("/blah")
-      }
-    }
-  }
-
   "returnFromAddressLookup" must {
+    val connector = injector.instanceOf[AddressLookupFrontendConnector]
+    val controller = new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
     val url = routes.EnterAgentAddressController.returnFromAddressLookup("id").url
+    val address =
+      Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), Country("GB", Some("United Kingdom")))
 
     givenConfirmJourney("id", address, wireMockServer)
 

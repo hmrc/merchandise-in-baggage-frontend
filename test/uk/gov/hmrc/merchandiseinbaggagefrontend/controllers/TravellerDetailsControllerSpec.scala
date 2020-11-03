@@ -17,89 +17,24 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.{firstName, form, lastName}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Name
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
-  private val name = Name("Terry", "Test")
-
-  private lazy val controller =
-    new TravellerDetailsController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[TravellerDetailsPage])
-
-  "onPageLoad" must {
-    val url = routes.TravellerDetailsController.onPageLoad().url
-    val getRequest = buildGet(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "return OK and render the view" when {
-      "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-        val content = contentAsString(result)
-
-        status(result) mustEqual OK
-
-        content must include("Enter the name of the person carrying the goods")
-        content must include("First name")
-        content must include("Last name")
-        content must include("Continue")
-      }
-    }
-
-    "return OK and render the view" when {
-      "a declaration has been started and trader name persisted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(name)))
-
-        val result = controller.onPageLoad()(getRequest)
-        val content = contentAsString(result)
-
-        status(result) mustEqual OK
-
-        content must include("Enter the name of the person carrying the goods")
-        content must include("First name")
-        content must include(name.firstName)
-        content must include("Last name")
-        content must include(name.lastName)
-        content must include("Continue")
-      }
-    }
-  }
-
   "onSubmit" must {
-    val url = routes.GoodsDestinationController.onSubmit().url
-    val postRequest = buildPost(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
-
-    "Persist the submitted details and redirect to /enter-trader-address" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val request = postRequest.withFormUrlEncodedBody((firstName, name.firstName), (lastName, name.lastName))
-
-        form.bindFromRequest()(request)
-
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.JourneyDetailsController.onPageLoad().toString
-        declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.maybeNameOfPersonCarryingTheGoods mustBe Some(name)
-      }
-    }
-
     "return BAD_REQUEST and errors" when {
       "no entry is made" in {
+        val controller =
+          new TravellerDetailsController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[TravellerDetailsPage])
+
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        form.bindFromRequest()(postRequest)
+        form.bindFromRequest()(buildPost(routes.GoodsDestinationController.onSubmit().url, sessionId))
 
-        val result = controller.onSubmit()(postRequest)
+        val result = controller.onSubmit()(buildPost(routes.GoodsDestinationController.onSubmit().url, sessionId))
         val content = contentAsString(result)
 
         status(result) mustEqual BAD_REQUEST

@@ -16,91 +16,27 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
-import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.AgentDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
 
 class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
-
-  private lazy val controller =
-    new AgentDetailsController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[AgentDetailsView])
-
-  private def ensureContent(result: Future[Result]) = {
-    val content = contentAsString(result)
-
-    content must include("Enter the business name of the customs agent")
-    content must include("Continue")
-
-    content
-  }
-
-  "onPageLoad" must {
-    val url = routes.AgentDetailsController.onPageLoad().url
-    val getRequest = buildGet(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "return OK and render the view" when {
-      "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual OK
-        ensureContent(result)
-      }
-    }
-
-    "return OK and render the view" when {
-      "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeCustomsAgentName = Some("test agent")))
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual OK
-        ensureContent(result) must include("test agent")
-      }
-    }
-  }
-
   "onSubmit" must {
-    val url = routes.AgentDetailsController.onSubmit().url
-    val postRequest = buildPost(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
-
-    "redirect to /enter-agent-address" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val request = postRequest.withFormUrlEncodedBody(("value", "test agent"))
-
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.EnterAgentAddressController.onPageLoad().toString
-
-        startedImportJourney.maybeCustomsAgentName mustBe None
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .maybeCustomsAgentName mustBe Some("test agent")
-      }
-    }
-
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
+        val controller =
+          new AgentDetailsController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[AgentDetailsView])
+
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        val result = controller.onSubmit()(postRequest)
+        val result = controller.onSubmit()(buildPost(routes.AgentDetailsController.onSubmit().url, sessionId))
+        val content = contentAsString(result)
 
         status(result) mustEqual BAD_REQUEST
-        ensureContent(result) must include("Enter a value")
+        content must include("Enter the business name of the customs agent")
+        content must include("Continue")
       }
     }
   }
