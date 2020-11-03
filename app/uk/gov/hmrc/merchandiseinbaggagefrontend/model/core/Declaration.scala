@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.text.NumberFormat.getCurrencyInstance
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
@@ -141,6 +141,7 @@ object JourneyDetailsEntry {
 
 case class DeclarationJourney(sessionId: SessionId,
                               declarationType: DeclarationType,
+                              createdAt: LocalDateTime = LocalDateTime.now(),
                               maybeExciseOrRestrictedGoods: Option[YesNo] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,

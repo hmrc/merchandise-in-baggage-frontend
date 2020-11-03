@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.repositories
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 import play.api.libs.json.Json.{JsValueWrapper, _}
 import play.api.libs.json._
 import reactivemongo.api.DB
 import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.api.indexes.Index
 import reactivemongo.api.indexes.IndexType.Ascending
+import reactivemongo.bson.BSONDocument
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney.{format, id}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, SessionId}
 import uk.gov.hmrc.mongo.ReactiveRepository
@@ -30,10 +31,21 @@ import uk.gov.hmrc.mongo.ReactiveRepository
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationJourneyRepository @Inject()(mongo: () => DB)
+class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
   extends ReactiveRepository[DeclarationJourney, String]("declarationJourney", mongo, format, implicitly[Format[String]]) {
 
-  override def indexes: Seq[Index] = Seq(Index(Seq(id -> Ascending), Option("primaryKey"), unique = true))
+  private val ttlIndex = Index(
+    key = Seq("createdAt" -> Ascending),
+    name = Some("timeToLive"),
+    unique = false,
+    options = BSONDocument("expireAfterSeconds" -> ttlInSeconds)
+  )
+
+  override def indexes: Seq[Index] =
+    Seq(
+      Index(Seq(id -> Ascending), Option("primaryKey"), unique = true),
+      ttlIndex
+    )
 
   def insert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
     super.insert(declarationJourney).map(_ => declarationJourney)

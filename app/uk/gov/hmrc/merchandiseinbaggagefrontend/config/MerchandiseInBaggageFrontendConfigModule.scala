@@ -33,5 +33,7 @@ class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuratio
     bindBaseUrl("addressLookupFrontendBaseUrl", "address-lookup-frontend")
     bindConstant().annotatedWith(named("addressLookupCallback"))
       .to(servicesConfig.getString("microservice.services.address-lookup-frontend.callback"))
+    bindConstant().annotatedWith(named("declarationJourneyTimeToLiveInSeconds"))
+      .to(configuration.get[Int]("declarationJourneyTimeToLiveInSeconds"))
   }
 }
