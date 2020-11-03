@@ -22,69 +22,16 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleRegistrationNu
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec {
-
-  private lazy val controller =
-    new VehicleRegistrationNumberController(
-      controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[VehicleRegistrationNumberView])
-
-  "onPageLoad" must {
-    val url = routes.VehicleRegistrationNumberController.onPageLoad().url
-    val getRequest = buildGet(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "return OK and render the view" when {
-      "a declaration has been started" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual OK
-      }
-    }
-
-    "return OK and render the view" when {
-      "a declaration has been started and a value saved" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(maybeRegistrationNumber = Some("AB51 CDE")))
-
-        val result = controller.onPageLoad()(getRequest)
-
-        status(result) mustEqual OK
-      }
-    }
-  }
-
   "onSubmit" must {
-    val url = routes.VehicleRegistrationNumberController.onSubmit().url
-    val postRequest = buildPost(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
-
-    "redirect to /check-your-answers" when {
-      "a declaration is started and a valid selection submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val request = postRequest.withFormUrlEncodedBody(("value", "AB51 CDE"))
-
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad().toString
-
-        startedImportJourney.maybeRegistrationNumber mustBe None
-        declarationJourneyRepository
-          .findBySessionId(sessionId)
-          .futureValue
-          .get
-          .maybeRegistrationNumber mustBe Some("AB51 CDE")
-      }
-    }
-
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
+        val controller =
+          new VehicleRegistrationNumberController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[VehicleRegistrationNumberView])
+
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        val result = controller.onSubmit()(postRequest)
+        val result = controller.onSubmit()(buildPost(routes.VehicleRegistrationNumberController.onSubmit().url, sessionId))
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) must include("Enter the Vehicle Registration Number")

@@ -25,88 +25,29 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
-
-  private lazy val view = injector.instanceOf[ReviewGoodsView]
-  private lazy val controller =
-    new ReviewGoodsController(controllerComponents, actionBuilder, declarationJourneyRepository, view)
-
-  private val goods =
-    GoodsEntry(
-      Some(CategoryQuantityOfGoods("test good", "123")),
-      Some(GoodsVatRates.Twenty),
-      Some("Austria"),
-      Some(PurchaseDetails("10.00", Currency("test country", "test currency", "TST"))),
-      Some("test invoice number")
-    )
-
-  private val goodsEntries = GoodsEntries(goods)
-  private val declarationGoods = DeclarationGoods(goods.goodsIfComplete.get)
-
-  "onPageLoad" must {
-    val url = routes.ReviewGoodsController.onPageLoad().url
-    val request = buildGet(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller, url)
-
-    "redirect to /invalid-request" when {
-      "a declaration has been started but a required answer is missing in the journey" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.InvalidRequestController.onPageLoad().toString
-      }
-    }
-
-    "return OK and render the view" when {
-      "a declaration has been started with and goods have been entered" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
-
-        val result = controller.onPageLoad()(request)
-
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual
-          view(form, declarationGoods)(request, messagesApi.preferred(request), appConfig).toString
-      }
-    }
-  }
-
   "onSubmit" must {
-    val url = routes.ReviewGoodsController.onSubmit().url
-    val postRequest = buildPost(url, sessionId)
-
-    behave like anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller, url)
-
-    "Redirect to /tax-calculation" when {
-      "a declaration is started and No is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
-
-        val request = postRequest.withFormUrlEncodedBody(("value", "No"))
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.PaymentCalculationController.onPageLoad().toString
-      }
-    }
-
-    "Redirect to /search-goods" when {
-      "a declaration is started and Yes is submitted" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
-
-        val request = postRequest.withFormUrlEncodedBody(("value", "Yes"))
-        val result = controller.onSubmit()(request)
-
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.SearchGoodsController.onPageLoad(2).toString
-      }
-    }
-
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
+        val view = injector.instanceOf[ReviewGoodsView]
+        val controller =
+          new ReviewGoodsController(controllerComponents, actionBuilder, declarationJourneyRepository, view)
+
+        val goods =
+          GoodsEntry(
+            Some(CategoryQuantityOfGoods("test good", "123")),
+            Some(GoodsVatRates.Twenty),
+            Some("Austria"),
+            Some(PurchaseDetails("10.00", Currency("test country", "test currency", "TST"))),
+            Some("test invoice number")
+          )
+
+        val goodsEntries = GoodsEntries(goods)
+        val declarationGoods = DeclarationGoods(goods.goodsIfComplete.get)
+        val postRequest = buildPost(routes.ReviewGoodsController.onSubmit().url, sessionId)
+        val submittedForm = form.bindFromRequest()(postRequest)
+
         givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = goodsEntries))
 
-        val submittedForm = form.bindFromRequest()(postRequest)
         val result = controller.onSubmit()(postRequest)
 
         status(result) mustEqual BAD_REQUEST

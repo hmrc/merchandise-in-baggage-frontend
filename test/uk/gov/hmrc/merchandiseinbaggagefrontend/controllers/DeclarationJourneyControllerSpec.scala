@@ -33,14 +33,8 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 
-  def buildGet(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url).withSession((SessionKeys.sessionId, sessionId.value)).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  def buildPost(url: String): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(POST, url).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
   def buildPost(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(POST, url).withSession((SessionKeys.sessionId, sessionId.value))
@@ -48,84 +42,4 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
 
   def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
     declarationJourneyRepository.insert(declarationJourney).futureValue
-
-  def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: DeclarationJourneyController, url: String): Unit = {
-    "redirect to /invalid-request" when {
-      "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad()(buildGet(url))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-
-      "a declaration has not been started" in {
-        val result = controller.onPageLoad()(buildGet(url, sessionId))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-    }
-  }
-
-  def anEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: DeclarationJourneyUpdateController, url: String): Unit = {
-    "redirect to /invalid-request" when {
-      "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onSubmit()(buildPost(url))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-
-      "a declaration has not been started" in {
-        val result = controller.onSubmit()(buildPost(url, sessionId))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-    }
-  }
-
-  def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToLoad(controller: IndexedDeclarationJourneyController, url: String): Unit = {
-    "redirect to /invalid-request" when {
-      "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onPageLoad(1)(buildGet(url))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-
-      "a declaration has not been started" in {
-        val result = controller.onPageLoad(1)(buildGet(url, sessionId))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-    }
-  }
-
-  def anIndexedEndpointRequiringASessionIdAndLinkedDeclarationJourneyToUpdate(controller: IndexedDeclarationJourneyUpdateController, url: String): Unit = {
-    "redirect to /invalid-request" when {
-      "no session id is set" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney)
-
-        val result = controller.onSubmit(1)(buildPost(url))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-
-      "a declaration has not been started" in {
-        val result = controller.onSubmit(1)(buildPost(url, sessionId))
-
-        status(result) mustBe SEE_OTHER
-        redirectLocation(result).get mustBe routes.InvalidRequestController.onPageLoad().url
-      }
-    }
-  }
 }
