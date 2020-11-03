@@ -25,8 +25,8 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, De
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
@@ -62,11 +62,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
   "on submit will redirect to declaration-confirmation if exporting" in {
     val sessionId = SessionId()
-    givenADeclarationJourneyIsPersisted(completedDeclarationJourney
+    val declarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId)
       .copy(declarationType = DeclarationType.Export)
-    )
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url).withSession(SessionKeys.sessionId -> sessionId.value)
+
+    givenADeclarationJourneyIsPersisted(declarationJourney)
 
     val eventualResult = controller.onSubmit()(request)
 

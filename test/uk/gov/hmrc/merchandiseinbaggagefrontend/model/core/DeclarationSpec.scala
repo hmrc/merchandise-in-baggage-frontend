@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
+import java.time.LocalDateTime
+import Declaration._
+
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
@@ -304,6 +307,12 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
   "declaration" should {
     "serialise and de-serialise" in {
       parse(toJson(declaration).toString()).validate[Declaration].get mustBe declaration
+    }
+
+    "provide current date and time formatted" in {
+      val aDeclaration = declaration.copy(dateOfDeclaration = LocalDateTime.of(2020, 11, 10, 12, 55))
+
+      aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55 pm"
     }
   }
 }

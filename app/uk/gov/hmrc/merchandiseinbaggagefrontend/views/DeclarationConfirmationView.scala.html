@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration._
 
 @this(layout: Layout, formHelper: FormWithCSRF)
 
@@ -25,5 +26,61 @@
 @layout(pageTitle = Some(messages("declarationConfirmation.title"))) {
 
  <h1 class="govuk-heading-xl" id="main-message">@messages("declarationConfirmation.title")</h1>
+
+ <div class="govuk-panel govuk-panel--confirmation">
+  <h1 class="govuk-panel__title">Declaration complete</h1>
+  <div class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.map(_.value).getOrElse("Reference unavailable")</strong></div>
+ </div>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
+ <p class="govuk-body">@declaration.dateOfDeclaration.formattedDate</p>
+ <!-- <p class="govuk-body">@messages("declarationConfirmation.email", declaration)</p>-->
+ <p class="govuk-body"><a href="javascript:window.print();">Print or save a copy of this page</a></p>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
+ <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
+ <ul class="govuk-list govuk-list--bullet">
+  <li>@messages("declarationConfirmation.ul.1")</li>
+  <li>@messages("declarationConfirmation.ul.2")</li>
+ </ul>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+  @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
+   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
+     <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
+     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+     <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
+     <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"invoiceNumberLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.invoiceNumber")</dt>
+     <dd id="@{s"invoiceNumber_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.invoiceNumber</dd>
+    </div>
+   </dl>
+  }
+
+  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
+
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+   <div class="govuk-summary-list__row">
+    <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
+    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
+    <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+   </div>
+  </dl>
 
 }

@@ -19,16 +19,14 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationType, SessionId}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val repo = app.injector.instanceOf[DeclarationJourneyRepository]
   val view = app.injector.instanceOf[DeclarationConfirmationView]
-  val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, repo, view)
+  val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view)
 
   "on page load return 200" in {
     val sessionId = SessionId()
