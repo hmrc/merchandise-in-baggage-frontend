@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.repositories
 
+import reactivemongo.bson.{BSONElement, BSONInteger}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData}
 
 class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with CoreTestData {
@@ -36,6 +37,21 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       declarationJourneyRepository.insert(completedDeclarationJourney).futureValue
       declarationJourneyRepository.upsert(update).futureValue.n mustBe 1
       declarationJourneyRepository.findBySessionId(update.sessionId).futureValue mustBe Some(update)
+    }
+
+    "have a ttl index with the configured expiry time" in {
+      val expectedTimeToLive = 3600
+
+      declarationJourneyRepository.timeToLiveInSeconds mustBe expectedTimeToLive
+
+      declarationJourneyRepository
+        .indices
+        .futureValue
+        .filter(_.name.contains("timeToLive"))
+        .head
+        .options
+        .elements
+        .head mustBe BSONElement("expireAfterSeconds", BSONInteger(expectedTimeToLive))
     }
   }
 }
