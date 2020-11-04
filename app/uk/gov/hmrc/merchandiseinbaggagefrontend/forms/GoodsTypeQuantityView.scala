@@ -21,13 +21,13 @@ import play.api.data.Forms.mapping
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.CategoryQuantityOfGoods
 
-object SearchGoodsForm extends Mappings {
+object GoodsTypeQuantityView extends Mappings {
 
   val form: Form[CategoryQuantityOfGoods] =
     Form(
       mapping(
-        "category" -> text("searchGoods.category.error.required"),
-        "quantity" -> text("searchGoods.quantity.error.required")
+        "category" -> text("goodsTypeQuantity.category.error.required"),
+        "quantity" -> text("goodsTypeQuantity.quantity.error.required")
       )(CategoryQuantityOfGoods.apply)(CategoryQuantityOfGoods.unapply)
     )
 

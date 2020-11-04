@@ -30,7 +30,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
         givenADeclarationJourneyIsPersisted(startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry)))
         givenCurrenciesAreFound(wireMockServer)
 
-        val result = controller.onSubmit(1)(buildPost(routes.SearchGoodsController.onSubmit(1).url, sessionId))
+        val result = controller.onSubmit(1)(buildPost(routes.GoodsTypeQuantityController.onSubmit(1).url, sessionId))
 
         status(result) mustEqual BAD_REQUEST
         val content = contentAsString(result)

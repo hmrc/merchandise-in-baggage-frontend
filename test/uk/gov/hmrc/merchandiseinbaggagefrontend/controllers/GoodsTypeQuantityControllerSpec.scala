@@ -17,21 +17,21 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsTypeQuantityView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SearchGoodsControllerSpec extends DeclarationJourneyControllerSpec {
+class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec {
   "onSubmit" must {
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         val controller =
-          new SearchGoodsController(
-            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[SearchGoodsView])
+          new GoodsTypeQuantityController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[GoodsTypeQuantityView])
 
         givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        val result = controller.onSubmit(1)(buildPost(routes.SearchGoodsController.onSubmit(1).url, sessionId))
+        val result = controller.onSubmit(1)(buildPost(routes.GoodsTypeQuantityController.onSubmit(1).url, sessionId))
         val content = contentAsString(result)
 
         status(result) mustEqual BAD_REQUEST

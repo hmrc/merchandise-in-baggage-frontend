@@ -19,19 +19,18 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsTypeQuantityView.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.SearchGoodsView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsTypeQuantityView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SearchGoodsController @Inject()(
-                                       override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
-                                       view: SearchGoodsView
-                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
+class GoodsTypeQuantityController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                            actionProvider: DeclarationJourneyActionProvider,
+                                            repo: DeclarationJourneyRepository,
+                                            view: GoodsTypeQuantityView
+                                           )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
