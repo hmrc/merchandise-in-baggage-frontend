@@ -34,18 +34,19 @@ import scala.concurrent.Future
 class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
   extends ReactiveRepository[DeclarationJourney, String]("declarationJourney", mongo, format, implicitly[Format[String]]) {
 
-  private val ttlIndex = Index(
-    key = Seq("createdAt" -> Ascending),
-    name = Some("timeToLive"),
-    unique = false,
-    options = BSONDocument("expireAfterSeconds" -> ttlInSeconds)
+  override def indexes: Seq[Index] = Seq(
+    Index(Seq(id -> Ascending), Option("primaryKey"), unique = true),
+    Index(
+      key = Seq("createdAt" -> Ascending),
+      name = Option("timeToLive"),
+      unique = false,
+      options = BSONDocument("expireAfterSeconds" -> ttlInSeconds)
+    )
   )
 
-  override def indexes: Seq[Index] =
-    Seq(
-      Index(Seq(id -> Ascending), Option("primaryKey"), unique = true),
-      ttlIndex
-    )
+  private[repositories] lazy val timeToLiveInSeconds: Int = ttlInSeconds
+
+  private[repositories] lazy val indices: Future[List[Index]] = collection.indexesManager.list()
 
   def insert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
     super.insert(declarationJourney).map(_ => declarationJourney)
