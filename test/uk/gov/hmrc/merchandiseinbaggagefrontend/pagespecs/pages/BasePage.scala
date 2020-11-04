@@ -35,6 +35,17 @@ abstract class BasePage(implicit webDriver: WebDriver)
     interval = scaled(Span(150, Millis))
   )
 
+  def mustRenderBasicContent(path: String, expectedTitle: String): Unit = patiently {
+    val expectedHeadingContent: String = expectedTitle
+    mustRenderBasicContentWithoutHeader(path, expectedTitle)
+    headerText() mustBe expectedHeadingContent
+  }
+
+  def mustRenderBasicContentWithoutHeader(path: String, expectedTitle: String): Unit = patiently {
+    readPath() mustBe path
+    pageTitle mustBe expectedTitle
+  }
+
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath

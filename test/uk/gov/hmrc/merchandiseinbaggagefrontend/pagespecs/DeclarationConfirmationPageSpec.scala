@@ -31,7 +31,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         givenADeclarationJourney(completedDeclarationJourney.copy(declarationType = DeclarationType.Export))
         open(path)
 
-        declarationConfirmationPage.mustRenderBasicContent(path, title)
+        declarationConfirmationPage.mustRenderBasicContentWithoutHeader(path, title)
       }
     }
   }

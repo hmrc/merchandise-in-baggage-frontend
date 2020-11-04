@@ -25,8 +25,6 @@
 
 @layout(pageTitle = Some(messages("declarationConfirmation.title"))) {
 
- <h1 class="govuk-heading-xl" id="main-message">@messages("declarationConfirmation.title")</h1>
-
  <div class="govuk-panel govuk-panel--confirmation">
   <h1 class="govuk-panel__title">Declaration complete</h1>
   <div class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.map(_.value).getOrElse("Reference unavailable")</strong></div>
@@ -82,5 +80,8 @@
     <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
    </div>
   </dl>
+  <p class="govuk-body">
+   <a class='govuk-link' href="excise-and-restricted-goods">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
+  </p>
 
 }
