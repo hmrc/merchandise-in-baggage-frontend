@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, SearchGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, GoodsTypeQuantityPage}
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = wire[ReviewGoodsPage]
@@ -95,14 +95,14 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
-        page.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(2)
+        page.completeAndSubmitForm(Yes) mustBe GoodsTypeQuantityPage.path(2)
       }
 
       "the user elects to make a third goods entry" in {
         givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
         open(path)
 
-        page.completeAndSubmitForm(Yes) mustBe SearchGoodsPage.path(3)
+        page.completeAndSubmitForm(Yes) mustBe GoodsTypeQuantityPage.path(3)
       }
     }
 

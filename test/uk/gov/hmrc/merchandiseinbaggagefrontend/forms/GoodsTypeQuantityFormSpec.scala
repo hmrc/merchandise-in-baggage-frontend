@@ -18,14 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsTypeQuantityView.form
 
-class SearchGoodsFormSpec extends FieldBehaviours {
+class GoodsTypeQuantityFormSpec extends FieldBehaviours {
 
   ".category" must {
-
     val fieldName = "category"
-    val requiredKey = "searchGoods.category.error.required"
+    val requiredKey = "goodsTypeQuantity.category.error.required"
 
     behave like mandatoryField(
       form,
@@ -35,9 +34,8 @@ class SearchGoodsFormSpec extends FieldBehaviours {
   }
 
   ".quantity" must {
-
     val fieldName = "quantity"
-    val requiredKey = "searchGoods.quantity.error.required"
+    val requiredKey = "goodsTypeQuantity.quantity.error.required"
 
     behave like mandatoryField(
       form,
@@ -45,5 +43,4 @@ class SearchGoodsFormSpec extends FieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
-
 }

@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsPage.{path, title}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, SearchGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsTypeQuantityPage.{path, title}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, GoodsTypeQuantityPage}
 
-class SearchGoodsPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, SearchGoodsPage] {
-  override def page: SearchGoodsPage = wire[SearchGoodsPage]
+class GoodsTypeQuantityPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, GoodsTypeQuantityPage] {
+  override def page: GoodsTypeQuantityPage = wire[GoodsTypeQuantityPage]
 
-  "the search goods page" should {
+  "the goods type quantity page" should {
     behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path))
   }
 

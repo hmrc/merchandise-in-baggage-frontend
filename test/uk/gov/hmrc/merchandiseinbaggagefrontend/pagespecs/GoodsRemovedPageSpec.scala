@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsRemovedPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsRemovedPage, SearchGoodsPage, StartImportPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsRemovedPage, GoodsTypeQuantityPage, StartImportPage}
 
 class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
   override def page: GoodsRemovedPage = wire[GoodsRemovedPage]
@@ -27,12 +27,12 @@ class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
 
-    s"redirect to ${SearchGoodsPage.path(1)}" when {
+    s"redirect to ${GoodsTypeQuantityPage.path(1)}" when {
       "the user elects to add more goods" in {
         givenAnImportJourneyIsStarted()
 
         open(path)
-        page.addMoreGoods() mustBe SearchGoodsPage.path(1)
+        page.addMoreGoods() mustBe GoodsTypeQuantityPage.path(1)
       }
     }
 

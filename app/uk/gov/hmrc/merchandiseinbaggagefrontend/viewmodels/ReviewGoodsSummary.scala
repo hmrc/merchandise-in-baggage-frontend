@@ -35,7 +35,7 @@ object ReviewGoodsSummary {
           value = Value(Text(categoryQuantityOfGoods.category)),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.SearchGoodsController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(routes.GoodsTypeQuantityController.onPageLoad(idx).url, Text(messages("site.change")))
             )
           ))
         ),
@@ -44,7 +44,7 @@ object ReviewGoodsSummary {
           value = Value(Text(categoryQuantityOfGoods.quantity)),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.SearchGoodsController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(routes.GoodsTypeQuantityController.onPageLoad(idx).url, Text(messages("site.change")))
             )
           ))
         ),

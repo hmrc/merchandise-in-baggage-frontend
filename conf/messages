@@ -174,14 +174,14 @@ valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over Â
 valueWeightOfGoods.error.required = Select one of the options below
 
 # SearchGoods
-searchGoods.title = What type of goods are you bringing into the UK?
-searchGoods.heading = What type of goods are you bringing into the UK?
-searchGoods.p = Add your goods by their type or category. For example, clothes, electronics, or food.
-searchGoods.category = Type of goods
-searchGoods.category.hint = For example, clothes
-searchGoods.category.error.required = Enter the type of goods
-searchGoods.quantity = Number of items
-searchGoods.quantity.error.required = Enter the number of items
+goodsTypeQuantity.title = What type of goods are you bringing into the UK?
+goodsTypeQuantity.heading = What type of goods are you bringing into the UK?
+goodsTypeQuantity.p = Add your goods by their type or category. For example, clothes, electronics, or food.
+goodsTypeQuantity.category = Type of goods
+goodsTypeQuantity.category.hint = For example, clothes
+goodsTypeQuantity.category.error.required = Enter the type of goods
+goodsTypeQuantity.quantity = Number of items
+goodsTypeQuantity.quantity.error.required = Enter the number of items
 
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
