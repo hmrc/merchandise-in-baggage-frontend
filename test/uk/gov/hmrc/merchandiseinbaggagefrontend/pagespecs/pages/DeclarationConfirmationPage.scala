@@ -18,19 +18,24 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import java.time.LocalDateTime
 
-import org.openqa.selenium.WebDriver
+import org.openqa.selenium.{By, WebDriver}
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
 
 class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage {
+  import webDriver._
 
   private val element: String => Element = elementId => id(elementId).element
+
 
   def hasConfirmationPanelWithContents: Assertion = {
     element("confirmationPanelId").attribute("class") mustBe Some("govuk-panel govuk-panel--confirmation")
     element("panelTitleId").text mustBe "Declaration complete"
     element("mibReferenceId").text must include("Your reference number")
+  }
+
+  def hasDateOfDeclaration: Assertion = {
     element("declarationDateId").text mustBe "Date of declaration"
     element("declarationDateFormattedId").text must include(LocalDateTime.now.format(Declaration.formatter))
   }
@@ -40,6 +45,13 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
     element("printDeclarationId").text mustBe "Print or save a copy of this page"
     element("printDeclarationLinkId").attribute("href").get must include("/merchandise-in-baggage/assets/stylesheets/application.css")
     element("printDeclarationLinkId").attribute("media") mustBe Some("all")
+  }
+
+  def hasWhaToDoNext: Assertion = {
+    element("whatToDoNextId").text mustBe "What you need to do next"
+    val elements = findElement(By.id("whatToDoNextUlId")).findElements(By.tagName("li"))
+    elements.get(0).getText mustBe "take this declaration confirmation with you"
+    elements.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
   }
 }
 

@@ -33,7 +33,9 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
         declarationConfirmationPage.mustRenderBasicContentWithoutHeader(path, title)
         declarationConfirmationPage.hasConfirmationPanelWithContents
+        declarationConfirmationPage.hasDateOfDeclaration
         declarationConfirmationPage.hasPrintPageContentInPdf
+        declarationConfirmationPage.hasWhaToDoNext
       }
     }
   }
