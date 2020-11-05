@@ -298,10 +298,10 @@ case class Declaration(sessionId: SessionId,
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
+  val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
     def formattedDate: String = {
-      val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
       dateOfDeclaration.format(formatter)
     }
   }

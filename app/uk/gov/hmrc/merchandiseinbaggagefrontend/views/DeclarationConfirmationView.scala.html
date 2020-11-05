@@ -26,16 +26,16 @@
 @layout(pageTitle = Some(messages("declarationConfirmation.title"))) {
 
  <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
-  <h1 class="govuk-panel__title">Declaration complete</h1>
-  <div class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.map(_.value).getOrElse("Reference unavailable")</strong></div>
+  <h1 id="panelTitleId" class="govuk-panel__title">Declaration complete</h1>
+  <div id="mibReferenceId" class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.map(_.value).getOrElse("Reference unavailable")</strong></div>
  </div>
 
- <h2 class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
- <p class="govuk-body">@declaration.dateOfDeclaration.formattedDate</p>
+ <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
+ <p id="declarationDateFormattedId" class="govuk-body">@declaration.dateOfDeclaration.formattedDate</p>
  <!-- <p class="govuk-body">@messages("declarationConfirmation.email", declaration)</p>-->
  <p class="govuk-body">
   <a class="govuk-link" href="javascript:window.print();">Print or save a copy of this page
-   <link class="govuk-link" href="/merchandise-in-baggage/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css">
+   <link id="printDeclarationId" class="govuk-link" href="/merchandise-in-baggage/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css">
   </a>
  </p>
 

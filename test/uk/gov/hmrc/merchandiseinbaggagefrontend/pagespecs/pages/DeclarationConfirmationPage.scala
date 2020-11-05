@@ -16,9 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
+import java.time.LocalDateTime
 
-class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage {}
+import org.openqa.selenium.WebDriver
+import org.scalatestplus.selenium.WebBrowser._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
+
+class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage {
+
+  private val element: String => Element = elementId => id(elementId).element
+
+  def hasConfirmationPanelWithContents(): Unit = {
+    element("confirmationPanelId").attribute("class") mustBe Some("govuk-panel govuk-panel--confirmation")
+    element("panelTitleId").text mustBe "Declaration complete"
+    element("mibReferenceId").text must include("Your reference number")
+    element("declarationDateId").text mustBe "Date of declaration"
+    element("declarationDateFormattedId").text must include(LocalDateTime.now.format(Declaration.formatter))
+  }
+}
 
 object DeclarationConfirmationPage {
   val path = "/merchandise-in-baggage/declaration-confirmation"
