@@ -18,40 +18,35 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
 import java.time.LocalDateTime
 
-import org.openqa.selenium.{By, WebDriver}
+import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, Goods}
 
 class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage {
-  import webDriver._
-
-  private val element: String => Element = elementId => id(elementId).element
-
 
   def hasConfirmationPanelWithContents: Assertion = {
-    element("confirmationPanelId").attribute("class") mustBe Some("govuk-panel govuk-panel--confirmation")
-    element("panelTitleId").text mustBe "Declaration complete"
-    element("mibReferenceId").text must include("Your reference number")
+    attrOfElementWithId("confirmationPanelId", "class") mustBe "govuk-panel govuk-panel--confirmation"
+    textOfElementWithId("panelTitleId") mustBe "Declaration complete"
+    textOfElementWithId("mibReferenceId") must include("Your reference number")
   }
 
   def hasDateOfDeclaration: Assertion = {
-    element("declarationDateId").text mustBe "Date of declaration"
-    element("declarationDateFormattedId").text must include(LocalDateTime.now.format(Declaration.formatter))
+    textOfElementWithId("declarationDateId") mustBe "Date of declaration"
+    textOfElementWithId("declarationDateFormattedId") must include(LocalDateTime.now.format(Declaration.formatter))
   }
 
   def hasPrintPageContentInPdf: Assertion = {
-    element("printDeclarationId").attribute("href") mustBe Some("javascript:window.print();")
-    element("printDeclarationId").text mustBe "Print or save a copy of this page"
-    element("printDeclarationLinkId").attribute("href").get must include("/merchandise-in-baggage/assets/stylesheets/application.css")
-    element("printDeclarationLinkId").attribute("media") mustBe Some("all")
+    attrOfElementWithId("printDeclarationId", "href") mustBe "javascript:window.print();"
+    textOfElementWithId("printDeclarationId") mustBe "Print or save a copy of this page"
+    attrOfElementWithId("printDeclarationLinkId", "href") must include("/merchandise-in-baggage/assets/stylesheets/application.css")
+    attrOfElementWithId("printDeclarationLinkId", "media") mustBe "all"
   }
 
   def hasWhaToDoNext: Assertion = {
-    element("whatToDoNextId").text mustBe "What you need to do next"
-    val elements = findElement(By.id("whatToDoNextUlId")).findElements(By.tagName("li"))
-    elements.get(0).getText mustBe "take this declaration confirmation with you"
-    elements.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
+    textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
+    val listItems = unifiedListItemsById("whatToDoNextUlId")
+    listItems.get(0).getText mustBe "take this declaration confirmation with you"
+    listItems.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
   }
 
   def hasGoodDetails(declaration: Declaration): Assertion = {
@@ -62,7 +57,7 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
         textOfElementWithId(s"categoryLabel_$idx") mustBe "Type of goods"
         textOfElementWithId(s"category_$idx") mustBe good.categoryQuantityOfGoods.category
     }
-    element("goodsDetailsId").text mustBe "Details of the goods"
+    textOfElementWithId("goodsDetailsId") mustBe "Details of the goods"
   }
 }
 
