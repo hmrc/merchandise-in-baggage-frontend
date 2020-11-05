@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.InvoiceNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -34,11 +34,13 @@ class InvoiceNumberController @Inject()(
                                        )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
+  private def backButtonUrl(index: Int): Call = routes.PurchaseDetailsController.onPageLoad(index)
+
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       val preparedForm = request.goodsEntry.maybeInvoiceNumber.fold(form)(form.fill)
 
-      Future successful Ok(view(preparedForm, idx, category))
+      Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
     }
   }
 
@@ -48,7 +50,7 @@ class InvoiceNumberController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           invoiceNumber => {
             repo.upsert(
               request.declarationJourney.copy(
@@ -66,5 +68,4 @@ class InvoiceNumberController @Inject()(
         )
     }
   }
-
 }

@@ -18,8 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.AgentDetailsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{AgentDetailsPage, CustomsAgentPage}
 
 class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentDetailsPage] {
   override lazy val page: AgentDetailsPage = wire[AgentDetailsPage]
@@ -28,6 +28,7 @@ class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentD
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), CustomsAgentPage.path)
 
     "allow the user to navigate to the /enter-agent-address" in {
       val redirectedPath = submitAndEnsurePersistence(path, givenAnImportJourneyIsStarted(), "test agent")

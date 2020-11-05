@@ -27,11 +27,11 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isAgent: YesNo, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
-@layout(pageTitle = Some(messages(s"eoriNumber.$agentOrTrader.title"))) {
+@layout(pageTitle = Some(messages(s"eoriNumber.$agentOrTrader.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = EoriNumberController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)

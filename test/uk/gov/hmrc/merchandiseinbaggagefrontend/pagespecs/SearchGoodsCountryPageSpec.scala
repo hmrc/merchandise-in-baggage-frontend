@@ -20,14 +20,14 @@ import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.SearchGoodsCountryPage.{path, title}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, PurchaseDetailsPage, SearchGoodsCountryPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CountriesService.countries
 
 class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
 
   "the search goods country page" should {
-    behave like aGoodsEntryPage(path, title, countries.head, Some(PurchaseDetailsPage.path))
+    behave like aGoodsEntryPage(path, title, countries.head, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase

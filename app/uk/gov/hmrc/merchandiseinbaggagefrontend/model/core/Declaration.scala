@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.text.NumberFormat.getCurrencyInstance
-import java.time.{LocalDate, LocalDateTime}
 import java.time.format.DateTimeFormatter
+import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
 
@@ -167,11 +167,11 @@ case class DeclarationJourney(sessionId: SessionId,
 
   private val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap { journeyDetailsEntry =>
     (journeyDetailsEntry.placeOfArrival, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
-      case (port:FootPassengerOnlyPort, _, _, _) =>
+      case (port: FootPassengerOnlyPort, _, _, _) =>
         Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(No), _, _) =>
+      case (port: VehiclePort, Some(No), _, _) =>
         Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
-      case (port:VehiclePort, Some(Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
+      case (port: VehiclePort, Some(Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
         Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
       case _ => None
     }
@@ -247,7 +247,7 @@ object YesNo extends Enum[YesNo] {
   }
 
   case object Yes extends YesNo
-  
+
   case object No extends YesNo
 
 }
@@ -298,7 +298,7 @@ case class Declaration(sessionId: SessionId,
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
     def formattedDate: String = {

@@ -19,14 +19,16 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ReviewGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PaymentCalculationPage, RemoveGoodsPage, ReviewGoodsPage, GoodsTypeQuantityPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = wire[ReviewGoodsPage]
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aPageThatRequiresACompletedGoodsEntry(path)
+    behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
+    behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), InvoiceNumberPage.path(1))
+    behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), InvoiceNumberPage.path(2))
 
     "render correctly" when {
       "a single goods entry is complete" in {

@@ -20,13 +20,13 @@ import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, GoodsVatRate}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsVatRatePage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{RadioButtonPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsTypeQuantityPage, RadioButtonPage, SearchGoodsCountryPage}
 
 class GoodsVatRatePageSpec extends GoodsEntryPageSpec[GoodsVatRate, RadioButtonPage[GoodsVatRate]] {
   override lazy val page: RadioButtonPage[GoodsVatRate] = wire[RadioButtonPage[GoodsVatRate]]
 
   "the goods vat rate page" should {
-    behave like aGoodsEntryPage(path, title, Twenty, Some(SearchGoodsCountryPage.path))
+    behave like aGoodsEntryPage(path, title, Twenty, Some(SearchGoodsCountryPage.path), GoodsTypeQuantityPage.path)
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[GoodsVatRate] = goodsEntry.maybeGoodsVatRate

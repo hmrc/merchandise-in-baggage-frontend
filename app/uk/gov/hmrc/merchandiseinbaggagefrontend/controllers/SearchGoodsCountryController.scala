@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -36,13 +36,15 @@ class SearchGoodsCountryController @Inject()(
                                             )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
+  private def backButtonUrl(index: Int): Call = routes.GoodsVatRateController.onPageLoad(index)
+
   val countriesForm: Form[String] = form(CountriesService.countries)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(countriesForm)(countriesForm.fill)
 
-      Future successful Ok(view(preparedForm, idx, category))
+      Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
     }
   }
 
@@ -52,7 +54,7 @@ class SearchGoodsCountryController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           country => {
             repo.upsert(
               request.declarationJourney.copy(
@@ -61,18 +63,9 @@ class SearchGoodsCountryController @Inject()(
                   request.goodsEntry.copy(maybeCountryOfPurchase = Some(country))
                 )
               )
-            ).map { _ =>
-              request
-                .declarationJourney
-                .goodsEntries
-                .declarationGoodsIfComplete
-                .fold(Redirect(routes.PurchaseDetailsController.onPageLoad(idx))) { _ =>
-                  Redirect(routes.ReviewGoodsController.onPageLoad())
-                }
-            }
+            ).map(_ => reviewGoodsIfCompleteElse(routes.PurchaseDetailsController.onPageLoad(idx)))
           }
         )
     }
   }
-
 }

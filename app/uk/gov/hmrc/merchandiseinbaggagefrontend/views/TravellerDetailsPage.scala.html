@@ -27,9 +27,9 @@
         text: components.inputText,
         h1: components.h1)
 
-@(form: Form[Name])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Name], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("travellerDetails.title"))) {
+@layout(pageTitle = Some(messages("travellerDetails.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
   @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
     @h1(messages("travellerDetails.heading"))

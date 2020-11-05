@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
@@ -35,9 +35,12 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
+    routes.InvoiceNumberController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>
-      Ok(view(form, goods))
+      Ok(view(form, goods, backButtonUrl))
     }
   }
 
@@ -46,7 +49,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
               val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty

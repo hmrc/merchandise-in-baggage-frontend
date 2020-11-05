@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PaymentCalculationPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
 
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
   override def page: PaymentCalculationPage = wire[PaymentCalculationPage]
@@ -33,7 +33,8 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
 
   "the Payment Calculation Page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
-    behave like aPageThatRequiresACompletedGoodsEntry(path)
+    behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
+    behave like aPageWithABackButton(path, setUpTaxCalculationAndOpenPage(), ReviewGoodsPage.path)
 
     "render" in {
       val taxCalculation = setUpTaxCalculationAndOpenPage()

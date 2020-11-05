@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsInVehiclePage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, RadioButtonPage, VehicleSizePage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, JourneyDetailsPage, RadioButtonPage, VehicleSizePage}
 
 class GoodsInVehiclePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
@@ -35,6 +35,7 @@ class GoodsInVehiclePageSpec extends DeclarationDataCapturePageSpec[YesNo, Radio
       givenADeclarationJourney(completedDeclarationJourney.copy(maybeTravellingByVehicle = None)),
       No,
       CheckYourAnswersPage.path)
+    behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), JourneyDetailsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeTravellingByVehicle

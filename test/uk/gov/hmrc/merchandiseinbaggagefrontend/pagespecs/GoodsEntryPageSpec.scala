@@ -28,11 +28,15 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
 
   def extractFormDataFrom(declarationJourney: DeclarationJourney, index: Int): Option[F] =
-    extractFormDataFrom(declarationJourney.goodsEntries.entries(index -1))
+    extractFormDataFrom(declarationJourney.goodsEntries.entries(index - 1))
 
   def extractFormDataFrom(goodsEntry: GoodsEntry): Option[F]
 
-  def aGoodsEntryPage(path: Int => String, title: String, formData: F, maybeExpectedRedirect: Option[Int => String]): Unit = {
+  def aGoodsEntryPage(path: Int => String,
+                      title: String,
+                      formData: F,
+                      maybeExpectedRedirect: Option[Int => String],
+                      expectedBackPath: Int => String): Unit = {
     behave like aPageWhichRequiresADeclarationJourney(path(1))
     behave like aPageWhichRequiresADeclarationJourney(path(2))
     behave like aPageWhichRenders(path(1), givenAGoodsEntryIsStarted(), title)
@@ -40,13 +44,16 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path(1), index = 1, givenAGoodsEntryIsComplete())
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path(2), index = 2, givenTwoGoodsEntriesAreComplete())
 
-    maybeExpectedRedirect.foreach{ expectedRedirect =>
+    maybeExpectedRedirect.foreach { expectedRedirect =>
       behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsStarted(), formData, expectedRedirect(1))
       behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenASecondGoodsEntryIsStarted(), formData, expectedRedirect(2))
     }
 
     behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsComplete(), formData, ReviewGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenTwoGoodsEntriesAreComplete(), formData, ReviewGoodsPage.path)
+
+    behave like aPageWithABackButton(path(1), givenAGoodsEntryIsStarted(), expectedBackPath(1))
+    behave like aPageWithABackButton(path(2), givenASecondGoodsEntryIsStarted(), expectedBackPath(2))
   }
 
   def aPageWhichDisplaysPreviouslyEnteredAnswers(path: String, index: Int, setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =

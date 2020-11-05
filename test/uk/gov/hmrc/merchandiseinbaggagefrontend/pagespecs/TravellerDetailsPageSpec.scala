@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Name}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{JourneyDetailsPage, TravellerDetailsPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TravellerDetailsPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EoriNumberPage, JourneyDetailsPage, TravellerDetailsPage}
 
 class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, TravellerDetailsPage] with ScalaFutures {
   override lazy val page: TravellerDetailsPage = wire[TravellerDetailsPage]
@@ -30,6 +30,7 @@ class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, Trav
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Name("Terry", "Test")), JourneyDetailsPage.path)
+    behave like aPageWithABackButton(path, givenAnAgentJourney(), EoriNumberPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Name] =

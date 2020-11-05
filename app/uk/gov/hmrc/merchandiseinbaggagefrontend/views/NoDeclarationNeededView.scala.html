@@ -24,7 +24,7 @@ p: components.p
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("noDeclarationNeeded.title"))) {
+@layout(pageTitle = Some(messages("noDeclarationNeeded.title")), maybeBackButtonUrl = None) {
     @h1("noDeclarationNeeded.heading")
 
     @p(Html(messages("noDeclarationNeeded.p")))

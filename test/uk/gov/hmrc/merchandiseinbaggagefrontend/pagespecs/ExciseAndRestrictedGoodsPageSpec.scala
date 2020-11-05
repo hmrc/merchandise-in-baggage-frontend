@@ -20,12 +20,12 @@ import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.ExciseAndRestrictedGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CannotUseServicePage, RadioButtonPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 
 class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
-  private def setup(): Unit = givenADeclarationJourney(startedImportToGreatBritainJourney)
+  private def setup(): Unit = givenAnImportToGreatBritainJourneyIsStarted()
 
   "the excise and restricted goods page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
@@ -34,6 +34,8 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, ValueWeightOfGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, CannotUseServicePage.path)
+    behave like aPageWithABackButton(path, setup(), GoodsDestinationPage.path)
+    behave like aPageWithABackButton(path, givenAnImportToNorthernIrelandJourneyIsStarted(), GoodsRouteDestinationPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =

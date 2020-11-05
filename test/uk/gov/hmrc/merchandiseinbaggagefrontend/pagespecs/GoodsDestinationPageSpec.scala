@@ -35,6 +35,8 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
         path, givenAnImportJourneyIsStarted(), NorthernIreland, GoodsRouteDestinationPage.path)
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), GreatBritain, ExciseAndRestrictedGoodsPage.path)
+
+    behave like aPageWithNoBackButton(path, givenAnImportJourneyIsStarted())
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[GoodsDestination] =

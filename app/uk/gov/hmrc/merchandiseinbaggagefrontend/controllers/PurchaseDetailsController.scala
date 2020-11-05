@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.PurchaseDetailsForm.form
@@ -37,12 +37,14 @@ class PurchaseDetailsController @Inject()(
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
+  private def backButtonUrl(index: Int): Call = routes.SearchGoodsCountryController.onPageLoad(index)
+
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().map { currencyPeriod =>
         val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-        Ok(view(preparedForm, idx, category, currencyPeriod.currencies))
+        Ok(view(preparedForm, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))
       }
     }
   }
@@ -54,7 +56,7 @@ class PurchaseDetailsController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies))),
+              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))),
             purchaseDetailsInput => {
               currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
                 .fold(actionProvider.invalidRequestF) { currency =>
@@ -67,20 +69,11 @@ class PurchaseDetailsController @Inject()(
                         request.goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))
                       )
                     )
-                  ).map { _ =>
-                    request
-                      .declarationJourney
-                      .goodsEntries
-                      .declarationGoodsIfComplete
-                      .fold(Redirect(routes.InvoiceNumberController.onPageLoad(idx))) { _ =>
-                        Redirect(routes.ReviewGoodsController.onPageLoad())
-                      }
-                  }
+                  ).map(_ => reviewGoodsIfCompleteElse(routes.InvoiceNumberController.onPageLoad(idx)))
                 }
             }
           )
       }
     }
   }
-
 }

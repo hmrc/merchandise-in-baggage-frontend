@@ -23,7 +23,7 @@
 
 @(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("declarationConfirmation.title"))) {
+@layout(pageTitle = Some(messages("declarationConfirmation.title")), maybeBackButtonUrl = None) {
 
  <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
   <h1 id="panelTitleId" class="govuk-panel__title">Declaration complete</h1>
