@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import org.openqa.selenium.{By, WebDriver}
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, Goods}
 
 class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage {
   import webDriver._
@@ -52,6 +52,17 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
     val elements = findElement(By.id("whatToDoNextUlId")).findElements(By.tagName("li"))
     elements.get(0).getText mustBe "take this declaration confirmation with you"
     elements.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
+  }
+
+  def hasGoodDetails(declaration: Declaration): Assertion = {
+    val withIndex: Seq[(Goods, Int)] = declaration.declarationGoods.goods.zipWithIndex
+
+    withIndex map {
+      case (good, idx) =>
+        textOfElementWithId(s"categoryLabel_$idx") mustBe "Type of goods"
+        textOfElementWithId(s"category_$idx") mustBe good.categoryQuantityOfGoods.category
+    }
+    element("goodsDetailsId").text mustBe "Details of the goods"
   }
 }
 

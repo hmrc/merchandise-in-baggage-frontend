@@ -36,6 +36,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         declarationConfirmationPage.hasDateOfDeclaration
         declarationConfirmationPage.hasPrintPageContentInPdf
         declarationConfirmationPage.hasWhaToDoNext
+        declarationConfirmationPage.hasGoodDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
       }
     }
   }
