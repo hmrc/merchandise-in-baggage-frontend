@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationConfirmationPage._
 
 class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmationPage] {
-  override lazy val page: DeclarationConfirmationPage = declarationConfirmationPage
+  override lazy val page: DeclarationConfirmationPage = wire[DeclarationConfirmationPage]
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -31,14 +32,14 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         givenADeclarationJourney(completedDeclarationJourney.copy(declarationType = DeclarationType.Export))
         open(path)
 
-        declarationConfirmationPage.mustRenderBasicContentWithoutHeader(path, title)
-        declarationConfirmationPage.hasConfirmationPanelWithContents
-        declarationConfirmationPage.hasDateOfDeclaration
-        declarationConfirmationPage.hasPrintPageContentInPdf
-        declarationConfirmationPage.hasWhaToDoNext
-        declarationConfirmationPage.hasGoodDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
-        declarationConfirmationPage.hasPersonDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
-        declarationConfirmationPage.hasMakeAnotherDeclarationLink
+        page.mustRenderBasicContentWithoutHeader(path, title)
+        page.hasConfirmationPanelWithContents
+        page.hasDateOfDeclaration
+        page.hasPrintPageContentInPdf
+        page.hasWhaToDoNext
+        page.hasGoodDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
+        page.hasPersonDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
+        page.hasMakeAnotherDeclarationLink
       }
     }
   }
