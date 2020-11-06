@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
@@ -34,7 +33,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
       .copy(sessionId = sessionId)
       .copy(declarationType = DeclarationType.Export)
     )
-    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url).withSession(SessionKeys.sessionId -> sessionId.value)
+    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
     val eventualResult = controller.onPageLoad()(request)
 

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.ErrorHandler
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
@@ -52,7 +52,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney.copy(sessionId = sessionId))
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url).withSession(SessionKeys.sessionId -> sessionId.value)
+    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
 
     val eventualResult = controller.onSubmit()(request)
 
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
     val declarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId)
       .copy(declarationType = DeclarationType.Export)
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url).withSession(SessionKeys.sessionId -> sessionId.value)
+    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
 
     givenADeclarationJourneyIsPersisted(declarationJourney)
 

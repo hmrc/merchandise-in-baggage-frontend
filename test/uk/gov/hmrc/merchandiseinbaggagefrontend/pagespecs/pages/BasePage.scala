@@ -20,7 +20,7 @@ import java.util
 
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.openqa.selenium.{By, WebDriver}
-import org.scalatest.AppendedClues
+import org.scalatest.{AppendedClues, Assertion}
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
