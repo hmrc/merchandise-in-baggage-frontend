@@ -67,6 +67,14 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
     }
     textOfElementWithId("goodsDetailsId") mustBe "Details of the goods"
   }
+
+  def hasPersonDetails(declaration: Declaration): Assertion = {
+    textOfElementWithId("personalDetailsId") mustBe "Personal details"
+    textOfElementWithId("nameOfPersonCarryingTheGoodsLabel") mustBe "Name of person carrying goods"
+    textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
+    textOfElementWithId("eoriLabel") mustBe "EORI number"
+    textOfElementWithId("eori") mustBe declaration.eori.value
+  }
 }
 
 object DeclarationConfirmationPage {
