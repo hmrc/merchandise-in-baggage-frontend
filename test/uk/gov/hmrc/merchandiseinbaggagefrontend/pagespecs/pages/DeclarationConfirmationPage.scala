@@ -56,6 +56,14 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
       case (good, idx) =>
         textOfElementWithId(s"categoryLabel_$idx") mustBe "Type of goods"
         textOfElementWithId(s"category_$idx") mustBe good.categoryQuantityOfGoods.category
+        textOfElementWithId(s"quantityLabel_$idx") mustBe "Number of items"
+        textOfElementWithId(s"quantity_$idx") mustBe good.categoryQuantityOfGoods.quantity
+        textOfElementWithId(s"countryLabel_$idx") mustBe "Country"
+        textOfElementWithId(s"country_$idx") mustBe good.countryOfPurchase
+        textOfElementWithId(s"priceLabel_$idx") mustBe "Price paid"
+        textOfElementWithId(s"price_$idx") mustBe good.purchaseDetails.toString
+        textOfElementWithId(s"invoiceNumberLabel_$idx") mustBe "Invoice number"
+        textOfElementWithId(s"invoiceNumber_$idx") mustBe good.invoiceNumber
     }
     textOfElementWithId("goodsDetailsId") mustBe "Details of the goods"
   }
