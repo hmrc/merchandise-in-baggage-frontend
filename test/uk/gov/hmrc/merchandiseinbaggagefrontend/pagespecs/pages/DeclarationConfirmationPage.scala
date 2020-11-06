@@ -75,6 +75,12 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
     textOfElementWithId("eoriLabel") mustBe "EORI number"
     textOfElementWithId("eori") mustBe declaration.eori.value
   }
+
+  def hasMakeAnotherDeclarationLink: Assertion = {
+    textOfElementWithId("makeAnotherDeclarationId") mustBe "Make another declaration"
+    element("makeAnotherDeclarationId").click()
+    webDriver.getCurrentUrl must include("excise-and-restricted-goods")
+  }
 }
 
 object DeclarationConfirmationPage {

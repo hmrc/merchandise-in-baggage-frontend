@@ -38,6 +38,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         declarationConfirmationPage.hasWhaToDoNext
         declarationConfirmationPage.hasGoodDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
         declarationConfirmationPage.hasPersonDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
+        declarationConfirmationPage.hasMakeAnotherDeclarationLink
       }
     }
   }
