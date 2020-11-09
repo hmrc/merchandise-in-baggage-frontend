@@ -16,11 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
+import org.scalatest.Assertion
+import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
+
+import scala.collection.JavaConverters._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation{
   override lazy val page: CheckYourAnswersPage = wire[CheckYourAnswersPage]
@@ -65,7 +70,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       open(path)
 
       page.mustRedirectToPaymentFromTheCTA()
-      page.mustHaveOneRequestAndSessionId(wireMockServer)
+      mustHaveOneRequestAndSessionId(wireMockServer)
     }
 
     "allow the user to make a declaration if exporting" in {
@@ -77,4 +82,16 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       page.mustRedirectToDeclarationConfirmation()
     }
   }
+
+  def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
+    val payApiRequestCapture = server.getAllServeEvents.asScala
+      .find(_.getRequest.getAbsoluteUrl.contains("pay-api/mib-frontend/mib/journey/start"))
+      .get.getRequest
+
+    payApiRequestCapture.header(xSessionId).values.size mustBe 1
+    payApiRequestCapture.header(xRequestId).values.size mustBe 1
+  }
+
+  def mustRedirectToInvalidRequest(): Assertion =
+    readPath() mustBe "/merchandise-in-baggage/invalid-request"
 }

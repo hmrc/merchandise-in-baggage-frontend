@@ -16,15 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
-import com.github.tomakehurst.wiremock.WireMockServer
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.http.HeaderNames._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, JourneyInSmallVehicle}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage.expectedSectionHeaders
-
-import scala.collection.JavaConverters._
 
 class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
@@ -112,18 +108,6 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
     readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
   }
-
-  def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
-    val payApiRequestCapture = server.getAllServeEvents.asScala
-      .find(_.getRequest.getAbsoluteUrl.contains("pay-api/mib-frontend/mib/journey/start"))
-      .get.getRequest
-
-    payApiRequestCapture.header(xSessionId).values.size mustBe 1
-    payApiRequestCapture.header(xRequestId).values.size mustBe 1
-  }
-
-  def mustRedirectToInvalidRequest(): Assertion =
-    readPath() mustBe "/merchandise-in-baggage/invalid-request"
 }
 
 object CheckYourAnswersPage {
