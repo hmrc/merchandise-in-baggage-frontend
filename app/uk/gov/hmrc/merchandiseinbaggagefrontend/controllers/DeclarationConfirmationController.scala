@@ -42,7 +42,7 @@ class DeclarationConfirmationController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    Future.successful(Ok("onSubmit"))
+    Future.successful(Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()))
   }
 
   private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[MibReference] = {

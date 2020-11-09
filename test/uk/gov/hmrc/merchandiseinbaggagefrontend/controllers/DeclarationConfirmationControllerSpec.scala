@@ -34,7 +34,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
   "on page load return 200 and reset persisted journey declaration" in {
     val sessionId = SessionId()
-    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     val exportJourney = completedDeclarationJourney
       .copy(sessionId = sessionId)
@@ -53,12 +53,24 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val sessionId = SessionId()
-    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     givenADeclarationJourneyIsPersisted(DeclarationJourney(sessionId, Export))
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("/merchandise-in-baggage/invalid-request")
+  }
+
+  "on submit user is redirect to the exercise and restricted goods page" in {
+    val sessionId = SessionId()
+    val request = buildPost(routes.DeclarationConfirmationController.onSubmit().url, sessionId)
+    val journey = completedDeclarationJourney.copy(sessionId = sessionId)
+
+    givenADeclarationJourneyIsPersisted(journey)
+
+    val eventualResult = controller.onSubmit()(request)
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)
   }
 }
