@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import java.time.LocalDateTime
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
@@ -48,5 +49,16 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created)
     repo.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
+  }
+
+  "on page load return an invalid request if journey is invalidated by resetting" in {
+    val sessionId = SessionId()
+    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+    givenADeclarationJourneyIsPersisted(DeclarationJourney(sessionId, Export))
+
+    val eventualResult = controller.onPageLoad()(request)
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some("/merchandise-in-baggage/invalid-request")
   }
 }
