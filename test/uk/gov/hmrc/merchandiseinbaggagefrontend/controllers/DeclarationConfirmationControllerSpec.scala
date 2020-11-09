@@ -61,16 +61,4 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("/merchandise-in-baggage/invalid-request")
   }
-
-  "on submit user is redirect to the exercise and restricted goods page" in {
-    val sessionId = SessionId()
-    val request = buildPost(routes.DeclarationConfirmationController.onSubmit().url, sessionId)
-    val journey = completedDeclarationJourney.copy(sessionId = sessionId)
-
-    givenADeclarationJourneyIsPersisted(journey)
-
-    val eventualResult = controller.onSubmit()(request)
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)
-  }
 }

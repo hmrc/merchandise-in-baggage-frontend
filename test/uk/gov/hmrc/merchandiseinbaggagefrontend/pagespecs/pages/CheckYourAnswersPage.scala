@@ -36,6 +36,13 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
     readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
   }
+
+  def mustBeReidrecToExiceGoodAfterClicingNewDeclarationLink(): Unit = {
+    val button = find(NameQuery("makeDeclarationButton")).get
+    click on button
+
+    readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
+  }
 }
 
 object CheckYourAnswersPage {

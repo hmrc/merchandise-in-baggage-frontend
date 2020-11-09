@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
@@ -33,16 +33,12 @@ class DeclarationConfirmationController @Inject()(
                                                    view: DeclarationConfirmationView,
                                                    repo: DeclarationJourneyRepository
                                                  )(implicit ec: ExecutionContext, appConf: AppConfig)
-  extends DeclarationJourneyUpdateController with MibReferenceGenerator {
+  extends DeclarationJourneyController with MibReferenceGenerator {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF) { declaration =>
       resetJourney.map(ref => Ok(view(declaration.copy(mibReference = Some(ref)))))
     }
-  }
-
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    Future.successful(Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad()))
   }
 
   private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[MibReference] = {

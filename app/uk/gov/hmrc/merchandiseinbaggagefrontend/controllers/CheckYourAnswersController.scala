@@ -50,7 +50,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationType match {
-      case Export => Future.successful(Redirect(routes.DeclarationConfirmationController.onSubmit()))
+      case Export => Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad() ))
       case Import =>
         request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
           makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
