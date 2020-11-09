@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+import java.time.LocalDateTime
+
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,18 +28,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
 
   val view = app.injector.instanceOf[DeclarationConfirmationView]
-  val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view)
+  private val repo = injector.instanceOf[DeclarationJourneyRepository]
+  val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, repo)
 
-  "on page load return 200" in {
+  "on page load return 200 and reset persisted journey declaration" in {
     val sessionId = SessionId()
-    givenADeclarationJourneyIsPersisted(completedDeclarationJourney
-      .copy(sessionId = sessionId)
-      .copy(declarationType = DeclarationType.Export)
-    )
     val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
-    val eventualResult = controller.onPageLoad()(request)
+    val exportJourney = completedDeclarationJourney
+      .copy(sessionId = sessionId)
+      .copy(declarationType = DeclarationType.Export)
 
+    givenADeclarationJourneyIsPersisted(exportJourney)
+
+    val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 200
+
+    import exportJourney._
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created)
+    repo.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }
 }
