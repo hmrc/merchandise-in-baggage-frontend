@@ -16,8 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 
+import java.util
+
+import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.openqa.selenium.{By, WebDriver}
-import org.scalatest.AppendedClues
+import org.scalatest.{AppendedClues, Assertion}
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
@@ -35,9 +38,31 @@ abstract class BasePage(implicit webDriver: WebDriver)
     interval = scaled(Span(150, Millis))
   )
 
+  def mustRenderBasicContent(path: String, expectedTitle: String): Unit = patiently {
+    val expectedHeadingContent: String = expectedTitle
+    mustRenderBasicContentWithoutHeader(path, expectedTitle)
+    headerText() mustBe expectedHeadingContent
+  }
+
+  def mustRenderBasicContentWithoutHeader(path: String, expectedTitle: String): Unit = patiently {
+    readPath() mustBe path
+    pageTitle mustBe expectedTitle
+  }
+
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
+
+  val element: String => WebElement = elementId => id(elementId).element.underlying
+
+  def unifiedListItemsById(id : String): util.List[WebElement] =
+    find(IdQuery(id)).get.underlying.findElements(By.tagName("li"))
+
+  def textOfElementWithId(id: String): String = element(id).getText
+
+  def attrOfElementWithId(id: String, attr: String): String = element(id).getAttribute(attr)
+
+  def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
 
   def patiently[A](assertionsMayTimeOut: => A): A = eventually(assertionsMayTimeOut).withClue {
     s"""

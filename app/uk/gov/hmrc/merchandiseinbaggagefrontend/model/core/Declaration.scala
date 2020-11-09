@@ -27,6 +27,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.Address
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -290,8 +291,18 @@ case class Declaration(sessionId: SessionId,
                        nameOfPersonCarryingTheGoods: Name,
                        maybeCustomsAgent: Option[CustomsAgent],
                        eori: Eori,
-                       journeyDetails: JourneyDetails)
+                       journeyDetails: JourneyDetails,
+                       dateOfDeclaration: LocalDateTime = LocalDateTime.now,
+                       mibReference: Option[MibReference] = None //TODO not to be an option defaulted
+                      )
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
+  val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
+
+  implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
+    def formattedDate: String = {
+      dateOfDeclaration.format(formatter)
+    }
+  }
 }

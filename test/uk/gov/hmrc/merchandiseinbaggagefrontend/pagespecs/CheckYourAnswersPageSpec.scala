@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
@@ -64,6 +65,15 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
       page.mustRedirectToPaymentFromTheCTA()
       page.mustHaveOneRequestAndSessionId(wireMockServer)
+    }
+
+    "allow the user to make a declaration if exporting" in {
+      givenADeclarationWithTaxDue(completedDeclarationJourney.copy(declarationType = DeclarationType.Export)).futureValue
+      givenTaxArePaid(wireMockServer)
+
+      open(path)
+
+      page.mustRedirectToDeclarationConfirmation()
     }
   }
 }

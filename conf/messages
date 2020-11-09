@@ -387,5 +387,15 @@ checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my decl
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.payButton = Accept and Pay
+checkYourAnswers.makeDeclarationButton = Make declaration
+
+declarationConfirmation.title = Confirmation page
+declarationConfirmation.h2.1 = What you need to do next
+declarationConfirmation.ul.p = Make sure that you:
+declarationConfirmation.ul.1 = take this declaration confirmation with you
+declarationConfirmation.ul.2 = take the invoices for all the goods you are  taking out of the UK
+declarationConfirmation.date = Date of declaration
+declarationConfirmation.email = We have sent you a confirmation email to {0}.
+declarationConfirmation.makeAnotherDeclaration = Make another declaration
 
 

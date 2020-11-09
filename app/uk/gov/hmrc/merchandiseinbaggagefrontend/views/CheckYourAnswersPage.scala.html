@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.taxDue
 @import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.AmountInPence
+@import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
@@ -141,6 +142,9 @@
   </strong>
  </div>
 
-  @button(messages("checkYourAnswers.payButton"), name = Some("payButton"))
+   @declaration.declarationType match {
+     case Import => { @button(messages("checkYourAnswers.payButton"), name = Some("payButton")) }
+     case Export => { @button(messages("checkYourAnswers.makeDeclarationButton"), name = Some("makeDeclarationButton")) }
+   }
  }
 }
