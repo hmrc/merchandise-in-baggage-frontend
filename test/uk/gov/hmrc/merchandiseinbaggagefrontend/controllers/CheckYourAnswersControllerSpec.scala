@@ -72,6 +72,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
     val eventualResult = controller.onSubmit()(request)
 
     status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some("declaration-confirmation")
+    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
   }
 }
