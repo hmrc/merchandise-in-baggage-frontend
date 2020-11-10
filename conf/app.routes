@@ -64,6 +64,9 @@ POST       /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefronten
 # GoodsRemoved
 GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRemovedController.onPageLoad
 
+# GoodsOverThreshold
+GET        /goods-over-threshold         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsOverThresholdController.onPageLoad
+
 # PaymentCalculation
 GET        /payment-calculation          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentCalculationController.onPageLoad
 

@@ -253,6 +253,30 @@ goodsRemoved.heading = You removed your goods
 goodsRemoved.p1 = You have no goods to declare.
 goodsRemoved.link = Add other goods
 
+# GoodsOverThreshold
+goodsOverThreshold.NorthernIreland.title = The total value of your goods is over £873
+goodsOverThreshold.GreatBritain.title = The total value of your goods is over £1,500
+goodsOverThreshold.NorthernIreland.heading = The total value of your goods is over £873
+goodsOverThreshold.GreatBritain.heading = The total value of your goods is over £1,500
+goodsOverThreshold.NorthernIreland.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of £873.
+goodsOverThreshold.GreatBritain.p1 = You cannot use this service to declare goods you are bringing to Great Britain that are over the value of £1,500.
+goodsOverThreshold.p2 = To declare your goods you will need to
+goodsOverThreshold.Import.p2.a.text = make a full import declaration.
+goodsOverThreshold.Import.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+goodsOverThreshold.Export.p2.a.text = make a full export declaration.
+goodsOverThreshold.Export.p2.a.href = https://www.gov.uk/guidance/making-a-full-export-declaration
+goodsOverThreshold.p3 = If you want to use this service, you need to either:
+goodsOverThreshold.p4 = Remove goods from this declaration
+goodsOverThreshold.p5 = Make a new declaration
+goodsOverThreshold.h3 = How we calculated the value of your goods
+goodsOverThreshold.p6 = The total value of your goods is {0}.
+goodsOverThreshold.p7 = We converted this amount at a rate of:
+goodsOverThreshold.li = {0} to 1 (GBP).
+goodsOverThreshold.p8.1 = We use
+goodsOverThreshold.p8.a.text = HMRC’s monthly exchange rates (opens in new tab)
+goodsOverThreshold.p8.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
+goodsOverThreshold.p8.2 = and the rates of the month in which you make your declaration.
+
 # PaymentCalculation
 paymentCalculation.title = Payment due on these goods {0}
 paymentCalculation.heading = Payment due on these goods {0}

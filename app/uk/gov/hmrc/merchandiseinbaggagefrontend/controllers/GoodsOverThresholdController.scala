@@ -20,15 +20,15 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentCalculationView
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsOverThresholdView
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PaymentCalculationController @Inject()(override val controllerComponents: MessagesControllerComponents,
+class GoodsOverThresholdController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                              actionProvider: DeclarationJourneyActionProvider,
                                              calculationService: CalculationService,
-                                             view: PaymentCalculationView)
+                                             view: GoodsOverThresholdView)
                                             (implicit val appConfig: AppConfig, ec: ExecutionContext)
   extends DeclarationJourneyController {
 
@@ -38,12 +38,7 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
         for {
           paymentCalculations <- calculationService.paymentCalculation(goods)
           rates <- calculationService.getConversionRates(goods)
-        } yield {
-          if(paymentCalculations.totalGbpValue.value > destination.threshold.value)
-            Redirect(routes.GoodsOverThresholdController.onPageLoad())
-          else
-            Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad()))
-        }
+        } yield Ok(view(request.declarationJourney.declarationType, destination, paymentCalculations.totalGbpValue, rates))
       }
     }
   }
