@@ -18,11 +18,10 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.service.MibReferenceGenerator
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -33,19 +32,16 @@ class DeclarationConfirmationController @Inject()(
                                                    view: DeclarationConfirmationView,
                                                    repo: DeclarationJourneyRepository
                                                  )(implicit ec: ExecutionContext, appConf: AppConfig)
-  extends DeclarationJourneyController with MibReferenceGenerator {
+  extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF) { declaration =>
-      resetJourney.map(ref => Ok(view(declaration.copy(mibReference = Some(ref)))))
+      resetJourney.map(_ => Ok(view(declaration)))
     }
   }
 
-  private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[MibReference] = {
+  private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._
-    for {
-      _         <- repo.upsert(DeclarationJourney(sessionId, declarationType))
-      reference <- Future.fromTry(mibReference)
-    } yield reference
+    repo.upsert(DeclarationJourney(sessionId, declarationType))
   }
 }

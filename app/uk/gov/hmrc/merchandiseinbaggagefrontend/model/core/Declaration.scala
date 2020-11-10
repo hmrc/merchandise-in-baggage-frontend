@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.text.NumberFormat.getCurrencyInstance
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
@@ -31,6 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggagefrontend.service.MibReferenceGenerator
 
 import scala.collection.immutable
 
@@ -293,12 +295,12 @@ case class Declaration(sessionId: SessionId,
                        eori: Eori,
                        journeyDetails: JourneyDetails,
                        dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-                       mibReference: Option[MibReference] = None //TODO not to be an option defaulted
+                       mibReference: MibReference = Declaration.mibReference.getOrElse(MibReference(""))
                       )
 
-object Declaration {
+object Declaration extends MibReferenceGenerator {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
+  val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
     def formattedDate: String = {
