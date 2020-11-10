@@ -56,6 +56,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       }
     }
 
+    "redirect to /goods-over-threshold" when {
+      "the total GBP value of the goods exceeds the threshold" in {
+        givenADeclarationWithTaxDue(completedImportJourneyWithGoodsOverThreshold)
+
+        open(path) mustBe "/merchandise-in-baggage/goods-over-threshold"
+      }
+    }
+
     s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration journey is not complete" in {
         givenADeclarationJourney(incompleteDeclarationJourney)

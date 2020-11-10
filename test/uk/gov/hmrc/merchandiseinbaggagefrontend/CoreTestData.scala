@@ -53,6 +53,9 @@ trait CoreTestData {
 
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 
+  val overThresholdGoods: GoodsEntries = GoodsEntries(completedGoodsEntry.copy(
+    maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("Eurozone", "Euro", "EUR")))))
+
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(sessionId)
 
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
@@ -77,6 +80,12 @@ trait CoreTestData {
 
   val importJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
+
+  val importJourneyWithGoodsOverThreshold: DeclarationJourney =
+    startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods)
+
+  val completedImportJourneyWithGoodsOverThreshold: DeclarationJourney =
+    completedDeclarationJourney.copy(goodsEntries = overThresholdGoods)
 
   val journeyDate: LocalDate = LocalDate.now
 
