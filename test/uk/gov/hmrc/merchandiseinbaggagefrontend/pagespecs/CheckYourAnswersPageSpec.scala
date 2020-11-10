@@ -52,7 +52,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
     "redirect to /goods-over-threshold" when {
       "the total GBP value of the goods exceeds the threshold" in {
-        givenADeclarationWithTaxDue(importJourneyWithGoodsOverThreshold)
+        givenADeclarationWithTaxDue(completedImportJourneyWithGoodsOverThreshold)
 
         open(path) mustBe "/merchandise-in-baggage/goods-over-threshold"
       }
