@@ -51,9 +51,6 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF)(goods => declarationConfirmation(request, goods))
-      .recoverWith {
-        case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-      }
     }
 
   private def declarationConfirmation(request: DeclarationJourneyRequest[AnyContent], goods: DeclarationGoods)
