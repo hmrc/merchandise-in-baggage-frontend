@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 
-import scala.util.Try
+import scala.util.{Random, Try}
 
 trait MibReferenceGenerator {
 
@@ -26,9 +26,10 @@ trait MibReferenceGenerator {
   protected val referenceFormatRegex = referenceFormat.r
   private def uniqueId: String = java.util.UUID.randomUUID().toString
 
-  def mibReference: Try[MibReference] =
-    for {
-      bytes <- Try(java.nio.ByteBuffer.wrap(uniqueId.getBytes))
-      truncate <- Try(bytes.asLongBuffer().get().toString.take(10))
-    } yield MibReference(s"XXMB$truncate") //TODO prefix Letters hard coded + need more refinement
+  def mibReference: MibReference = {
+    //TODO this could throw
+    val chars = Random.alphanumeric.find(c => c.isLetter && c.isUpper).getOrElse("A")
+    MibReference(s"X${chars}MB${java.nio.ByteBuffer.wrap(uniqueId.getBytes).asLongBuffer().get().toString.take(10)}")
+  }
+
 }

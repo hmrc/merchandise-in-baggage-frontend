@@ -295,7 +295,7 @@ case class Declaration(sessionId: SessionId,
                        eori: Eori,
                        journeyDetails: JourneyDetails,
                        dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-                       mibReference: MibReference = Declaration.mibReference.getOrElse(MibReference(""))
+                       mibReference: MibReference = Declaration.mibReference
                       )
 
 object Declaration extends MibReferenceGenerator {
