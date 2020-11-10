@@ -28,17 +28,17 @@ h3: components.h3,
 p: components.p
 )
 
-@(decType: DeclarationType, dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages(s"goodsOverThreshold.${dest.toString}.title"))) {
+@layout(pageTitle = Some(messages(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None) {
     @h1(s"goodsOverThreshold.${dest.toString}.heading")
 
     <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.p1")</p>
 
     <p class="govuk-body">
         @messages("goodsOverThreshold.p2")
-        <a class="govuk-link" href="@messages(s"goodsOverThreshold.${decType.toString}.p2.a.href")">
-            @messages(s"goodsOverThreshold.${decType.toString}.p2.a.text")
+        <a class="govuk-link" href="@messages("goodsOverThreshold.p2.a.href")">
+            @messages("goodsOverThreshold.p2.a.text")
         </a>
     </p>
 
@@ -51,15 +51,9 @@ p: components.p
     </p>
 
     <p class="govuk-body">
-        @if(decType == DeclarationType.Import) {
-            <a class="govuk-link" href="@StartImportController.onPageLoad().url">
-                @messages("goodsOverThreshold.p5")
-            </a>
-        } else {
-            <a class="govuk-link" href="@StartExportController.onPageLoad().url">
-                @messages("goodsOverThreshold.p5")
-            </a>
-        }
+        <a class="govuk-link" href="@StartImportController.onPageLoad().url">
+            @messages("goodsOverThreshold.p5")
+        </a>
     </p>
 
     @h3("goodsOverThreshold.h3")

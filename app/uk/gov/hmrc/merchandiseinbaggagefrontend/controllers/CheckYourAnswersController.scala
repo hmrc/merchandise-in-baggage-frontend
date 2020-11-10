@@ -42,8 +42,13 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
       calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
-        val taxDue = paymentCalculations.totalTaxDue
-        Ok(page(form, declaration, taxDue))
+        if(declaration.declarationType == Import
+          && paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
+          Redirect(routes.GoodsOverThresholdController.onPageLoad())
+        } else {
+          val taxDue = paymentCalculations.totalTaxDue
+          Ok(page(form, declaration, taxDue))
+        }
       }
     }
   }

@@ -38,7 +38,7 @@ class GoodsOverThresholdController @Inject()(override val controllerComponents: 
         for {
           paymentCalculations <- calculationService.paymentCalculation(goods)
           rates <- calculationService.getConversionRates(goods)
-        } yield Ok(view(request.declarationJourney.declarationType, destination, paymentCalculations.totalGbpValue, rates))
+        } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates))
       }
     }
   }

@@ -17,14 +17,15 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
 
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
   override def page: PaymentCalculationPage = wire[PaymentCalculationPage]
 
-  private def setUpTaxCalculationAndOpenPage() = {
-    val taxCalculation = givenADeclarationWithTaxDue(importJourneyWithTwoCompleteGoodsEntries).futureValue
+  private def setUpTaxCalculationAndOpenPage(journey: DeclarationJourney = importJourneyWithTwoCompleteGoodsEntries) = {
+    val taxCalculation = givenADeclarationWithTaxDue(journey).futureValue
 
     open(path)
 
@@ -35,6 +36,14 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
     behave like aPageWithABackButton(path, setUpTaxCalculationAndOpenPage(), ReviewGoodsPage.path)
+
+    "redirect to /goods-over-threshold" when {
+      "the total GBP value of the goods exceeds the threshold" in {
+        setUpTaxCalculationAndOpenPage(importJourneyWithGoodsOverThreshold)
+
+        page.readPath() mustBe "/merchandise-in-baggage/goods-over-threshold"
+      }
+    }
 
     "render" in {
       val taxCalculation = setUpTaxCalculationAndOpenPage()

@@ -177,6 +177,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           Some(Declaration(
             sessionId,
             DeclarationType.Import,
+            GoodsDestinations.NorthernIreland,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeCustomsAgent,

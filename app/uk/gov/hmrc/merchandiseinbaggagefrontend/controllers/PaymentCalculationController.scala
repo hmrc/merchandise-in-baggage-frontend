@@ -36,10 +36,17 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
-      for {
-        paymentCalculations <- calculationService.paymentCalculation(goods)
-        rates <- calculationService.getConversionRates(goods)
-      } yield Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+      request.declarationJourney.maybeGoodsDestination.fold(actionProvider.invalidRequestF) { destination =>
+        for {
+          paymentCalculations <- calculationService.paymentCalculation(goods)
+          rates <- calculationService.getConversionRates(goods)
+        } yield {
+          if(paymentCalculations.totalGbpValue.value > destination.threshold.value)
+            Redirect(routes.GoodsOverThresholdController.onPageLoad())
+          else
+            Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+        }
+      }
     }
   }
 }

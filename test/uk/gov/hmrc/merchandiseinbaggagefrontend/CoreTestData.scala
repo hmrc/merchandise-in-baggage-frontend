@@ -74,6 +74,16 @@ trait CoreTestData {
   val importJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
+  val importJourneyWithGoodsOverThreshold: DeclarationJourney =
+    startedImportToGreatBritainJourney.copy(
+      goodsEntries = GoodsEntries(completedGoodsEntry.copy(
+        maybePurchaseDetails = Some(PurchaseDetails("10000", Currency("Eurozone", "Euro", "EUR"))))))
+
+  val completedImportJourneyWithGoodsOverThreshold: DeclarationJourney =
+    completedDeclarationJourney.copy(
+      goodsEntries = GoodsEntries(completedGoodsEntry.copy(
+        maybePurchaseDetails = Some(PurchaseDetails("10000", Currency("Eurozone", "Euro", "EUR"))))))
+
   val journeyDate: LocalDate = LocalDate.now
 
   val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Dover, journeyDate)

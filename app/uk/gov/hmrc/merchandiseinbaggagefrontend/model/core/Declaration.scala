@@ -185,6 +185,7 @@ case class DeclarationJourney(sessionId: SessionId,
         maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
 
     for {
+      goodsDestination <- maybeGoodsDestination
       goods <- goodsEntries.declarationGoodsIfComplete
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
       eori <- maybeEori
@@ -192,7 +193,7 @@ case class DeclarationJourney(sessionId: SessionId,
 
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(sessionId, declarationType, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
+      Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
     }
   }
 }
@@ -287,6 +288,7 @@ object JourneyInSmallVehicle {
 
 case class Declaration(sessionId: SessionId,
                        declarationType: DeclarationType,
+                       goodsDestination: GoodsDestination,
                        declarationGoods: DeclarationGoods,
                        nameOfPersonCarryingTheGoods: Name,
                        maybeCustomsAgent: Option[CustomsAgent],
