@@ -17,23 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.api
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, DeclarationGoods, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpec, CoreTestData}
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.util.Try
+import scala.concurrent.Future
 
 class PayApiRequestBuilderSpec extends BaseSpec with CoreTestData with ScalaFutures {
 
   "Build a pay api request" in new PayApiRequestBuilder {
     import aCalculationResult._
     val stubbedReference = super.mibReference
-    override def mibReference: Try[MibReference] = stubbedReference
+    override def mibReference: MibReference = stubbedReference
     val stubbedService: DeclarationGoods => Future[PaymentCalculations] = _ => Future.successful(aPaymentCalculations)
     val totalDue: Long = duty.value + vat.value
 
-    val expected: PayApiRequest = PayApiRequest(stubbedReference.get, AmountInPence(totalDue), duty, vat)
+    val expected: PayApiRequest = PayApiRequest(stubbedReference, AmountInPence(totalDue), duty, vat)
 
     buildRequest(aDeclarationGood, stubbedService).futureValue mustBe expected
   }

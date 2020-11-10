@@ -27,7 +27,7 @@
 
  <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
   <h1 id="panelTitleId" class="govuk-panel__title">Declaration complete</h1>
-  <div id="mibReferenceId" class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.map(_.value).getOrElse("Reference unavailable")</strong></div>
+  <div id="mibReferenceId" class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.value</strong></div>
  </div>
 
  <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>

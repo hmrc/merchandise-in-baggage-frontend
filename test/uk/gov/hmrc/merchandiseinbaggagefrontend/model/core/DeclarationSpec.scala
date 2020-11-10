@@ -17,9 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
 import java.time.LocalDateTime
-import Declaration._
 
 import play.api.libs.json.Json.{parse, toJson}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -173,7 +174,9 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     "be complete" when {
       "the user has completed the journey" in {
         val now = LocalDateTime.now
-        completedDeclarationJourney.declarationIfRequiredAndComplete.map(_.copy(dateOfDeclaration = now)) mustBe
+        val reference = MibReference("xx")
+        completedDeclarationJourney.declarationIfRequiredAndComplete
+          .map(_.copy(dateOfDeclaration = now).copy(mibReference = reference)) mustBe
           Some(Declaration(
             sessionId,
             DeclarationType.Import,
@@ -184,7 +187,8 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             JourneyInSmallVehicle(
               Dover,
               completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfArrival,
-              completedDeclarationJourney.maybeRegistrationNumber.get)).copy(dateOfDeclaration = now))
+              completedDeclarationJourney.maybeRegistrationNumber.get))
+            .copy(dateOfDeclaration = now).copy(mibReference = reference))
       }
 
       "the user is not a customs agent" in {

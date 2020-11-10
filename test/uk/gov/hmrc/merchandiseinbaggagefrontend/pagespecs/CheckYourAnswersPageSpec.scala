@@ -16,11 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType
+import org.scalatest.Assertion
+import org.scalatestplus.selenium.WebBrowser
+import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, DeclarationType, JourneyInSmallVehicle}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
+
+import scala.collection.JavaConverters._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation{
   override lazy val page: CheckYourAnswersPage = wire[CheckYourAnswersPage]
@@ -37,7 +43,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         open(path)
 
         page.headerText() mustBe title
-        page.mustRenderDetail(declaration, taxDue.totalTaxDue)
+        mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
 
       "the declaration is complete but sparse" in {
@@ -46,7 +52,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
         open(path)
 
-        page.mustRenderDetail(declaration, taxDue.totalTaxDue)
+        mustRenderDetail(declaration, taxDue.totalTaxDue)
       }
     }
 
@@ -65,7 +71,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       open(path)
 
       page.mustRedirectToPaymentFromTheCTA()
-      page.mustHaveOneRequestAndSessionId(wireMockServer)
+      mustHaveOneRequestAndSessionId(wireMockServer)
     }
 
     "allow the user to make a declaration if exporting" in {
@@ -75,6 +81,90 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       open(path)
 
       page.mustRedirectToDeclarationConfirmation()
+    }
+  }
+
+  def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
+    val payApiRequestCapture = server.getAllServeEvents.asScala
+      .find(_.getRequest.getAbsoluteUrl.contains("pay-api/mib-frontend/mib/journey/start"))
+      .get.getRequest
+
+    payApiRequestCapture.header(xSessionId).values.size mustBe 1
+    payApiRequestCapture.header(xRequestId).values.size mustBe 1
+  }
+
+  def mustRedirectToInvalidRequest(): Assertion =
+    readPath() mustBe "/merchandise-in-baggage/invalid-request"
+
+  import WebBrowser._
+  import page._
+
+  def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
+    findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
+
+    def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
+
+    def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
+
+    declaration.declarationGoods.goods.zipWithIndex.foreach { goodsWithIndex =>
+      val goods = goodsWithIndex._1
+      val index = goodsWithIndex._2
+
+      textOfElementWithId(s"categoryLabel_$index") mustBe "Type of goods"
+      textOfElementWithId(s"category_$index") mustBe goods.categoryQuantityOfGoods.category
+
+      textOfElementWithId(s"quantityLabel_$index") mustBe "Number of items"
+      textOfElementWithId(s"quantity_$index") mustBe goods.categoryQuantityOfGoods.quantity
+
+      textOfElementWithId(s"countryLabel_$index") mustBe "Country"
+      textOfElementWithId(s"country_$index") mustBe goods.countryOfPurchase
+
+      textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
+      textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.toString
+
+      textOfElementWithId(s"invoiceNumberLabel_$index") mustBe "Invoice number"
+      textOfElementWithId(s"invoiceNumber_$index") mustBe goods.invoiceNumber
+    }
+
+    textOfElementWithId("taxDueLabel") mustBe "Tax due"
+    textOfElementWithId("taxDueValue") mustBe totalTaxDue.formattedInPounds
+
+    declaration.maybeCustomsAgent.fold {
+      elementIsNotRenderedWithId("customsAgentNameLabel")
+      elementIsNotRenderedWithId("customsAgentName")
+
+      elementIsNotRenderedWithId("customsAgentAddressLabel")
+      elementIsNotRenderedWithId("customsAgentAddress")
+    } { customsAgent =>
+      textOfElementWithId("customsAgentNameLabel") mustBe "Name of customs agent"
+      textOfElementWithId("customsAgentName") mustBe customsAgent.name
+
+      textOfElementWithId("customsAgentAddressLabel") mustBe "Customs agent address"
+      textOfElementWithId("customsAgentAddress").contains(customsAgent.address.postcode.get) mustBe true
+    }
+
+    textOfElementWithId("eoriLabel") mustBe "EORI number"
+    textOfElementWithId("eori") mustBe declaration.eori.toString
+
+    textOfElementWithId("nameOfPersonCarryingTheGoodsLabel") mustBe "Name of person carrying goods"
+    textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
+
+    textOfElementWithId("placeOfArrivalLabel") mustBe "Place of arrival"
+    textOfElementWithId("placeOfArrival") mustBe declaration.journeyDetails.placeOfArrival.display
+
+    textOfElementWithId("dateOfArrivalLabel") mustBe "Date of arrival"
+    textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfArrival
+
+    textOfElementWithId("travellingByVehicleLabel") mustBe "Travelling by vehicle"
+    textOfElementWithId("travellingByVehicle") mustBe declaration.journeyDetails.travellingByVehicle.entryName
+
+    declaration.journeyDetails match {
+      case journeyInSmallVehicle: JourneyInSmallVehicle =>
+        textOfElementWithId("vehicleRegistrationNumberLabel") mustBe "Vehicle registration number"
+        textOfElementWithId("vehicleRegistrationNumber") mustBe journeyInSmallVehicle.registrationNumber
+      case _ =>
+        elementIsNotRenderedWithId("vehicleRegistrationNumberLabel")
+        elementIsNotRenderedWithId("vehicleRegistrationNumber")
     }
   }
 }

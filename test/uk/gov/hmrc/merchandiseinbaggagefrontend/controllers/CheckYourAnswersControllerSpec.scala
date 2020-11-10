@@ -74,4 +74,16 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
   }
+
+  "on submit will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
+    val declarationJourney = startedExportJourney
+    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+
+    givenADeclarationJourneyIsPersisted(declarationJourney)
+
+    val eventualResult = controller.onSubmit()(request)
+
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some(routes.InvalidRequestController.onPageLoad().url)
+  }
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
@@ -49,15 +49,15 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
+      .fold(actionProvider.invalidRequestF)(goods => declarationConfirmation(request, goods))
+    }
+
+  private def declarationConfirmation(request: DeclarationJourneyRequest[AnyContent], goods: DeclarationGoods)
+                                     (implicit headerCarrier: HeaderCarrier): Future[Result] = {
     request.declarationJourney.declarationType match {
-      case Export => Future.successful(Redirect(routes.DeclarationConfirmationController.onSubmit()))
-      case Import =>
-        request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF)(goods => {
-          makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
-            .recoverWith {
-              case _: Throwable => Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-            }
-        })
+      case Export => Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+      case Import => makePayment(goods).map(res => Redirect(connector.extractUrl(res).nextUrl.value))
     }
   }
 
