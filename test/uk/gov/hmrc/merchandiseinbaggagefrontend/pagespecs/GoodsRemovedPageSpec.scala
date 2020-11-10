@@ -26,6 +26,7 @@ class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
   "the goods removed page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
+    behave like aPageWithNoBackButton(path)
 
     s"redirect to ${GoodsTypeQuantityPage.path(1)}" when {
       "the user elects to add more goods" in {

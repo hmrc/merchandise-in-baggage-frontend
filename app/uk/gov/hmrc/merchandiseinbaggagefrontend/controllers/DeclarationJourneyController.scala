@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.i18n.Messages
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -47,4 +47,9 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
   def onSubmit(idx: Int): Action[AnyContent]
+
+  def reviewGoodsIfCompleteElse(call: Call)(implicit request: DeclarationGoodsRequest[AnyContent]): Result =
+    if (request.declarationJourney.goodsEntries.declarationGoodsIfComplete.isDefined)
+      Redirect(routes.ReviewGoodsController.onPageLoad())
+    else Redirect(call)
 }

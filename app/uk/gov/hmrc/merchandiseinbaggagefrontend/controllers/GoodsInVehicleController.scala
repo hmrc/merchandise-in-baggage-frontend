@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsInVehicleForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
@@ -27,21 +27,23 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsInVehicleView
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsInVehicleController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
-                                        view: GoodsInVehicleView,
-                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+                                          override val controllerComponents: MessagesControllerComponents,
+                                          actionProvider: DeclarationJourneyActionProvider,
+                                          repo: DeclarationJourneyRepository,
+                                          view: GoodsInVehicleView,
+                                        )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+
+  private val backButtonUrl: Call = routes.JourneyDetailsController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(form.fill), backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors)),
+        formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
         goodsInVehicle =>
           repo.upsert(
             request.declarationJourney.copy(

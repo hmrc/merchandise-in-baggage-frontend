@@ -17,24 +17,16 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Eori}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EoriNumberPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EoriNumberPage, TravellerDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CustomsAgentPage, EoriNumberPage, TravellerDetailsPage}
 
 class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumberPage] {
   override lazy val page: EoriNumberPage = wire[EoriNumberPage]
 
   private val eori = Eori("GB123467800000")
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] =
-    declarationJourney.maybeEori
-
-  private def givenAnAgentJourney(): Unit =
-    givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(Yes)))
-
-  private def givenANonAgentJourney(): Unit =
-    givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(No)))
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] = declarationJourney.maybeEori
 
   "the eori number page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -43,5 +35,6 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     behave like aPageWhichRenders(path, givenANonAgentJourney(), expectedNonAgentTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aDataCapturePageWithSimpleRouting(path, givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
+    behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)
   }
 }

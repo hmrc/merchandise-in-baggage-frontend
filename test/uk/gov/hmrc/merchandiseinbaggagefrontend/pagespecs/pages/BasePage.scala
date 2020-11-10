@@ -19,12 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages
 import java.util
 
 import org.openqa.selenium.{By, WebDriver, WebElement}
-import org.openqa.selenium.{By, WebDriver}
-import org.scalatest.{AppendedClues, Assertion}
 import org.scalatest.concurrent.{Eventually, IntegrationPatience}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.{AppendedClues, Assertion}
 import org.scalatestplus.selenium.WebBrowser
+
+import scala.collection.JavaConverters._
 
 final case class BaseUrl(value: String)
 
@@ -70,6 +71,16 @@ abstract class BasePage(implicit webDriver: WebDriver)
        |${webDriver.findElement(By.tagName("body")).getText}
        |>>>url was: ${webDriver.getCurrentUrl}
        |""".stripMargin
+  }
+
+  def maybeBackButton: Option[WebElement] =
+    webDriver.findElements(By.className("govuk-back-link")).asScala.headOption
+
+  def clickOnBackButton(): String = {
+    val backButton = maybeBackButton.get
+    click on backButton
+
+    readPath()
   }
 }
 

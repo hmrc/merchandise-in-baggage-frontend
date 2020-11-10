@@ -19,13 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{CategoryQuantityOfGoods, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.GoodsTypeQuantityPage.{path, title}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsVatRatePage, GoodsTypeQuantityPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsTypeQuantityPage, GoodsVatRatePage, ValueWeightOfGoodsPage}
 
 class GoodsTypeQuantityPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, GoodsTypeQuantityPage] {
   override def page: GoodsTypeQuantityPage = wire[GoodsTypeQuantityPage]
 
   "the goods type quantity page" should {
-    behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path))
+    val back: Int => String = _ => ValueWeightOfGoodsPage.path
+
+    behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path), back)
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[CategoryQuantityOfGoods] = goodsEntry.maybeCategoryQuantityOfGoods

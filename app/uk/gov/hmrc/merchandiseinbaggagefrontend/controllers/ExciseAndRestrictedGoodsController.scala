@@ -17,9 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ExciseAndRestrictedGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ExciseAndRestrictedGoodsView
@@ -34,15 +35,24 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
                                                   (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
+    if (request.declarationJourney.maybeGoodsDestination.contains(NorthernIreland))
+      routes.GoodsRouteDestinationController.onPageLoad()
+    else routes.GoodsDestinationController.onPageLoad()
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill), request.declarationJourney.declarationType))
+    Ok(view(
+      request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill),
+      request.declarationJourney.declarationType,
+      backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
+        formWithErrors =>
+          Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         value => {
           repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
             if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())

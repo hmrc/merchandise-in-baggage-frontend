@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.VehicleSizeForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
@@ -27,21 +27,23 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.VehicleSizeView
 import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleSizeController @Inject()(
-                                          override val controllerComponents: MessagesControllerComponents,
-                                          actionProvider: DeclarationJourneyActionProvider,
-                                          repo: DeclarationJourneyRepository,
-                                          view: VehicleSizeView,
-                                        )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+                                       override val controllerComponents: MessagesControllerComponents,
+                                       actionProvider: DeclarationJourneyActionProvider,
+                                       repo: DeclarationJourneyRepository,
+                                       view: VehicleSizeView,
+                                     )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+
+  private val backButtonUrl: Call = routes.GoodsInVehicleController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(form.fill)))
+    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle.fold(form)(form.fill), backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors)),
+        formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
         isSmallVehicle =>
           repo.upsert(
             request.declarationJourney.copy(

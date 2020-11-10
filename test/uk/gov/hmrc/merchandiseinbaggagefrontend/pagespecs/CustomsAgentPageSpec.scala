@@ -21,9 +21,9 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CustomsAgentPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{AgentDetailsPage, EoriNumberPage, RadioButtonPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{AgentDetailsPage, EoriNumberPage, PaymentCalculationPage, RadioButtonPage}
 
-class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] with CoreTestData {
+class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] with CoreTestData with TaxCalculation {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   "the page" should {
@@ -31,6 +31,10 @@ class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBu
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, AgentDetailsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, EoriNumberPage.path)
+
+    behave like
+      aPageWithABackButton(
+        path, givenADeclarationWithTaxDue(importJourneyWithTwoCompleteGoodsEntries).futureValue, PaymentCalculationPage.path)
   }
 
   private def setup(): Unit =

@@ -26,6 +26,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWithNoBackButton(path)
 
     "render correctly" when {
       "make declaration" in {

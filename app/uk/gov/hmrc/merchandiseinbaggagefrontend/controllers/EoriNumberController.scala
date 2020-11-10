@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.EoriNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -28,18 +28,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EoriNumberController @Inject()(
-                                         override val controllerComponents: MessagesControllerComponents,
-                                         actionProvider: DeclarationJourneyActionProvider,
-                                         repo: DeclarationJourneyRepository,
-                                         view: EoriNumberView
-                                       )(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                      override val controllerComponents: MessagesControllerComponents,
+                                      actionProvider: DeclarationJourneyActionProvider,
+                                      repo: DeclarationJourneyRepository,
+                                      view: EoriNumberView
+                                    )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
+
+  private val backButtonUrl: Call = routes.CustomsAgentController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.maybeIsACustomsAgent.fold(actionProvider.invalidRequest) { isAgent =>
       val preparedForm = request.declarationJourney.maybeEori.fold(form)(e => form.fill(e.value))
 
-      Ok(view(preparedForm, isAgent))
+      Ok(view(preparedForm, isAgent, backButtonUrl))
     }
   }
 
@@ -49,7 +51,7 @@ class EoriNumberController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, isAgent))),
+            Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl))),
           eori => {
             repo.upsert(
               request.declarationJourney.copy(
@@ -62,5 +64,4 @@ class EoriNumberController @Inject()(
         )
     }
   }
-
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.VehicleRegistrationNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -34,17 +34,19 @@ class VehicleRegistrationNumberController @Inject()(
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
+  private val backButtonUrl: Call = routes.VehicleSizeController.onPageLoad()
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeRegistrationNumber.fold(form)(form.fill)
 
-    Ok(view(preparedForm))
+    Ok(view(preparedForm, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
         vehicleReg => {
           repo.upsert(
             request.declarationJourney.copy(maybeRegistrationNumber = Some(vehicleReg))
@@ -54,5 +56,4 @@ class VehicleRegistrationNumberController @Inject()(
         }
       )
   }
-
 }
