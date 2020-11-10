@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.VehicleRegistrationNumberPage.{path, title}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage, VehicleRegistrationNumberPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 
 class VehicleRegistrationNumberPageSpec extends DeclarationDataCapturePageSpec[String, VehicleRegistrationNumberPage] {
   override lazy val page: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
@@ -32,6 +32,7 @@ class VehicleRegistrationNumberPageSpec extends DeclarationDataCapturePageSpec[S
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), registrationNumber, CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), registrationNumber, InvalidRequestPage.path)
+    behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), VehicleSizePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[String] =

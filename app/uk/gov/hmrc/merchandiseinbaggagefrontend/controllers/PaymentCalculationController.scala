@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.PaymentCalculationView
@@ -32,12 +32,14 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
                                             (implicit val appConfig: AppConfig, ec: ExecutionContext)
   extends DeclarationJourneyController {
 
+  private val backButtonUrl: Call = routes.ReviewGoodsController.onPageLoad()
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
       for {
         paymentCalculations <- calculationService.paymentCalculation(goods)
         rates <- calculationService.getConversionRates(goods)
-      } yield Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad()))
+      } yield Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
     }
   }
 }

@@ -51,6 +51,10 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     startExportPage.clickOnCTA()
   }
 
+  def givenAnImportToNorthernIrelandJourneyIsStarted(): Unit = givenADeclarationJourney(startedImportToNorthernIrelandJourney)
+
+  def givenAnImportToGreatBritainJourneyIsStarted(): Unit = givenADeclarationJourney(startedImportToGreatBritainJourney)
+
   def givenADeclarationJourney(declarationJourney: DeclarationJourney): Unit = {
     open(TestOnlyDeclarationJourneyPage.path)
     testOnlyDeclarationJourneyPage.fillOutForm(declarationJourney)
@@ -84,7 +88,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
   }
 
-  def aPageThatRequiresACompletedGoodsEntry(path: String): Unit = {
+  def aPageThatRequiresAtLeastOneCompletedGoodsEntry(path: String): Unit = {
     s"redirect to ${InvalidRequestPage.path}" when {
       "there are no started goods entries" in {
         givenADeclarationJourney(startedImportJourney)
@@ -95,11 +99,28 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
         givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
         open(path) mustBe InvalidRequestPage.path
       }
+    }
 
-      "there are incomplete goods entries" in {
-        givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
-        open(path) mustBe InvalidRequestPage.path
-      }
+    "there are incomplete goods entries" in {
+      givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
+      open(path) mustBe InvalidRequestPage.path
+    }
+  }
+
+  def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String): Unit = {
+    s"enable the user to navigate from $path back to $backPath" in {
+      setUp
+      open(path)
+      page.maybeBackButton.isDefined mustBe true
+      page.clickOnBackButton() mustBe backPath
+    }
+  }
+
+  def aPageWithNoBackButton(path: String, setUp: => Unit = Unit): Unit = {
+    s"not display a back button" in {
+      setUp
+      open(path)
+      page.maybeBackButton.isDefined mustBe false
     }
   }
 

@@ -17,12 +17,17 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationDataCapturePage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
   def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[F]
+
+  def givenAnAgentJourney(): Unit = givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(Yes)))
+
+  def givenANonAgentJourney(): Unit = givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(No)))
 
   def aPageWhichDisplaysPreviouslyEnteredAnswers(path: String, setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
     "render correctly" when {

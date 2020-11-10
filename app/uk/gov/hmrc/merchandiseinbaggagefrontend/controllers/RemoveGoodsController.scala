@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.RemoveGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.Yes
@@ -35,9 +35,13 @@ class RemoveGoodsController @Inject()(
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
+  private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call =
+    request.declarationJourney.declarationIfRequiredAndComplete
+      .fold(routes.ReviewGoodsController.onPageLoad())(_ => routes.CheckYourAnswersController.onPageLoad())
+
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      Future successful Ok(view(form, idx, category))
+      Future successful Ok(view(form, idx, category, backButtonUrl))
     }
   }
 
@@ -46,15 +50,15 @@ class RemoveGoodsController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl))),
           removeGoods => {
-            if(removeGoods == Yes) {
+            if (removeGoods == Yes) {
               repo.upsert(
                 request.declarationJourney.copy(
                   goodsEntries = request.declarationJourney.goodsEntries.remove(idx)
                 )
               ).map { _ =>
-                if(request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad)
+                if (request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad)
                 else Redirect(routes.ReviewGoodsController.onPageLoad())
               }
             } else {

@@ -33,7 +33,8 @@ phaseBanner: components.phaseBanner,
         footerBlock: Option[Html] = None,
         footerItems: Seq[FooterItem] = Seq.empty,
         bodyEndBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
+        scriptsBlock: Option[Html] = None,
+        maybeBackButtonUrl: Option[play.api.mvc.Call]
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig)
 
 @headerDefault = {
@@ -63,6 +64,17 @@ phaseBanner: components.phaseBanner,
 }
 
 @mainContentDefault = {
+    @{
+        maybeBackButtonUrl.fold(Html("")){ url =>
+            // for some reason the supplied Call path does not always start with /merchandise-in-baggage
+            val pathPrefix = "/merchandise-in-baggage"
+            val urlString = url.toString
+            val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
+
+            govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
+        }
+    }
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
         @contentBlock

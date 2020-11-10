@@ -24,9 +24,10 @@
         head: Head
 )
 @(pageTitle: Option[String] = None,
-        headBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None,
-    fullWidth: Boolean = false)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  headBlock: Option[Html] = None,
+  scriptsBlock: Option[Html] = None,
+  fullWidth: Boolean = false,
+  maybeBackButtonUrl: Option[play.api.mvc.Call])(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @if(fullWidth) {
     @govukFullWidthLayout(
@@ -34,7 +35,8 @@
         headBlock = Some(head(headBlock)),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
-        footerItems = FooterLinks()
+        footerItems = FooterLinks(),
+        maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)
 } else {
     @govukLayout(
@@ -42,6 +44,7 @@
         headBlock = Some(head(headBlock)),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
-        footerItems = FooterLinks()
+        footerItems = FooterLinks(),
+        maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)
 }

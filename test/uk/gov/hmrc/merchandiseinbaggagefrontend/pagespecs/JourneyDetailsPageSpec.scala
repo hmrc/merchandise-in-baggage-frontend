@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, JourneyDetailsEntry}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.JourneyDetailsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsInVehiclePage, InvalidRequestPage, JourneyDetailsPage, TravellerDetailsPage}
 
 class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
   override lazy val page: JourneyDetailsPage = wire[JourneyDetailsPage]
@@ -32,6 +32,7 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), doverJourneyEntry, GoodsInVehiclePage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
+    behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), TravellerDetailsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[JourneyDetailsEntry] =

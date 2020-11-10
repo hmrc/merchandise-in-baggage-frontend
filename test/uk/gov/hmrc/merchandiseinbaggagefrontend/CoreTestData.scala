@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyCon
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.GreatBritain
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
@@ -44,6 +44,9 @@ trait CoreTestData {
   val startedImportToGreatBritainJourney: DeclarationJourney =
     startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain))
 
+  val startedImportToNorthernIrelandJourney: DeclarationJourney =
+    startedImportJourney.copy(maybeGoodsDestination = Some(NorthernIreland))
+
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(sessionId)
@@ -57,16 +60,19 @@ trait CoreTestData {
   val startedGoodsEntry: GoodsEntry = GoodsEntry(Some(aCategoryQuantityOfGoods))
 
   val importJourneyWithStartedGoodsEntry: DeclarationJourney =
-    startedImportJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
+    startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(startedGoodsEntry))
+
+  val importJourneyWithOneCompleteAndOneEmptyGoodsEntry: DeclarationJourney =
+    startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, GoodsEntry.empty)))
 
   val importJourneyWithOneCompleteAndOneStartedGoodsEntry: DeclarationJourney =
-    startedImportJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, startedGoodsEntry)))
+    startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, startedGoodsEntry)))
 
   val importJourneyWithOneCompleteGoodsEntry: DeclarationJourney =
-    startedImportJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry))
+    startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(completedGoodsEntry))
 
   val importJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
-    startedImportJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
+    startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
   val journeyDate: LocalDate = LocalDate.now
 

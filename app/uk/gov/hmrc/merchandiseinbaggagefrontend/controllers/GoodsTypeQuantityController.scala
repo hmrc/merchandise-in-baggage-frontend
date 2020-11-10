@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsTypeQuantityView.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -33,17 +33,19 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
                                            )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
+  private val backButtonUrl: Call = routes.ValueWeightOfGoodsController.onPageLoad()
+
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
 
-    Ok(view(preparedForm, idx))
+    Ok(view(preparedForm, idx, backButtonUrl))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, backButtonUrl))),
         categoryQuantityOfGoods => {
           repo.upsert(
             request.declarationJourney.copy(
@@ -52,17 +54,8 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
                 request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
               )
             )
-          ).map { _ =>
-            request
-              .declarationJourney
-              .goodsEntries
-              .declarationGoodsIfComplete
-              .fold(Redirect(routes.GoodsVatRateController.onPageLoad(idx))) { _ =>
-                Redirect(routes.ReviewGoodsController.onPageLoad())
-              }
-          }
+          ).map(_ => reviewGoodsIfCompleteElse(routes.GoodsVatRateController.onPageLoad(idx)))
         }
       )
   }
-
 }

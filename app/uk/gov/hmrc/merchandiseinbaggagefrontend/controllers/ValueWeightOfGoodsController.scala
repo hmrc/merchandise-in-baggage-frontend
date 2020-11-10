@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ValueWeightOfGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo._
@@ -34,10 +34,12 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
                                             (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
+  private val backButtonUrl: Call = routes.ExciseAndRestrictedGoodsController.onPageLoad()
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.maybeGoodsDestination match {
       case Some(dest) => Ok(
-        view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill), dest)
+        view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill), dest, backButtonUrl)
       )
       case None => Redirect(routes.GoodsDestinationController.onPageLoad())
     }
@@ -49,7 +51,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future successful BadRequest(view(formWithErrors, dest)),
+            formWithErrors => Future successful BadRequest(view(formWithErrors, dest, backButtonUrl)),
             exceedsThreshold => {
               repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold))).map { _ =>
                 if (exceedsThreshold == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())

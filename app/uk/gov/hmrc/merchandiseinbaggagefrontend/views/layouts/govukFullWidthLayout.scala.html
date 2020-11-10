@@ -33,7 +33,8 @@ phaseBanner: components.phaseBanner,
         footerBlock: Option[Html] = None,
         footerItems: Seq[FooterItem] = Seq.empty,
         bodyEndBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None
+        scriptsBlock: Option[Html] = None,
+        maybeBackButtonUrl: Option[play.api.mvc.Call]
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig)
 
 @headerDefault = {

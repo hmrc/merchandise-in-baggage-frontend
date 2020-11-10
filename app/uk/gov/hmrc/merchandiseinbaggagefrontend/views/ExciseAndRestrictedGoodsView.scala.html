@@ -29,9 +29,9 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages(s"exciseAndRestrictedGoods.$declarationType.title"))) {
+@layout(pageTitle = Some(messages(s"exciseAndRestrictedGoods.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = ExciseAndRestrictedGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)

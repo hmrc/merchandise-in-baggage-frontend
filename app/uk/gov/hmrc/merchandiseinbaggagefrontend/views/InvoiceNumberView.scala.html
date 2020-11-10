@@ -26,9 +26,9 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("invoiceNumber.title", goodsCategory))) {
+@layout(pageTitle = Some(messages("invoiceNumber.title", goodsCategory)), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = InvoiceNumberController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)

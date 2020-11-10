@@ -17,30 +17,29 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsRouteDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
-import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsRouteDestinationView
 
-class GoodsRouteDestinationController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
-                                        view: GoodsRouteDestinationView,
-                                      )(implicit appConf: AppConfig) extends DeclarationJourneyUpdateController {
+class GoodsRouteDestinationController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                                actionProvider: DeclarationJourneyActionProvider,
+                                                view: GoodsRouteDestinationView,
+                                               )(implicit appConf: AppConfig) extends DeclarationJourneyUpdateController {
+
+  private val backButtonUrl: Call = routes.GoodsDestinationController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(form, request.declarationJourney.declarationType))
+    Ok(view(form, request.declarationJourney.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
+        formWithErrors => BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         value =>
           (value, request.declarationJourney.declarationType) match {
             case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())

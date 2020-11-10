@@ -52,7 +52,11 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(result) mustEqual BAD_REQUEST
         contentAsString(result) mustEqual
-          view(submittedForm, declarationGoods)(postRequest, messagesApi.preferred(postRequest), appConfig).toString
+          view(
+            submittedForm,
+            declarationGoods,
+            routes.InvoiceNumberController.onPageLoad(1))(
+            postRequest, messagesApi.preferred(postRequest), appConfig).toString
       }
     }
   }

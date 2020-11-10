@@ -24,6 +24,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait StartPageSpec[P <: PageWithCTA] extends BasePageSpec[P] {
   def aStartImportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
     behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
+    behave like aPageWithNoBackButton(path)
 
     s"allow the user to set up a declaration and redirect to $expectedNextPage" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0

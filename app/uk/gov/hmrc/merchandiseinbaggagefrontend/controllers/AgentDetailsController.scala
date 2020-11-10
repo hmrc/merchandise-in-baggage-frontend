@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.AgentDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
@@ -27,24 +27,26 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentDetailsController @Inject()(
-                                       override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
-                                       view: AgentDetailsView
-                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                        override val controllerComponents: MessagesControllerComponents,
+                                        actionProvider: DeclarationJourneyActionProvider,
+                                        repo: DeclarationJourneyRepository,
+                                        view: AgentDetailsView
+                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
+
+  private val backButtonUrl: Call = routes.CustomsAgentController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeCustomsAgentName.fold(form)(form.fill)
 
-    Ok(view(preparedForm))
+    Ok(view(preparedForm, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
         value => {
           repo.upsert(
             request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
@@ -54,5 +56,4 @@ class AgentDetailsController @Inject()(
         }
       )
   }
-
 }

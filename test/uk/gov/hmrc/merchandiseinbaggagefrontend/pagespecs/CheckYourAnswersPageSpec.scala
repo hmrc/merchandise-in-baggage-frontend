@@ -27,6 +27,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWithNoBackButton(path)
 
     "render correctly" when {
       "the declaration is complete" in {

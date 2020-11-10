@@ -30,9 +30,9 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], goods: DeclarationGoods)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], goods: DeclarationGoods, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages(s"reviewGoods.title"))) {
+@layout(pageTitle = Some(messages(s"reviewGoods.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = ReviewGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
