@@ -17,10 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.ReviewGoodsView
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.ReviewGoodsForm.form
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -37,8 +37,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
             Some(CategoryQuantityOfGoods("test good", "123")),
             Some(GoodsVatRates.Twenty),
             Some("Austria"),
-            Some(PurchaseDetails("10.00", Currency("test country", "test currency", "TST"))),
-            Some("test invoice number")
+            Some(PurchaseDetails("10.00", Currency("test country", "test currency", "TST")))
           )
 
         val goodsEntries = GoodsEntries(goods)
@@ -55,7 +54,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
           view(
             submittedForm,
             declarationGoods,
-            routes.InvoiceNumberController.onPageLoad(1))(
+            routes.PurchaseDetailsController.onPageLoad(1))(
             postRequest, messagesApi.preferred(postRequest), appConfig).toString
       }
     }

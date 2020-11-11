@@ -34,10 +34,9 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       completedGoodsEntry.maybeCategoryQuantityOfGoods.get,
       completedGoodsEntry.maybeGoodsVatRate.get,
       completedGoodsEntry.maybeCountryOfPurchase.get,
-      completedGoodsEntry.maybePurchaseDetails.get,
-      completedGoodsEntry.maybeInvoiceNumber.get)
+      completedGoodsEntry.maybePurchaseDetails.get)
 
-  private val incompleteGoodsEntry = completedGoodsEntry.copy(maybeInvoiceNumber = None)
+  private val incompleteGoodsEntry = completedGoodsEntry.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
   private val oneCompleteOneIncompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
   private val vehicleRegistrationNumber = "reg"

@@ -21,10 +21,8 @@ import java.time.LocalDate
 import uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.GreatBritain
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
@@ -97,7 +95,7 @@ trait CoreTestData {
       maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
 
   val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))
-  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, "EU", aPurchaseDetails, "123")
+  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, "EU", aPurchaseDetails)
 
   val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)

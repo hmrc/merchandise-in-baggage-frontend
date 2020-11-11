@@ -27,8 +27,8 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
-    behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), InvoiceNumberPage.path(1))
-    behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), InvoiceNumberPage.path(2))
+    behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), PurchaseDetailsPage.path(1))
+    behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), PurchaseDetailsPage.path(2))
 
     "render correctly" when {
       "a single goods entry is complete" in {
@@ -45,8 +45,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
               "Country" -> "France",
               "VAT Rate" -> "20%",
               "Remove" -> "",
-              "Number of items" -> "1",
-              "Invoice number" -> "1234560"))
+              "Number of items" -> "1"))
       }
 
       "multiple goods entries are complete" in {
@@ -63,16 +62,14 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
               "Country" -> "France",
               "VAT Rate" -> "20%",
               "Remove" -> "",
-              "Number of items" -> "1",
-              "Invoice number" -> "1234560"),
+              "Number of items" -> "1"),
             Map(
               "Price paid" -> "199.99, Eurozone Euro (EUR)",
               "Type of goods" -> "cheese",
               "Country" -> "France",
               "VAT Rate" -> "20%",
               "Remove" -> "",
-              "Number of items" -> "3",
-              "Invoice number" -> "1234560"))
+              "Number of items" -> "3"))
       }
     }
 

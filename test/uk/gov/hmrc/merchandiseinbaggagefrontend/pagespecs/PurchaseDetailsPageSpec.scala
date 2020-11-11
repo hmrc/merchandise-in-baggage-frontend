@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.PurchaseDetailsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{InvoiceNumberPage, PurchaseDetailsPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
@@ -33,7 +33,7 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
 
   "the purchase details page" should {
     behave like aGoodsEntryPage(
-      path, title, PurchaseDetailsInput("100", "EUR"), Some(InvoiceNumberPage.path), SearchGoodsCountryPage.path)
+      path, title, PurchaseDetailsInput("100", "EUR"), None, SearchGoodsCountryPage.path)
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[PurchaseDetailsInput] =

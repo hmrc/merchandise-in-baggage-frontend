@@ -87,8 +87,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         textOfElementWithId(s"country_$idx") mustBe good.countryOfPurchase
         textOfElementWithId(s"priceLabel_$idx") mustBe "Price paid"
         textOfElementWithId(s"price_$idx") mustBe good.purchaseDetails.toString
-        textOfElementWithId(s"invoiceNumberLabel_$idx") mustBe "Invoice number"
-        textOfElementWithId(s"invoiceNumber_$idx") mustBe good.invoiceNumber
     }
     textOfElementWithId("goodsDetailsId") mustBe "Details of the goods"
   }

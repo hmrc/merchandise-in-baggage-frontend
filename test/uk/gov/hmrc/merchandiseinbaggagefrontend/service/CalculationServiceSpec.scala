@@ -38,8 +38,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
         CategoryQuantityOfGoods("test good", "123"),
         GoodsVatRates.Twenty,
         "France",
-        PurchaseDetails("100", Currency("Eurozone", "Euro", "EUR")),
-        "123456"
+        PurchaseDetails("100", Currency("Eurozone", "Euro", "EUR"))
       )
 
       val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue

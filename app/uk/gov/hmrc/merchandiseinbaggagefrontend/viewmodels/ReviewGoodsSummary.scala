@@ -76,15 +76,6 @@ object ReviewGoodsSummary {
           ))
         ),
         SummaryListRow(
-          key = Key(Text(messages("reviewGoods.list.invoice"))),
-          value = Value(Text(invoiceNumber)),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(routes.InvoiceNumberController.onPageLoad(idx).url, Text(messages("site.change")))
-            )
-          ))
-        ),
-        SummaryListRow(
           key = Key(
             HtmlContent(s"""<a style="font-weight: 400" href="${routes.RemoveGoodsController.onPageLoad(idx).url}" class="govuk-link">${messages("site.remove")}</a>""")
           ),

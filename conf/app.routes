@@ -49,10 +49,6 @@ POST       /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggagefronten
 GET        /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onPageLoad(idx: Int)
 POST       /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onSubmit(idx: Int)
 
-# InvoiceNumber
-GET        /invoice-number/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onPageLoad(idx: Int)
-POST       /invoice-number/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvoiceNumberController.onSubmit(idx: Int)
-
 # ReviewGoods
 GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onPageLoad
 POST       /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onSubmit
