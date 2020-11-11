@@ -36,7 +36,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
   extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    routes.InvoiceNumberController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+    routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>

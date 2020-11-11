@@ -74,8 +74,7 @@ object AmountInPence {
 case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
-                      maybePurchaseDetails: Option[PurchaseDetails] = None,
-                      maybeInvoiceNumber: Option[String] = None) {
+                      maybePurchaseDetails: Option[PurchaseDetails] = None) {
 
   val goodsIfComplete: Option[Goods] =
     for {
@@ -83,8 +82,7 @@ case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoo
       goodsVatRate <- maybeGoodsVatRate
       countryOfPurchase <- maybeCountryOfPurchase
       priceOfGoods <- maybePurchaseDetails
-      invoiceNumber <- maybeInvoiceNumber
-    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods, invoiceNumber)
+    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods)
 }
 
 object GoodsEntry {
@@ -209,8 +207,7 @@ object DeclarationJourney {
 case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  goodsVatRate: GoodsVatRate,
                  countryOfPurchase: String,
-                 purchaseDetails: PurchaseDetails,
-                 invoiceNumber: String) {
+                 purchaseDetails: PurchaseDetails) {
 
   val calculationRequest: CalculationRequest =
     CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency.currencyCode, goodsVatRate)
@@ -302,7 +299,7 @@ case class Declaration(sessionId: SessionId,
 
 object Declaration extends MibReferenceGenerator {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
     def formattedDate: String = {

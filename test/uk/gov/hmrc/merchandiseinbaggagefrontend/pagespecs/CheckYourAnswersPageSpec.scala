@@ -129,9 +129,6 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
       textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
       textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.toString
-
-      textOfElementWithId(s"invoiceNumberLabel_$index") mustBe "Invoice number"
-      textOfElementWithId(s"invoiceNumber_$index") mustBe goods.invoiceNumber
     }
 
     textOfElementWithId("taxDueLabel") mustBe "Tax due"

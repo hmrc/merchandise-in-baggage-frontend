@@ -69,7 +69,7 @@ class PurchaseDetailsController @Inject()(
                         request.goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))
                       )
                     )
-                  ).map(_ => reviewGoodsIfCompleteElse(routes.InvoiceNumberController.onPageLoad(idx)))
+                  ).map(_ => Redirect(routes.ReviewGoodsController.onPageLoad()))
                 }
             }
           )
