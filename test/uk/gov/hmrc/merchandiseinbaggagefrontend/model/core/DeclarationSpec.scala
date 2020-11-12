@@ -182,6 +182,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             GoodsDestinations.NorthernIreland,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
+            completedDeclarationJourney.maybeEmailAddress.get,
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
             JourneyInSmallVehicle(

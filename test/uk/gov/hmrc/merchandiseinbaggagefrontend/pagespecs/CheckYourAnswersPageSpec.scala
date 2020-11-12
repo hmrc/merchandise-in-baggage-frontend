@@ -154,6 +154,9 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("nameOfPersonCarryingTheGoodsLabel") mustBe "Name of person carrying goods"
     textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
 
+    textOfElementWithId("emailAddressLabel") mustBe "Email address"
+    textOfElementWithId("emailAddress") mustBe declaration.email.email
+
     textOfElementWithId("placeOfArrivalLabel") mustBe "Place of arrival"
     textOfElementWithId("placeOfArrival") mustBe declaration.journeyDetails.placeOfArrival.display
 
