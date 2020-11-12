@@ -136,6 +136,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       }
     }
 
+    s"redirect to ${EnterEmailPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnChangeEmailAddressLink() mustBe EnterEmailPage.path
+      }
+    }
+
     s"redirect to ${JourneyDetailsPage.path}" when {
       "the user clicks on the change place of arrival link" in {
         givenADeclarationJourney(completedDeclarationJourney)

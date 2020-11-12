@@ -53,6 +53,8 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   def clickOnChangeTravellerDetailsLink(): String = clickOnChangeLink("nameOfPersonCarryingTheGoodsChangeLink")
 
+  def clickOnChangeEmailAddressLink(): String = clickOnChangeLink("emailAddressChangeLink")
+
   def clickOnPlaceOfArrivalLink(): String = clickOnChangeLink("placeOfArrivalChangeLink")
 
   def clickOnDateOfArrivalLink(): String = clickOnChangeLink("dateOfArrivalChangeLink")

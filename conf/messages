@@ -388,6 +388,7 @@ noDeclarationNeeded.heading = You do not need to make a declaration
 noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do not need to be declared.
 
 checkYourAnswers.title = Check your answers before making your declaration
+checkYourAnswers.change = Change
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
 checkYourAnswers.detailsOfTheGoods.quantity = Number of items
