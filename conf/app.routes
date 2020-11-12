@@ -66,9 +66,13 @@ GET        /goods-over-threshold         uk.gov.hmrc.merchandiseinbaggagefronten
 # PaymentCalculation
 GET        /payment-calculation          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentCalculationController.onPageLoad
 
-# TraderDetalis
+# TravellerDetails
 GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onPageLoad
 POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onSubmit
+
+# EnterEmail
+GET        /enter-email                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterEmailController.onPageLoad
+POST       /enter-email                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterEmailController.onSubmit
 
 # CustomsAgent
 GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onPageLoad

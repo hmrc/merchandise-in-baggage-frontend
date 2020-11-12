@@ -16,26 +16,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.TravellerDetailsForm.form
+import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.EnterEmailForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.TravellerDetailsPage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.EnterEmailView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TravellerDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           repo: DeclarationJourneyRepository,
-                                           view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class EnterEmailController @Inject()(
+                                       override val controllerComponents: MessagesControllerComponents,
+                                       actionProvider: DeclarationJourneyActionProvider,
+                                       repo: DeclarationJourneyRepository,
+                                       view: EnterEmailView
+                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.EoriNumberController.onPageLoad()
+  private val backButtonUrl: Call = routes.TravellerDetailsController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill), backButtonUrl))
+    val preparedForm = request.declarationJourney.maybeEmailAddress.fold(form)(form.fill)
+
+    Ok(view(preparedForm, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -43,10 +48,13 @@ class TravellerDetailsController @Inject()(override val controllerComponents: Me
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
-        value =>
-          repo.upsert(request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(value))).map { _ =>
-            Redirect(routes.EnterEmailController.onPageLoad())
+        email => {
+          repo.upsert(
+            request.declarationJourney.copy(maybeEmailAddress = Some(email))
+          ).map { _ =>
+            Redirect(routes.JourneyDetailsController.onPageLoad())
           }
+        }
       )
   }
 }

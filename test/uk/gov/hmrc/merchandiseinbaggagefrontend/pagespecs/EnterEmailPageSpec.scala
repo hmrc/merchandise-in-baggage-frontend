@@ -18,21 +18,21 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Name}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.TravellerDetailsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EnterEmailPage, EoriNumberPage, TravellerDetailsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, Email}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.EnterEmailPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{EnterEmailPage, JourneyDetailsPage, TravellerDetailsPage}
 
-class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, TravellerDetailsPage] with ScalaFutures {
-  override lazy val page: TravellerDetailsPage = wire[TravellerDetailsPage]
+class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmailPage] with ScalaFutures {
+  override lazy val page: EnterEmailPage = wire[EnterEmailPage]
 
-  "the traveller details page" should {
+  "the enter page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Name("Terry", "Test")), EnterEmailPage.path)
-    behave like aPageWithABackButton(path, givenAnAgentJourney(), EoriNumberPage.path)
+    behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Email("test@test.com", "test@test.com")), JourneyDetailsPage.path)
+    behave like aPageWithABackButton(path, givenAnAgentJourney(), TravellerDetailsPage.path)
   }
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Name] =
-    declarationJourney.maybeNameOfPersonCarryingTheGoods
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Email] =
+    declarationJourney.maybeEmailAddress
 }

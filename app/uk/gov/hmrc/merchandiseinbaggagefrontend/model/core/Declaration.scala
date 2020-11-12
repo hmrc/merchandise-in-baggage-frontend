@@ -126,6 +126,12 @@ object Name {
   implicit val format: OFormat[Name] = Json.format[Name]
 }
 
+case class Email(email: String, confirmation: String)
+
+object Email {
+  implicit val format = Json.format[Email]
+}
+
 case class Eori(value: String) {
   override val toString: String = value
 }
@@ -148,6 +154,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
+                              maybeEmailAddress: Option[Email] = None,
                               maybeIsACustomsAgent: Option[YesNo] = None,
                               maybeCustomsAgentName: Option[String] = None,
                               maybeCustomsAgentAddress: Option[Address] = None,
@@ -188,12 +195,13 @@ case class DeclarationJourney(sessionId: SessionId,
       goodsDestination <- maybeGoodsDestination
       goods <- goodsEntries.declarationGoodsIfComplete
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
+      email <- maybeEmailAddress
       eori <- maybeEori
       journeyDetails <- maybeCompleteJourneyDetails
 
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, maybeCustomsAgent, eori, journeyDetails)
+      Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
     }
   }
 }
@@ -290,6 +298,7 @@ case class Declaration(sessionId: SessionId,
                        goodsDestination: GoodsDestination,
                        declarationGoods: DeclarationGoods,
                        nameOfPersonCarryingTheGoods: Name,
+                       email: Email,
                        maybeCustomsAgent: Option[CustomsAgent],
                        eori: Eori,
                        journeyDetails: JourneyDetails,

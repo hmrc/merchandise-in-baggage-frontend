@@ -182,6 +182,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
             GoodsDestinations.NorthernIreland,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
+            completedDeclarationJourney.maybeEmailAddress.get,
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
             JourneyInSmallVehicle(
@@ -289,6 +290,10 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
       "the user has not provided the name of the person carrying the goods" in {
         completedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = None).declarationIfRequiredAndComplete mustBe None
+      }
+
+      "the user has not provided an email address" in {
+        completedDeclarationJourney.copy(maybeEmailAddress = None).declarationIfRequiredAndComplete mustBe None
       }
 
       "the user has not confirmed whether they are a customs agent" in {
