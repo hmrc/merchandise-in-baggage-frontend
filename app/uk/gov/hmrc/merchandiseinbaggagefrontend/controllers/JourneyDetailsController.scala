@@ -33,7 +33,7 @@ class JourneyDetailsController @Inject()(override val controllerComponents: Mess
                                         (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.TravellerDetailsController.onPageLoad()
+  private val backButtonUrl: Call = routes.EnterEmailController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(form)(details => form.fill(details)), backButtonUrl))

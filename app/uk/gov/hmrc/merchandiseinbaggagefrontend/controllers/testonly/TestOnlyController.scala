@@ -92,6 +92,7 @@ object TestOnlyController {
             Some("France"),
             Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR")))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
+      maybeEmailAddress = Some(Email("aa@test.com", "aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),

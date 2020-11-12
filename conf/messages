@@ -303,6 +303,15 @@ travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 
+# EnterEmail
+enterEmail.title = Enter an email address
+enterEmail.heading = Enter an email address
+enterEmail.hint = We will only use this to send you confirmation of your declaration.
+enterEmail.email = Email address
+enterEmail.confirmation = Confirm email address
+enterEmail.error.required = Enter your Email Address
+enterEmail.error.notMatching = Emails do not match
+
 # JourneyDetails
 journeyDetails.title = Journey details
 journeyDetails.heading = Journey details
