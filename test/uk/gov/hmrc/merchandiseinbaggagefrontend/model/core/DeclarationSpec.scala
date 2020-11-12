@@ -292,6 +292,10 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = None).declarationIfRequiredAndComplete mustBe None
       }
 
+      "the user has not provided an email address" in {
+        completedDeclarationJourney.copy(maybeEmailAddress = None).declarationIfRequiredAndComplete mustBe None
+      }
+
       "the user has not confirmed whether they are a customs agent" in {
         completedDeclarationJourney.copy(maybeIsACustomsAgent = None).declarationIfRequiredAndComplete mustBe None
       }
