@@ -23,12 +23,12 @@ import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, DeclarationType, JourneyInSmallVehicle}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, InvalidRequestPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
 
 import scala.collection.JavaConverters._
 
-class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation{
+class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation {
   override lazy val page: CheckYourAnswersPage = wire[CheckYourAnswersPage]
 
   "the page" should {
@@ -72,13 +72,115 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       }
     }
 
+    Seq(1, 2).foreach { index =>
+      s"redirect to ${GoodsTypeQuantityPage.path(index)}" when {
+        "the user clicks on the change type link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnChangeGoodsTypeLink(index-1) mustBe GoodsTypeQuantityPage.path(index)
+        }
+
+        "the user clicks on the change quantity link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnChangeGoodsQuantityLink(index-1) mustBe GoodsTypeQuantityPage.path(index)
+        }
+      }
+
+      s"redirect to ${GoodsVatRatePage.path(index)}" when {
+        "the user clicks on the change link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnChangeVatRateLink(index - 1) mustBe GoodsVatRatePage.path(index)
+        }
+      }
+
+      s"redirect to ${SearchGoodsCountryPage.path(index)}" when {
+        "the user clicks on the change link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnChangeGoodsCountryLink(index - 1) mustBe SearchGoodsCountryPage.path(index)
+        }
+      }
+
+      s"redirect to ${PurchaseDetailsPage.path(index)}" when {
+        "the user clicks on the change link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnChangePurchaseDetailsLink(index - 1) mustBe PurchaseDetailsPage.path(index)
+        }
+      }
+    }
+
+    s"redirect to ${AgentDetailsPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnChangeCustomsAgentLink() mustBe AgentDetailsPage.path
+      }
+    }
+
+    s"redirect to ${EoriNumberPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnChangeEoriLink() mustBe EoriNumberPage.path
+      }
+    }
+
+    s"redirect to ${TravellerDetailsPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnChangeTravellerDetailsLink() mustBe TravellerDetailsPage.path
+      }
+    }
+
+    s"redirect to ${EnterEmailPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnChangeEmailAddressLink() mustBe EnterEmailPage.path
+      }
+    }
+
+    s"redirect to ${JourneyDetailsPage.path}" when {
+      "the user clicks on the change place of arrival link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnPlaceOfArrivalLink() mustBe JourneyDetailsPage.path
+      }
+
+      "the user clicks on the change date of arrival link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnDateOfArrivalLink() mustBe JourneyDetailsPage.path
+      }
+    }
+
+    s"redirect to ${GoodsInVehiclePage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnTravellingByVehicleChangeLink() mustBe GoodsInVehiclePage.path
+      }
+    }
+
+    s"redirect to ${VehicleRegistrationNumberPage.path}" when {
+      "the user clicks on the change link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnVehicleRegistrationNumberChangeLink() mustBe VehicleRegistrationNumberPage.path
+      }
+    }
+
     "allow the user to make a payment" in {
       givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
       givenTaxArePaid(wireMockServer)
 
       open(path)
 
-      page.mustRedirectToPaymentFromTheCTA()
+      page.clickOnAcceptAndPayButton() mustBe "/pay/initiate-journey"
       mustHaveOneRequestAndSessionId(wireMockServer)
     }
 
@@ -88,7 +190,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
       open(path)
 
-      page.mustRedirectToDeclarationConfirmation()
+      page.clickOnMakeDeclarationButton() mustBe DeclarationConfirmationPage.path
     }
   }
 
@@ -123,6 +225,9 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
       textOfElementWithId(s"quantityLabel_$index") mustBe "Number of items"
       textOfElementWithId(s"quantity_$index") mustBe goods.categoryQuantityOfGoods.quantity
+
+      textOfElementWithId(s"vatRateLabel_$index") mustBe "VAT rate"
+      textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%"
 
       textOfElementWithId(s"countryLabel_$index") mustBe "Country"
       textOfElementWithId(s"country_$index") mustBe goods.countryOfPurchase

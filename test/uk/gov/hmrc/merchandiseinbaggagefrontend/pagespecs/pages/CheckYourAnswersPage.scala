@@ -23,25 +23,50 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   import WebBrowser._
 
-  def mustRedirectToPaymentFromTheCTA(): Unit = {
+  def clickOnAcceptAndPayButton(): String = {
     val button = find(NameQuery("payButton")).get
     click on button
 
-    readPath() mustBe "/pay/initiate-journey"
+    readPath()
   }
 
-  def mustRedirectToDeclarationConfirmation(): Unit = {
+  def clickOnMakeDeclarationButton(): String = {
     val button = find(NameQuery("makeDeclarationButton")).get
     click on button
 
-    readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
+    readPath()
   }
 
-  def mustBeReidrecToExiceGoodAfterClicingNewDeclarationLink(): Unit = {
-    val button = find(NameQuery("makeDeclarationButton")).get
-    click on button
+  def clickOnChangeGoodsTypeLink(index: Int): String = clickOnChangeLink(s"categoryChangeLink_$index")
 
-    readPath() mustBe "/merchandise-in-baggage/declaration-confirmation"
+  def clickOnChangeGoodsQuantityLink(index: Int): String = clickOnChangeLink(s"quantityChangeLink_$index")
+
+  def clickOnChangeVatRateLink(index: Int): String = clickOnChangeLink(s"vatRateChangeLink_$index")
+
+  def clickOnChangeGoodsCountryLink(index: Int): String = clickOnChangeLink(s"countryChangeLink_$index")
+
+  def clickOnChangePurchaseDetailsLink(index: Int): String = clickOnChangeLink(s"priceChangeLink_$index")
+
+  def clickOnChangeCustomsAgentLink(): String = clickOnChangeLink("customsAgentNameChangeLink")
+
+  def clickOnChangeEoriLink(): String = clickOnChangeLink("eoriChangeLink")
+
+  def clickOnChangeTravellerDetailsLink(): String = clickOnChangeLink("nameOfPersonCarryingTheGoodsChangeLink")
+
+  def clickOnChangeEmailAddressLink(): String = clickOnChangeLink("emailAddressChangeLink")
+
+  def clickOnPlaceOfArrivalLink(): String = clickOnChangeLink("placeOfArrivalChangeLink")
+
+  def clickOnDateOfArrivalLink(): String = clickOnChangeLink("dateOfArrivalChangeLink")
+
+  def clickOnTravellingByVehicleChangeLink(): String = clickOnChangeLink("travellingByVehicleChangeLink")
+
+  def clickOnVehicleRegistrationNumberChangeLink(): String = clickOnChangeLink("vehicleRegistrationNumberChangeLink")
+
+  private def clickOnChangeLink(id: String) = {
+    val changeLink = find(IdQuery(id)).get
+    click on changeLink
+    readPath()
   }
 }
 
