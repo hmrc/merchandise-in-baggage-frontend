@@ -35,8 +35,8 @@ object EnterEmailForm extends Mappings {
   }
   val form: Form[Email] = Form(
     mapping(
-      "email" -> email.verifying(emailAddress),
-      "confirmation" -> email.verifying(emailAddress)
+      "email" -> email,
+      "confirmation" -> email
     )(Email.apply)(Email.unapply).verifying(emailsMatch)
   )
 

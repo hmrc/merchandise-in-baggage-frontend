@@ -55,6 +55,21 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
+  def mandatoryEmailField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+
+    "not bind when key is not present at all" in {
+
+      val result = form.bind(emptyForm).apply(fieldName)
+      result.errors mustEqual Seq(requiredError)
+    }
+
+    "not bind blank values" in {
+
+      val result = form.bind(Map(fieldName -> "")).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, "error.email"))
+    }
+  }
+
   def anEnumField(form: Form[_], fieldName: String, enum: Enum[_ <: EnumEntry], invalidMessageKey: String): Unit = {
     "bind all valid values" in {
       for (value <- enum.values) {
