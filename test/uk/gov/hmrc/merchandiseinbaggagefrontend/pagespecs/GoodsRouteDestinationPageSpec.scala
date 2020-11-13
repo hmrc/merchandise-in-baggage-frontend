@@ -31,7 +31,7 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
     behave like aPageWhichRequiresADeclarationJourney(path)
 
     behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
+      path, givenAnImportJourneyIsStarted(), Yes, InvalidRequestPage.path)
     behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
       path, givenAnImportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Import")
     behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
