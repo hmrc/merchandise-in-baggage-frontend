@@ -32,7 +32,7 @@ class PurchaseDetailsController @Inject()(
                                            override val controllerComponents: MessagesControllerComponents,
                                            connector: CurrencyConversionConnector,
                                            actionProvider: DeclarationJourneyActionProvider,
-                                           repo: DeclarationJourneyRepository,
+                                           override val repo: DeclarationJourneyRepository,
                                            view: PurchaseDetailsView
                                          )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
@@ -49,7 +49,7 @@ class PurchaseDetailsController @Inject()(
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request: DeclarationGoodsRequest[AnyContent] =>
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().flatMap { currencyPeriod =>
         form
@@ -57,21 +57,14 @@ class PurchaseDetailsController @Inject()(
           .fold(
             formWithErrors =>
               Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))),
-            purchaseDetailsInput => {
+            purchaseDetailsInput =>
               currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
                 .fold(actionProvider.invalidRequestF) { currency =>
-                  val purchaseDetails = PurchaseDetails(purchaseDetailsInput.price, currency)
-
-                  repo.upsert(
-                    request.declarationJourney.copy(
-                      goodsEntries = request.declarationJourney.goodsEntries.patch(
-                        idx,
-                        request.goodsEntry.copy(maybePurchaseDetails = Some(purchaseDetails))
-                      )
-                    )
-                  ).map(_ => Redirect(routes.ReviewGoodsController.onPageLoad()))
+                  persistAndRedirect(
+                    request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
+                    idx,
+                    routes.ReviewGoodsController.onPageLoad())
                 }
-            }
           )
       }
     }

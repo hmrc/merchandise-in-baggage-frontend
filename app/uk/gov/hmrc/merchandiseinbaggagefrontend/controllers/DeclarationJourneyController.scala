@@ -35,7 +35,8 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
 
   val repo: DeclarationJourneyRepository
 
-  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(implicit ec: ExecutionContext): Future[Result] =
+  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)
+                        (implicit ec: ExecutionContext): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
       if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
       else Redirect(redirectIfNotComplete)
@@ -57,8 +58,18 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
   def onSubmit(idx: Int): Action[AnyContent]
 
-  def reviewGoodsIfCompleteElse(call: Call)(implicit request: DeclarationGoodsRequest[AnyContent]): Result =
-    if (request.declarationJourney.goodsEntries.declarationGoodsIfComplete.isDefined)
-      Redirect(routes.ReviewGoodsController.onPageLoad())
-    else Redirect(call)
+  val repo: DeclarationJourneyRepository
+
+  def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)
+                        (implicit request: DeclarationGoodsRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+    val updatedDeclarationJourney =
+      request.declarationJourney.copy(
+        goodsEntries = request.declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
+
+    repo.upsert(updatedDeclarationJourney).map { _ =>
+      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+      else if (updatedDeclarationJourney.goodsEntries.declarationGoodsComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
+      else Redirect(redirectIfNotComplete)
+    }
+  }
 }

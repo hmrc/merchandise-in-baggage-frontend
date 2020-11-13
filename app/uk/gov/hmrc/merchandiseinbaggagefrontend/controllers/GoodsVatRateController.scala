@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsVatRateController @Inject()(
                                         override val controllerComponents: MessagesControllerComponents,
                                         actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
+                                        override val repo: DeclarationJourneyRepository,
                                         view: GoodsVatRateView)
                                       (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
@@ -51,16 +51,11 @@ class GoodsVatRateController @Inject()(
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
-          goodsVatRate => {
-            repo.upsert(
-              request.declarationJourney.copy(
-                goodsEntries = request.declarationJourney.goodsEntries.patch(
-                  idx,
-                  request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate))
-                )
-              )
-            ).map(_ => reviewGoodsIfCompleteElse(routes.SearchGoodsCountryController.onPageLoad(idx)))
-          }
+          goodsVatRate =>
+            persistAndRedirect(
+              request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate)),
+              idx,
+              routes.SearchGoodsCountryController.onPageLoad(idx))
         )
     }
   }

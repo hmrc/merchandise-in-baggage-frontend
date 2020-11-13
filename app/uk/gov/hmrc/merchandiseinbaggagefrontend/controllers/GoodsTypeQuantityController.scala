@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class GoodsTypeQuantityController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                             actionProvider: DeclarationJourneyActionProvider,
-                                            repo: DeclarationJourneyRepository,
+                                            override val repo: DeclarationJourneyRepository,
                                             view: GoodsTypeQuantityView
                                            )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
@@ -46,16 +46,11 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, backButtonUrl))),
-        categoryQuantityOfGoods => {
-          repo.upsert(
-            request.declarationJourney.copy(
-              goodsEntries = request.declarationJourney.goodsEntries.patch(
-                idx,
-                request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
-              )
-            )
-          ).map(_ => reviewGoodsIfCompleteElse(routes.GoodsVatRateController.onPageLoad(idx)))
-        }
+        categoryQuantityOfGoods =>
+          persistAndRedirect(
+            request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)),
+            idx,
+            routes.GoodsVatRateController.onPageLoad(idx))
       )
   }
 }
