@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ExciseAndRestrictedGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                                    actionProvider: DeclarationJourneyActionProvider,
-                                                   repo: DeclarationJourneyRepository,
+                                                   override val repo: DeclarationJourneyRepository,
                                                    view: ExciseAndRestrictedGoodsView)
                                                   (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -54,10 +54,11 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
         formWithErrors =>
           Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         value => {
-          repo.upsert(request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))).map { _ =>
-            if (value == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
-            else Redirect(routes.ValueWeightOfGoodsController.onPageLoad())
-          }
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value)),
+            if (value == Yes) routes.CannotUseServiceController.onPageLoad()
+            else routes.ValueWeightOfGoodsController.onPageLoad()
+          )
         }
       )
   }

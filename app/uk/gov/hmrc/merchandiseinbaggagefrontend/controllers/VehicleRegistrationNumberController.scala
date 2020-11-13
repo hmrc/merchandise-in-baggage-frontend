@@ -27,11 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VehicleRegistrationNumberController @Inject()(
-                                       override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
-                                       view: VehicleRegistrationNumberView
-                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                                     override val controllerComponents: MessagesControllerComponents,
+                                                     actionProvider: DeclarationJourneyActionProvider,
+                                                     override val repo: DeclarationJourneyRepository,
+                                                     view: VehicleRegistrationNumberView
+                                                   )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
   private val backButtonUrl: Call = routes.VehicleSizeController.onPageLoad()

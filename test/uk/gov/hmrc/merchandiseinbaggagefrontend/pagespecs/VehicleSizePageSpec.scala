@@ -29,6 +29,7 @@ class VehicleSizePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBut
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, Yes)
 
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), Yes, VehicleRegistrationNumberPage.path)

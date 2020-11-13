@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CustomsAgentController @Inject()(
                                         override val controllerComponents: MessagesControllerComponents,
                                         actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
+                                        override val repo: DeclarationJourneyRepository,
                                         view: CustomsAgentView,
                                       )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
@@ -45,12 +45,11 @@ class CustomsAgentController @Inject()(
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
         isCustomsAgent =>
-          repo.upsert(
-            request.declarationJourney.copy(
-              maybeIsACustomsAgent = Some(isCustomsAgent))).map { _ =>
-            if (isCustomsAgent == Yes) Redirect(routes.AgentDetailsController.onPageLoad())
-            else Redirect(routes.EoriNumberController.onPageLoad())
-          }
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
+            if (isCustomsAgent == Yes) routes.AgentDetailsController.onPageLoad()
+            else routes.EoriNumberController.onPageLoad()
+          )
       )
   }
 }

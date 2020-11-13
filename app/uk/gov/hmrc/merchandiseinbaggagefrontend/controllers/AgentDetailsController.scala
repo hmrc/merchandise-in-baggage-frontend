@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AgentDetailsController @Inject()(
                                         override val controllerComponents: MessagesControllerComponents,
                                         actionProvider: DeclarationJourneyActionProvider,
-                                        repo: DeclarationJourneyRepository,
+                                        override val repo: DeclarationJourneyRepository,
                                         view: AgentDetailsView
                                       )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {

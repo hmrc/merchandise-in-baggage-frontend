@@ -22,10 +22,12 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsRouteDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsRouteDestinationView
 
 class GoodsRouteDestinationController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                                 actionProvider: DeclarationJourneyActionProvider,
+                                                override val repo: DeclarationJourneyRepository,
                                                 view: GoodsRouteDestinationView,
                                                )(implicit appConf: AppConfig) extends DeclarationJourneyUpdateController {
 

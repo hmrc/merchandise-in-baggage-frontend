@@ -204,6 +204,8 @@ case class DeclarationJourney(sessionId: SessionId,
       Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
     }
   }
+
+  val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
 }
 
 object DeclarationJourney {
