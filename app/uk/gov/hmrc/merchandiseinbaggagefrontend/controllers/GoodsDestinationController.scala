@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsDestinationController @Inject()(
                                             override val controllerComponents: MessagesControllerComponents,
                                             actionProvider: DeclarationJourneyActionProvider,
-                                            repo: DeclarationJourneyRepository,
+                                            override val repo: DeclarationJourneyRepository,
                                             view: GoodsDestinationView
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
@@ -45,11 +45,11 @@ class GoodsDestinationController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
         value =>
-          repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(value))).map {_ =>
-            if(value == NorthernIreland) Redirect(routes.GoodsRouteDestinationController.onPageLoad())
-            else Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
-          }
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeGoodsDestination = Some(value)),
+            if (value == NorthernIreland) routes.GoodsRouteDestinationController.onPageLoad()
+            else routes.ExciseAndRestrictedGoodsController.onPageLoad()
+          )
       )
   }
-
 }

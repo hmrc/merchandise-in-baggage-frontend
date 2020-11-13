@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class RemoveGoodsController @Inject()(
                                        override val controllerComponents: MessagesControllerComponents,
                                        actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
+                                       override val repo: DeclarationJourneyRepository,
                                        view: RemoveGoodsView
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {

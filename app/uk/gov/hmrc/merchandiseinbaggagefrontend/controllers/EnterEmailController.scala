@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnterEmailController @Inject()(
                                        override val controllerComponents: MessagesControllerComponents,
                                        actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
+                                       override val repo: DeclarationJourneyRepository,
                                        view: EnterEmailView
                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -48,13 +48,9 @@ class EnterEmailController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
-        email => {
-          repo.upsert(
-            request.declarationJourney.copy(maybeEmailAddress = Some(email))
-          ).map { _ =>
-            Redirect(routes.JourneyDetailsController.onPageLoad())
-          }
-        }
+        email =>
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeEmailAddress = Some(email)), routes.JourneyDetailsController.onPageLoad())
       )
   }
 }

@@ -101,6 +101,8 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
     else None
   }
 
+  val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
+
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
 
@@ -204,6 +206,8 @@ case class DeclarationJourney(sessionId: SessionId,
       Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
     }
   }
+
+  val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
 }
 
 object DeclarationJourney {

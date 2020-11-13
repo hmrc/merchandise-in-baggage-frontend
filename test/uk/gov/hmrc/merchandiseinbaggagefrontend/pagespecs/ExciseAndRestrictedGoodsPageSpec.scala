@@ -34,6 +34,7 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, ValueWeightOfGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, CannotUseServicePage.path)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, No)
     behave like aPageWithABackButton(path, setup(), GoodsDestinationPage.path)
     behave like aPageWithABackButton(path, givenAnImportToNorthernIrelandJourneyIsStarted(), GoodsRouteDestinationPage.path)
   }

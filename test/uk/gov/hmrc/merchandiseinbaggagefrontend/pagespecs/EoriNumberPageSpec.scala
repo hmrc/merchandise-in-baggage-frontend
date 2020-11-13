@@ -34,7 +34,7 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     behave like aPageWhichRenders(path, givenAnAgentJourney(), expectedAgentTitle)
     behave like aPageWhichRenders(path, givenANonAgentJourney(), expectedNonAgentTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aDataCapturePageWithSimpleRouting(path, givenACompleteDeclarationJourney(), Seq(eori), TravellerDetailsPage.path)
+    behave like aDataCapturePageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)
   }
 }

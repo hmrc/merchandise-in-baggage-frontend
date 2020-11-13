@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ValueWeightOfGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                              actionProvider: DeclarationJourneyActionProvider,
-                                             repo: DeclarationJourneyRepository,
+                                             override val repo: DeclarationJourneyRepository,
                                              view: ValueWeightOfGoodsView)
                                             (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -53,10 +53,11 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, dest, backButtonUrl)),
             exceedsThreshold => {
-              repo.upsert(request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold))).map { _ =>
-                if (exceedsThreshold == Yes) Redirect(routes.CannotUseServiceController.onPageLoad())
-                else Redirect(routes.GoodsTypeQuantityController.onPageLoad(1))
-              }
+              persistAndRedirect(
+                request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),
+                if (exceedsThreshold == Yes) routes.CannotUseServiceController.onPageLoad()
+                else routes.GoodsTypeQuantityController.onPageLoad(1)
+              )
             }
           )
       case None =>

@@ -28,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class JourneyDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                          actionProvider: DeclarationJourneyActionProvider,
-                                         repo: DeclarationJourneyRepository,
+                                         override val repo: DeclarationJourneyRepository,
                                          view: JourneyDetailsPage)
                                         (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -45,10 +45,11 @@ class JourneyDetailsController @Inject()(override val controllerComponents: Mess
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
         journeyDetailsEntry =>
-          repo.upsert(request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry))).map { _ =>
-            if (journeyDetailsEntry.placeOfArrival.vehiclePort) Redirect(routes.GoodsInVehicleController.onPageLoad())
-            else Redirect(routes.CheckYourAnswersController.onPageLoad())
-          }
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry)),
+            if (journeyDetailsEntry.placeOfArrival.vehiclePort) routes.GoodsInVehicleController.onPageLoad()
+            else routes.CheckYourAnswersController.onPageLoad()
+          )
       )
   }
 }

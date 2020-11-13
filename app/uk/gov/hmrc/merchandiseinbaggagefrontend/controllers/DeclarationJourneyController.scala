@@ -18,10 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import play.api.i18n.Messages
 import play.api.mvc._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationJourneyController extends FrontendBaseController {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
@@ -31,6 +32,15 @@ trait DeclarationJourneyController extends FrontendBaseController {
 
 trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
   val onSubmit: Action[AnyContent]
+
+  val repo: DeclarationJourneyRepository
+
+  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)
+                        (implicit ec: ExecutionContext): Future[Result] =
+    repo.upsert(updatedDeclarationJourney).map { _ =>
+      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+      else Redirect(redirectIfNotComplete)
+    }
 }
 
 trait IndexedDeclarationJourneyController extends FrontendBaseController {
@@ -48,8 +58,18 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
   def onSubmit(idx: Int): Action[AnyContent]
 
-  def reviewGoodsIfCompleteElse(call: Call)(implicit request: DeclarationGoodsRequest[AnyContent]): Result =
-    if (request.declarationJourney.goodsEntries.declarationGoodsIfComplete.isDefined)
-      Redirect(routes.ReviewGoodsController.onPageLoad())
-    else Redirect(call)
+  val repo: DeclarationJourneyRepository
+
+  def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)
+                        (implicit request: DeclarationGoodsRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+    val updatedDeclarationJourney =
+      request.declarationJourney.copy(
+        goodsEntries = request.declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
+
+    repo.upsert(updatedDeclarationJourney).map { _ =>
+      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+      else if (updatedDeclarationJourney.goodsEntries.declarationGoodsComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
+      else Redirect(redirectIfNotComplete)
+    }
+  }
 }

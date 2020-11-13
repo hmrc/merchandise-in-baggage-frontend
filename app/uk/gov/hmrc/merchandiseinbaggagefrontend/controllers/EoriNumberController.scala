@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.EoriNumberForm.form
-import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Eori
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.EoriNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EoriNumberController @Inject()(
                                       override val controllerComponents: MessagesControllerComponents,
                                       actionProvider: DeclarationJourneyActionProvider,
-                                      repo: DeclarationJourneyRepository,
+                                      override val repo: DeclarationJourneyRepository,
                                       view: EoriNumberView
                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
@@ -52,15 +52,9 @@ class EoriNumberController @Inject()(
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl))),
-          eori => {
-            repo.upsert(
-              request.declarationJourney.copy(
-                maybeEori = Some(Eori(eori))
-              )
-            ).map { _ =>
-              Redirect(routes.TravellerDetailsController.onPageLoad())
-            }
-          }
+          eori =>
+            persistAndRedirect(
+              request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
         )
     }
   }

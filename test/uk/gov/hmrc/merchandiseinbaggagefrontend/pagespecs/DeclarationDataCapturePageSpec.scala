@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationDataCapturePage
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -67,7 +67,16 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
         }
       }
     }
+
+    aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, allFormData.head)
   }
+
+  def aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path: String, formData: F): Unit =
+    s"redirect to ${CheckYourAnswersPage.path}" when {
+      s"the declaration is completed with $formData" in {
+        submitAndEnsurePersistence(path, givenACompleteDeclarationJourney(), formData) mustBe CheckYourAnswersPage.path
+      }
+    }
 
   def submitAndEnsurePersistence(path: String, setUp: => Unit = Unit, formData: F): String = {
     def ensurePersistence = {

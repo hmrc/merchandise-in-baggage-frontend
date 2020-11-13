@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, GoodsEntry}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{DeclarationDataCapturePage, ReviewGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage, ReviewGoodsPage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -52,9 +52,19 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsComplete(), formData, ReviewGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenTwoGoodsEntriesAreComplete(), formData, ReviewGoodsPage.path)
 
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(1), 1, formData)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(2), 2, formData)
+
     behave like aPageWithABackButton(path(1), givenAGoodsEntryIsStarted(), expectedBackPath(1))
     behave like aPageWithABackButton(path(2), givenASecondGoodsEntryIsStarted(), expectedBackPath(2))
   }
+
+  def aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path: String, index: Int, formData: F): Unit =
+    s"redirect from $path to ${CheckYourAnswersPage.path}" when {
+      s"the declaration is completed with $formData" in {
+        submitAndEnsurePersistence(path, givenACompleteDeclarationJourney(), formData, index) mustBe CheckYourAnswersPage.path
+      }
+    }
 
   def aPageWhichDisplaysPreviouslyEnteredAnswers(path: String, index: Int, setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
     s"render correctly om $path" when {

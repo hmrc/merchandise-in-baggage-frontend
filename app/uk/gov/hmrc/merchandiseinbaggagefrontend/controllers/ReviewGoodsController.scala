@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class ReviewGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       actionProvider: DeclarationJourneyActionProvider,
-                                      repo: DeclarationJourneyRepository,
+                                      override val repo: DeclarationJourneyRepository,
                                       view: ReviewGoodsView)
                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {

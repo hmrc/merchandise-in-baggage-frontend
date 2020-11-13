@@ -31,6 +31,7 @@ class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBu
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, AgentDetailsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, EoriNumberPage.path)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, Yes)
 
     behave like
       aPageWithABackButton(

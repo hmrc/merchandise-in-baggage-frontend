@@ -29,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class VehicleSizeController @Inject()(
                                        override val controllerComponents: MessagesControllerComponents,
                                        actionProvider: DeclarationJourneyActionProvider,
-                                       repo: DeclarationJourneyRepository,
+                                       override val repo: DeclarationJourneyRepository,
                                        view: VehicleSizeView,
                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
@@ -45,12 +45,11 @@ class VehicleSizeController @Inject()(
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
         isSmallVehicle =>
-          repo.upsert(
-            request.declarationJourney.copy(
-              maybeTravellingBySmallVehicle = Some(isSmallVehicle))).map { _ =>
-            if (isSmallVehicle == Yes) Redirect(routes.VehicleRegistrationNumberController.onPageLoad())
-            else Redirect(routes.CannotUseServiceController.onPageLoad())
-          }
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle)),
+            if (isSmallVehicle == Yes) routes.VehicleRegistrationNumberController.onPageLoad()
+            else routes.CannotUseServiceController.onPageLoad()
+          )
       )
   }
 }
