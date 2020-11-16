@@ -20,11 +20,13 @@ import java.time.LocalDateTime
 
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
+import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationType, Goods}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.DeclarationConfirmationPage._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.MibBackendStub._
 
-class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmationPage] {
+class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmationPage] with WireMockSupport {
   override lazy val page: DeclarationConfirmationPage = wire[DeclarationConfirmationPage]
   import page._
 
@@ -34,7 +36,9 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
     "render correctly" when {
       "make declaration" in {
-        givenADeclarationJourney(completedDeclarationJourney.copy(declarationType = DeclarationType.Export))
+        val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Export)
+        givenDeclarationIsPersistedInBackend(wireMockServer)
+        givenADeclarationJourney(declarationJourney)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)

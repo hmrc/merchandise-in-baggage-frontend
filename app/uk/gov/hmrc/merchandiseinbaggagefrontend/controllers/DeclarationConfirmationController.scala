@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
@@ -30,13 +31,18 @@ class DeclarationConfirmationController @Inject()(
                                                    override val controllerComponents: MessagesControllerComponents,
                                                    actionProvider: DeclarationJourneyActionProvider,
                                                    view: DeclarationConfirmationView,
-                                                   repo: DeclarationJourneyRepository
+                                                   repo: DeclarationJourneyRepository,
+                                                   connector: MibConnector
                                                  )(implicit ec: ExecutionContext, appConf: AppConfig)
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF) { declaration =>
-      resetJourney.map(_ => Ok(view(declaration)))
+      connector.persistDeclaration(declaration).flatMap(res => {
+        if(res.status == 201)
+          resetJourney.map(_ => Ok(view(declaration)))
+        else Future.successful(InternalServerError("Unable to process Declaration"))
+      })
     }
   }
 

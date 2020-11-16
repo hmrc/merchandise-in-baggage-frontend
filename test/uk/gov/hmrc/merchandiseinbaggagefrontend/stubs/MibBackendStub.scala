@@ -25,11 +25,16 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
 
 object MibBackendStub extends MibConfiguration {
 
-  def givenDeclarationIsPersisted(server: WireMockServer, declaration: Declaration): StubMapping = {
+  def givenDeclarationIsPersistedInBackend(server: WireMockServer, declaration: Declaration): StubMapping = {
     server
-      .stubFor(post(urlPathEqualTo(s"/merchandise-in-baggage/declarations"))
+      .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
         .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
         .willReturn(created()))
   }
 
+  def givenDeclarationIsPersistedInBackend(server: WireMockServer): StubMapping = {
+    server
+      .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
+        .willReturn(created()))
+  }
 }

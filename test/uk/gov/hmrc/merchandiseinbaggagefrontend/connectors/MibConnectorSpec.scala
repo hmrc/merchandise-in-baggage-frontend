@@ -16,21 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport {
 
-  val client = app.injector.instanceOf[HttpClient]
+  val client = app.injector.instanceOf[MibConnector]
   implicit val hc = HeaderCarrier()
-  val connector = new MibConnector(client) { override lazy val mibPort: Int = WireMockSupport.port }
 
   "send a declaration to backend to be persisted" in {
-    givenDeclarationIsPersisted(wireMockServer, declaration)
+    givenDeclarationIsPersistedInBackend(wireMockServer, declaration)
 
-    connector.persistDeclaration(declaration).futureValue.status mustBe 201
+    client.persistDeclaration(declaration).futureValue.status mustBe 201
   }
 }

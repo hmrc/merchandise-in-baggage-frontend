@@ -19,26 +19,37 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import java.time.LocalDateTime
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationJourney, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationJourney, DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
+class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport with MibConfiguration {
 
-  val view = app.injector.instanceOf[DeclarationConfirmationView]
+  private val view = app.injector.instanceOf[DeclarationConfirmationView]
   private val repo = injector.instanceOf[DeclarationJourneyRepository]
-  val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, repo)
+  private val client = app.injector.instanceOf[HttpClient]
+  private val connector = new MibConnector(client, baseUrl) {
+    override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      Future.successful(HttpResponse(201, ""))
+  }
+  private val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, repo, connector)
 
-  "on page load return 200 and reset persisted journey declaration" in {
+  "on page load return 200 and reset persisted journey declaration if declaration persistence succeed" in {
     val sessionId = SessionId()
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
     val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
-    val exportJourney = completedDeclarationJourney
+    val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId)
-      .copy(declarationType = DeclarationType.Export)
+      .copy(declarationType = DeclarationType.Export, createdAt = created)
 
     givenADeclarationJourneyIsPersisted(exportJourney)
 
@@ -46,9 +57,29 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe 200
 
     import exportJourney._
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
     val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created)
+
     repo.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
+  }
+
+  "on page load return 500 and do not reset persisted journey declaration if declaration persistence fails" in {
+    val connector = new MibConnector(client, baseUrl) {
+      override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+        Future.successful(HttpResponse(500, ""))
+    }
+
+    val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, repo, connector)
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+
+    val exportJourney: DeclarationJourney = completedDeclarationJourney
+      .copy(declarationType = DeclarationType.Export, createdAt = created)
+
+    givenADeclarationJourneyIsPersisted(exportJourney)
+
+    val eventualResult = controller.onPageLoad()(request)
+    status(eventualResult) mustBe 500
+    repo.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe exportJourney
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {

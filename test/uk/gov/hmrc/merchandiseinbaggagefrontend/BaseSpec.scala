@@ -44,7 +44,8 @@ trait BaseSpecWithApplication extends BaseSpec
       "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
       "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
       "microservice.services.currency-conversion.port" -> WireMockSupport.port,
-      "microservice.services.payment.port" -> WireMockSupport.port
+      "microservice.services.payment.port" -> WireMockSupport.port,
+      "microservice.services.merchandise-in-baggage.port" -> WireMockSupport.port
     )).build()
 
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]

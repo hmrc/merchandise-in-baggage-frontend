@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
@@ -25,9 +25,9 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibConnector @Inject()(httpClient: HttpClient) extends MibConfiguration {
+class MibConnector @Inject()(httpClient: HttpClient,  @Named("mibBackendBaseUrl") base: String) extends MibConfiguration {
 
   def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    httpClient.POST[Declaration, HttpResponse](s"$persistDeclarationsUrl", declaration)
+    httpClient.POST[Declaration, HttpResponse](s"$base$declarationsUrl", declaration)
   }
 }
