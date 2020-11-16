@@ -65,6 +65,8 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends PageWithCTA {
 
   def clickOnRemoveGoodsLink(index: Int): String = clickOnChangeLink(s"removeGoodsLink_$index")
 
+  def clickOnAddMoreGoodsLink(): String = clickOnChangeLink("addMoreGoodsLink")
+
   private def clickOnChangeLink(id: String) = {
     val changeLink = find(IdQuery(id)).get
     click on changeLink

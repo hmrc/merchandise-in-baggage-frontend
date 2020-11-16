@@ -182,6 +182,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       }
     }
 
+    s"redirect to ${GoodsTypeQuantityPage.path(3)}" when {
+      "the user clicks on add more goods link" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path)
+        page.clickOnAddMoreGoodsLink() mustBe GoodsTypeQuantityPage.path(3)
+      }
+    }
+
     "allow the user to make a payment" in {
       givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
       givenTaxArePaid(wireMockServer)

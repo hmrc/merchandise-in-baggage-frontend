@@ -117,6 +117,7 @@ GET        /no-declaration-needed        uk.gov.hmrc.merchandiseinbaggagefronten
 
 GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
 POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onSubmit
+GET        /check-your-answers/add-goods uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.addMoreGoods
 
 #declaration-confirmation
 GET        /declaration-confirmation     uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.DeclarationConfirmationController.onPageLoad

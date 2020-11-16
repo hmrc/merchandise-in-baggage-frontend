@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.service
 
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 
-import scala.util.{Random, Try}
+import scala.util.Random
 
 trait MibReferenceGenerator {
 
@@ -28,7 +28,7 @@ trait MibReferenceGenerator {
 
   def mibReference: MibReference = {
     //TODO this could throw
-    val chars = Random.alphanumeric.find(c => c.isLetter && c.isUpper).getOrElse("A")
+    val chars: Char = Random.alphanumeric.find(c => c.isLetter && c.isUpper).getOrElse('A')
     MibReference(s"X${chars}MB${java.nio.ByteBuffer.wrap(uniqueId.getBytes).asLongBuffer().get().toString.take(10)}")
   }
 

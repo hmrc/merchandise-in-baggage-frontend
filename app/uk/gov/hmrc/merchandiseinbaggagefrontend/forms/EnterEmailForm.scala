@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.forms
 
 import play.api.data.Form
 import play.api.data.Forms.{email, mapping}
-import play.api.data.validation.Constraints._
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Email

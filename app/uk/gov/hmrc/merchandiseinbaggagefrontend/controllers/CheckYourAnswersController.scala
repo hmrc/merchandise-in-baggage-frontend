@@ -19,12 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{AppConfig, ErrorHandler}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequestBuilder
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationGoods
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{DeclarationGoods, GoodsEntries, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
 
@@ -35,9 +36,10 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                            actionProvider: DeclarationJourneyActionProvider,
                                            calculationService: CalculationService,
                                            connector: PaymentConnector,
+                                           override val repo: DeclarationJourneyRepository,
                                            page: CheckYourAnswersPage)
-                                          (implicit ec: ExecutionContext, appConfig: AppConfig, errorHandler: ErrorHandler)
-  extends DeclarationJourneyController with PayApiRequestBuilder {
+                                          (implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends DeclarationJourneyUpdateController with PayApiRequestBuilder {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
@@ -57,6 +59,18 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF)(goods => declarationConfirmation(request, goods))
     }
+
+  val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    val updatedGoodsEntries: Seq[GoodsEntry] = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
+
+    repo.upsert(
+      request.declarationJourney.copy(
+        goodsEntries = GoodsEntries(updatedGoodsEntries)
+      )
+    ).map { _ =>
+      Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.size))
+    }
+  }
 
   private def declarationConfirmation(request: DeclarationJourneyRequest[AnyContent], goods: DeclarationGoods)
                                      (implicit headerCarrier: HeaderCarrier): Future[Result] = {
