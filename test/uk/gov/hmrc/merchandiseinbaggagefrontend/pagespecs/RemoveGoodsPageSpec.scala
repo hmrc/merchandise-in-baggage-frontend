@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{GoodsEntry, YesNo}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.RemoveGoodsPage._
-import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{GoodsRemovedPage, RadioButtonPage, ReviewGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.{CheckYourAnswersPage, GoodsRemovedPage, RadioButtonPage, ReviewGoodsPage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -42,7 +42,16 @@ class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
       }
     }
 
-    s"remove the goods entry and redirect to ${GoodsRemovedPage.path}" when {
+    s"redirect to ${CheckYourAnswersPage.path}" when {
+      "the user removes a goods entry from the check your answers page" in {
+        givenADeclarationJourney(completedDeclarationJourney)
+        open(path(1))
+        page.fillOutForm(Yes)
+        page.clickOnCTA() mustBe CheckYourAnswersPage.path
+      }
+    }
+
+    s"remove the goods entry and redirect to ${ReviewGoodsPage.path}" when {
       s"the user elects to remove a goods entry" in {
         givenTwoGoodsEntriesAreComplete()
 

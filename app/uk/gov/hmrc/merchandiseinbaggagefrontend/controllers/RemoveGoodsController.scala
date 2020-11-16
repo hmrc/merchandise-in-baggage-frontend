@@ -58,7 +58,8 @@ class RemoveGoodsController @Inject()(
                   goodsEntries = request.declarationJourney.goodsEntries.remove(idx)
                 )
               ).map { _ =>
-                if (request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad)
+                if (request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
+                else if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
                 else Redirect(routes.ReviewGoodsController.onPageLoad())
               }
             } else {
