@@ -153,6 +153,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               createdAt: LocalDateTime = LocalDateTime.now(),
                               maybeExciseOrRestrictedGoods: Option[YesNo] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
+                              maybeGoodsRouteDestination: Option[YesNo] = None,
                               maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
                               goodsEntries: GoodsEntries = GoodsEntries.empty,
                               maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
@@ -189,6 +190,7 @@ case class DeclarationJourney(sessionId: SessionId,
   val declarationIfRequiredAndComplete: Option[Declaration] = {
     val discardedAnswersAreCompleteAndRequireADeclaration =
       maybeGoodsDestination.isDefined &&
+        maybeGoodsRouteDestination.contains(No) &&
         maybeExciseOrRestrictedGoods.contains(No) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(No) &&
         maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
