@@ -110,6 +110,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
           page.clickOnChangePurchaseDetailsLink(index - 1) mustBe PurchaseDetailsPage.path(index)
         }
       }
+
+      s"redirect to ${RemoveGoodsPage.path(index)}" when {
+        "the user clicks on the remove link" in {
+          givenADeclarationJourney(completedDeclarationJourney)
+          open(path)
+          page.clickOnRemoveGoodsLink(index - 1) mustBe RemoveGoodsPage.path(index)
+        }
+      }
     }
 
     s"redirect to ${AgentDetailsPage.path}" when {
