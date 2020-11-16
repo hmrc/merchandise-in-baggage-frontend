@@ -47,7 +47,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
       Future.successful(aPaymentCalculations)
   }
 
-  val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, stubbedCalculation, testConnector, page)
+  val controller = new CheckYourAnswersController(controllerComponents, actionBuilder, stubbedCalculation, testConnector, declarationJourneyRepository, page)
 
   "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()
