@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import javax.inject.{Inject, Singleton}
-import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
