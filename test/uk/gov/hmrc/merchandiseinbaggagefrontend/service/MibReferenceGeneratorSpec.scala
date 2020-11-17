@@ -23,5 +23,4 @@ class MibReferenceGeneratorSpec extends BaseSpec {
   "generate 10 digits mib reference" in new MibReferenceGenerator {
     mibReference.value.matches(referenceFormat) mustBe true
   }
-
 }

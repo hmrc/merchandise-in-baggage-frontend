@@ -24,12 +24,19 @@ trait MibReferenceGenerator {
 
   protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
   protected val referenceFormatRegex = referenceFormat.r
-  private def uniqueId: String = java.util.UUID.randomUUID().toString
 
   def mibReference: MibReference = {
-    //TODO this could throw
-    val chars: Char = Random.alphanumeric.find(c => c.isLetter && c.isUpper).getOrElse('A')
-    MibReference(s"X${chars}MB${java.nio.ByteBuffer.wrap(uniqueId.getBytes).asLongBuffer().get().toString.take(10)}")
+    val digits: List[Int] = (0 to 9).toList
+
+    val randomDigits: List[Int] = digits.flatMap { _ =>
+      val idx = randomIndex(digits.size)
+      digits.find(_ == idx)
+    }
+
+    val randomCapital = Random.alphanumeric.filter(c => c.isLetter && c.isUpper).take(1).headOption.getOrElse('A')
+
+    MibReference(s"X${randomCapital}MB${randomDigits.mkString}")
   }
 
+  private def randomIndex(size: Int): Int = Random.nextInt(size)
 }
