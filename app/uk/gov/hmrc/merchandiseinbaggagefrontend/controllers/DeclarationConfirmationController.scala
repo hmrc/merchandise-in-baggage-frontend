@@ -17,11 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import reactivemongo.api.commands.UpdateWriteResult
+import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationJourney}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
@@ -38,13 +39,16 @@ class DeclarationConfirmationController @Inject()(
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF) { declaration =>
-      connector.persistDeclaration(declaration).flatMap(res => {
-        if(res.status == 201)
-          resetJourney.map(_ => Ok(view(declaration)))
-        else Future.successful(InternalServerError("Unable to process Declaration"))
-      })
+      connector.persistDeclaration(declaration).flatMap { response => resetIfPersisted(declaration, response) }
     }
   }
+
+  private def resetIfPersisted(declaration: Declaration, res: HttpResponse)
+                              (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    if (res.status == 201)
+      resetJourney.map(_ => Ok(view(declaration)))
+    else Future.successful(InternalServerError("Unable to process Declaration"))
+
 
   private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._
