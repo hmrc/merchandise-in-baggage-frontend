@@ -25,19 +25,17 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
 class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
+  private def setup(): Unit = givenAnImportToNorthernIrelandJourneyIsStarted()
+
   "the goods route destination page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
     behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
+    behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
 
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnImportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Import")
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnExportJourneyIsStarted(), Yes, NoDeclarationNeededPage.path)
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnExportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Export")
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, InvalidRequestPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, setup(), No,ExciseAndRestrictedGoodsPage.path)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, No)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), GoodsDestinationPage.path)
   }
 
@@ -45,5 +43,5 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
   // PH - I think this should be persisted on the DeclarationJourney
   // and we should check the user has answered the question before /check-your-answers
   // otherwise the user could force browse and avoid answering the question, or submit a declaration for an invalid case
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = Some(Yes)
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = Some(No)
 }
