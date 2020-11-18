@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationId
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
@@ -30,6 +31,14 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   "send a declaration to backend to be persisted" in {
     givenDeclarationIsPersistedInBackend(wireMockServer, declaration)
 
-    client.persistDeclaration(declaration).futureValue.status mustBe 201
+    client.persistDeclaration(declaration).futureValue mustBe stubbedDeclarationId
+  }
+
+  "find a persisted declaration from backend by declarationId" in {
+    val id = DeclarationId("1234")
+
+    givenPersistedDeclarationIsFound(wireMockServer, declaration, id)
+
+    client.findDeclaration(id).futureValue mustBe declaration
   }
 }

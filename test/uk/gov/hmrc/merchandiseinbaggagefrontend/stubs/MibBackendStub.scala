@@ -19,22 +19,32 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.stubs
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationId}
 
 object MibBackendStub extends MibConfiguration {
+
+  val stubbedDeclarationId = DeclarationId("test-mib-be-id")
 
   def givenDeclarationIsPersistedInBackend(server: WireMockServer, declaration: Declaration): StubMapping = {
     server
       .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
         .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
-        .willReturn(created()))
+        .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
   }
 
   def givenDeclarationIsPersistedInBackend(server: WireMockServer): StubMapping = {
     server
       .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
-        .willReturn(created()))
+        .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
+  }
+
+  def givenPersistedDeclarationIsFound(server: WireMockServer, declaration: Declaration,
+                                       declarationId: DeclarationId = stubbedDeclarationId): StubMapping = {
+    server
+      .stubFor(get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
+        .willReturn(okJson(Json.toJson(declaration).toString)))
   }
 }

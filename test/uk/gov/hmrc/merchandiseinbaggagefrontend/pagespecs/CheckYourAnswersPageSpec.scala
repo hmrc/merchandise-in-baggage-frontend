@@ -16,14 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs
 
+import java.time.LocalDateTime
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, DeclarationType, JourneyInSmallVehicle}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{AmountInPence, Declaration, DeclarationId, DeclarationJourney, DeclarationType, JourneyInSmallVehicle, SessionId}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.pagespecs.pages._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.stubs.PayApiStub._
 
 import scala.collection.JavaConverters._
@@ -193,6 +196,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     "allow the user to make a payment" in {
       givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
       givenTaxArePaid(wireMockServer)
+      givenDeclarationIsPersistedInBackend(wireMockServer)
 
       open(path)
 
@@ -201,8 +205,17 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     }
 
     "allow the user to make a declaration if exporting" in {
-      givenADeclarationWithTaxDue(completedDeclarationJourney.copy(declarationType = DeclarationType.Export)).futureValue
+      val sessionId = SessionId()
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val id = DeclarationId("1234")
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = DeclarationType.Export,
+          createdAt = created, declarationId = Some(id))
+
+      givenDeclarationIsPersistedInBackend(wireMockServer)
+      givenADeclarationWithTaxDue(exportJourney).futureValue
       givenTaxArePaid(wireMockServer)
+      givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, exportJourney.declarationId.get)
 
       open(path)
 
