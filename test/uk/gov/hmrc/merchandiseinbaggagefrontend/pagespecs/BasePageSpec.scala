@@ -69,6 +69,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       open(path)
       readPath() mustBe path
       page.headerText() mustBe expectedTitle
+      page.bannerText() mustBe "beta"
     }
 
   def aPageWhichRequiresADeclarationJourney(path: String): Unit = {

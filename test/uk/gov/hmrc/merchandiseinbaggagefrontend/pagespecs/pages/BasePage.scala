@@ -52,6 +52,8 @@ abstract class BasePage(implicit webDriver: WebDriver)
 
   def headerText(): String = find(TagNameQuery("h1")).head.underlying.getText
 
+  def bannerText(): String = find(ClassNameQuery("govuk-phase-banner__content__tag")).head.underlying.getText
+
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
 
   val element: String => WebElement = elementId => id(elementId).element.underlying
