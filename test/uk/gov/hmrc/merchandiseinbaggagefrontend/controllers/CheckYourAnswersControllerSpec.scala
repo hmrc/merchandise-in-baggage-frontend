@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{ErrorHandler, MibConfiguration}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.{Export, Import}
@@ -34,28 +34,27 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
 
   private lazy val httpClient = injector.instanceOf[HttpClient]
-  private val page = injector.instanceOf[CheckYourAnswersPage]
+  private lazy val page = injector.instanceOf[CheckYourAnswersPage]
   private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
-  private implicit lazy val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
   private val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
 
-  val testPaymentConnector = new PaymentConnector(httpClient, ""){
+  private lazy val testPaymentConnector = new PaymentConnector(httpClient, ""){
     override def createPaymentSession(requestBody: PayApiRequest)
                                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       Future.successful(HttpResponse(201, stubbedApiResponse))
   }
 
-  val testMibConnector = new MibConnector(httpClient, ""){
+  private lazy val testMibConnector = new MibConnector(httpClient, ""){
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeclarationId] =
       Future.successful(DeclarationId("xxx"))
   }
 
-  val stubbedCalculation = new CalculationService(conversionConnector) {
+  private lazy val stubbedCalculation = new CalculationService(conversionConnector) {
     override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
       Future.successful(aPaymentCalculations)
   }
 
-  val controller = new CheckYourAnswersController(controllerComponents, actionBuilder,
+  private lazy val controller = new CheckYourAnswersController(controllerComponents, actionBuilder,
     stubbedCalculation, testPaymentConnector, testMibConnector, declarationJourneyRepository, page)
 
   "on submit will calculate tax and send payment request to pay api and reset declaration journey" in {
