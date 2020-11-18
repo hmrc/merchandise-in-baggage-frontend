@@ -70,7 +70,12 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       readPath() mustBe path
       page.headerText() mustBe expectedTitle
       page.bannerText() mustBe "beta"
+
+      val contactLink = page.contactLink()
+      contactLink.attribute("href").head.contains("/contact/contact-hmrc-unauthenticated?service=mib") mustBe true
+      contactLink.underlying.getText mustBe "Get help with this page"
     }
+
 
   def aPageWhichRequiresADeclarationJourney(path: String): Unit = {
     s"redirect from $path to ${InvalidRequestPage.path}" when {

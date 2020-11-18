@@ -30,6 +30,7 @@ class AppConfig() extends MongoConfiguration {
   private val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
 
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
+  val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 }
 
 trait MongoConfiguration {
