@@ -54,11 +54,13 @@ abstract class BasePage(implicit webDriver: WebDriver)
 
   def bannerText(): String = find(ClassNameQuery("govuk-phase-banner__content__tag")).head.underlying.getText
 
+  def contactLink(): Element = find(IdQuery("contactLink")).head
+
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
 
   val element: String => WebElement = elementId => id(elementId).element.underlying
 
-  def unifiedListItemsById(id : String): util.List[WebElement] =
+  def unifiedListItemsById(id: String): util.List[WebElement] =
     find(IdQuery(id)).get.underlying.findElements(By.tagName("li"))
 
   def textOfElementWithId(id: String): String = element(id).getText

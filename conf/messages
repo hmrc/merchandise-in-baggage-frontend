@@ -36,6 +36,7 @@ site.start = Start now
 site.startAgain = Start again
 site.change = Change
 site.remove = Remove
+site.getHelpWithThisPage = Get help with this page
 
 date.day = Day
 date.month = Month

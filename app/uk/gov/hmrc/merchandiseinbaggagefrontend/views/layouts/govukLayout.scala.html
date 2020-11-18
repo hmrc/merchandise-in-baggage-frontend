@@ -23,6 +23,8 @@ govukHeader: GovukHeader,
 govukFooter: GovukFooter,
 govukBackLink: GovukBackLink,
 phaseBanner: components.phaseBanner,
+hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+appConfig: AppConfig
 )
 
 @(
@@ -77,7 +79,8 @@ phaseBanner: components.phaseBanner,
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-        @contentBlock
+            @contentBlock
+            <a href="@{appConfig.contactUrl}" class="govuk-link" id="contactLink">@messages("site.getHelpWithThisPage")</a>
         </div>
     </div>
 }
