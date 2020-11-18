@@ -34,16 +34,13 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
       path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Import")
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnExportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path,"and declarationType is Export")
-    behave like aDataCapturePageWithConditionalRouting(
+    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
+      path, givenAnExportJourneyIsStarted(), Yes, NoDeclarationNeededPage.path,"and declarationType is Export")
+    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
       path, givenAnExportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Export")
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), GoodsDestinationPage.path)
   }
 
-  //TODO never used, come up with a better way of handling pages that don't have persistence
-  // PH - I think this should be persisted on the DeclarationJourney
-  // and we should check the user has answered the question before /check-your-answers
-  // otherwise the user could force browse and avoid answering the question, or submit a declaration for an invalid case
+
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeGoodsRouteDestination
 }

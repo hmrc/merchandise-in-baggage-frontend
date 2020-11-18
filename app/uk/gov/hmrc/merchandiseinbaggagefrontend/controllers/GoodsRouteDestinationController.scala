@@ -48,7 +48,8 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl))),
         value =>
           updateAndRedirect(value)
       )
@@ -57,7 +58,6 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
     repo.upsert(request.declarationJourney.copy(maybeGoodsRouteDestination = Some(value))).map { _ =>
       (value, request.declarationJourney.declarationType) match {
         case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
-        case (Yes, _) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
         case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
         case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
       }
