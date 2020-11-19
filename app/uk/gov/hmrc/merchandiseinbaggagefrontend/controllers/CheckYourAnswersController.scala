@@ -85,11 +85,11 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                       (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
       persist <- mibConnector.persistDeclaration(declaration)
-      pay     <- makePayment(declaration.declarationGoods)
+      pay     <- createPaymentSession(declaration.declarationGoods)
       _       <- resetJourney(persist)
     } yield Redirect(connector.extractUrl(pay).nextUrl.value)
 
-  private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  private def createPaymentSession(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
       payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
       response      <- connector.createPaymentSession(payApiRequest)
