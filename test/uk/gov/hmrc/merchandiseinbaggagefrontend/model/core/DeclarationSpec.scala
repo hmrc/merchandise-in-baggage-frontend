@@ -288,8 +288,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedNonCustomsAgentJourney.copy(
           maybeGoodsDestination = Some(NorthernIreland),
           maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
-        )
-          .declarationIfRequiredAndComplete mustBe None
+        ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the destination is Northern Ireland and the user has not answered GoodsRoutesDestination" in {
