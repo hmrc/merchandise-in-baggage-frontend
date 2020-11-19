@@ -20,7 +20,7 @@ import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.{Declaration, DeclarationId}
-
+import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
