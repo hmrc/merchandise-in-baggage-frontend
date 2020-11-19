@@ -30,6 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.model.Enum
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.adresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.calculation.CalculationRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.MibReferenceGenerator
@@ -131,7 +132,7 @@ object Name {
 case class Email(email: String, confirmation: String)
 
 object Email {
-  implicit val format = Json.format[Email]
+  implicit val format: OFormat[Email] = Json.format[Email]
 }
 
 case class Eori(value: String) {
@@ -188,12 +189,18 @@ case class DeclarationJourney(sessionId: SessionId,
   }
 
   val declarationIfRequiredAndComplete: Option[Declaration] = {
+    val ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland: Boolean =
+      (maybeGoodsDestination, maybeImportOrExportGoodsFromTheEUViaNorthernIreland) match {
+        case (Some(GreatBritain), _) => true
+        case (Some(NorthernIreland), Some(No)) => true
+        case _ => false
+      }
+
     val discardedAnswersAreCompleteAndRequireADeclaration =
-      maybeGoodsDestination.isDefined &&
-        maybeImportOrExportGoodsFromTheEUViaNorthernIreland.contains(No) &&
+      ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland &&
         maybeExciseOrRestrictedGoods.contains(No) &&
         maybeValueWeightOfGoodsExceedsThreshold.contains(No) &&
-        maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No)
+        (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
 
     for {
       goodsDestination <- maybeGoodsDestination

@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -38,7 +39,6 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   private val incompleteGoodsEntry = completedGoodsEntry.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
-  private val oneCompleteOneIncompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
   private val vehicleRegistrationNumber = "reg"
 
   "PurchaseDetails toString" should {
@@ -179,7 +179,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           Some(Declaration(
             sessionId,
             DeclarationType.Import,
-            GoodsDestinations.NorthernIreland,
+            NorthernIreland,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeEmailAddress.get,
@@ -195,9 +195,19 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the user is not a customs agent" in {
         completedNonCustomsAgentJourney.declarationIfRequiredAndComplete.isDefined mustBe true
       }
-      "the destination is GB and the user has not answered GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationIfRequiredAndComplete.isDefined mustBe true
+
+      "the destination is Great Britain irrespective of any answer to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
+      }
+
+      "the destination is Northern Ireland and the user has answered No to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
       }
 
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
@@ -261,9 +271,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           maybeRegistrationNumber = None
         ).declarationIfRequiredAndComplete mustBe None
       }
-    }
 
-    "be incomplete" when {
       "the user has not confirmed whether they are carrying excise or restricted goods" in {
         completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None).declarationIfRequiredAndComplete mustBe None
       }
@@ -276,12 +284,19 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(maybeGoodsDestination = None).declarationIfRequiredAndComplete mustBe None
       }
 
-      "the user has not confirmed if the destination is NI and the goods are moving to/from the EU" in {
-        completedDeclarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationIfRequiredAndComplete mustBe None
+      "the destination is Northern Ireland and the user has answered Yes to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(
+          maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
+        )
+          .declarationIfRequiredAndComplete mustBe None
       }
 
-      "the user has confirmed if the destination is NI and the goods are moving to/from the EU" in {
-        completedDeclarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)).declarationIfRequiredAndComplete mustBe None
+      "the destination is Northern Ireland and the user has not answered GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(
+          maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None
+        ).declarationIfRequiredAndComplete mustBe None
       }
 
       "the user has not confirmed whether the goods exceed the threshold" in {
