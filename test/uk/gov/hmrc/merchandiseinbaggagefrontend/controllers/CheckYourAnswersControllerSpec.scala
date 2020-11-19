@@ -40,8 +40,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val stubbedApiResponse = s"""{"journeyId":"5f3b","nextUrl":"http://host"}"""
 
   val testPaymentConnector = new PaymentConnector(httpClient, ""){
-    override def makePayment(requestBody: PayApiRequest)
-                            (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def createPaymentSession(requestBody: PayApiRequest)
+                                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
       Future.successful(HttpResponse(201, stubbedApiResponse))
   }
 

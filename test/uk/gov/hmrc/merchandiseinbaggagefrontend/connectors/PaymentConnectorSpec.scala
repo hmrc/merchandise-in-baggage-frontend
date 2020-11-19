@@ -43,7 +43,7 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport 
         .willReturn(okJson(stubbedResponse).withStatus(201))
       )
 
-    val response: HttpResponse = makePayment(payApiRequest).futureValue
+    val response: HttpResponse = createPaymentSession(payApiRequest).futureValue
     response.status mustBe 201
     response.body mustBe stubbedResponse
   }

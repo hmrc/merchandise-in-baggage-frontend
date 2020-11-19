@@ -92,7 +92,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
       payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
-      response      <- connector.makePayment(payApiRequest)
+      response      <- connector.createPaymentSession(payApiRequest)
     } yield response
 
   private def resetAndRedirect(declarationId: DeclarationId)
