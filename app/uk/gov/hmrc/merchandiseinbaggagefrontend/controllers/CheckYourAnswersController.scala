@@ -77,7 +77,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   private def declarationConfirmation(declaration: Declaration)
                                      (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     request.declarationJourney.declarationType match {
-      case Export => mibConnector.persistDeclaration(declaration).flatMap(resetIfPersisted)
+      case Export => mibConnector.persistDeclaration(declaration).flatMap(resetAndRedirect)
       case Import => processImportDeclaration(declaration)
     }
 
@@ -95,7 +95,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
       response      <- connector.makePayment(payApiRequest)
     } yield response
 
-  private def resetIfPersisted(declarationId: DeclarationId)
+  private def resetAndRedirect(declarationId: DeclarationId)
                               (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     resetJourney(declarationId).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
 

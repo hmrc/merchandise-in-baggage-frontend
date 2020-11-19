@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{ErrorHandler, MibConfiguration}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.CheckYourAnswersPage
@@ -63,8 +64,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val id = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val importJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId)
-      .copy(declarationType = DeclarationType.Import, createdAt = created, declarationId = Some(id))
+      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = Some(id))
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
@@ -85,8 +85,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val stubbedId = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val exportJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId)
-      .copy(declarationType = DeclarationType.Export, createdAt = created, declarationId = Some(stubbedId))
+      .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = Some(stubbedId))
 
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
 
