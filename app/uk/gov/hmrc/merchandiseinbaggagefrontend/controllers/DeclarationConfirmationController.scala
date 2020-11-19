@@ -18,30 +18,23 @@ package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.DeclarationConfirmationView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class DeclarationConfirmationController @Inject()(
                                                    override val controllerComponents: MessagesControllerComponents,
                                                    actionProvider: DeclarationJourneyActionProvider,
                                                    view: DeclarationConfirmationView,
-                                                   repo: DeclarationJourneyRepository
+                                                   connector: MibConnector
                                                  )(implicit ec: ExecutionContext, appConf: AppConfig)
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF) { declaration =>
-      resetJourney.map(_ => Ok(view(declaration)))
+    request.declarationJourney.declarationId.fold(actionProvider.invalidRequestF) { declarationId =>
+      connector.findDeclaration(declarationId).map(declaration => Ok(view(declaration)))
     }
-  }
-
-  private def resetJourney(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
-    import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType))
   }
 }

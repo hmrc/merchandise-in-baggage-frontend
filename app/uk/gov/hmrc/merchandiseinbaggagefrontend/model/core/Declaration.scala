@@ -164,7 +164,9 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
                               maybeTravellingByVehicle: Option[YesNo] = None,
                               maybeTravellingBySmallVehicle: Option[YesNo] = None,
-                              maybeRegistrationNumber: Option[String] = None) {
+                              maybeRegistrationNumber: Option[String] = None,
+                              declarationId: Option[DeclarationId] = None
+                             ) {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {

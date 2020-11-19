@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.service
+package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
 
-import uk.gov.hmrc.merchandiseinbaggagefrontend.BaseSpec
+import play.api.libs.json._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.utils.ValueClassFormat
 
-class MibReferenceGeneratorSpec extends BaseSpec {
-
-  "generate 10 digits mib reference" in new MibReferenceGenerator {
-    mibReference.value.matches(referenceFormat) mustBe true
-  }
+case class DeclarationId(value: String)
+object DeclarationId {
+  implicit val format: Format[DeclarationId] = ValueClassFormat.format(value => DeclarationId.apply(value))(_.value)
 }

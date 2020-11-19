@@ -22,7 +22,7 @@ import pureconfig.generic.auto._ // Do not remove this
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfigSource.configSource
 
 @Singleton
-class AppConfig() extends MongoConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration {
   lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
 
   private val serviceIdentifier = "mib"
@@ -33,12 +33,21 @@ class AppConfig() extends MongoConfiguration {
   val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 }
 
+object AppConfigSource {
+  val configSource: String => ConfigSource = ConfigSource.default.at
+}
+
 trait MongoConfiguration {
   lazy val mongoConf: MongoConf = configSource("mongodb").loadOrThrow[MongoConf]
 }
 
 final case class MongoConf(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")
 
-object AppConfigSource {
-  val configSource: String => ConfigSource = ConfigSource.default.at
+trait MibConfiguration {
+  lazy val mibConf: MIBConf = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
+  import mibConf._
+  lazy val declarationsUrl: String = "/merchandise-in-baggage/declarations"
+  lazy val persistDeclarationsUrl: String = s"$protocol://$host:$port$declarationsUrl"
 }
+
+final case class MIBConf(protocol: String, host: String, port: Int)
