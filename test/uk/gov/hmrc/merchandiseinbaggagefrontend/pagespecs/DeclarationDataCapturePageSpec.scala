@@ -48,17 +48,6 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
     }
   }
 
-  def aDataCapturePageWithConditionalRoutingWithoutPersistence(path: String, setUp: => Unit = Unit, formData: F, expectedPath: String, desc: String = ""): Unit = {
-    s"redirect to $expectedPath" when {
-      s"the form is filled with $formData $desc" in {
-        setUp
-        open(path)
-        page.fillOutForm(formData)
-        page.clickOnCTA() mustBe expectedPath
-      }
-    }
-  }
-
   def aDataCapturePageWithSimpleRouting(path: String, setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
       allFormData.foreach { formData =>
