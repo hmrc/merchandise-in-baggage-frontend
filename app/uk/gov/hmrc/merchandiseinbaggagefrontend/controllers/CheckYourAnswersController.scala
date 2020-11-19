@@ -75,17 +75,19 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   private def declarationConfirmation(declaration: Declaration)
-                                     (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] = {
+                                     (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     request.declarationJourney.declarationType match {
       case Export => mibConnector.persistDeclaration(declaration).flatMap(resetIfPersisted)
-      case Import =>
-          for {
-            persist <- mibConnector.persistDeclaration(declaration)
-            pay     <- makePayment(declaration.declarationGoods)
-            _       <- resetJourney(persist)
-          } yield Redirect(connector.extractUrl(pay).nextUrl.value)
-        }
+      case Import => processImportDeclaration(declaration)
     }
+
+  private def processImportDeclaration(declaration: Declaration)
+                                      (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    for {
+      persist <- mibConnector.persistDeclaration(declaration)
+      pay     <- makePayment(declaration.declarationGoods)
+      _       <- resetJourney(persist)
+    } yield Redirect(connector.extractUrl(pay).nextUrl.value)
 
   private def makePayment(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
