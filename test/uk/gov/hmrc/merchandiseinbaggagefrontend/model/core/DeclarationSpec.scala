@@ -195,6 +195,10 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       "the user is not a customs agent" in {
         completedNonCustomsAgentJourney.declarationIfRequiredAndComplete.isDefined mustBe true
       }
+      "the destination is GB and the user has not answered GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationIfRequiredAndComplete.isDefined mustBe true
+      }
 
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
         completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)).declarationIfRequiredAndComplete.isDefined mustBe true
