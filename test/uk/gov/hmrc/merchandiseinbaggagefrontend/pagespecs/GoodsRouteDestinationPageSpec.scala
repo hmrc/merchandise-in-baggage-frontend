@@ -42,5 +42,5 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
   }
 
 
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeGoodsRouteDestination
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeImportOrExportGoodsFromTheEUViaNorthernIreland
 }

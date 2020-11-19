@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsRouteDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsRouteDestinationView
 
@@ -55,7 +55,7 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
       )
   }
   def updateAndRedirect (value : YesNo)(implicit request:DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    repo.upsert(request.declarationJourney.copy(maybeGoodsRouteDestination = Some(value))).map { _ =>
+    repo.upsert(request.declarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(value))).map { _ =>
       (value, request.declarationJourney.declarationType) match {
         case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
         case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
