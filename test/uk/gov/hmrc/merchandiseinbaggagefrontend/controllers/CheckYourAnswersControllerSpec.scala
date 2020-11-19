@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.{ErrorHandler, MibConfiguration}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.connectors.{CurrencyConversionConnector, MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.PayApiRequest
