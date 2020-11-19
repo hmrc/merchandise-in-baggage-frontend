@@ -268,7 +268,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)).declarationIfRequiredAndComplete mustBe None
       }
 
-      "the user has not confirmed the destination of the goods" in {
+      "the user has not confirmed the destination of the goods whether its GB or NI" in {
         completedDeclarationJourney.copy(maybeGoodsDestination = None).declarationIfRequiredAndComplete mustBe None
       }
 
