@@ -273,6 +273,10 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
 
       "the user has not confirmed if the destination is NI and the goods are moving to/from the EU" in {
+        completedDeclarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationIfRequiredAndComplete mustBe None
+      }
+
+      "the user has confirmed if the destination is NI and the goods are moving to/from the EU" in {
         completedDeclarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)).declarationIfRequiredAndComplete mustBe None
       }
 
