@@ -46,10 +46,8 @@ final case class MongoConf(uri: String, host: String = "localhost", port: Int = 
 trait MibConfiguration {
   lazy val mibConf: MIBConf = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
   import mibConf._
-  lazy val mibPort: Int = port
-  lazy val baseUrl: String = s"$protocol://$host:$mibPort"
-  lazy val serviceUrl: String = s"/merchandise-in-baggage"
-  lazy val declarationsUrl: String = s"$serviceUrl/declarations"
+  lazy val baseUrl: String = s"$protocol://$host:$port"
+  lazy val declarationsUrl: String = "/merchandise-in-baggage/declarations"
   lazy val persistDeclarationsUrl: String = s"$baseUrl$declarationsUrl"
 }
 
