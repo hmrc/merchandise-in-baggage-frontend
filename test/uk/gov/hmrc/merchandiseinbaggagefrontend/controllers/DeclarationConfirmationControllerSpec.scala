@@ -55,7 +55,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
-    val connector = new MibConnector(client, baseUrl) {
+    val connector = new MibConnector(client, "") {
       override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Declaration] =
         Future.failed(new Exception("not found"))
     }
