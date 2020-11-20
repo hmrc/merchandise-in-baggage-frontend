@@ -1,0 +1,87 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
+
+@this(layout: Layout, formHelper: FormWithCSRF)
+
+@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("declarationConfirmation.title")), maybeBackButtonUrl = None) {
+
+ <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
+  <h1 id="panelTitleId" class="govuk-panel__title">Declaration complete</h1>
+  <div id="mibReferenceId" class="govuk-panel__body">Your reference number<br><strong>@declaration.mibReference.value</strong></div>
+ </div>
+
+ <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
+ <p id="declarationDateFormattedId" class="govuk-body">@declaration.dateOfDeclaration.formattedDate</p>
+ <!-- <p class="govuk-body">@messages("declarationConfirmation.email", declaration)</p>-->
+ <p class="govuk-body">
+  <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">Print or save a copy of this page
+   <link id="printDeclarationLinkId" class="govuk-link" href="/merchandise-in-baggage/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css">
+  </a>
+ </p>
+
+ <h2 id="whatToDoNextId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
+ <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
+ <ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
+  <li>@messages("declarationConfirmation.ul.1")</li>
+  <li>@messages("declarationConfirmation.ul.2")</li>
+ </ul>
+
+ <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+  @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
+   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
+     <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
+     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+     <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
+     <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails</dd>
+    </div>
+   </dl>
+  }
+
+  <h2 id="personalDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
+
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+   <div class="govuk-summary-list__row">
+    <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
+    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
+    <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+   </div>
+  </dl>
+  <p class="govuk-body">
+   <a id="makeAnotherDeclarationId" class='govuk-link' href="excise-and-restricted-goods">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
+  </p>
+
+}

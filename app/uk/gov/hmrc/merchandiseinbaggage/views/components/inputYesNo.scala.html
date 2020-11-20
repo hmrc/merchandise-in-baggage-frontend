@@ -1,0 +1,45 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.components.inputRadio
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+
+@this(inputRadio: inputRadio)
+
+@(      form: Form[_],
+        legend: String,
+        legendAsHeading: Boolean = true,
+        hintKey: Option[String] = None,
+        classes: String = "govuk-fieldset__legend--xl",
+        inline: Boolean = false
+)(implicit messages: Messages)
+
+@inputRadio(
+    form = form,
+    legend = legend,
+    legendAsHeading = legendAsHeading,
+    hintKey = hintKey,
+    classes = classes,
+    inline = inline,
+    items = YesNo.values map { value =>
+        RadioItem(
+            id = Some(value.toString),
+            value = Some(value.toString),
+            content = Text(messages(value.messageKey)),
+            checked = form("value").value.contains(value.toString)
+        )
+    }
+)

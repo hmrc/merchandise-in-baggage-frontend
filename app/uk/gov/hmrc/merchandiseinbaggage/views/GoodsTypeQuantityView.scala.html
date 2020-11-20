@@ -1,0 +1,63 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        errorSummary: components.errorSummary,
+        button: components.button,
+        text: components.inputText,
+        h1: components.h1,
+        p: components.p)
+
+@(form: Form[_], idx: Int, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("goodsTypeQuantity.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+
+  @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+
+    @errorSummary(form.errors)
+
+    @h1(messages("goodsTypeQuantity.heading"))
+
+    @p(Html(messages("goodsTypeQuantity.p")))
+
+    @text(
+        form = form,
+        id = "category",
+        name = "category",
+        label = "goodsTypeQuantity.category",
+        isPageHeading = false,
+        classes = Some("govuk-input--width-20"),
+        hint = Some("goodsTypeQuantity.category.hint")
+    )
+
+    @text(
+        form = form,
+        id = "quantity",
+        name = "quantity",
+        label = "goodsTypeQuantity.quantity",
+        isPageHeading = false,
+        classes = Some("govuk-input--width-5")
+    )
+
+    @button("site.continue", name = Some("continue"))
+  }
+}
