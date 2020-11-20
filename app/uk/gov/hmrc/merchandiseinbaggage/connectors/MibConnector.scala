@@ -17,10 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import javax.inject.{Inject, Named, Singleton}
+import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Declaration, DeclarationId}
-import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationId
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

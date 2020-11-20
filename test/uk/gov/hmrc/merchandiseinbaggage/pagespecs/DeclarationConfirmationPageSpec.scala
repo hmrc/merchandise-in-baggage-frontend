@@ -21,7 +21,8 @@ import java.time.LocalDateTime
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Declaration, DeclarationId, DeclarationType, Goods}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationType, Goods}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._

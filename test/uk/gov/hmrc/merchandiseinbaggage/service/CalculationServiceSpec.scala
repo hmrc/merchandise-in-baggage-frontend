@@ -17,11 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub._
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, WireMockSupport, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
 

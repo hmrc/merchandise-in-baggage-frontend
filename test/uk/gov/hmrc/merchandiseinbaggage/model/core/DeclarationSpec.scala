@@ -19,13 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import java.time.LocalDateTime
 
 import play.api.libs.json.Json.{parse, toJson}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.MibReference
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Declaration._
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
+import Declaration._
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))

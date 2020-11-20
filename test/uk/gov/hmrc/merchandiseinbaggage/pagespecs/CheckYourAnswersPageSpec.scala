@@ -23,7 +23,8 @@ import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmountInPence, Declaration, DeclarationId, DeclarationJourney, DeclarationType, JourneyInSmallVehicle, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyInSmallVehicle}
+import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._

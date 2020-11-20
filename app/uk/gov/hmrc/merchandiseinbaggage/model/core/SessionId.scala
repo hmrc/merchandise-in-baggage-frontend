@@ -17,8 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.text.NumberFormat.getCurrencyInstance
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 import java.time.{LocalDate, LocalDateTime}
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
@@ -28,12 +26,10 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.Enum
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
-import uk.gov.hmrc.merchandiseinbaggage.model.api.MibReference
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyDetails, JourneyInSmallVehicle, JourneyOnFootViaVehiclePort, JourneyViaFootPassengerOnlyPort, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
 import scala.collection.immutable
 
@@ -45,17 +41,6 @@ object SessionId {
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
 
-case class PurchaseDetails(amount: String, currency: Currency) {
-  override val toString = s"$amount, ${currency.displayName}"
-
-  val numericAmount: BigDecimal = BigDecimal(amount)
-
-  def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.currencyCode)
-}
-
-object PurchaseDetails {
-  implicit val format: OFormat[PurchaseDetails] = Json.format[PurchaseDetails]
-}
 
 case class CategoryQuantityOfGoods(category: String, quantity: String)
 
@@ -275,59 +260,4 @@ object YesNo extends Enum[YesNo] {
 
 }
 
-sealed trait JourneyDetails {
-  val placeOfArrival: Port
-  val dateOfArrival: LocalDate
-  val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfArrival)
-  val travellingByVehicle: YesNo = No
-  val maybeRegistrationNumber: Option[String] = None
-}
 
-case class JourneyViaFootPassengerOnlyPort(placeOfArrival: FootPassengerOnlyPort, dateOfArrival: LocalDate) extends JourneyDetails
-
-case class JourneyOnFootViaVehiclePort(placeOfArrival: VehiclePort, dateOfArrival: LocalDate) extends JourneyDetails
-
-case class JourneyInSmallVehicle(placeOfArrival: VehiclePort, dateOfArrival: LocalDate, registrationNumber: String) extends JourneyDetails {
-  override val travellingByVehicle: YesNo = Yes
-  override val maybeRegistrationNumber: Option[String] = Some(registrationNumber)
-}
-
-object JourneyDetails {
-  implicit val format: OFormat[JourneyDetails] = Json.format[JourneyDetails]
-}
-
-object JourneyViaFootPassengerOnlyPort {
-  implicit val format: OFormat[JourneyViaFootPassengerOnlyPort] = Json.format[JourneyViaFootPassengerOnlyPort]
-}
-
-object JourneyOnFootViaVehiclePort {
-  implicit val format: OFormat[JourneyOnFootViaVehiclePort] = Json.format[JourneyOnFootViaVehiclePort]
-}
-
-object JourneyInSmallVehicle {
-  implicit val format: OFormat[JourneyInSmallVehicle] = Json.format[JourneyInSmallVehicle]
-}
-
-case class Declaration(sessionId: SessionId,
-                       declarationType: DeclarationType,
-                       goodsDestination: GoodsDestination,
-                       declarationGoods: DeclarationGoods,
-                       nameOfPersonCarryingTheGoods: Name,
-                       email: Email,
-                       maybeCustomsAgent: Option[CustomsAgent],
-                       eori: Eori,
-                       journeyDetails: JourneyDetails,
-                       dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-                       mibReference: MibReference = Declaration.mibReference
-                      )
-
-object Declaration extends MibReferenceGenerator {
-  implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
-
-  implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
-    def formattedDate: String = {
-      dateOfDeclaration.format(formatter)
-    }
-  }
-}
