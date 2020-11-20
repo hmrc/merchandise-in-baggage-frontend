@@ -22,7 +22,7 @@ import javax.inject.Inject
 import play.api.data.Form
 import play.api.libs.json.Json
 import play.api.libs.json.Json.{prettyPrint, toJson}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggage._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -52,7 +52,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
   }
 
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>
-    def onError(form: Form[String]) = Future successful BadRequest(page(form))
+    def onError(form: Form[String]): Future[Result] = Future successful BadRequest(page(form))
 
     form.bindFromRequest().fold(
       formWithErrors => onError(formWithErrors),

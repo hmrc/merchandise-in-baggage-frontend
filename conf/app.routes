@@ -6,118 +6,118 @@
 GET        /assets/*file                 controllers.Assets.versioned(path = "/public", file: Asset)
 
 # Invalid journey state
-GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.InvalidRequestController.onPageLoad
+GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggage.controllers.InvalidRequestController.onPageLoad
 
 
 # StartImport
-GET        /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onPageLoad
-POST       /start-import                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartImportController.onSubmit
+GET        /start-import                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartImportController.onPageLoad
+POST       /start-import                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartImportController.onSubmit
 
 # StartExport
-GET        /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onPageLoad
-POST       /start-export                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.StartExportController.onSubmit
+GET        /start-export                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.onPageLoad
+POST       /start-export                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.onSubmit
 
 # ExciseAndRestrictedGoods
-GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onPageLoad
-POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ExciseAndRestrictedGoodsController.onSubmit
+GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggage.controllers.ExciseAndRestrictedGoodsController.onPageLoad
+POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggage.controllers.ExciseAndRestrictedGoodsController.onSubmit
 
 # GoodsDestination
-GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onPageLoad
-POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsDestinationController.onSubmit
+GET        /goods-destination            uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsDestinationController.onPageLoad
+POST       /goods-destination            uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsDestinationController.onSubmit
 
 # GoodsRouteDestination
-GET        /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onPageLoad
-POST       /goods-route-destination      uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRouteDestinationController.onSubmit
+GET        /goods-route-destination      uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsRouteDestinationController.onPageLoad
+POST       /goods-route-destination      uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsRouteDestinationController.onSubmit
 
 # ValueWeightOfGoods
-GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onPageLoad
-POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ValueWeightOfGoodsController.onSubmit
+GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggage.controllers.ValueWeightOfGoodsController.onPageLoad
+POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggage.controllers.ValueWeightOfGoodsController.onSubmit
 
 # SearchGoods
-GET        /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsTypeQuantityController.onPageLoad(idx: Int)
-POST       /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsTypeQuantityController.onSubmit(idx: Int)
+GET        /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeQuantityController.onPageLoad(idx: Int)
+POST       /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeQuantityController.onSubmit(idx: Int)
 
 # GoodsVatRate
-GET        /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onPageLoad(idx: Int)
-POST       /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsVatRateController.onSubmit(idx: Int)
+GET        /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsVatRateController.onPageLoad(idx: Int)
+POST       /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsVatRateController.onSubmit(idx: Int)
 
 # SearchGoodsCountry
-GET        /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onPageLoad(idx: Int)
-POST       /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.SearchGoodsCountryController.onSubmit(idx: Int)
+GET        /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggage.controllers.SearchGoodsCountryController.onPageLoad(idx: Int)
+POST       /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggage.controllers.SearchGoodsCountryController.onSubmit(idx: Int)
 
 # PurchaseDetails
-GET        /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onPageLoad(idx: Int)
-POST       /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PurchaseDetailsController.onSubmit(idx: Int)
+GET        /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggage.controllers.PurchaseDetailsController.onPageLoad(idx: Int)
+POST       /purchase-details/:idx        uk.gov.hmrc.merchandiseinbaggage.controllers.PurchaseDetailsController.onSubmit(idx: Int)
 
 # ReviewGoods
-GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onPageLoad
-POST       /review-goods                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.ReviewGoodsController.onSubmit
+GET        /review-goods                 uk.gov.hmrc.merchandiseinbaggage.controllers.ReviewGoodsController.onPageLoad
+POST       /review-goods                 uk.gov.hmrc.merchandiseinbaggage.controllers.ReviewGoodsController.onSubmit
 
 # RemoveGoods
-GET        /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.RemoveGoodsController.onPageLoad(idx: Int)
-POST       /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.RemoveGoodsController.onSubmit(idx: Int)
+GET        /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggage.controllers.RemoveGoodsController.onPageLoad(idx: Int)
+POST       /remove-goods/:idx            uk.gov.hmrc.merchandiseinbaggage.controllers.RemoveGoodsController.onSubmit(idx: Int)
 
 # GoodsRemoved
-GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsRemovedController.onPageLoad
+GET        /goods-removed                uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsRemovedController.onPageLoad
 
 # GoodsOverThreshold
-GET        /goods-over-threshold         uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsOverThresholdController.onPageLoad
+GET        /goods-over-threshold         uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsOverThresholdController.onPageLoad
 
 # PaymentCalculation
-GET        /payment-calculation          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.PaymentCalculationController.onPageLoad
+GET        /payment-calculation          uk.gov.hmrc.merchandiseinbaggage.controllers.PaymentCalculationController.onPageLoad
 
 # TravellerDetails
-GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onPageLoad
-POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.TravellerDetailsController.onSubmit
+GET        /traveller-details            uk.gov.hmrc.merchandiseinbaggage.controllers.TravellerDetailsController.onPageLoad
+POST       /traveller-details            uk.gov.hmrc.merchandiseinbaggage.controllers.TravellerDetailsController.onSubmit
 
 # EnterEmail
-GET        /enter-email                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterEmailController.onPageLoad
-POST       /enter-email                  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterEmailController.onSubmit
+GET        /enter-email                  uk.gov.hmrc.merchandiseinbaggage.controllers.EnterEmailController.onPageLoad
+POST       /enter-email                  uk.gov.hmrc.merchandiseinbaggage.controllers.EnterEmailController.onSubmit
 
 # CustomsAgent
-GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onPageLoad
-POST       /customs-agent                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CustomsAgentController.onSubmit
+GET        /customs-agent                uk.gov.hmrc.merchandiseinbaggage.controllers.CustomsAgentController.onPageLoad
+POST       /customs-agent                uk.gov.hmrc.merchandiseinbaggage.controllers.CustomsAgentController.onSubmit
 
 # AgentDetails
-GET        /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onPageLoad
-POST       /agent-details                uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.AgentDetailsController.onSubmit
+GET        /agent-details                uk.gov.hmrc.merchandiseinbaggage.controllers.AgentDetailsController.onPageLoad
+POST       /agent-details                uk.gov.hmrc.merchandiseinbaggage.controllers.AgentDetailsController.onSubmit
 
 # EnterAgentAddress
-GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.onPageLoad
-GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EnterAgentAddressController.returnFromAddressLookup(id: String ?= "")
+GET        /enter-agent-address          uk.gov.hmrc.merchandiseinbaggage.controllers.EnterAgentAddressController.onPageLoad
+GET        /address-lookup-return        uk.gov.hmrc.merchandiseinbaggage.controllers.EnterAgentAddressController.returnFromAddressLookup(id: String ?= "")
 
 # EoriNumber
-GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onPageLoad
-POST       /enter-eori-number            uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.EoriNumberController.onSubmit
+GET        /enter-eori-number            uk.gov.hmrc.merchandiseinbaggage.controllers.EoriNumberController.onPageLoad
+POST       /enter-eori-number            uk.gov.hmrc.merchandiseinbaggage.controllers.EoriNumberController.onSubmit
 
 # JourneyDetails
-GET        /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.JourneyDetailsController.onPageLoad
-POST       /journey-details              uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.JourneyDetailsController.onSubmit
+GET        /journey-details              uk.gov.hmrc.merchandiseinbaggage.controllers.JourneyDetailsController.onPageLoad
+POST       /journey-details              uk.gov.hmrc.merchandiseinbaggage.controllers.JourneyDetailsController.onSubmit
 
 # GoodsInVehicle
-GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsInVehicleController.onPageLoad
-POST       /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.GoodsInVehicleController.onSubmit
+GET        /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsInVehicleController.onPageLoad
+POST       /goods-in-vehicle             uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsInVehicleController.onSubmit
 
 # VehicleSize
-GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleSizeController.onPageLoad
-POST       /vehicle-size                 uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleSizeController.onSubmit
+GET        /vehicle-size                 uk.gov.hmrc.merchandiseinbaggage.controllers.VehicleSizeController.onPageLoad
+POST       /vehicle-size                 uk.gov.hmrc.merchandiseinbaggage.controllers.VehicleSizeController.onSubmit
 
 # VehicleRegistrationNumber
-GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleRegistrationNumberController.onPageLoad
-POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.VehicleRegistrationNumberController.onSubmit
+GET        /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggage.controllers.VehicleRegistrationNumberController.onPageLoad
+POST       /vehicle-registration-number  uk.gov.hmrc.merchandiseinbaggage.controllers.VehicleRegistrationNumberController.onSubmit
 
 # CannotUseService
-GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceController.onPageLoad
+GET        /cannot-use-service           uk.gov.hmrc.merchandiseinbaggage.controllers.CannotUseServiceController.onPageLoad
 
 # CannotUseServiceIreland
-GET        /cannot-use-service-ireland   uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CannotUseServiceIrelandController.onPageLoad
+GET        /cannot-use-service-ireland   uk.gov.hmrc.merchandiseinbaggage.controllers.CannotUseServiceIrelandController.onPageLoad
 
 # NoDeclarationNeeded
-GET        /no-declaration-needed        uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.NoDeclarationNeededController.onPageLoad
+GET        /no-declaration-needed        uk.gov.hmrc.merchandiseinbaggage.controllers.NoDeclarationNeededController.onPageLoad
 
-GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onPageLoad
-POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.onSubmit
-GET        /check-your-answers/add-goods uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.CheckYourAnswersController.addMoreGoods
+GET        /check-your-answers           uk.gov.hmrc.merchandiseinbaggage.controllers.CheckYourAnswersController.onPageLoad
+POST       /check-your-answers           uk.gov.hmrc.merchandiseinbaggage.controllers.CheckYourAnswersController.onSubmit
+GET        /check-your-answers/add-goods uk.gov.hmrc.merchandiseinbaggage.controllers.CheckYourAnswersController.addMoreGoods
 
 #declaration-confirmation
-GET        /declaration-confirmation     uk.gov.hmrc.merchandiseinbaggagefrontend.controllers.DeclarationConfirmationController.onPageLoad
+GET        /declaration-confirmation     uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationConfirmationController.onPageLoad
