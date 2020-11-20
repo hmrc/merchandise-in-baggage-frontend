@@ -30,20 +30,17 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
     behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
     behave like aPageWhichRequiresADeclarationJourney(path)
 
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
+    behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
+    behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Import")
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
-      path, givenAnExportJourneyIsStarted(), Yes, NoDeclarationNeededPage.path)
-    behave like aDataCapturePageWithConditionalRoutingWithoutPersistence(
+    behave like aDataCapturePageWithConditionalRouting(
+      path, givenAnExportJourneyIsStarted(), Yes, NoDeclarationNeededPage.path,"and declarationType is Export")
+    behave like aDataCapturePageWithConditionalRouting(
       path, givenAnExportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Export")
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), GoodsDestinationPage.path)
   }
 
-  //TODO never used, come up with a better way of handling pages that don't have persistence
-  // PH - I think this should be persisted on the DeclarationJourney
-  // and we should check the user has answered the question before /check-your-answers
-  // otherwise the user could force browse and avoid answering the question, or submit a declaration for an invalid case
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = Some(Yes)
+
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeImportOrExportGoodsFromTheEUViaNorthernIreland
 }

@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.api.MibReference
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Declaration._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.currencyconversion.Currency
@@ -38,7 +39,6 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   private val incompleteGoodsEntry = completedGoodsEntry.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
-  private val oneCompleteOneIncompleteGoodEntries = GoodsEntries(Seq(completedGoodsEntry, incompleteGoodsEntry))
   private val vehicleRegistrationNumber = "reg"
 
   "PurchaseDetails toString" should {
@@ -179,7 +179,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           Some(Declaration(
             sessionId,
             DeclarationType.Import,
-            GoodsDestinations.NorthernIreland,
+            NorthernIreland,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeEmailAddress.get,
@@ -193,7 +193,21 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }
 
       "the user is not a customs agent" in {
-        completedNonCustomsAgentJourney.declarationIfRequiredAndComplete.isDefined mustBe true
+        completedNonCustomsAgentJourney.declarationRequiredAndComplete mustBe true
+      }
+
+      "the destination is Great Britain irrespective of any answer to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
+      }
+
+      "the destination is Northern Ireland and the user has answered No to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
       }
 
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
@@ -224,13 +238,13 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
     "be incomplete or not required" when {
       "journey details have not been completed" in {
-        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(doverJourneyEntry), maybeTravellingByVehicle = None
-        ).declarationIfRequiredAndComplete mustBe None
+        ).declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
@@ -238,7 +252,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(No)
-        ).declarationIfRequiredAndComplete mustBe None
+        ).declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
@@ -246,7 +260,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = None
-        ).declarationIfRequiredAndComplete mustBe None
+        ).declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
@@ -255,62 +269,74 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = None
-        ).declarationIfRequiredAndComplete mustBe None
+        ).declarationRequiredAndComplete mustBe false
       }
-    }
 
-    "be incomplete" when {
       "the user has not confirmed whether they are carrying excise or restricted goods" in {
-        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has confirmed that they are carrying excise or restricted goods" in {
-        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)).declarationRequiredAndComplete mustBe false
       }
 
-      "the user has not confirmed the destination of the goods" in {
-        completedDeclarationJourney.copy(maybeGoodsDestination = None).declarationIfRequiredAndComplete mustBe None
+      "the user has not confirmed the destination of the goods whether its GB or NI" in {
+        completedDeclarationJourney.copy(maybeGoodsDestination = None).declarationRequiredAndComplete mustBe false
+      }
+
+      "the destination is Northern Ireland and the user has answered Yes to GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(
+          maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
+        ).declarationRequiredAndComplete mustBe false
+      }
+
+      "the destination is Northern Ireland and the user has not answered GoodsRoutesDestination" in {
+        completedNonCustomsAgentJourney.copy(
+          maybeGoodsDestination = Some(NorthernIreland),
+          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None
+        ).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not confirmed whether the goods exceed the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has confirmed that the goods exceed the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not entered any goods" in {
-        completedDeclarationJourney.copy(goodsEntries = GoodsEntries.empty).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(goodsEntries = GoodsEntries.empty).declarationRequiredAndComplete mustBe false
       }
 
       "the user has incomplete goods entries" in {
-        completedDeclarationJourney.copy(goodsEntries = incompleteGoodEntries).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(goodsEntries = incompleteGoodEntries).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided the name of the person carrying the goods" in {
-        completedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided an email address" in {
-        completedDeclarationJourney.copy(maybeEmailAddress = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeEmailAddress = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not confirmed whether they are a customs agent" in {
-        completedDeclarationJourney.copy(maybeIsACustomsAgent = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeIsACustomsAgent = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has confirmed they are a customs agent but does not provide the necessary details" in {
-        completedDeclarationJourney.copy(maybeCustomsAgentName = None).declarationIfRequiredAndComplete mustBe None
-        completedDeclarationJourney.copy(maybeCustomsAgentAddress = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeCustomsAgentName = None).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney.copy(maybeCustomsAgentAddress = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided an eori" in {
-        completedDeclarationJourney.copy(maybeEori = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeEori = None).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided journey details" in {
-        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationIfRequiredAndComplete mustBe None
+        completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None).declarationRequiredAndComplete mustBe false
       }
     }
   }

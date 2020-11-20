@@ -17,19 +17,26 @@
 package uk.gov.hmrc.merchandiseinbaggagefrontend.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggagefrontend.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggagefrontend.forms.GoodsRouteDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.DeclarationType._
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo
 import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggagefrontend.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggagefrontend.views.html.GoodsRouteDestinationView
+
+import scala.concurrent.{ExecutionContext, Future}
+
+
 
 class GoodsRouteDestinationController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                                 actionProvider: DeclarationJourneyActionProvider,
                                                 override val repo: DeclarationJourneyRepository,
                                                 view: GoodsRouteDestinationView,
-                                               )(implicit appConf: AppConfig) extends DeclarationJourneyUpdateController {
+                                               )(implicit appConf: AppConfig, executionContext: ExecutionContext)
+
+  extends DeclarationJourneyUpdateController {
 
   private val backButtonUrl: Call = routes.GoodsDestinationController.onPageLoad()
 
@@ -37,17 +44,22 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
     Ok(view(form, request.declarationJourney.declarationType, backButtonUrl))
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl))),
         value =>
-          (value, request.declarationJourney.declarationType) match {
-            case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
-            case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
-            case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
-          }
+          updateAndRedirect(value)
       )
   }
+  def updateAndRedirect (value : YesNo)(implicit request:DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    repo.upsert(request.declarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(value))).map { _ =>
+      (value, request.declarationJourney.declarationType) match {
+        case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
+        case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
+        case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
+      }
+    }
 }
