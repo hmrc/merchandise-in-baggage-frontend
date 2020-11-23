@@ -26,10 +26,11 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.Enum
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyDetails, JourneyInSmallVehicle, JourneyOnFootViaVehiclePort, JourneyViaFootPassengerOnlyPort, PurchaseDetails}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
 
 import scala.collection.immutable
 
@@ -108,13 +109,17 @@ object GoodsEntries {
 
 case class Name(firstName: String, lastName: String) {
   override val toString: String = s"$firstName $lastName"
+
+  lazy val obfuscated: Name = Name(obfuscate(firstName), obfuscate(lastName))
 }
 
 object Name {
   implicit val format: OFormat[Name] = Json.format[Name]
 }
 
-case class Email(email: String, confirmation: String)
+case class Email(email: String, confirmation: String) {
+  lazy val obfuscated: Email = Email(obfuscate(email), obfuscate(confirmation))
+}
 
 object Email {
   implicit val format: OFormat[Email] = Json.format[Email]
@@ -122,6 +127,8 @@ object Email {
 
 case class Eori(value: String) {
   override val toString: String = value
+
+  lazy val obfuscated: Eori = Eori(obfuscate(value))
 }
 
 object Eori {
@@ -154,6 +161,15 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeRegistrationNumber: Option[String] = None,
                               declarationId: Option[DeclarationId] = None
                              ) {
+  lazy val obfuscated: DeclarationJourney =
+    this.copy(
+      maybeNameOfPersonCarryingTheGoods = maybeNameOfPersonCarryingTheGoods.map(_.obfuscated),
+      maybeEmailAddress = maybeEmailAddress.map(_.obfuscated),
+      maybeCustomsAgentName = maybeObfuscate(maybeCustomsAgentName),
+      maybeCustomsAgentAddress = maybeCustomsAgentAddress.map(_.obfuscated),
+      maybeEori = maybeEori.map(_.obfuscated),
+      maybeRegistrationNumber = maybeObfuscate(maybeRegistrationNumber)
+    )
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {

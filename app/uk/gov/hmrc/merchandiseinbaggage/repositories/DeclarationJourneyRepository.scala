@@ -56,7 +56,11 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
     find(query).map(_.headOption)
   }
 
-  def deleteAll(): Future[Unit] = super.removeAll().map(_ => ())
+  def deleteAll(): Future[Unit] = {
+    logger.warn("DeclarationJourneyRepository.deleteAll() called" )
+
+    super.removeAll().map(_ => ())
+  }
 
   implicit val jsObjectWriter: OWrites[JsObject] = new OWrites[JsObject] {
     override def writes(o: JsObject): JsObject = o

@@ -52,20 +52,18 @@ class PurchaseDetailsController @Inject()(
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request: DeclarationGoodsRequest[AnyContent] =>
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().flatMap { currencyPeriod =>
-        form
-          .bindFromRequest()
-          .fold(
-            formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))),
-            purchaseDetailsInput =>
-              currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
-                .fold(actionProvider.invalidRequestF) { currency =>
-                  persistAndRedirect(
-                    request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
-                    idx,
-                    routes.ReviewGoodsController.onPageLoad())
-                }
-          )
+        form.bindFromRequest().fold(
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))),
+          purchaseDetailsInput =>
+            currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
+              .fold(actionProvider.invalidRequestF(s"currency [$purchaseDetailsInput.currency] not found")) { currency =>
+                persistAndRedirect(
+                  request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
+                  idx,
+                  routes.ReviewGoodsController.onPageLoad())
+              }
+        )
       }
     }
   }

@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDestinationUnansweredMessage
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotUseServiceView
 
 @Singleton
@@ -28,8 +29,9 @@ class CannotUseServiceController @Inject()(override val controllerComponents: Me
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.maybeGoodsDestination.fold(actionProvider.invalidRequest) { goodsDestination =>
-      Ok(view(request.declarationJourney.declarationType, goodsDestination))
-    }
+    request.declarationJourney.maybeGoodsDestination
+      .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
+        Ok(view(request.declarationJourney.declarationType, goodsDestination))
+      }
   }
 }

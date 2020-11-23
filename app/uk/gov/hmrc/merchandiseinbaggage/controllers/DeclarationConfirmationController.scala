@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
 import scala.concurrent.ExecutionContext
@@ -33,7 +34,7 @@ class DeclarationConfirmationController @Inject()(
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationId.fold(actionProvider.invalidRequestF) { declarationId =>
+    request.declarationJourney.declarationId.fold(actionProvider.invalidRequestF(incompleteMessage)) { declarationId =>
       connector.findDeclaration(declarationId).map(declaration => Ok(view(declaration)))
     }
   }

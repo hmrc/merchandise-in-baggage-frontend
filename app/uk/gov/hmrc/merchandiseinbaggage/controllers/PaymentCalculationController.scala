@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 
@@ -35,18 +36,20 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
   private val backButtonUrl: Call = routes.ReviewGoodsController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
-      request.declarationJourney.maybeGoodsDestination.fold(actionProvider.invalidRequestF) { destination =>
-        for {
-          paymentCalculations <- calculationService.paymentCalculation(goods)
-          rates <- calculationService.getConversionRates(goods)
-        } yield {
-          if(paymentCalculations.totalGbpValue.value > destination.threshold.value)
-            Redirect(routes.GoodsOverThresholdController.onPageLoad())
-          else
-            Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
-        }
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
+      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
+        request.declarationJourney.maybeGoodsDestination
+          .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
+            for {
+              paymentCalculations <- calculationService.paymentCalculation(goods)
+              rates <- calculationService.getConversionRates(goods)
+            } yield {
+              if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
+                Redirect(routes.GoodsOverThresholdController.onPageLoad())
+              else
+                Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+            }
+          }
       }
-    }
   }
 }
