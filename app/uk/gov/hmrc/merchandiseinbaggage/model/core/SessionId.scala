@@ -31,7 +31,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
-import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.MongoDateTimeFormats
 
 import scala.collection.immutable
 
