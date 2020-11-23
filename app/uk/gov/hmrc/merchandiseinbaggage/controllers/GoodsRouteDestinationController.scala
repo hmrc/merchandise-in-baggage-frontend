@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsRouteDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
@@ -27,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRouteDestinationView
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 
 class GoodsRouteDestinationController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -45,6 +44,15 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    def updateAndRedirect(value: YesNo)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+      repo.upsert(request.declarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(value))).map { _ =>
+        (value, request.declarationJourney.declarationType) match {
+          case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
+          case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
+          case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
+        }
+      }
+
     form
       .bindFromRequest()
       .fold(
@@ -54,12 +62,4 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
           updateAndRedirect(value)
       )
   }
-  def updateAndRedirect (value : YesNo)(implicit request:DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    repo.upsert(request.declarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(value))).map { _ =>
-      (value, request.declarationJourney.declarationType) match {
-        case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
-        case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
-        case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
-      }
-    }
 }

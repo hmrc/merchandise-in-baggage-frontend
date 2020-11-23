@@ -31,7 +31,7 @@ class GoodsRemovedController @Inject()(override val controllerComponents: Messag
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val startAgainUrl = request.declarationJourney.declarationType match {
       case Import => routes.StartImportController.onPageLoad().url
-      case Export => "#" //TODO
+      case Export => routes.StartExportController.onPageLoad().url
     }
 
     Ok(view(startAgainUrl))

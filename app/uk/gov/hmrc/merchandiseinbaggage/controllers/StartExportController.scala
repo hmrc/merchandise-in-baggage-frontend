@@ -18,47 +18,24 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 import uk.gov.hmrc.merchandiseinbaggage.views.html.StartExportView
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class StartExportController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                      repo: DeclarationJourneyRepository,
-                                      view: StartExportView)(implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendBaseController {
-
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+                                      override val repo: DeclarationJourneyRepository,
+                                      view: StartExportView)
+                                     (implicit val ec: ExecutionContext, appConfig: AppConfig) extends StartController {
+  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
+    DeclarationJourneyLogger.info("StartExportController.onPageLoad")
     Ok(view())
   }
 
-  def onSubmit(): Action[AnyContent] = Action.async { implicit request =>
-    def next(sessionId: SessionId) =
-      Redirect(routes.GoodsDestinationController.onPageLoad()).addingToSession((SessionKeys.sessionId, sessionId.value))
-
-    def newDeclarationJourney(sessionId: SessionId) = {
-      val declarationJourney = DeclarationJourney(sessionId = sessionId, DeclarationType.Export)
-
-      repo.insert(declarationJourney).map { _ =>
-        next(sessionId)
-      }
-    }
-
-    request.session.get(SessionKeys.sessionId) match {
-      case None =>
-        newDeclarationJourney(SessionId())
-
-      case Some(id) =>
-        val sessionId = SessionId(id)
-
-        repo.findBySessionId(sessionId).flatMap{
-          case Some(_) => Future successful next(sessionId)
-          case _ => newDeclarationJourney(sessionId)
-        }
-    }
-  }
+  override val declarationType: DeclarationType = Export
 }
