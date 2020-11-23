@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import Declaration._
+import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, Country}
 
 class DeclarationSpec extends BaseSpec with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
@@ -140,6 +141,20 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
   "DeclarationJourney" should {
     "serialise and de-serialise" in {
       parse(toJson(completedDeclarationJourney).toString()).validate[DeclarationJourney].get mustBe completedDeclarationJourney
+    }
+
+    "be obfuscated" in {
+      completedDeclarationJourney.obfuscated.maybeNameOfPersonCarryingTheGoods mustBe Some(Name("*****", "****"))
+      completedDeclarationJourney.obfuscated.maybeEmailAddress mustBe Some(Email("***********", "***********"))
+      completedDeclarationJourney.obfuscated.maybeCustomsAgentName mustBe Some("**********")
+      completedDeclarationJourney.obfuscated.maybeCustomsAgentAddress mustBe
+        Some(
+          Address(
+            lines = Seq("*************", "**********"),
+            postcode = Some("*******"),
+            country = Country("**", Some("**************"))))
+      completedDeclarationJourney.obfuscated.maybeEori mustBe Some(Eori("**************"))
+      completedDeclarationJourney.obfuscated.maybeRegistrationNumber mustBe Some("******")
     }
 
     "have a customs agent" when {
