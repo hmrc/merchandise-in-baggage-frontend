@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.text.NumberFormat.getCurrencyInstance
-import java.time.{LocalDate, LocalDateTime}
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import java.util.Locale.UK
 import java.util.UUID.randomUUID
 
@@ -31,6 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
+import uk.gov.hmrc.merchandiseinbaggagefrontend.model.core.MongoDateTimeFormats
 
 import scala.collection.immutable
 
@@ -143,7 +144,7 @@ object JourneyDetailsEntry {
 
 case class DeclarationJourney(sessionId: SessionId,
                               declarationType: DeclarationType,
-                              createdAt: LocalDateTime = LocalDateTime.now(),
+                              createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
                               maybeExciseOrRestrictedGoods: Option[YesNo] = None,
                               maybeGoodsDestination: Option[GoodsDestination] = None,
                               maybeImportOrExportGoodsFromTheEUViaNorthernIreland: Option[YesNo] = None,
@@ -222,7 +223,7 @@ case class DeclarationJourney(sessionId: SessionId,
   val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
 }
 
-object DeclarationJourney {
+object DeclarationJourney extends MongoDateTimeFormats {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   val id = "sessionId"
