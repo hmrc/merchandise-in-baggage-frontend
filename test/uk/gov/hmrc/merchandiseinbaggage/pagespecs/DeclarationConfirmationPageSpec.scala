@@ -36,7 +36,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     behave like aPageWithNoBackButton(path)
 
     "render correctly" when {
-      "make declaration" in {
+      "make declaration for export" in {
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Export)
         val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
@@ -49,7 +49,26 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasDateOfDeclaration
         hasEmailAddress(declarationCompleted)
         hasPrintPageContentInPdf
-        hasWhaToDoNext
+        hasWhaToDoNextExport
+        hasGoodDetails(declarationCompleted)
+        hasPersonDetails(declarationCompleted)
+        hasMakeAnotherDeclarationLink
+      }
+
+      "make declaration for import" in {
+        val id = DeclarationId("456")
+        val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Import)
+        val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
+        givenADeclarationJourney(declarationJourney.copy(declarationId = Some(id)))
+        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
+        open(path)
+
+        page.mustRenderBasicContentWithoutHeader(path, title)
+        hasConfirmationPanelWithContents
+        hasDateOfDeclaration
+        hasEmailAddress(declarationCompleted)
+        hasPrintPageContentInPdf
+        hasWhaToDoNextImport
         hasGoodDetails(declarationCompleted)
         hasPersonDetails(declarationCompleted)
         hasMakeAnotherDeclarationLink
@@ -78,11 +97,19 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     attrOfElementWithId("printDeclarationLinkId", "media") mustBe "all"
   }
 
-  def hasWhaToDoNext: Assertion = {
+  def hasWhaToDoNextExport: Assertion = {
     textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
     val listItems = unifiedListItemsById("whatToDoNextUlId")
     listItems.get(0).getText mustBe "take this declaration confirmation with you"
     listItems.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
+  }
+
+  def hasWhaToDoNextImport: Assertion = {
+    textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
+    val listItems = unifiedListItemsById("whatToDoNextUlId")
+    listItems.get(0).getText mustBe "go through the green channel (nothing to declare) at customs"
+    listItems.get(1).getText mustBe "take this declaration confirmation with you"
+    listItems.get(2).getText mustBe "take the invoices for all the goods you are taking out of the UK"
   }
 
   def hasGoodDetails(declaration: Declaration): Assertion = {

@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 
 @this(layout: Layout, formHelper: FormWithCSRF)
 
@@ -42,8 +43,12 @@
  <h2 id="whatToDoNextId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
  <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
  <ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
-  <li>@messages("declarationConfirmation.ul.1")</li>
+  @if(declaration.declarationType == Export) { @Html("")
+  } else {
+   <li>@messages("declarationConfirmation.ul.1") <strong>@messages("declarationConfirmation.ul.1.strong")</strong> @messages("declarationConfirmation.ul.1.1")</li>
+  }
   <li>@messages("declarationConfirmation.ul.2")</li>
+  <li>@messages("declarationConfirmation.ul.3")</li>
  </ul>
 
  <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
