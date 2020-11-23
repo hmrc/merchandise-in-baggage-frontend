@@ -43,9 +43,10 @@
  <h2 id="whatToDoNextId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
  <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
  <ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
-  @if(declaration.declarationType == Export) { @Html("")
-  } else {
+  @if(declaration.declarationType == Import) {
    <li>@messages("declarationConfirmation.ul.1") <strong>@messages("declarationConfirmation.ul.1.strong")</strong> @messages("declarationConfirmation.ul.1.1")</li>
+  } else {
+   @Html("")
   }
   <li>@messages("declarationConfirmation.ul.2")</li>
   <li>@messages("declarationConfirmation.ul.3")</li>
