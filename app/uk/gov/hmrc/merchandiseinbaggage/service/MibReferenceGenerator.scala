@@ -19,11 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import uk.gov.hmrc.merchandiseinbaggage.model.api.MibReference
 
 import scala.util.Random
+import scala.util.matching.Regex
 
 trait MibReferenceGenerator {
 
   protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
-  protected val referenceFormatRegex = referenceFormat.r
+  protected val referenceFormatRegex: Regex = referenceFormat.r
 
   def mibReference: MibReference = {
     val digits: List[Int] = (0 to 9).toList
