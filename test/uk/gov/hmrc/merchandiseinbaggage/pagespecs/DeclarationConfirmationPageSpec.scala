@@ -39,17 +39,19 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
       "make declaration" in {
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Export)
+        val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
         givenADeclarationJourney(declarationJourney.copy(declarationId = Some(id)))
-        givenPersistedDeclarationIsFound(wireMockServer, declarationJourney.declarationIfRequiredAndComplete.get, id)
+        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)
         hasConfirmationPanelWithContents
         hasDateOfDeclaration
+        hasEmailAddress(declarationCompleted)
         hasPrintPageContentInPdf
         hasWhaToDoNext
-        hasGoodDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
-        hasPersonDetails(completedDeclarationJourney.declarationIfRequiredAndComplete.get)
+        hasGoodDetails(declarationCompleted)
+        hasPersonDetails(declarationCompleted)
         hasMakeAnotherDeclarationLink
       }
     }
@@ -65,6 +67,9 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("declarationDateId") mustBe "Date of declaration"
     textOfElementWithId("declarationDateFormattedId") must include(LocalDateTime.now.format(Declaration.formatter))
   }
+
+  def hasEmailAddress(declaration: Declaration): Assertion =
+    textOfElementWithId("declarationEmailId") mustBe s"We have sent you a confirmation email to ${declaration.email.email}."
 
   def hasPrintPageContentInPdf: Assertion = {
     attrOfElementWithId("printDeclarationId", "href") mustBe "javascript:window.print();"
