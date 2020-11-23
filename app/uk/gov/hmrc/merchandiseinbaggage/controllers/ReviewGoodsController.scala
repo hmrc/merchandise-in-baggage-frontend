@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, GoodsEntry}
@@ -39,33 +40,26 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
     routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequest) { goods =>
-      Ok(view(form, goods, backButtonUrl))
-    }
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
+      .fold(actionProvider.invalidRequest(goodsDeclarationIncompleteMessage)) { goods =>
+        Ok(view(form, goods, backButtonUrl))
+      }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
-      form
-        .bindFromRequest()
-        .fold(
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
+      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
+        form.bindFromRequest().fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
               val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
 
-              repo.upsert(
-                request.declarationJourney.copy(
-                  goodsEntries = GoodsEntries(updatedGoodsEntries)
-                )
-              ).map { _ =>
+              repo.upsert(request.declarationJourney.copy(goodsEntries = GoodsEntries(updatedGoodsEntries))).map { _ =>
                 Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.size))
               }
-            }
-            else {
-              Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
-            }
+            } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
         )
-    }
+      }
   }
 }

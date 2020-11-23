@@ -22,6 +22,7 @@ import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequestBuilder}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
@@ -44,32 +45,26 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   extends DeclarationJourneyUpdateController with PayApiRequestBuilder {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationIfRequiredAndComplete.fold(actionProvider.invalidRequestF){ declaration =>
-      calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
-        if(declaration.declarationType == Import
-          && paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
-          Redirect(routes.GoodsOverThresholdController.onPageLoad())
-        } else {
-          val taxDue = paymentCalculations.totalTaxDue
-          Ok(page(form, declaration, taxDue))
+    request.declarationJourney.declarationIfRequiredAndComplete
+      .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
+        calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
+          if (declaration.declarationType == Import
+            && paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
+            Redirect(routes.GoodsOverThresholdController.onPageLoad())
+          } else Ok(page(form, declaration, paymentCalculations.totalTaxDue))
         }
       }
-    }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(actionProvider.invalidRequestF)(declaration => declarationConfirmation(declaration))
-    }
+      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration => declarationConfirmation(declaration))
+  }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val updatedGoodsEntries: Seq[GoodsEntry] = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
 
-    repo.upsert(
-      request.declarationJourney.copy(
-        goodsEntries = GoodsEntries(updatedGoodsEntries)
-      )
-    ).map { _ =>
+    repo.upsert(request.declarationJourney.copy(goodsEntries = GoodsEntries(updatedGoodsEntries))).map { _ =>
       Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.size))
     }
   }
@@ -85,14 +80,14 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                       (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
       persist <- mibConnector.persistDeclaration(declaration)
-      pay     <- createPaymentSession(declaration.declarationGoods)
-      _       <- resetJourney(persist)
+      pay <- createPaymentSession(declaration.declarationGoods)
+      _ <- resetJourney(persist)
     } yield Redirect(connector.extractUrl(pay).nextUrl.value)
 
   private def createPaymentSession(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     for {
       payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
-      response      <- connector.createPaymentSession(payApiRequest)
+      response <- connector.createPaymentSession(payApiRequest)
     } yield response
 
   private def resetAndRedirect(declarationId: DeclarationId)

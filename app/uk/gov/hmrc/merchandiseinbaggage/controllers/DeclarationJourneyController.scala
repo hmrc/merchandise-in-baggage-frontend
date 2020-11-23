@@ -20,6 +20,7 @@ import play.api.i18n.Messages
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -28,6 +29,12 @@ trait DeclarationJourneyController extends FrontendBaseController {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val onPageLoad: Action[AnyContent]
+}
+
+object DeclarationJourneyController {
+  val incompleteMessage = "declaration journey is not required and complete"
+  val goodsDestinationUnansweredMessage = "goods destination is unanswered"
+  val goodsDeclarationIncompleteMessage = "goods declaration is incomplete"
 }
 
 trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
@@ -48,10 +55,15 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
   def onPageLoad(idx: Int): Action[AnyContent]
 
-  def withGoodsCategory(goodsEntry: GoodsEntry)(f: String => Future[Result]): Future[Result] =
+  def withGoodsCategory(goodsEntry: GoodsEntry)
+                       (f: String => Future[Result])
+                       (implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
     goodsEntry.maybeCategoryQuantityOfGoods match {
       case Some(c) => f(c.category)
-      case None => Future successful Redirect(routes.InvalidRequestController.onPageLoad())
+      case None =>
+        DeclarationJourneyLogger.warn(
+          s"Goods category not found so redirecting to ${routes.InvalidRequestController.onPageLoad()}")
+        Future successful Redirect(routes.InvalidRequestController.onPageLoad())
     }
 }
 

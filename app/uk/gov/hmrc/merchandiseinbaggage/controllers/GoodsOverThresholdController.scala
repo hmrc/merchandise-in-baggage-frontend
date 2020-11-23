@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
@@ -33,13 +34,15 @@ class GoodsOverThresholdController @Inject()(override val controllerComponents: 
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.goodsEntries.declarationGoodsIfComplete.fold(actionProvider.invalidRequestF) { goods =>
-      request.declarationJourney.maybeGoodsDestination.fold(actionProvider.invalidRequestF) { destination =>
-        for {
-          paymentCalculations <- calculationService.paymentCalculation(goods)
-          rates <- calculationService.getConversionRates(goods)
-        } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates))
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
+      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
+        request.declarationJourney.maybeGoodsDestination
+          .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
+            for {
+              paymentCalculations <- calculationService.paymentCalculation(goods)
+              rates <- calculationService.getConversionRates(goods)
+            } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates))
+          }
       }
-    }
   }
 }

@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 import uk.gov.hmrc.merchandiseinbaggage.views.html.InvalidRequestView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -31,6 +32,7 @@ class InvalidRequestController @Inject()(override val controllerComponents: Mess
   extends FrontendBaseController {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+    DeclarationJourneyLogger.warn(s"User was directed to ${routes.InvalidRequestController.onPageLoad()}")
     Ok(view())
   }
 }
