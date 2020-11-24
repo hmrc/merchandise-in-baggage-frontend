@@ -16,6 +16,8 @@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 
 @this(
 govukTemplate: GovukTemplate,
@@ -24,6 +26,7 @@ govukFooter: GovukFooter,
 govukBackLink: GovukBackLink,
 phaseBanner: components.phaseBanner,
 hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
 appConfig: AppConfig
 )
 
@@ -38,6 +41,11 @@ appConfig: AppConfig
         scriptsBlock: Option[Html] = None,
         maybeBackButtonUrl: Option[play.api.mvc.Call]
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig)
+
+@headDefault = {
+    @headBlock
+    @hmrcTrackingConsentSnippet()
+}
 
 @headerDefault = {
 @headerBlock.getOrElse {
@@ -88,7 +96,7 @@ appConfig: AppConfig
 @govukTemplate(
     htmlLang = Some(messages.lang.code),
     pageTitle = pageTitle,
-    headBlock = headBlock,
+    headBlock = Some(headDefault),
     headerBlock = headerDefault,
     beforeContentBlock = Some(beforeContentDefault),
     footerBlock = footerDefault,
