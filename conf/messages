@@ -213,6 +213,8 @@ searchGoodsCountry.title = In what country did you buy the {0}?
 searchGoodsCountry.heading = In what country did you buy the {0}?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
 searchGoodsCountry.error.required = Select the country where you bought the goods
+searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
+searchGoodsCountry.error.required = Select a country
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
