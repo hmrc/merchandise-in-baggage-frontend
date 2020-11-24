@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
-import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.obfuscate
+import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
 
 class ObfuscatorSpec extends BaseSpec {
   "obfuscate should" should {
@@ -30,6 +30,16 @@ class ObfuscatorSpec extends BaseSpec {
       "the input is empty" in {
         obfuscate("") mustBe ""
       }
+    }
+  }
+
+  "maybeObfuscate" should {
+    "obfuscate a defined option" in {
+      maybeObfuscate(Some("1")) mustBe Some("*")
+    }
+
+    "tolerate an undefined option" in {
+      maybeObfuscate(None) mustBe None
     }
   }
 }

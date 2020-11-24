@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggagefrontend.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}
 
