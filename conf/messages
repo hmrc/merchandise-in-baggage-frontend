@@ -221,6 +221,7 @@ searchGoodsCountry.error.invalid = Select a valid country
 purchaseDetails.title = How much did you pay for the {0}?
 purchaseDetails.heading = How much did you pay for the {0}?
 purchaseDetails.price.label = Price paid
+purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency
 purchaseDetails.p.1 = We use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
