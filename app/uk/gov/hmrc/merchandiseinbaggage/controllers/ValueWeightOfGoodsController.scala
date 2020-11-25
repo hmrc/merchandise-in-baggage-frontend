@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDestinationUnansweredMessage
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,21 +38,22 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
   private val backButtonUrl: Call = routes.ExciseAndRestrictedGoodsController.onPageLoad()
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    request.declarationJourney.maybeGoodsDestination match {
-      case Some(dest) => Ok(
-        view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill), dest, backButtonUrl)
-      )
-      case None => Redirect(routes.GoodsDestinationController.onPageLoad())
-    }
+    request.declarationJourney.maybeGoodsDestination
+      .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
+        Ok(
+          view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill),
+            goodsDestination,
+            backButtonUrl))
+      }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.maybeGoodsDestination match {
-      case Some(dest) =>
+    request.declarationJourney.maybeGoodsDestination
+      .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future successful BadRequest(view(formWithErrors, dest, backButtonUrl)),
+            formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, backButtonUrl)),
             exceedsThreshold => {
               persistAndRedirect(
                 request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),
@@ -60,8 +62,6 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
               )
             }
           )
-      case None =>
-        Future successful Redirect(routes.GoodsDestinationController.onPageLoad())
     }
   }
 }
