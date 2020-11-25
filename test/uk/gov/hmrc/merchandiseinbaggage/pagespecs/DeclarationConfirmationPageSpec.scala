@@ -140,6 +140,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
   def hasMakeAnotherDeclarationLink: Assertion = {
     textOfElementWithId("makeAnotherDeclarationId") mustBe "Make another declaration"
     element("makeAnotherDeclarationId").click()
-    webDriver.getCurrentUrl must include("excise-and-restricted-goods")
+    webDriver.getCurrentUrl must include("goods-destination")
   }
 }
