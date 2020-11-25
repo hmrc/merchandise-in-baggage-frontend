@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class StartExportPage(implicit webDriver: WebDriver) extends PageWithCTA {
+class StartExportPage(implicit webDriver: WebDriver) extends BasePage {
   override val ctaName: String = "startNow"
 }
 

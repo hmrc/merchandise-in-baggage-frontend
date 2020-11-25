@@ -26,8 +26,11 @@ import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.countries
 class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
 
+  private val validationMessage = "Select the country where you bought the goods"
+
   "the search goods country page" should {
     behave like aGoodsEntryPage(path, title, countries.head, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path(1), Set(validationMessage), givenAGoodsEntryIsStarted())
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase

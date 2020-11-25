@@ -27,11 +27,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
   override def page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
+  private val requiredAnswerValidationMessage = "Select yes if you want to remove the goods"
+
   "the remove goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path(1))
     behave like aPageWhichRequiresADeclarationJourney(path(2))
     behave like aPageWhichRenders(path(1), givenAGoodsEntryIsComplete(), title("wine"))
     behave like aPageWhichRenders(path(2), givenTwoGoodsEntriesAreComplete(), title("cheese"))
+    behave like aPageWithARequiredQuestion(path(1), requiredAnswerValidationMessage, givenAGoodsEntryIsComplete())
 
     s"redirect to ${ReviewGoodsPage.path}" when {
       s"the user elects not to remove the goods" in {

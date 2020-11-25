@@ -26,7 +26,7 @@ class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
 
   import WebBrowser._
 
-  def clickOnCTA(): String = {
+  override def clickOnCTA(): String = {
     val button = find(ClassNameQuery("govuk-button")).get
     click on button
 

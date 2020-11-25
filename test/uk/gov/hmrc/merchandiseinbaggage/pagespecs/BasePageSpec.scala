@@ -130,6 +130,30 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
   }
 
+  def aPageWithARequiredQuestion(path: String,
+                                 validationMessage: String,
+                                 setUp: => Unit,
+                                 validationMessageFieldId: String = "value-error"): Unit =
+    s"display the validation message [$validationMessage] with id [$validationMessageFieldId]" when {
+      "the user attempts to submit the form without answering the question" in {
+        setUp
+        open(path)
+        page.clickOnCTA() mustBe path
+        page.validationMessage(validationMessageFieldId) mustBe validationMessage
+      }
+    }
+
+  def aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path: String, validationMessages: Set[String], setUp: => Unit): Unit = {
+    s"display the currency validation message in the error summary list" when {
+      "the user attempts to submit the form without answering the question" in {
+        setUp
+        open(path)
+        page.clickOnCTA() mustBe path
+        page.errorSummaryRows.toSet mustBe validationMessages
+      }
+    }
+  }
+
   def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
 
   def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)

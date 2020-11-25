@@ -25,11 +25,13 @@ class VehicleRegistrationNumberPageSpec extends DeclarationDataCapturePageSpec[S
   override lazy val page: VehicleRegistrationNumberPage = wire[VehicleRegistrationNumberPage]
 
   private val registrationNumber = "reg 123"
+  private val requiredAnswerValidationMessage = "Enter the vehicle registration number"
 
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted())
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), registrationNumber, CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), registrationNumber, InvalidRequestPage.path)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), VehicleSizePage.path)

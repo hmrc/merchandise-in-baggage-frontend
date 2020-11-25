@@ -19,10 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 
 class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
 
-  val requiredKey = "valueWeightOfGoods.error.required"
+  val requiredKeyWhenGoodsDestinationIsGreatBritain = "valueWeightOfGoods.GreatBritain.error.required"
+  val requiredKeyWhenGoodsDestinationIsNorthernIreland = "valueWeightOfGoods.NorthernIreland.error.required"
   val invalidKey = "error.yesNo"
 
   ".value" must {
@@ -30,15 +32,21 @@ class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
     val fieldName = "value"
 
     behave like yesNoField(
-      form,
+      form(GreatBritain),
       fieldName,
       invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
-      form,
+      form(GreatBritain),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, requiredKeyWhenGoodsDestinationIsGreatBritain)
+    )
+
+    behave like mandatoryField(
+      form(NorthernIreland),
+      fieldName,
+      requiredError = FormError(fieldName, requiredKeyWhenGoodsDestinationIsNorthernIreland)
     )
   }
 }

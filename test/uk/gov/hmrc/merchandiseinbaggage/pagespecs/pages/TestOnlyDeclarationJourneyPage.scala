@@ -22,7 +22,7 @@ import play.api.libs.json.Json.{prettyPrint, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.routes
 
-class TestOnlyDeclarationJourneyPage(implicit webDriver: WebDriver) extends PageWithCTA {
+class TestOnlyDeclarationJourneyPage(implicit webDriver: WebDriver) extends BasePage {
 
   import WebBrowser._
 

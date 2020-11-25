@@ -41,7 +41,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
     request.declarationJourney.maybeGoodsDestination
       .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
         Ok(
-          view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form)(form.fill),
+          view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
             goodsDestination,
             backButtonUrl))
       }
@@ -50,7 +50,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.maybeGoodsDestination
       .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
-        form
+        form(goodsDestination)
           .bindFromRequest()
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, backButtonUrl)),
@@ -62,6 +62,6 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
               )
             }
           )
-    }
+      }
   }
 }

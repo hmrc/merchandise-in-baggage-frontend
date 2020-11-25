@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 
-abstract class DeclarationDataCapturePage[F](implicit webDriver: WebDriver) extends PageWithCTA {
+abstract class DeclarationDataCapturePage[F](implicit webDriver: WebDriver) extends BasePage {
   def fillOutForm(formData: F): Unit
 
   def previouslyEnteredValuesAreDisplayed(formData: F): Assertion

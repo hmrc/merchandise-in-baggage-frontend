@@ -25,10 +25,15 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{EnterEmailPage, EoriNum
 class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, TravellerDetailsPage] with ScalaFutures {
   override lazy val page: TravellerDetailsPage = wire[TravellerDetailsPage]
 
+  private val requiredFirstNameValidationMessage = "Enter the first name of the person carrying the goods"
+  private val requiredLastNameValidationMessage = "Enter the last name of the person carrying the goods"
+
   "the traveller details page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
+    behave like aPageWithARequiredQuestion(path, requiredFirstNameValidationMessage, givenAnImportJourneyIsStarted(), "firstName-error")
+    behave like aPageWithARequiredQuestion(path, requiredLastNameValidationMessage, givenAnImportJourneyIsStarted(), "lastName-error")
     behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Name("Terry", "Test")), EnterEmailPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), EoriNumberPage.path)
   }

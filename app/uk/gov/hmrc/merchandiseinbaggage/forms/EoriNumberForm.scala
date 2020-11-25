@@ -19,18 +19,30 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.Form
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
 
 object EoriNumberForm extends Mappings {
 
   private val eoriRegex: String = "^GB[0-9]{12,15}$"
 
+  private val requiredMessageKey = "eoriNumber.trader.error.required"
+  private val customsAgentRequiredMessageKey = "eoriNumber.agent.error.required"
+
   private val isValidEori: Constraint[String] = Constraint { value: String =>
-    if(value matches(eoriRegex)) Valid
+    if (value matches (eoriRegex)) Valid
     else Invalid("eoriNumber.error.invalid")
   }
 
-  val form: Form[String] = Form(
-    "eori" -> text("eoriNumber.error.required").verifying(isValidEori)
+
+  def form(customsAgent: YesNo): Form[String] = Form(
+    "eori" ->
+      text(
+        customsAgent match {
+          case Yes => customsAgentRequiredMessageKey
+          case _ => requiredMessageKey
+        }
+      ).verifying(isValidEori)
   )
 
 }
