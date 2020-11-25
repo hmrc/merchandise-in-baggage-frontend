@@ -343,9 +343,9 @@ journeyDetails.dateOfArrival.error.dateInPast = Date must not be in the past
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?
 eoriNumber.trader.heading = What is your EORI number?
-eoriNumber.agent.title = What is the EORI number of the company importing the goods?
-eoriNumber.agent.heading = What is the EORI number of the company importing the goods?
-eoriNumber.hint = For example, GB123467800000
+eoriNumber.agent.title = What is the EORI number of the business bringing the goods into the UK?
+eoriNumber.agent.heading = What is the EORI number of the business bringing the goods into the UK?
+eoriNumber.hint = You need an EORI number that starts with GB or XI to use this service. For example, GB123467800000.
 eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
