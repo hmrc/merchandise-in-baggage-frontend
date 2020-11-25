@@ -46,7 +46,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
         page.mustRenderBasicContentWithoutHeader(path, title)
         hasConfirmationPanelWithContents
-        hasDateOfDeclaration
+        hasDateOfDeclaration(declarationCompleted.dateOfDeclaration)
         hasEmailAddress(declarationCompleted)
         hasPrintPageContentInPdf
         hasWhaToDoNextExport
@@ -65,7 +65,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
         page.mustRenderBasicContentWithoutHeader(path, title)
         hasConfirmationPanelWithContents
-        hasDateOfDeclaration
+        hasDateOfDeclaration(declarationCompleted.dateOfDeclaration)
         hasEmailAddress(declarationCompleted)
         hasPrintPageContentInPdf
         hasWhaToDoNextImport
@@ -82,9 +82,9 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("mibReferenceId") must include("Your reference number")
   }
 
-  def hasDateOfDeclaration: Assertion = {
+  def hasDateOfDeclaration(ldt: LocalDateTime): Assertion = {
     textOfElementWithId("declarationDateId") mustBe "Date of declaration"
-    textOfElementWithId("declarationDateFormattedId") must include(LocalDateTime.now.format(Declaration.formatter))
+    textOfElementWithId("declarationDateFormattedId") must include(ldt.format(Declaration.formatter))
   }
 
   def hasEmailAddress(declaration: Declaration): Assertion =
