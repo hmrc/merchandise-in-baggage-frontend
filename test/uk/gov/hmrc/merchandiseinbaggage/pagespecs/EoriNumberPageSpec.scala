@@ -25,9 +25,12 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
   override lazy val page: EoriNumberPage = wire[EoriNumberPage]
 
   private val eori = Eori("GB123467800000")
+  private val invalidEori = Eori("AB123467800000")
 
   private val requiredAnswerAgentValidationMessage = "Enter the EORI number of the business bringing the goods"
   private val requiredAnswerNonAgentValidationMessage = "Enter your EORI number"
+  private val invalidEoriValidationMessage = "EORI number must be 14 characters"
+  private val validationErrorMessageField = "eori-error"
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] = declarationJourney.maybeEori
 
@@ -37,8 +40,19 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     behave like aPageWhichRenders(path, givenAnAgentJourney(), expectedAgentTitle)
     behave like aPageWhichRenders(path, givenANonAgentJourney(), expectedNonAgentTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aPageWithARequiredQuestion(path, requiredAnswerAgentValidationMessage, givenAnAgentJourney(), "eori-error")
-    behave like aPageWithARequiredQuestion(path, requiredAnswerNonAgentValidationMessage, givenANonAgentJourney(), "eori-error")
+
+    behave like
+      aPageWithARequiredQuestion(
+        path, requiredAnswerAgentValidationMessage, givenAnAgentJourney(), validationErrorMessageField)
+
+    behave like
+      aPageWithARequiredQuestion(
+        path, requiredAnswerNonAgentValidationMessage, givenANonAgentJourney(), validationErrorMessageField)
+
+    behave like
+      aPageWithValidation(
+        path, givenANonAgentJourney(), invalidEori, invalidEoriValidationMessage, validationErrorMessageField)
+
     behave like aDataCapturePageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)
   }
