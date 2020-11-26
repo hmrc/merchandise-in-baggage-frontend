@@ -54,7 +54,7 @@ trait StartController extends DeclarationJourneyController {
         val sessionId = SessionId(id)
 
         repo.findBySessionId(sessionId).flatMap{
-          case Some(_) =>
+          case Some(journey) if journey.declarationType == declarationType =>
             DeclarationJourneyLogger.info(s"StartController. Persisted journey found")
             Future successful next(sessionId)
           case _ =>
