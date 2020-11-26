@@ -339,7 +339,7 @@ eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.trader.error.required = Enter your EORI number
 eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
-eoriNumber.error.invalid = Enter a valid EORI number
+eoriNumber.error.invalid = EORI number must be 14 characters
 
 # GoodsInVehicle
 goodsInVehicle.title = Are you travelling by vehicle?

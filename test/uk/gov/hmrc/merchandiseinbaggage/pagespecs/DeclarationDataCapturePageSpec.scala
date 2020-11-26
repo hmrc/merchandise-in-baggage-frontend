@@ -83,4 +83,19 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
 
     redirectPath
   }
+
+  def aPageWithValidation(path: String,
+                          setUp: => Unit,
+                          formData: F,
+                          validationMessage: String,
+                          validationMessageFieldId: String = "value-error"): Unit =
+    s"display the validation message [$validationMessage] with id [$validationMessageFieldId] for form data [$formData]" when {
+      "the user attempts to submit the form without answering the question" in {
+        setUp
+        open(path)
+        page.fillOutForm(formData)
+        page.clickOnCTA() mustBe path
+        page.validationMessage(validationMessageFieldId) mustBe validationMessage
+      }
+    }
 }
