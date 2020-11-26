@@ -266,7 +266,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.toString
     }
 
-    textOfElementWithId("taxDueLabel") mustBe "Tax due"
+    textOfElementWithId("taxDueLabel") mustBe "Payment Due"
     textOfElementWithId("taxDueValue") mustBe totalTaxDue.formattedInPounds
 
     declaration.maybeCustomsAgent.fold {
