@@ -26,8 +26,10 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurren
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
   override lazy val page: PurchaseDetailsPage = wire[PurchaseDetailsPage]
 
-  private val amountValidationMessage = "Enter the amount you paid for the goods"
+  private val amountRequiredValidationMessage = "Enter the amount you paid for the goods"
+  private val amountInvalidValidationMessage = "Enter a number in the correct format, for example, 25.60"
   private val currencyValidationErrorMessage = "Select the currency used to buy the goods"
+  private val amountValidationErrorMessageElementId = "price-error"
 
   override def beforeEach(): Unit = {
     super.beforeEach()
@@ -36,14 +38,22 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
 
   "the purchase details page" should {
     behave like aGoodsEntryPage(
-      path, title, PurchaseDetailsInput("100", "EUR"), None, SearchGoodsCountryPage.path)
+      path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path)
 
     behave like
       aPageWithARequiredQuestion(
-        path(1), amountValidationMessage, givenAGoodsEntryIsStarted(), "price-error")
+        path(1), amountRequiredValidationMessage, givenAGoodsEntryIsStarted(), amountValidationErrorMessageElementId)
 
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(
-      path(1), Set(amountValidationMessage, currencyValidationErrorMessage), givenAGoodsEntryIsStarted())
+      path(1), Set(amountRequiredValidationMessage, currencyValidationErrorMessage), givenAGoodsEntryIsStarted())
+
+    behave like
+      aPageWithValidation(
+        path(1),
+        givenAGoodsEntryIsStarted(),
+        PurchaseDetailsInput("100.0000", "EUR"),
+        amountInvalidValidationMessage,
+        amountValidationErrorMessageElementId)
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[PurchaseDetailsInput] =
