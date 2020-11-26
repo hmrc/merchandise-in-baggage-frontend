@@ -17,26 +17,27 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
+class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec {
   "onSubmit" must {
     "return BAD_REQUEST and errors" when {
       "no selection is made" in {
         val controller =
-          new SearchGoodsCountryController(
-            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[SearchGoodsCountryView])
+          new GoodsTypeQuantityController(
+            controllerComponents, actionBuilder, declarationJourneyRepository, injector.instanceOf[GoodsTypeQuantityView])
 
-        givenADeclarationJourneyIsPersisted(importJourneyWithStartedGoodsEntry)
+        givenADeclarationJourneyIsPersisted(startedImportJourney)
 
-        val result = controller.onSubmit(1)(buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, sessionId))
+        val result = controller.onSubmit(1)(buildPost(routes.GoodsTypeQuantityController.onSubmit(1).url, sessionId))
         val content = contentAsString(result)
 
         status(result) mustEqual BAD_REQUEST
 
-        content must include(s"In what country did you buy the ${startedGoodsEntry.maybeCategoryQuantityOfGoods.get.category}?")
+        content must include("What goods are you taking out of the UK?")
+        content must include("Add your goods by their type or category. For example, clothes, electronics, or food.")
         content must include("Continue")
       }
     }
