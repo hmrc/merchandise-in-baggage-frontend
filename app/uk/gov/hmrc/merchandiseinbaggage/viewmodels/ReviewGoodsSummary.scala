@@ -53,7 +53,7 @@ object ReviewGoodsSummary {
           ))
         ),
         SummaryListRow(
-          key = Key(Text(messages("reviewGoods.list.vatRate"))),
+          key = vatKey,
           value = Value(Text(s"${goodsVatRate.value}%")),
           actions = Some(Actions(
             items = Seq(
