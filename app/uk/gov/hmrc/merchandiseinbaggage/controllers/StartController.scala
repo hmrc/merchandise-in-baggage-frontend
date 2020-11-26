@@ -44,6 +44,14 @@ trait StartController extends DeclarationJourneyController {
       }
     }
 
+    def overwriteDeclarationType(sessionId: SessionId) = {
+      val declarationJourney = DeclarationJourney(sessionId = sessionId, declarationType)
+
+      repo.upsert(declarationJourney).map { _ =>
+        next(sessionId)
+      }
+    }
+
     request.session.get(SessionKeys.sessionId) match {
       case None =>
         DeclarationJourneyLogger.info(
@@ -54,6 +62,10 @@ trait StartController extends DeclarationJourneyController {
         val sessionId = SessionId(id)
 
         repo.findBySessionId(sessionId).flatMap{
+          case Some(journey) if journey.declarationType != declarationType =>
+            DeclarationJourneyLogger.info(
+              s"StartController. Persisted journey found with different declarationType, overwriting with ${declarationType.entryName}")
+            overwriteDeclarationType(sessionId)
           case Some(_) =>
             DeclarationJourneyLogger.info(s"StartController. Persisted journey found")
             Future successful next(sessionId)
