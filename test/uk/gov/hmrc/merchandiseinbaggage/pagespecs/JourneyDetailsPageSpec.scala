@@ -25,10 +25,14 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetailsEntry, JourneyDetailsPage] with ScalaFutures {
   override lazy val page: JourneyDetailsPage = wire[JourneyDetailsPage]
 
+  private val validationMessages =
+    Set("Select your place of arrival in the UK", "Enter a day", "Enter a month", "Enter a year")
+
   "the journey details page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, validationMessages, givenAnImportJourneyIsStarted())
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), doverJourneyEntry, GoodsInVehiclePage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)

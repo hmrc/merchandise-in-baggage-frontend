@@ -24,11 +24,14 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{AgentDetailsPage, Custo
 class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentDetailsPage] {
   override lazy val page: AgentDetailsPage = wire[AgentDetailsPage]
 
+  private val requiredAnswerValidationMessage = "Enter your registered business name"
+
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), CustomsAgentPage.path)
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted())
 
     "allow the user to navigate to the /enter-agent-address" in {
       val redirectedPath = submitAndEnsurePersistence(path, givenAnImportJourneyIsStarted(), "test agent")

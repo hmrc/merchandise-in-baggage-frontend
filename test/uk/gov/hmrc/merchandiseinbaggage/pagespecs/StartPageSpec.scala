@@ -17,11 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PageWithCTA
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.BasePage
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait StartPageSpec[P <: PageWithCTA] extends BasePageSpec[P] {
+trait StartPageSpec[P <: BasePage] extends BasePageSpec[P] {
   def aStartImportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
     behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
     behave like aPageWithNoBackButton(path)

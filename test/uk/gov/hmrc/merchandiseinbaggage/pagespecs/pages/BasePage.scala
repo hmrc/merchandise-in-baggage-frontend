@@ -86,6 +86,25 @@ abstract class BasePage(implicit webDriver: WebDriver)
 
     readPath()
   }
+
+  val ctaName: String = "continue"
+
+  def clickOnCTA(): String = {
+    val button = find(NameQuery(ctaName)).get
+    click on button
+
+    readPath()
+  }
+
+  def validationMessage(id: String): String = {
+    val errorSpan = find(IdQuery(id)).get
+    errorSpan.underlying.getText.replace("Error: ", "")
+  }
+
+  def errorSummaryRows: Seq[String] = {
+    val tableBody = find(ClassNameQuery("govuk-error-summary__list")).head.underlying
+    tableBody.findElements(By.tagName("a")).asScala.map(_.getText)
+  }
 }
 
 

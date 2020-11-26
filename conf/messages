@@ -144,7 +144,7 @@ exciseAndRestrictedGoods.details.restricted = Controlled or restricted goods:
 exciseAndRestrictedGoods.details.restricted.p = Goods that need a licence, or are subject to health or environmental controls. For example, firearms, explosives and ammunition.
 exciseAndRestrictedGoods.details.restricted.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.required = Select one of the options below
+exciseAndRestrictedGoods.error.required = Select yes if you are bringing in excise, restricted or controlled goods
 exciseAndRestrictedGoods.error.enum = Select one of the options below
 
 
@@ -156,7 +156,7 @@ goodsDestination.Export.heading = Where in the UK are the goods leaving from?
 goodsDestination.NorthernIreland = Northern Ireland
 goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland or Wales
-goodsDestination.error.required = Select one of the options below
+goodsDestination.error.required = Select which country in the UK the goods are going to
 
 
 # GoodsRouteDestination
@@ -164,7 +164,7 @@ goodsRouteDestination.Import.title = Is the final destination of the goods the R
 goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
 goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
 goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Select one of the options below
+goodsRouteDestination.error.required = Select yes if the final destination of the goods is the Republic of Ireland
 
 
 # ValueWeightOfGoods
@@ -172,7 +172,8 @@ valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over 
 valueWeightOfGoods.GreatBritain.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
-valueWeightOfGoods.error.required = Select one of the options below
+valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
 
 # SearchGoods
 goodsTypeQuantity.title = What type of goods are you bringing into the UK?
@@ -180,7 +181,7 @@ goodsTypeQuantity.heading = What type of goods are you bringing into the UK?
 goodsTypeQuantity.p = Add your goods by their type or category. For example, clothes, electronics, or food.
 goodsTypeQuantity.category = Type of goods
 goodsTypeQuantity.category.hint = For example, clothes
-goodsTypeQuantity.category.error.required = Enter the type of goods
+goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
 goodsTypeQuantity.quantity.error.required = Enter the number of items
 
@@ -203,13 +204,13 @@ goodsVatRate.legend = Which VAT rate applies to the {0}?
 goodsVatRate.Zero = 0% VAT
 goodsVatRate.Five = 5% VAT
 goodsVatRate.Twenty = 20% VAT
-goodsVatRate.error.required = Select one of the options below
+goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # SearchGoodsCountry
 searchGoodsCountry.title = In what country did you buy the {0}?
 searchGoodsCountry.heading = In what country did you buy the {0}?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
-searchGoodsCountry.error.required = Select a country
+searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
@@ -221,9 +222,9 @@ purchaseDetails.p.1 = We use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
-purchaseDetails.price.error.required = Enter an amount
-purchaseDetails.price.error.invalid = Enter only numbers
-purchaseDetails.currency.error.required = Select a currency
+purchaseDetails.price.error.required = Enter the amount you paid for the goods
+purchaseDetails.price.error.invalid = Price paid must be a number
+purchaseDetails.currency.error.required = Select the currency used to buy the goods
 
 # ReviewGoods
 reviewGoods.title = Review your goods
@@ -235,12 +236,12 @@ reviewGoods.list.country = Country
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
-reviewGoods.error.required = Select one of the options below
+reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods
 removeGoods.title = Are you sure you want to remove the {0}?
 removeGoods.heading = Are you sure you want to remove the {0}?
-removeGoods.error.required = Select one of the options below
+removeGoods.error.required = Select yes if you want to remove the goods
 
 # GoodsRemoved
 goodsRemoved.title = You removed your goods
@@ -291,18 +292,20 @@ paymentCalculation.p3.2 = We use the rates of the month in which you make your d
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
 customsAgent.heading = Are you a customs agent?
-customsAgent.error.required = Select one of the options below
+customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
 agentDetails.title = Enter the business name of the customs agent
 agentDetails.heading = Enter the business name of the customs agent
-agentDetails.error.required = Enter a value
+agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
 travellerDetails.title = Enter the name of the person carrying the goods
 travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
+travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
+travellerDetails.lastName.error.required = Enter the last name of the person carrying the goods
 
 # EnterEmail
 enterEmail.title = Enter an email address
@@ -310,20 +313,20 @@ enterEmail.heading = Enter an email address
 enterEmail.hint = We will only use this to send you confirmation of your declaration.
 enterEmail.email = Email address
 enterEmail.confirmation = Confirm email address
-enterEmail.error.required = Enter your Email Address
-enterEmail.error.notMatching = Emails do not match
+enterEmail.error.required = Enter an email address
+enterEmail.error.notMatching = Email addresses must match - check the email address and try again
 
 # JourneyDetails
 journeyDetails.title = Journey details
 journeyDetails.heading = Journey details
 journeyDetails.placeOfArrival = Place of arrival in the UK
 journeyDetails.placeOfArrival.hint = For example, Heathrow airport or Dover
-journeyDetails.placeOfArrival.error.required = Please enter a place of arrival
+journeyDetails.placeOfArrival.error.required = Select your place of arrival in the UK
 journeyDetails.placeOfArrival.error.invalid = Please enter a valid place of arrival
 journeyDetails.dateOfArrival = Date of arrival
 journeyDetails.dateOfArrival.hint = For example, 12 05 2021
 journeyDetails.dateOfArrival.error.invalid = Please enter a valid date
-journeyDetails.dateOfArrival.error.notWithinTheNext5Days = Please enter a date within the next 5 days
+journeyDetails.dateOfArrival.error.notWithinTheNext5Days = Enter a date within the next 5 days
 
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?
@@ -334,25 +337,26 @@ eoriNumber.hint = For example, GB123467800000
 eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
-eoriNumber.error.required = Enter an EORI number
+eoriNumber.trader.error.required = Enter your EORI number
+eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.error.invalid = Enter a valid EORI number
 
 # GoodsInVehicle
 goodsInVehicle.title = Are you travelling by vehicle?
 goodsInVehicle.heading = Are you travelling by vehicle?
-goodsInVehicle.error.required = Select one of the options below
+goodsInVehicle.error.required = Select yes if you are travelling by vehicle
 
 # VehicleSize
 vehicleSize.title = Are you bringing the goods in a small vehicle?
 vehicleSize.heading = Are you bringing the goods in a small vehicle?
 vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
-vehicleSize.error.required = Select one of the options below
+vehicleSize.error.required = Select yes if you are bringing the goods in a small vehicle
 
 # VehicleRegistrationNumber
 vehicleRegistrationNumber.title = What is the registration number of the vehicle?
 vehicleRegistrationNumber.heading = What is the registration number of the vehicle?
 vehicleRegistrationNumber.hint = You can find this on the number plate on the front and back of a vehicle.
-vehicleRegistrationNumber.error.required = Enter the Vehicle Registration Number
+vehicleRegistrationNumber.error.required = Enter the vehicle registration number
 
 # CannotUseService
 cannotUseService.Export.title = You need to submit a full export declaration

@@ -24,11 +24,14 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = wire[ReviewGoodsPage]
 
+  private val requiredAnswerValidationMessage = "Select yes if you want to declare more goods"
+
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
     behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), PurchaseDetailsPage.path(1))
     behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), PurchaseDetailsPage.path(2))
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAGoodsEntryIsComplete())
 
     "render correctly" when {
       "a single goods entry is complete" in {

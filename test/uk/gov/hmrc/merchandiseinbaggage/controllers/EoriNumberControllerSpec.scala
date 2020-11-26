@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -31,21 +31,9 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
       val url = routes.EoriNumberController.onSubmit().url
 
-      "nothing is entered" in {
-        givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
-          maybeIsACustomsAgent = Some(YesNo.No)
-        ))
-
-        val result = controller.onSubmit()(buildPost(url, sessionId))
-        val content = contentAsString(result)
-
-        status(result) mustEqual BAD_REQUEST
-        content must include("Enter an EORI number")
-      }
-
       "invalid value entered" in {
         givenADeclarationJourneyIsPersisted(startedImportJourney.copy(
-          maybeIsACustomsAgent = Some(YesNo.No)
+          maybeIsACustomsAgent = Some(No)
         ))
 
         val request = buildPost(url, sessionId).withFormUrlEncodedBody(("eori", "invalid"))

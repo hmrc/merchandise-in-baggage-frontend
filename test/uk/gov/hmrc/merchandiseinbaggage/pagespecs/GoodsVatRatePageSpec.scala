@@ -27,6 +27,7 @@ class GoodsVatRatePageSpec extends GoodsEntryPageSpec[GoodsVatRate, RadioButtonP
 
   "the goods vat rate page" should {
     behave like aGoodsEntryPage(path, title, Twenty, Some(SearchGoodsCountryPage.path), GoodsTypeQuantityPage.path)
+    behave like aPageWithARequiredQuestion(path(1), "Select which VAT rate applies to the goods", givenAGoodsEntryIsStarted())
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[GoodsVatRate] = goodsEntry.maybeGoodsVatRate

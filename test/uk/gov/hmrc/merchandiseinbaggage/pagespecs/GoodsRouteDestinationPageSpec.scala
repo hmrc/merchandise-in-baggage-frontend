@@ -25,10 +25,13 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
+  val answerRequiredValidationMessage = "Select yes if the final destination of the goods is the Republic of Ireland"
+
   "the goods route destination page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
     behave like aPageWhichRenders(path, givenAnExportJourneyIsStarted(), exportTitle)
     behave like aPageWhichRequiresADeclarationJourney(path)
+    behave like aPageWithARequiredQuestion(path, answerRequiredValidationMessage, givenAnImportJourneyIsStarted())
 
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)

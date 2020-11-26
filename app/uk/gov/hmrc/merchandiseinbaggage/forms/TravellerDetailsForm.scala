@@ -18,16 +18,17 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import play.api.data.Forms._
+import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Name
 
-object TravellerDetailsForm {
+object TravellerDetailsForm extends Mappings {
   val firstName = "firstName"
   val lastName = "lastName"
 
   val form: Form[Name] = Form(
     mapping(
-      firstName -> nonEmptyText,
-      lastName  -> nonEmptyText
+      firstName -> text("travellerDetails.firstName.error.required"),
+      lastName -> text("travellerDetails.lastName.error.required")
     )(Name.apply)(Name.unapply)
   )
 }

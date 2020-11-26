@@ -28,6 +28,8 @@ class GoodsTypeQuantityPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoo
     val back: Int => String = _ => ValueWeightOfGoodsPage.path
 
     behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path), back)
+    behave like aPageWithARequiredQuestion(path(1), "Enter a type of goods", givenAnImportJourneyIsStarted(), "category-error")
+    behave like aPageWithARequiredQuestion(path(1), "Enter the number of items", givenAnImportJourneyIsStarted(), "quantity-error")
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[CategoryQuantityOfGoods] = goodsEntry.maybeCategoryQuantityOfGoods

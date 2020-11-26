@@ -36,6 +36,11 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
     selectedOptions.size() mustBe 1
     selectedOptions.listIterator().next().getText mustBe formData
   }
+
+  override def validationMessage(className: String): String = {
+    val errorListSummary = find(ClassNameQuery(className)).get
+    errorListSummary.underlying.getText
+  }
 }
 
 object SearchGoodsCountryPage {

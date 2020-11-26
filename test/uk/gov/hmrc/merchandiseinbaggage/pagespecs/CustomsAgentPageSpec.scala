@@ -26,12 +26,15 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{AgentDetailsPage, EoriN
 class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] with CoreTestData with TaxCalculation {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
+  private val requiredAnswerValidationMessage = "Select yes if you are a customs agent"
+
   "the page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), Yes, AgentDetailsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, setup(), No, EoriNumberPage.path)
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, Yes)
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted())
 
     behave like
       aPageWithABackButton(

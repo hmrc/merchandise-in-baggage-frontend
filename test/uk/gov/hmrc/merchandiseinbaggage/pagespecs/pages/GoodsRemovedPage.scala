@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatestplus.selenium.WebBrowser
 
-class GoodsRemovedPage(implicit webDriver: WebDriver) extends PageWithCTA {
+class GoodsRemovedPage(implicit webDriver: WebDriver) extends BasePage {
 
   import WebBrowser._
 

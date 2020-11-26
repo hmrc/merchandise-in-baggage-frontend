@@ -41,15 +41,12 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
 
   def mandatoryField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
-
-    "not bind when key is not present at all" in {
-
+    s"not bind when key is not present at all with message $requiredError" in {
       val result = form.bind(emptyForm).apply(fieldName)
       result.errors mustEqual Seq(requiredError)
     }
 
-    "not bind blank values" in {
-
+    s"not bind blank values with message $requiredError" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors mustEqual Seq(requiredError)
     }

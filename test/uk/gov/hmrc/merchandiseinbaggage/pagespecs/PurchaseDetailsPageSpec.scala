@@ -26,6 +26,9 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurren
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
   override lazy val page: PurchaseDetailsPage = wire[PurchaseDetailsPage]
 
+  private val amountValidationMessage = "Enter the amount you paid for the goods"
+  private val currencyValidationErrorMessage = "Select the currency used to buy the goods"
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     givenCurrenciesAreFound(wireMockServer)
@@ -34,6 +37,13 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
   "the purchase details page" should {
     behave like aGoodsEntryPage(
       path, title, PurchaseDetailsInput("100", "EUR"), None, SearchGoodsCountryPage.path)
+
+    behave like
+      aPageWithARequiredQuestion(
+        path(1), amountValidationMessage, givenAGoodsEntryIsStarted(), "price-error")
+
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(
+      path(1), Set(amountValidationMessage, currencyValidationErrorMessage), givenAGoodsEntryIsStarted())
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[PurchaseDetailsInput] =

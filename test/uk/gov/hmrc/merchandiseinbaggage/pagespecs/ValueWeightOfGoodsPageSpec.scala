@@ -25,11 +25,22 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CannotUseServicePage, E
 class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
+  private val answerRequiredValidationMessageNorthernIreland =
+    "Select yes if the total value of the goods is more than £873 or 1,000 kilograms"
+
+  private val answerRequiredValidationMessageGreatBritain =
+    "Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms"
+
   "the value and weight of goods page" should {
     behave like aPageWhichRenders(path, givenAnImportToNorthernIrelandJourneyIsStarted(), northernIrelandTitle)
     behave like aPageWhichRenders(path, givenAnImportToGreatBritainJourneyIsStarted(), greatBritainTitle)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
+
+    behave like aPageWithARequiredQuestion(
+      path, answerRequiredValidationMessageNorthernIreland, givenAnImportToNorthernIrelandJourneyIsStarted())
+    behave like aPageWithARequiredQuestion(
+      path, answerRequiredValidationMessageGreatBritain, givenAnImportToGreatBritainJourneyIsStarted())
 
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportToGreatBritainJourneyIsStarted(), No, GoodsTypeQuantityPage.path(1))

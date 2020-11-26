@@ -25,11 +25,16 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{EnterEmailPage, Journey
 class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmailPage] with ScalaFutures {
   override lazy val page: EnterEmailPage = wire[EnterEmailPage]
 
+  private val requiredAnswerValidationMessage = "Valid email required"
+
   "the enter page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Email("test@test.com", "test@test.com")), JourneyDetailsPage.path)
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), "email-error")
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), "confirmation-error")
+
     behave like aPageWithABackButton(path, givenAnAgentJourney(), TravellerDetailsPage.path)
   }
 
