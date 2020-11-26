@@ -24,6 +24,7 @@
         formHelper: FormWithCSRF,
         errorSummary: components.errorSummary,
         button: components.button,
+        hint: components.hint,
         text: components.inputText,
         h1: components.h1)
 
@@ -33,12 +34,12 @@
   @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
     @h1(messages("travellerDetails.heading"))
+    @hint(messages("travellerDetails.hint"))
 
     @text(
         form = form,
         id = "firstName",
         name = "firstName",
-        hint = Some(messages("travellerDetails.hint")),
         label = "travellerDetails.firstName",
         isPageHeading = false
     )
