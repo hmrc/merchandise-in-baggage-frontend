@@ -17,7 +17,7 @@ footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
 error.summary.title = There is a problem
-error.max.3.decimals = Maximum of three decimal places
+error.max.3.decimals = Enter a number in the correct format, for example, 25.60
 error.must.be.positive = Enter an amount greater than 0
 error.nonNumeric = Please enter a number
 error.date.day_blank = Enter a day
