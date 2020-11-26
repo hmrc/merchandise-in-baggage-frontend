@@ -348,7 +348,6 @@ eoriNumber.hint = You need an EORI number that starts with GB or XI to use this 
 eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
-eoriNumber.trader.error.required = Enter your EORI number
 eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.error.invalid = EORI number must be 14 characters
 
