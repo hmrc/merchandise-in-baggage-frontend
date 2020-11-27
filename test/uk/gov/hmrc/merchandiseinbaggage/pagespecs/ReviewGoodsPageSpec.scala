@@ -17,6 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.ReviewGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
@@ -34,7 +36,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
     behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAGoodsEntryIsComplete())
 
     "render correctly" when {
-      "a single goods entry is complete" in {
+      "a single import goods entry is complete" in {
         givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
         open(path)
 
@@ -42,13 +44,18 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
         page.goodsSummariesAsMap mustBe
           Seq(
-            Map(
-              "Price paid" -> "99.99, Eurozone Euro (EUR)",
-              "Type of goods" -> "wine",
-              "Country" -> "France",
-              "VAT Rate" -> "20%",
-              "Remove" -> "",
-              "Number of items" -> "1"))
+            declarationBrakeDown)
+      }
+
+      "a single export goods entry is complete" in {
+        givenADeclarationJourney(startedImportToGreatBritainJourney
+          .copy(goodsEntries = GoodsEntries(completedGoodsEntry), declarationType = Export))
+        open(path)
+
+        page.headerText() mustBe title
+
+        page.goodsSummariesAsMap mustBe
+          Seq(declarationBrakeDown.filterNot(_._1 == "VAT Rate"))
       }
 
       "multiple goods entries are complete" in {
@@ -59,20 +66,9 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
         page.goodsSummariesAsMap mustBe
           Seq(
-            Map(
-              "Price paid" -> "99.99, Eurozone Euro (EUR)",
-              "Type of goods" -> "wine",
-              "Country" -> "France",
-              "VAT Rate" -> "20%",
-              "Remove" -> "",
-              "Number of items" -> "1"),
-            Map(
-              "Price paid" -> "199.99, Eurozone Euro (EUR)",
-              "Type of goods" -> "cheese",
-              "Country" -> "France",
-              "VAT Rate" -> "20%",
-              "Remove" -> "",
-              "Number of items" -> "3"))
+            declarationBrakeDown,
+            declarationBrakeDown.+("Price paid" -> "£199.99", "Type of goods" -> "cheese", "Number of items" -> "3")
+          )
       }
     }
 
@@ -117,4 +113,12 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       }
     }
   }
+
+  val declarationBrakeDown = Map(
+    "Price paid" -> "£99.99",
+    "Type of goods" -> "wine",
+    "Destination" -> "France",
+    "VAT Rate" -> "20%",
+    "Remove" -> "",
+    "Number of items" -> "1")
 }

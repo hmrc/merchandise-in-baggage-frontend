@@ -39,7 +39,7 @@ case class Declaration(sessionId: SessionId,
 
 object Declaration extends MibReferenceGenerator {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
+  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
     def formattedDate: String = {
