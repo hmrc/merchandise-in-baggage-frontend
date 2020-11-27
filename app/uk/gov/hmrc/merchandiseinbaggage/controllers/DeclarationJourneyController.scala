@@ -72,6 +72,7 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
   def backToCheckYourAnswersOrReviewGoodsElse(backIfIncomplete: Call)(implicit request: DeclarationGoodsRequest[_]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    else if (request.declarationJourney.goodsEntries.declarationGoodsComplete) routes.ReviewGoodsController.onPageLoad()
     else backIfIncomplete
 }
 
