@@ -70,9 +70,9 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
         Future successful Redirect(routes.InvalidRequestController.onPageLoad())
     }
 
-  def backToCheckYourAnswersOrReviewGoodsElse(backIfIncomplete: Call)(implicit request: DeclarationGoodsRequest[_]): Call =
+  def backToCheckYourAnswersOrReviewGoodsElse(backIfIncomplete: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
-    else if (request.declarationJourney.goodsEntries.declarationGoodsComplete) routes.ReviewGoodsController.onPageLoad()
+    else if (request.declarationJourney.goodsEntries.entries(index-1).isComplete) routes.ReviewGoodsController.onPageLoad()
     else backIfIncomplete
 }
 
@@ -89,7 +89,7 @@ trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourne
 
     repo.upsert(updatedDeclarationJourney).map { _ =>
       if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-      else if (updatedDeclarationJourney.goodsEntries.declarationGoodsComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
+      else if (updatedDeclarationJourney.goodsEntries.entries(index-1).isComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
       else Redirect(redirectIfNotComplete)
     }
   }

@@ -37,7 +37,7 @@ class SearchGoodsCountryController @Inject()(
   extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    backToCheckYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index))
+    backToCheckYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
 
   val countriesForm: Form[String] = form(CountriesService.countries)
 

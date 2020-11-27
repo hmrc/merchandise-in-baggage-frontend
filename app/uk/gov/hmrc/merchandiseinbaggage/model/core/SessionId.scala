@@ -62,7 +62,6 @@ case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoo
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
                       maybeCountryOfPurchase: Option[String] = None,
                       maybePurchaseDetails: Option[PurchaseDetails] = None) {
-
   val goodsIfComplete: Option[Goods] =
     for {
       categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
@@ -70,6 +69,8 @@ case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoo
       countryOfPurchase <- maybeCountryOfPurchase
       priceOfGoods <- maybePurchaseDetails
     } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods)
+
+  val isComplete: Boolean = goodsIfComplete.isDefined
 }
 
 object GoodsEntry {
@@ -84,15 +85,13 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
     val goods = entries.flatMap(_.goodsIfComplete)
 
-    if (entries.nonEmpty && (goods.size == entries.size)) Some(DeclarationGoods(goods))
+    if (goods.nonEmpty) Some(DeclarationGoods(goods))
     else None
   }
 
   val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
 
-  def addEmpty: GoodsEntries =
-    if(entries.contains(GoodsEntry.empty)) GoodsEntries(entries)
-    else GoodsEntries(entries :+ GoodsEntry.empty)
+  def addEmpty(): GoodsEntries = GoodsEntries(entries :+ GoodsEntry.empty)
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))

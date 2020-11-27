@@ -21,8 +21,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
@@ -54,7 +54,7 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
-              val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmpty
+              val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmpty()
 
               repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
                 Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))

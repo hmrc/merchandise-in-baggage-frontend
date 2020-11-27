@@ -109,11 +109,6 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
         open(path) mustBe InvalidRequestPage.path
       }
     }
-
-    "there are incomplete goods entries" in {
-      givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
-      open(path) mustBe InvalidRequestPage.path
-    }
   }
 
   def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String): Unit = {
