@@ -36,9 +36,11 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
   extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    if (request.declarationJourney.maybeGoodsDestination.contains(NorthernIreland))
-      routes.GoodsRouteDestinationController.onPageLoad()
-    else routes.GoodsDestinationController.onPageLoad()
+    backToCheckYourAnswersIfCompleteElse(
+      if (request.declarationJourney.maybeGoodsDestination.contains(NorthernIreland))
+        routes.GoodsRouteDestinationController.onPageLoad()
+      else routes.GoodsDestinationController.onPageLoad()
+    )
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
@@ -36,8 +36,9 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(
+      routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size))
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete

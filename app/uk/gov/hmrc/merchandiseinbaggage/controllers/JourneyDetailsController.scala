@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -33,7 +33,8 @@ class JourneyDetailsController @Inject()(override val controllerComponents: Mess
                                         (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.EnterEmailController.onPageLoad()
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(routes.EnterEmailController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(form)(details => form.fill(details)), backButtonUrl))

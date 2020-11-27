@@ -117,11 +117,22 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   }
 
   def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String): Unit = {
-    s"enable the user to navigate from $path back to $backPath" in {
-      setUp
-      open(path)
-      page.maybeBackButton.isDefined mustBe true
-      page.clickOnBackButton() mustBe backPath
+    s"enable the user to navigate from $path back to $backPath" when {
+      "the journey is incomplete" in {
+        setUp
+        open(path)
+        page.maybeBackButton.isDefined mustBe true
+        page.clickOnBackButton() mustBe backPath
+      }
+    }
+
+    s"enable the user to navigate back from $path to ${CheckYourAnswersPage.path} rather than $backPath" when {
+      "the journey is complete" in {
+        givenACompleteDeclarationJourney()
+        open(path)
+        page.maybeBackButton.isDefined mustBe true
+        page.clickOnBackButton() mustBe CheckYourAnswersPage.path
+      }
     }
   }
 

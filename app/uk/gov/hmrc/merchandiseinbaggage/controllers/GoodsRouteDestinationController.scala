@@ -37,7 +37,8 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
 
   extends DeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.GoodsDestinationController.onPageLoad()
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(routes.GoodsDestinationController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(form, request.declarationJourney.declarationType, backButtonUrl))

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.CustomsAgentForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
@@ -32,8 +32,8 @@ class CustomsAgentController @Inject()(
                                         override val repo: DeclarationJourneyRepository,
                                         view: CustomsAgentView,
                                       )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
-
-  private val backButtonUrl: Call = routes.PaymentCalculationController.onPageLoad()
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill), backButtonUrl))

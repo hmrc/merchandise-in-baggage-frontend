@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityView.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -33,7 +33,8 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
                                            )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.ValueWeightOfGoodsController.onPageLoad()
+  private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]) =
+    backToCheckYourAnswersOrReviewGoodsElse(routes.ValueWeightOfGoodsController.onPageLoad())
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)

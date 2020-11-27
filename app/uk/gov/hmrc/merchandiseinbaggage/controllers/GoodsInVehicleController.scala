@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsInVehicleForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
@@ -33,7 +33,8 @@ class GoodsInVehicleController @Inject()(
                                           view: GoodsInVehicleView,
                                         )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.JourneyDetailsController.onPageLoad()
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(routes.JourneyDetailsController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(form.fill), backButtonUrl))
