@@ -90,6 +90,10 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
 
   val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
 
+  def addEmpty: GoodsEntries =
+    if(entries.contains(GoodsEntry.empty)) GoodsEntries(entries)
+    else GoodsEntries(entries :+ GoodsEntry.empty)
+
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
 

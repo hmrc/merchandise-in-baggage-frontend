@@ -54,10 +54,10 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
-              val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
+              val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmpty
 
-              repo.upsert(request.declarationJourney.copy(goodsEntries = GoodsEntries(updatedGoodsEntries))).map { _ =>
-                Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.size))
+              repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
+                Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
               }
             } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
         )
