@@ -37,7 +37,7 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec {
         status(result) mustEqual BAD_REQUEST
 
         content must include("What goods are you taking out of the UK?")
-        content must include("Add your goods by their type or category. For example, clothes, electronics, or food.")
+        content must include("Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.")
         content must include("Continue")
       }
     }

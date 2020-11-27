@@ -36,7 +36,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
         status(result) mustEqual BAD_REQUEST
 
-        content must include(s"In what country did you buy the ${startedGoodsEntry.maybeCategoryQuantityOfGoods.get.category}?")
+        content must include(s"What country are the goods going to?")
         content must include("Continue")
       }
     }

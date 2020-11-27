@@ -121,7 +121,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         textOfElementWithId(s"category_$idx") mustBe good.categoryQuantityOfGoods.category
         textOfElementWithId(s"quantityLabel_$idx") mustBe "Number of items"
         textOfElementWithId(s"quantity_$idx") mustBe good.categoryQuantityOfGoods.quantity
-        textOfElementWithId(s"countryLabel_$idx") mustBe "Country"
+        textOfElementWithId(s"countryLabel_$idx") mustBe "Destination"
         textOfElementWithId(s"country_$idx") mustBe good.countryOfPurchase
         textOfElementWithId(s"priceLabel_$idx") mustBe "Price paid"
         textOfElementWithId(s"price_$idx") mustBe good.purchaseDetails.toString
