@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.data.Form
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -36,7 +36,8 @@ class SearchGoodsCountryController @Inject()(
                                             )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  private def backButtonUrl(index: Int): Call = routes.GoodsVatRateController.onPageLoad(index)
+  private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
+    backToCheckYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
 
   val countriesForm: Form[String] = form(CountriesService.countries)
 

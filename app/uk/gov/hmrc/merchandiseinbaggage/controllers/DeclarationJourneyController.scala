@@ -29,6 +29,10 @@ trait DeclarationJourneyController extends FrontendBaseController {
   implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val onPageLoad: Action[AnyContent]
+
+  def backToCheckYourAnswersIfCompleteElse(backIfIncomplete: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
+    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    else backIfIncomplete
 }
 
 object DeclarationJourneyController {
@@ -65,6 +69,11 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
           s"Goods category not found so redirecting to ${routes.InvalidRequestController.onPageLoad()}")
         Future successful Redirect(routes.InvalidRequestController.onPageLoad())
     }
+
+  def backToCheckYourAnswersOrReviewGoodsElse(backIfIncomplete: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
+    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    else if (request.declarationJourney.goodsEntries.entries(index-1).isComplete) routes.ReviewGoodsController.onPageLoad()
+    else backIfIncomplete
 }
 
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
@@ -80,7 +89,7 @@ trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourne
 
     repo.upsert(updatedDeclarationJourney).map { _ =>
       if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-      else if (updatedDeclarationJourney.goodsEntries.declarationGoodsComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
+      else if (updatedDeclarationJourney.goodsEntries.entries(index-1).isComplete) Redirect(routes.ReviewGoodsController.onPageLoad())
       else Redirect(redirectIfNotComplete)
     }
   }

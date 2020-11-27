@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityView.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -33,19 +33,20 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
                                            )(implicit ec: ExecutionContext, appConfig: AppConfig)
   extends IndexedDeclarationJourneyUpdateController {
 
-  private val backButtonUrl: Call = routes.ValueWeightOfGoodsController.onPageLoad()
+  private def backButtonUrl(idx: Int)(implicit request: DeclarationGoodsRequest[_]) =
+    backToCheckYourAnswersOrReviewGoodsElse(routes.ValueWeightOfGoodsController.onPageLoad(), idx)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
 
-    Ok(view(preparedForm, idx, backButtonUrl))
+    Ok(view(preparedForm, idx, backButtonUrl(idx)))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, backButtonUrl))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, backButtonUrl(idx)))),
         categoryQuantityOfGoods =>
           persistAndRedirect(
             request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)),

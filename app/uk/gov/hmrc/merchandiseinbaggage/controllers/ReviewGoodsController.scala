@@ -17,12 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
@@ -36,8 +36,9 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+    backToCheckYourAnswersIfCompleteElse(
+      routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size))
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
@@ -53,10 +54,10 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
-              val updatedGoodsEntries = request.declarationJourney.goodsEntries.entries :+ GoodsEntry.empty
+              val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmpty()
 
-              repo.upsert(request.declarationJourney.copy(goodsEntries = GoodsEntries(updatedGoodsEntries))).map { _ =>
-                Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.size))
+              repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
+                Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
               }
             } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
         )
