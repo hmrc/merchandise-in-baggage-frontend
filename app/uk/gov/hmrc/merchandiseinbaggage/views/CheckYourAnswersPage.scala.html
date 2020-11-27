@@ -227,10 +227,18 @@
 
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
- <ul class="govuk-list govuk-list--bullet">
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
- </ul>
+ @if(declaration.declarationType == Import) {
+  <ul class="govuk-list govuk-list--bullet">
+   <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
+   <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
+  </ul>
+  } else {
+  <ul class="govuk-list govuk-list--bullet">
+   <li>@messages("checkYourAnswers.sendDeclaration.export.acknowledgement.1")</li>
+  </ul>
+ }
+
+ <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement.p")</p>
 
  <div class="govuk-warning-text">
   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
