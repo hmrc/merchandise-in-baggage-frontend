@@ -17,12 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.viewmodels
 
 import play.api.i18n.Messages
-import play.twirl.api.Html
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, DeclarationType, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, DeclarationType}
 
 object ReviewGoodsSummary {
 
