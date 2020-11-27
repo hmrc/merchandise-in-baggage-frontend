@@ -61,6 +61,9 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     testOnlyDeclarationJourneyPage.clickOnCTA()
   }
 
+  def givenASecondGoodsEntryIsStarted(): Unit =
+    givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
+
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
   def aPageWhichRenders(path: String, setUp: => Unit = Unit, expectedTitle: String): Unit =

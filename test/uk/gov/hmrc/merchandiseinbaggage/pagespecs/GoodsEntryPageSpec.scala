@@ -24,9 +24,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
   def givenAGoodsEntryIsStarted(): Unit = givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
 
-  def givenASecondGoodsEntryIsStarted(): Unit =
-    givenADeclarationJourney(importJourneyWithOneCompleteAndOneStartedGoodsEntry)
-
   def extractFormDataFrom(declarationJourney: DeclarationJourney, index: Int): Option[F] =
     extractFormDataFrom(declarationJourney.goodsEntries.entries(index - 1))
 

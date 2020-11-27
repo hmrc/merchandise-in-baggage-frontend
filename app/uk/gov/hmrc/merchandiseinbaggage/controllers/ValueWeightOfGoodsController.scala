@@ -48,7 +48,9 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.maybeGoodsDestination
+    val declarationJourney = request.declarationJourney
+
+    declarationJourney.maybeGoodsDestination
       .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
         form(goodsDestination)
           .bindFromRequest()
@@ -56,9 +58,9 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
             formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, backButtonUrl)),
             exceedsThreshold => {
               persistAndRedirect(
-                request.declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),
+                declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),
                 if (exceedsThreshold == Yes) routes.CannotUseServiceController.onPageLoad()
-                else routes.GoodsTypeQuantityController.onPageLoad(1)
+                else routes.GoodsTypeQuantityController.onPageLoad(declarationJourney.goodsEntries.entries.size)
               )
             }
           )
