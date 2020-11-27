@@ -27,6 +27,8 @@ class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, Trav
 
   private val requiredFirstNameValidationMessage = "Enter the first name of the person carrying the goods"
   private val requiredLastNameValidationMessage = "Enter the last name of the person carrying the goods"
+  private val invalidFirstNameValidationMessage = "First name must only include letters a to z, apostrophes, hyphens and spaces"
+  private val invalidLastNameValidationMessage = "Last name must only include letters a to z, apostrophes, hyphens and spaces"
 
   "the traveller details page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -34,6 +36,23 @@ class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, Trav
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWithARequiredQuestion(path, requiredFirstNameValidationMessage, givenAnImportJourneyIsStarted(), "firstName-error")
     behave like aPageWithARequiredQuestion(path, requiredLastNameValidationMessage, givenAnImportJourneyIsStarted(), "lastName-error")
+
+    behave like
+      aPageWithValidation(
+        path,
+        givenAnImportJourneyIsStarted(),
+        Name("invalidFirstName!", "lastName"),
+        invalidFirstNameValidationMessage,
+        "firstName-error")
+
+    behave like
+      aPageWithValidation(
+        path,
+        givenAnImportJourneyIsStarted(),
+        Name("firstName", "invalidLastName!"),
+        invalidLastNameValidationMessage,
+        "lastName-error")
+
     behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Name("Terry", "Test")), EnterEmailPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), EoriNumberPage.path)
   }
