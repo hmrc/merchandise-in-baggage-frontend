@@ -305,7 +305,10 @@ travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
+travellerDetails.firstName.error.invalid = First name must only include letters a to z, apostrophes, hyphens and spaces
 travellerDetails.lastName.error.required = Enter the last name of the person carrying the goods
+travellerDetails.lastName.error.invalid = Last name must only include letters a to z, apostrophes, hyphens and spaces
+
 
 # EnterEmail
 enterEmail.title = Enter an email address
