@@ -25,15 +25,42 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{EnterEmailPage, Journey
 class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmailPage] with ScalaFutures {
   override lazy val page: EnterEmailPage = wire[EnterEmailPage]
 
-  private val requiredAnswerValidationMessage = "Valid email required"
+  private val requiredAnswerValidationMessage = "Enter an email address"
+  private val invalidMessage = "Enter an email address in the correct format, like name@example.com"
+  private val notMatchingMessage = "Email addresses must match - check the email address and try again"
+  private val emailValidationErrorField = "email-error"
+  private val confirmationValidationErrorField = "confirmation-error"
+
+  private val invalidEmail = Email("invalidEmail", "invalidEmail")
 
   "the enter page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Email("test@test.com", "test@test.com")), JourneyDetailsPage.path)
-    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), "email-error")
-    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), "confirmation-error")
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), emailValidationErrorField)
+    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), confirmationValidationErrorField)
+
+    behave like
+      aPageWithValidation(
+        path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, emailValidationErrorField)
+
+    behave like
+      aPageWithValidation(
+        path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, confirmationValidationErrorField)
+
+    s"display the not matching validation message in the error summary list" when {
+      "the user attempts to submit the form with mismatched emails" in {
+        givenAnImportJourneyIsStarted()
+        open(path)
+        page.fillOutForm(Email("a@a", "b@b"))
+        page.clickOnCTA() mustBe path
+        page.errorSummaryRows.toSet mustBe Set(notMatchingMessage)
+      }
+    }
+
+
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, Set(notMatchingMessage), givenAnImportJourneyIsStarted())
 
     behave like aPageWithABackButton(path, givenAnAgentJourney(), TravellerDetailsPage.path)
   }
