@@ -18,7 +18,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
 @import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
+@import uk.gov.hmrc.merchandiseinbaggage.model.core._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 
 @this(
 layout: Layout,
@@ -29,10 +30,11 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, currencies: Seq[Currency], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, currencies: Seq[Currency], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
+    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/currencyconversion.css")" >
 }
 
 @scripts = {
@@ -62,16 +64,12 @@ button: components.button
 
         @h1(messages("purchaseDetails.heading", goodsCategory))
 
-        @text(
-            form = form,
-            id = "price",
-            name = "price",
-            label = "purchaseDetails.price.label",
-            hint = Some(messages("purchaseDetails.price.hint")),
-            isPageHeading = false,
-            classes = Some("govuk-input--width-10")
-        )
+    <div class="govuk-currency-input__inner govuk-form-group">
+        <span class="govuk-currency-input__inner__unit">£</span>
+        <input type="text" class="govuk-currency-input__inner__input govuk-input govuk-input--width-10" id="cost" value="" name="cost">
+    </div>
 
+    @if(declarationType == Import) {
         <div class="govuk-form-group">
             <label class="govuk-label" for="currency">@messages("purchaseDetails.currency.label")</label>
             <div class="autocomplete-wrapper currency govuk-input--width-30">
@@ -89,6 +87,7 @@ button: components.button
                 </select>
             </div>
         </div>
+    }
 
         @button("site.continue", name = Some("continue"))
     }
