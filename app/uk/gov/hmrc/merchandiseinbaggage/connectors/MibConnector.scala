@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import javax.inject.{Inject, Named, Singleton}
-import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationId
@@ -33,4 +33,8 @@ class MibConnector @Inject()(httpClient: HttpClient,  @Named("mibBackendBaseUrl"
 
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Declaration] =
     httpClient.GET[Declaration](s"$base$declarationsUrl/${declarationId.value}")
+
+  def sendEmails(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
+    httpClient.POST[String, HttpResponse](s"$base$sendEmailsUrl/${declarationId.value}", "")
+      .map(_ => ())
 }

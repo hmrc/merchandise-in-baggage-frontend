@@ -18,12 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
-import PaymentApiUrls._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,14 +43,7 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport 
         .willReturn(okJson(stubbedResponse).withStatus(201))
       )
 
-    val response: HttpResponse = createPaymentSession(payApiRequest).futureValue
-    response.status mustBe 201
-    response.body mustBe stubbedResponse
-  }
-
-  "extract redirect url from pay-api http response" in new TestPaymentConnector {
-    val payApiResponse = s"""{"journeyId":"1234","nextUrl":"http://something"}"""
-
-    extractUrl(HttpResponse(201, payApiResponse)) mustBe PayApiResponse(JourneyId("1234"), URL("http://something"))
+    val response = sendPaymentRequest(payApiRequest).futureValue
+    response mustBe PayApiResponse(JourneyId("5f3bc55"), URL("http://localhost:9056/pay/initiate-journey"))
   }
 }
