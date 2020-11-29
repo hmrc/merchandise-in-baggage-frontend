@@ -79,8 +79,9 @@ trait CoreTestData {
   val importJourneyWithTwoCompleteGoodsEntries: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
-  val importJourneyWithTwoCompleteAndOneIncompleteGoodsEntries: DeclarationJourney =
-    startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries.addEmpty)
+  val previouslyCompleteJourneyWithIncompleteGoodsEntryAdded: DeclarationJourney =
+    completedDeclarationJourney.copy(
+      goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry, startedGoodsEntry)))
 
   val importJourneyWithGoodsOverThreshold: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods)

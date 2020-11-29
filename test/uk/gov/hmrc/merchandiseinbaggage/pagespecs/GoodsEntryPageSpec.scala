@@ -44,6 +44,14 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     maybeExpectedRedirect.foreach { expectedRedirect =>
       behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsStarted(), formData, expectedRedirect(1))
       behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenASecondGoodsEntryIsStarted(), formData, expectedRedirect(2))
+
+      behave like
+        aDataCapturePageWithConditionalRouting(
+          path(3),
+          3,
+          givenADeclarationJourney(previouslyCompleteJourneyWithIncompleteGoodsEntryAdded),
+          formData,
+          expectedRedirect(3))
     }
 
     behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsComplete(), formData, ReviewGoodsPage.path)

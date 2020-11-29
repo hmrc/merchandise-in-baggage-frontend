@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, Payme
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
   override def page: PaymentCalculationPage = wire[PaymentCalculationPage]
 
-  private def setUpTaxCalculationAndOpenPage(journey: DeclarationJourney = importJourneyWithTwoCompleteAndOneIncompleteGoodsEntries) = {
+  private def setUpTaxCalculationAndOpenPage(journey: DeclarationJourney = importJourneyWithTwoCompleteGoodsEntries) = {
     val taxCalculation = givenADeclarationWithTaxDue(journey).futureValue
 
     open(path)
