@@ -85,13 +85,15 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
     val goods = entries.flatMap(_.goodsIfComplete)
 
-    if (goods.nonEmpty) Some(DeclarationGoods(goods))
+    if (entries.nonEmpty && (goods.size == entries.size)) Some(DeclarationGoods(goods))
     else None
   }
 
   val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
 
-  def addEmpty(): GoodsEntries = GoodsEntries(entries :+ GoodsEntry.empty)
+  def addEmptyIfNecessary(): GoodsEntries =
+    if (entries.lastOption.fold(true)(_.isComplete)) GoodsEntries(entries :+ GoodsEntry.empty)
+    else this
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))

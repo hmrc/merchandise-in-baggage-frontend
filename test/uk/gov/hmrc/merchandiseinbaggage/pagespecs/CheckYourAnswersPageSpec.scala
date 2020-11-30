@@ -41,19 +41,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
     "render correctly" when {
       "the declaration is complete" in {
-        val goodsEntryWithEmptyEntryWhichShouldBeIgnored =
-          GoodsEntries(
-            Seq(
-              completedDeclarationJourney.goodsEntries.entries.head,
-              GoodsEntry.empty,
-              completedDeclarationJourney.goodsEntries.entries.last
-            )
-          )
-
-        val taxDue =
-          givenADeclarationWithTaxDue(
-            completedDeclarationJourney.copy(
-              goodsEntries = goodsEntryWithEmptyEntryWhichShouldBeIgnored)).futureValue
+        val taxDue = givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
         val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
         open(path)

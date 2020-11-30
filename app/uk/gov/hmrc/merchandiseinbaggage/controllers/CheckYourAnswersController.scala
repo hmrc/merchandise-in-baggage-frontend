@@ -62,7 +62,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmpty()
+    val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
 
     repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
       Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))

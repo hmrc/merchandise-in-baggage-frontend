@@ -100,14 +100,9 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
       }.getMessage mustBe "GoodsEntries cannot be empty: use apply()"
     }
 
-    "be complete and ignore incomplete goods entries irrespective of order" when {
-      "at least one goods entry is complete" in {
-        val singleCompletedGoods = Some(DeclarationGoods(goods))
-        GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe singleCompletedGoods
-        GoodsEntries(Seq(completedGoodsEntry, GoodsEntry.empty)).declarationGoodsIfComplete mustBe singleCompletedGoods
-        GoodsEntries(Seq(completedGoodsEntry, GoodsEntry.empty, GoodsEntry.empty)).declarationGoodsIfComplete mustBe singleCompletedGoods
-        GoodsEntries(Seq(GoodsEntry.empty, completedGoodsEntry)).declarationGoodsIfComplete mustBe singleCompletedGoods
-        GoodsEntries(Seq(completedGoodsEntry, GoodsEntry.empty, completedGoodsEntry)).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(goods, goods)))
+    "be complete" when {
+      "all goods entries are complete" in {
+        GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe Some(DeclarationGoods(goods))
       }
     }
 
@@ -116,7 +111,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
         GoodsEntries.empty.declarationGoodsIfComplete mustBe None
       }
 
-      "all goods entries is incomplete" in {
+      "a goods entry is incomplete" in {
         incompleteGoodEntries.declarationGoodsIfComplete mustBe None
       }
     }
