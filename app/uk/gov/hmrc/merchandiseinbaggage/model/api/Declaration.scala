@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
@@ -42,8 +41,6 @@ object Declaration extends MibReferenceGenerator {
   val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a")
 
   implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
-    def formattedDate: String = {
-      dateOfDeclaration.format(formatter)
-    }
+    def formattedDate: String = dateOfDeclaration.format(formatter).replace("AM", "am").replace("PM", "pm")
   }
 }

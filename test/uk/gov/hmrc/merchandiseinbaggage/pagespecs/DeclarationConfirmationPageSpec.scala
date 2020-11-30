@@ -22,6 +22,7 @@ import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationType, Goods}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
@@ -84,7 +85,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   def hasDateOfDeclaration(ldt: LocalDateTime): Assertion = {
     textOfElementWithId("declarationDateId") mustBe "Date of declaration"
-    textOfElementWithId("declarationDateFormattedId") must include(ldt.format(Declaration.formatter))
+    textOfElementWithId("declarationDateFormattedId") must include(ldt.formattedDate)
   }
 
   def hasEmailAddress(declaration: Declaration): Assertion =
