@@ -19,12 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import reactivemongo.api.commands.UpdateWriteResult
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequestBuilder}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequestBuilder, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -32,6 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CheckYourAnswersPage
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.Success
 
 @Singleton
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -70,30 +71,34 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   }
 
   private def declarationConfirmation(declaration: Declaration)
-                                     (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    request.declarationJourney.declarationType match {
-      case Export => mibConnector.persistDeclaration(declaration).flatMap(resetAndRedirect)
-      case Import => processImportDeclaration(declaration)
+                                     (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] = {
+    mibConnector.persistDeclaration(declaration).flatMap { declarationId =>
+      declaration.declarationType match {
+        case Export =>
+          continueExportDeclaration(declarationId).andThen {
+            case Success(_) => mibConnector.sendEmails(declarationId)
+          }
+        case Import => continueImportDeclaration(declaration, declarationId)
+      }
     }
+  }
 
-  private def processImportDeclaration(declaration: Declaration)
-                                      (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def continueExportDeclaration(declarationId: DeclarationId)(implicit request: DeclarationJourneyRequest[AnyContent]) =
+    resetJourney(declarationId)
+      .map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+
+  private def continueImportDeclaration(declaration: Declaration, declarationId: DeclarationId)
+                                       (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
-      persist <- mibConnector.persistDeclaration(declaration)
-      pay <- createPaymentSession(declaration.declarationGoods)
-      _ <- resetJourney(persist)
-    } yield Redirect(connector.extractUrl(pay).nextUrl.value)
+      payApiResponse <- createPaymentSession(declaration.declarationGoods)
+      _ <- resetJourney(declarationId)
+    } yield Redirect(payApiResponse.nextUrl.value)
 
-  private def createPaymentSession(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
+  private def createPaymentSession(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[PayApiResponse] =
     for {
       payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
-      response <- connector.createPaymentSession(payApiRequest)
+      response <- connector.sendPaymentRequest(payApiRequest)
     } yield response
-
-  private def resetAndRedirect(declarationId: DeclarationId)
-                              (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    resetJourney(declarationId).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
-
 
   private def resetJourney(id: DeclarationId)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._

@@ -41,4 +41,12 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
     client.findDeclaration(id).futureValue mustBe declaration
   }
+
+  "sendEmails should return as expected" in {
+    val id = DeclarationId("1234")
+
+    givenSendEmailsSuccess(wireMockServer, id)
+
+    client.findDeclaration(id).futureValue mustBe declaration
+  }
 }
