@@ -317,6 +317,7 @@ enterEmail.hint = We will only use this to send you confirmation of your declara
 enterEmail.email = Email address
 enterEmail.confirmation = Confirm email address
 enterEmail.error.required = Enter an email address
+enterEmail.error.invalid = Enter an email address in the correct format, like name@example.com
 enterEmail.error.notMatching = Email addresses must match - check the email address and try again
 
 # JourneyDetails
