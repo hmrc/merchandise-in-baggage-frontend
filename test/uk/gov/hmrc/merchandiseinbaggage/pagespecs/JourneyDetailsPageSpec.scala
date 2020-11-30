@@ -26,7 +26,7 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
   override lazy val page: JourneyDetailsPage = wire[JourneyDetailsPage]
 
   private val validationMessages =
-    Set("Select your place of arrival in the UK", "Enter a day", "Enter a month", "Enter a year")
+    Set("Select your place of arrival in the UK", "Date must include a day", "Date must include a month", "Date must include a year")
 
   "the journey details page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)

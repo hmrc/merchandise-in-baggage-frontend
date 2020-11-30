@@ -37,9 +37,10 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
   dateOfArrival must {
     val next5DaysMessageKey = "journeyDetails.dateOfArrival.error.notWithinTheNext5Days"
+    val dateInPastMessageKey = "journeyDetails.dateOfArrival.error.dateInPast"
 
     behave like aMandatoryDateField(form, dateOfArrival)
-    behave like aDateFieldWithMin(form, dateOfArrival, today, next5DaysMessageKey)
+    behave like aDateFieldWithMin(form, dateOfArrival, today, dateInPastMessageKey)
     behave like aDateFieldWithMax(form, dateOfArrival, today.plusDays(5), next5DaysMessageKey)
   }
 
