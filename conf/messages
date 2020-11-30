@@ -331,6 +331,7 @@ journeyDetails.dateOfArrival = Date of arrival
 journeyDetails.dateOfArrival.hint = For example, 12 05 2021
 journeyDetails.dateOfArrival.error.invalid = Please enter a valid date
 journeyDetails.dateOfArrival.error.notWithinTheNext5Days = Enter a date within the next 5 days
+journeyDetails.dateOfArrival.error.dateInPast = Date must not be in the past
 
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?
