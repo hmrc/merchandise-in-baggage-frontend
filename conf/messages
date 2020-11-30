@@ -304,7 +304,7 @@ customsAgent.error.required = Select one of the options below
 agentDetails.title = Enter the business name of the customs agent
 agentDetails.heading = Enter the business name of the customs agent
 agentDetails.hint = This is your registered business name as a customs agent.
-agentDetails.error.required = Enter a value
+agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
 travellerDetails.title = What is the name of the person carrying the goods?
@@ -313,6 +313,8 @@ travellerDetails.hint = Enter their full legal name as it appears on their passp
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
+travellerDetails.firstName.error.invalid = First name must only include letters a to z, apostrophes, hyphens and spaces
+travellerDetails.lastName.error.required = Enter the last name of the person carrying the goods
 travellerDetails.lastName.error.invalid = Last name must only include letters a to z, apostrophes, hyphens and spaces
 
 
