@@ -173,7 +173,7 @@ valueWeightOfGoods.GreatBritain.title = Is the total value of the goods more tha
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
 valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
 valueWeightOfGoods.error.required = Select one of the options below
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
 
@@ -214,7 +214,7 @@ searchGoodsCountry.error.required = Select the country where you bought the good
 searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.title = What country are the goods going to?
 searchGoodsCountry.heading = What country are the goods going to?
-searchGoodsCountry.error.required = Select a country
+searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
@@ -298,7 +298,7 @@ paymentCalculation.p3.2 = We use the rate in the month in which you make your de
 customsAgent.title = Are you a customs agent?
 customsAgent.heading = Are you a customs agent?
 customsAgent.hint = This is a person or business you employ to help you with customs administration. They do not transport the goods for you.
-customsAgent.error.required = Select one of the options below
+customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
 agentDetails.title = Enter the business name of the customs agent
@@ -353,6 +353,7 @@ eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
+eoriNumber.trader.error.required = Enter your EORI number
 eoriNumber.error.invalid = EORI number must be 14 characters
 
 # GoodsInVehicle

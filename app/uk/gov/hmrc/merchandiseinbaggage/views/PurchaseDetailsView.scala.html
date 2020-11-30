@@ -36,7 +36,6 @@ button: components.button
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
-    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/currencyconversion.css")" >
 }
 
 @scripts = {
@@ -66,10 +65,15 @@ button: components.button
 
         @h1(messages("purchaseDetails.heading", goodsCategory))
 
-    <div class="govuk-currency-input__inner govuk-form-group">
-        <span class="govuk-currency-input__inner__unit">£</span>
-        <input name="price" type="text" class="govuk-currency-input__inner__input govuk-input govuk-input--width-10" value="@priceValue">
-    </div>
+    @text(
+        form = form,
+        id = "price",
+        name = "price",
+        hint = Some(messages("purchaseDetails.price.hint")),
+        label = "purchaseDetails.price.label",
+        isPageHeading = false,
+        classes = Some("govuk-input--width-10")
+    )
 
     @if(declarationType == Import) {
         <div class="govuk-form-group">
