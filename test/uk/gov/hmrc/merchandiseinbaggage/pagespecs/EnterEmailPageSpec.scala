@@ -60,7 +60,7 @@ class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmai
     }
 
 
-    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, Set(notMatchingMessage), givenAnImportJourneyIsStarted())
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, Set(requiredAnswerValidationMessage), givenAnImportJourneyIsStarted())
 
     behave like aPageWithABackButton(path, givenAnAgentJourney(), TravellerDetailsPage.path)
   }
