@@ -29,13 +29,13 @@ class EnterEmailFormSpec extends FieldBehaviours {
     behave like mandatoryEmailField(
       form,
       fieldName,
-      requiredError = FormError(fieldName, "error.required")
+      requiredError = FormError(fieldName, "enterEmail.error.required")
     )
   }
 
   ".confirmation" must {
     val fieldName = "confirmation"
-    val requiredKey = "error.required"
+    val requiredKey = "enterEmail.error.required"
 
     behave like mandatoryEmailField(
       form,
