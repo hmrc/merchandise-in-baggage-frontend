@@ -58,15 +58,17 @@
        </a>
      </dd>
     </div>
+
+     @if(declaration.declarationType == Import) {
     <div class="govuk-summary-list__row">
      <dt id="@{s"vatRateLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.vatRate")</dt>
      <dd id="@{s"vatRate_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@{s"${goods.goodsVatRate.value}%"}</dd>
      <dd class="govuk-summary-list__actions">
       <a id="@{s"vatRateChangeLink_$index"}" href=@{s"${GoodsVatRateController.onPageLoad(index + 1)}"}>
-         @messages("checkYourAnswers.change")
-       </a>
+      @messages("checkYourAnswers.change")
+      </a>
      </dd>
-    </div>
+    </div>}
     <div class="govuk-summary-list__row">
      <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
      <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
@@ -115,6 +117,15 @@
  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
   @declaration.maybeCustomsAgent.fold(Html("")) { customsAgent =>
    <div class="govuk-summary-list__row">
+    <dt id="customsAgentYesNoLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.customsAgentYesNoLabel")</dt>
+    <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold("No")(_ => "Yes")</dt>
+    <dd class="govuk-summary-list__actions">
+     <a id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
+       @messages("checkYourAnswers.change")
+     </a>
+    </dd>
+   </div>
+  <div class="govuk-summary-list__row">
     <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
     <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
     <dd class="govuk-summary-list__actions">
@@ -216,10 +227,18 @@
 
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
- <ul class="govuk-list govuk-list--bullet">
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
- </ul>
+ @if(declaration.declarationType == Import) {
+  <ul class="govuk-list govuk-list--bullet">
+   <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
+   <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
+  </ul>
+  } else {
+  <ul class="govuk-list govuk-list--bullet">
+   <li>@messages("checkYourAnswers.sendDeclaration.export.acknowledgement.1")</li>
+  </ul>
+ }
+
+ <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement.p")</p>
 
  <div class="govuk-warning-text">
   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>

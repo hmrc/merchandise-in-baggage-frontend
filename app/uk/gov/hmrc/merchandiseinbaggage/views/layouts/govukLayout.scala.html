@@ -60,6 +60,16 @@ appConfig: AppConfig
 @beforeContentDefault = {
     @phaseBanner("beta")
     @bodyEndBlock.map(x => x)
+    @{
+        maybeBackButtonUrl.fold(Html("")){ url =>
+        // for some reason the supplied Call path does not always start with /merchandise-in-baggage
+        val pathPrefix = "/merchandise-in-baggage"
+        val urlString = url.toString
+        val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
+
+        govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
+        }
+    }
 }
 
 @footerDefault = {
@@ -74,17 +84,6 @@ appConfig: AppConfig
 }
 
 @mainContentDefault = {
-    @{
-        maybeBackButtonUrl.fold(Html("")){ url =>
-            // for some reason the supplied Call path does not always start with /merchandise-in-baggage
-            val pathPrefix = "/merchandise-in-baggage"
-            val urlString = url.toString
-            val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
-
-            govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
-        }
-    }
-
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @contentBlock

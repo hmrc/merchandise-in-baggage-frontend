@@ -46,24 +46,24 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     "include the price string as entered" in {
       val currency = Currency("country", "currency", "ccy")
 
-      PurchaseDetails("1", currency).toString mustBe "1, country currency (ccy)"
-      PurchaseDetails("1.", currency).toString mustBe "1., country currency (ccy)"
-      PurchaseDetails("1.0", currency).toString mustBe "1.0, country currency (ccy)"
-      PurchaseDetails("1.00", currency).toString mustBe "1.00, country currency (ccy)"
-      PurchaseDetails("1.000", currency).toString mustBe "1.000, country currency (ccy)"
+      PurchaseDetails("1", currency).toString mustBe "£1"
+      PurchaseDetails("1.", currency).toString mustBe "£1."
+      PurchaseDetails("1.0", currency).toString mustBe "£1.0"
+      PurchaseDetails("1.00", currency).toString mustBe "£1.00"
+      PurchaseDetails("1.000", currency).toString mustBe "£1.000"
 
-      PurchaseDetails("01", currency).toString mustBe "01, country currency (ccy)"
-      PurchaseDetails("01.", currency).toString mustBe "01., country currency (ccy)"
-      PurchaseDetails("01.0", currency).toString mustBe "01.0, country currency (ccy)"
-      PurchaseDetails("01.00", currency).toString mustBe "01.00, country currency (ccy)"
-      PurchaseDetails("01.000", currency).toString mustBe "01.000, country currency (ccy)"
+      PurchaseDetails("01", currency).toString mustBe "£01"
+      PurchaseDetails("01.", currency).toString mustBe "£01."
+      PurchaseDetails("01.0", currency).toString mustBe "£01.0"
+      PurchaseDetails("01.00", currency).toString mustBe "£01.00"
+      PurchaseDetails("01.000", currency).toString mustBe "£01.000"
 
-      PurchaseDetails("0.1", currency).toString mustBe "0.1, country currency (ccy)"
-      PurchaseDetails("0.10", currency).toString mustBe "0.10, country currency (ccy)"
-      PurchaseDetails("0.100", currency).toString mustBe "0.100, country currency (ccy)"
+      PurchaseDetails("0.1", currency).toString mustBe "£0.1"
+      PurchaseDetails("0.10", currency).toString mustBe "£0.10"
+      PurchaseDetails("0.100", currency).toString mustBe "£0.100"
 
-      PurchaseDetails(".01", currency).toString mustBe ".01, country currency (ccy)"
-      PurchaseDetails(".001", currency).toString mustBe ".001, country currency (ccy)"
+      PurchaseDetails(".01", currency).toString mustBe "£.01"
+      PurchaseDetails(".001", currency).toString mustBe "£.001"
     }
   }
 
@@ -140,7 +140,9 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   "DeclarationJourney" should {
     "serialise and de-serialise" in {
-      parse(toJson(completedDeclarationJourney).toString()).validate[DeclarationJourney].get mustBe completedDeclarationJourney
+      val time = completedDeclarationJourney.createdAt.withMinute(0).withSecond(0)
+      parse(toJson(completedDeclarationJourney).toString())
+        .validate[DeclarationJourney].get.copy(createdAt = time) mustBe completedDeclarationJourney.copy(createdAt = time)
     }
 
     "be obfuscated" in {
@@ -364,7 +366,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
     "provide current date and time formatted" in {
       val aDeclaration = declaration.copy(dateOfDeclaration = LocalDateTime.of(2020, 11, 10, 12, 55))
 
-      aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55 PM"
+      aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55 pm"
     }
   }
 }

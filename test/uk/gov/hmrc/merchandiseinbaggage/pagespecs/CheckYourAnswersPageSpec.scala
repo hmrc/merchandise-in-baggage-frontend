@@ -259,14 +259,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       textOfElementWithId(s"vatRateLabel_$index") mustBe "VAT rate"
       textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%"
 
-      textOfElementWithId(s"countryLabel_$index") mustBe "Country"
+      textOfElementWithId(s"countryLabel_$index") mustBe "Destination"
       textOfElementWithId(s"country_$index") mustBe goods.countryOfPurchase
 
       textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
       textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.toString
     }
 
-    textOfElementWithId("taxDueLabel") mustBe "Tax due"
+    textOfElementWithId("taxDueLabel") mustBe "Payment Due"
     textOfElementWithId("taxDueValue") mustBe totalTaxDue.formattedInPounds
 
     declaration.maybeCustomsAgent.fold {
