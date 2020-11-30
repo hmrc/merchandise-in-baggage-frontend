@@ -52,8 +52,6 @@ class EoriNumberController @Inject()(
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
     maybeIsACustomsAgent.fold(actionProvider.invalidRequestF(invalidRequestMessage)) { isAgent =>
-      form.bindFromRequest().fold(
-    request.declarationJourney.maybeIsACustomsAgent.fold(actionProvider.invalidRequestF(invalidRequestMessage)) { isAgent =>
       form(isAgent).bindFromRequest().fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
