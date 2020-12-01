@@ -88,6 +88,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
 
     Table(
       rows = tableRows,
+      attributes = Map("style" -> "margin-bottom:60px"),
       head = Some(Seq(
         HeadCell(
           Text(messages("paymentCalculation.table.col1.head"))

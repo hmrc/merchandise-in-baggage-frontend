@@ -290,16 +290,18 @@ paymentCalculation.li = {0} to 1 (GBP).
 paymentCalculation.p3.1 = We use
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-paymentCalculation.p3.2 = We use the rates of the month in which you make your declaration.
+paymentCalculation.p3.2 = We use the rates in the month in which you make your declaration.
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
 customsAgent.heading = Are you a customs agent?
+customsAgent.hint = This is a person or business you employ to help you with customs administration. They do not transport the goods for you.
 customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
-agentDetails.title = Enter the business name of the customs agent
-agentDetails.heading = Enter the business name of the customs agent
+agentDetails.title = What is your registered business name?
+agentDetails.heading = What is your registered business name?
+agentDetails.hint = This is your registered business name as a customs agent.
 agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
@@ -339,9 +341,11 @@ journeyDetails.dateOfArrival.error.dateInPast = Date must not be in the past
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?
 eoriNumber.trader.heading = What is your EORI number?
-eoriNumber.agent.title = What is the EORI number of the company importing the goods?
-eoriNumber.agent.heading = What is the EORI number of the company importing the goods?
-eoriNumber.hint = For example, GB123467800000
+eoriNumber.agent.title = What is the EORI number of the business bringing the goods into the UK?
+eoriNumber.agent.export.title = What is the EORI number of the business taking the goods out of the UK?
+eoriNumber.agent.heading = What is the EORI number of the business bringing the goods into the UK?
+eoriNumber.agent.export.heading = What is the EORI number of the business taking the goods out of the UK?
+eoriNumber.hint = You need an EORI number that starts with GB or XI to use this service. For example, GB123467800000.
 eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori

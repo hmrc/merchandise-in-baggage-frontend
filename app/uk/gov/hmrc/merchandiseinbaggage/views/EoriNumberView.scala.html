@@ -17,7 +17,8 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+@import uk.gov.hmrc.merchandiseinbaggage.model.core._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 
 @this(
 layout: Layout,
@@ -27,11 +28,12 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], isAgent: YesNo, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isAgent: YesNo, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
+@exportOrImport = @{if(declarationType == Export) Some(messages(s"eoriNumber.$agentOrTrader.export.title")) else Some(messages(s"eoriNumber.$agentOrTrader.title")) }
 
-@layout(pageTitle = Some(messages(s"eoriNumber.$agentOrTrader.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+    @layout(pageTitle = exportOrImport, maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = EoriNumberController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
@@ -40,7 +42,7 @@ button: components.button
             form = form,
             id = "eori",
             name = "eori",
-            label = messages(s"eoriNumber.$agentOrTrader.heading"),
+            label = {if(declarationType == Export) messages(s"eoriNumber.$agentOrTrader.export.heading") else messages(s"eoriNumber.$agentOrTrader.heading") },
             isPageHeading = true,
             classes = Some("govuk-input--width-20"),
             hint = Some("eoriNumber.hint")
