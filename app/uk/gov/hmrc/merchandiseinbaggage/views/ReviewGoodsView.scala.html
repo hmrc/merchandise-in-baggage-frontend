@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationGoods
+@import uk.gov.hmrc.merchandiseinbaggage.model.core._
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.ReviewGoodsSummary
 
 @this(
@@ -30,7 +30,7 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], goods: DeclarationGoods, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], goods: DeclarationGoods, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages(s"reviewGoods.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = ReviewGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
@@ -39,7 +39,7 @@ button: components.button
 
         @h1(messages("reviewGoods.heading"))
 
-        @for(list <- ReviewGoodsSummary.summaryList(goods)) {
+        @for(list <- ReviewGoodsSummary.summaryList(goods, declarationType)) {
             @summaryList(list)
         }
 

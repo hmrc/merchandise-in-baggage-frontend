@@ -235,6 +235,7 @@ reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT Rate
 reviewGoods.list.country = Country
+reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
