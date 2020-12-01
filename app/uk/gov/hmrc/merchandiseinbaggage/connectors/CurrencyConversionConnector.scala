@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
+import java.time.LocalDate
 import java.time.LocalDate.now
 
 import javax.inject.{Inject, Named, Singleton}
@@ -27,9 +28,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CurrencyConversionConnector @Inject()(httpClient: HttpClient, @Named("currencyConversionBaseUrl") baseUrl: String) {
+  val tempDate = LocalDate.of(2020, 11, 1)
   def getCurrencies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CurrencyPeriod] =
-    httpClient.GET[CurrencyPeriod](s"$baseUrl/currency-conversion/currencies/${now()}")
+    httpClient.GET[CurrencyPeriod](s"$baseUrl/currency-conversion/currencies/${tempDate}")
 
   def getConversionRate(code: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ConversionRatePeriod]] =
-    httpClient.GET[Seq[ConversionRatePeriod]](s"$baseUrl/currency-conversion/rates/${now()}?cc=$code")
+    httpClient.GET[Seq[ConversionRatePeriod]](s"$baseUrl/currency-conversion/rates/${tempDate}?cc=$code")
 }
