@@ -211,7 +211,7 @@ goodsVatRate.error.required = Select which VAT rate applies to the goods
 # SearchGoodsCountry
 searchGoodsCountry.title = In what country did you buy the {0}?
 searchGoodsCountry.heading = In what country did you buy the {0}?
-searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
+searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 
