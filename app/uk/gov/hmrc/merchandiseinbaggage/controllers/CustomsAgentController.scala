@@ -20,6 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.CustomsAgentForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
@@ -33,7 +34,12 @@ class CustomsAgentController @Inject()(
                                         view: CustomsAgentView,
                                       )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad())
+    request.declarationJourney.declarationType match {
+      case Import =>
+        backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad())
+      case Export =>
+        backToCheckYourAnswersIfCompleteElse(routes.ReviewGoodsController.onPageLoad())
+    }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill), backButtonUrl))
