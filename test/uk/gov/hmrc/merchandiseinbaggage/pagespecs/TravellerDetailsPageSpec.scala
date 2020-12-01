@@ -57,6 +57,12 @@ class TravellerDetailsPageSpec extends DeclarationDataCapturePageSpec[Name, Trav
     behave like aPageWithABackButton(path, givenAnAgentJourney(), EoriNumberPage.path)
   }
 
+  "render hint" in {
+    givenAnImportJourneyIsStarted()
+    open(path)
+    page.hint.text mustBe "Enter their full legal name as it appears on their passport or birth certificate."
+  }
+
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Name] =
     declarationJourney.maybeNameOfPersonCarryingTheGoods
 }
