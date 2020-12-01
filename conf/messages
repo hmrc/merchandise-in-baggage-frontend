@@ -363,8 +363,8 @@ goodsInVehicle.heading = Are you travelling by vehicle?
 goodsInVehicle.error.required = Select yes if you are travelling by vehicle
 
 # VehicleSize
-vehicleSize.title = Are you bringing the goods in a small vehicle?
-vehicleSize.heading = Are you bringing the goods in a small vehicle?
+vehicleSize.title = Are you taking the goods in a small vehicle?
+vehicleSize.heading = Are you taking the goods in a small vehicle?
 vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
 vehicleSize.error.required = Select yes if you are bringing the goods in a small vehicle
 
