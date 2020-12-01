@@ -295,6 +295,7 @@ paymentCalculation.p3.2 = We use the rates in the month in which you make your d
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
 customsAgent.heading = Are you a customs agent?
+customsAgent.hint = This is a person or business you employ to help you with customs administration. They do not transport the goods for you.
 customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
