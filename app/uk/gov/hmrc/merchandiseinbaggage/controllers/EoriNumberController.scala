@@ -41,20 +41,18 @@ class EoriNumberController @Inject()(
   private val invalidRequestMessage = "maybeIsACustomsAgent is unanswered"
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    import request.declarationJourney._
-    maybeIsACustomsAgent.fold(actionProvider.invalidRequest(invalidRequestMessage)) { isAgent =>
+    request.declarationJourney.maybeIsACustomsAgent.fold(actionProvider.invalidRequest(invalidRequestMessage)) { isAgent =>
       val preparedForm = request.declarationJourney.maybeEori.fold(form(isAgent))(e => form(isAgent).fill(e.value))
 
-      Ok(view(preparedForm, isAgent, backButtonUrl, declarationType))
+      Ok(view(preparedForm, isAgent, backButtonUrl))
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    import request.declarationJourney._
-    maybeIsACustomsAgent.fold(actionProvider.invalidRequestF(invalidRequestMessage)) { isAgent =>
+    request.declarationJourney.maybeIsACustomsAgent.fold(actionProvider.invalidRequestF(invalidRequestMessage)) { isAgent =>
       form(isAgent).bindFromRequest().fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
+          Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl))),
         eori =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())

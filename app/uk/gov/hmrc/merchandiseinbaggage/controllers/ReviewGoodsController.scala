@@ -41,19 +41,17 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
       routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size))
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    import request.declarationJourney._
-    goodsEntries.declarationGoodsIfComplete
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequest(goodsDeclarationIncompleteMessage)) { goods =>
-        Ok(view(form, goods, declarationType, backButtonUrl))
+        Ok(view(form, goods, backButtonUrl))
       }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    import request.declarationJourney._
-    goodsEntries.declarationGoodsIfComplete
+    request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
         form.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, declarationType, backButtonUrl))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl))),
           declareMoreGoods =>
             if (declareMoreGoods == Yes) {
               val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
