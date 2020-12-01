@@ -65,12 +65,12 @@ object CurrencyConversionStub {
 
   def givenCurrenciesAreFound(server: WireMockServer): StubMapping =
     server
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.now()}"))
+      .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.of(2020, 11, 1)}"))
       .willReturn(okJson(currencyConversionResponse).withStatus(200)))
 
   def givenCurrencyIsFound(code: String, server: WireMockServer): StubMapping =
     server
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/rates/${LocalDate.now()}"))
+      .stubFor(get(urlPathEqualTo(s"/currency-conversion/rates/${LocalDate.of(2020, 11, 1)}"))
         .withQueryParam("cc", equalTo(code))
       .willReturn(okJson(conversionRateResponse(code))))
 }
