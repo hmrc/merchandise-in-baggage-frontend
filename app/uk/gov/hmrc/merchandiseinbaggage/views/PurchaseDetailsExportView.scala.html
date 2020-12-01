@@ -44,7 +44,10 @@ button: components.button
         @currencyInput(CurrencyInput(
             id = "price",
             name = "price",
-            label = Label(content = Text(messages("purchaseDetails.price.label"))),
+            label = Label(
+                content = Text(messages("purchaseDetails.price.label")),
+                classes = "govuk-visually-hidden"
+            ),
             classes = "govuk-input--width-10",
             value = form("price").value
         ))
