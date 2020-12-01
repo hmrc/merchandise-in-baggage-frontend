@@ -28,6 +28,7 @@ class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDat
 
   def firstNameInput: Element = find(NameQuery(TravellerDetailsForm.firstName)).get
   def lastNameInput: Element = find(NameQuery(TravellerDetailsForm.lastName)).get
+  def hint: Element = find(IdQuery("travellerDetailsHintId")).get
 
   override def fillOutForm(formData: Name): Unit = {
     def fill(input: Element, value: String): Unit = {
@@ -50,5 +51,6 @@ class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDat
 
 object TravellerDetailsPage {
   val path: String = "/merchandise-in-baggage/traveller-details"
-  val title: String = "Enter the name of the person carrying the goods"
+  val title: String = "What is the name of the person carrying the goods?"
+  val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
 }

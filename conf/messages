@@ -306,8 +306,9 @@ agentDetails.hint = This is your registered business name as a customs agent.
 agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
-travellerDetails.title = Enter the name of the person carrying the goods
-travellerDetails.heading = Enter the name of the person carrying the goods
+travellerDetails.title = What is the name of the person carrying the goods?
+travellerDetails.heading = What is the name of the person carrying the goods?
+travellerDetails.hint = Enter their full legal name as it appears on their passport or birth certificate.
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
