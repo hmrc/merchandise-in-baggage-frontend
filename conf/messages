@@ -169,18 +169,16 @@ goodsRouteDestination.error.required = Select yes if the final destination of th
 
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
-valueWeightOfGoods.error.required = Select one of the options below
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
 
 # SearchGoods
-goodsTypeQuantity.title = What goods are you taking out of the UK?
-goodsTypeQuantity.heading = What goods are you taking out of the UK?
-goodsTypeQuantity.p = Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.
+goodsTypeQuantity.title = What type of goods are you bringing into the UK?
+goodsTypeQuantity.heading = What type of goods are you bringing into the UK?
+goodsTypeQuantity.p = Add your goods by their type or category. For example, clothes, electronics, or food.
 goodsTypeQuantity.category = Type of goods
 goodsTypeQuantity.category.hint = For example, clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
@@ -190,7 +188,7 @@ goodsTypeQuantity.quantity.error.required = Enter the number of items
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
 goodsVatRate.heading = Check which VAT rate applies to the {0}
-goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as children’s clothes have a lower rate.
+goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as food and children’s clothes have a lower rate.
 goodsVatRate.table.head.col1 = % of VAT
 goodsVatRate.table.head.col2 = What the rate applies to
 goodsVatRate.table.row1.col1.1 = 0%
@@ -209,11 +207,9 @@ goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # SearchGoodsCountry
+searchGoodsCountry.title = In what country did you buy the {0}?
+searchGoodsCountry.heading = In what country did you buy the {0}?
 searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
-searchGoodsCountry.error.required = Select the country where you bought the goods
-searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
-searchGoodsCountry.title = What country are the goods going to?
-searchGoodsCountry.heading = What country are the goods going to?
 searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 
@@ -221,7 +217,6 @@ searchGoodsCountry.error.invalid = Select a valid country
 purchaseDetails.title = How much did you pay for the {0}?
 purchaseDetails.heading = How much did you pay for the {0}?
 purchaseDetails.price.label = Price paid
-purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency
 purchaseDetails.p.1 = We use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
@@ -237,7 +232,7 @@ reviewGoods.heading = Review your goods
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT Rate
-reviewGoods.list.country = Destination
+reviewGoods.list.country = Country
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
@@ -285,31 +280,28 @@ paymentCalculation.table.col3.head = VAT
 paymentCalculation.table.col4.head = Total
 paymentCalculation.table.col3.row = {0} at {1}%
 paymentCalculation.table.total = Payment due
-paymentCalculation.h2 = How we calculate your payment
+paymentCalculation.h3 = How we calculate your payment
 paymentCalculation.p1 = Customs Duty is charged at a flat rate of 3.3% on the total value of the goods. We then charge VAT on the combined amount of Customs Duty and the value of the goods.
 paymentCalculation.p2 = We converted the total amount at a rate of:
 paymentCalculation.li = {0} to 1 (GBP).
 paymentCalculation.p3.1 = We use
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-paymentCalculation.p3.2 = We use the rate in the month in which you make your declaration.
+paymentCalculation.p3.2 = We use the rates of the month in which you make your declaration.
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
 customsAgent.heading = Are you a customs agent?
-customsAgent.hint = This is a person or business you employ to help you with customs administration. They do not transport the goods for you.
 customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
 agentDetails.title = Enter the business name of the customs agent
 agentDetails.heading = Enter the business name of the customs agent
-agentDetails.hint = This is your registered business name as a customs agent.
 agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
-travellerDetails.title = What is the name of the person carrying the goods?
-travellerDetails.heading = What is the name of the person carrying the goods?
-travellerDetails.hint = Enter their full legal name as it appears on their passport or birth certificate.
+travellerDetails.title = Enter the name of the person carrying the goods
+travellerDetails.heading = Enter the name of the person carrying the goods
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
@@ -344,16 +336,14 @@ journeyDetails.dateOfArrival.error.dateInPast = Date must not be in the past
 # EoriNumber
 eoriNumber.trader.title = What is your EORI number?
 eoriNumber.trader.heading = What is your EORI number?
-eoriNumber.agent.title = What is the EORI number of the business bringing the goods into the UK?
-eoriNumber.agent.export.title = What is the EORI number of the business taking the goods out of the UK?
-eoriNumber.agent.heading = What is the EORI number of the business bringing the goods into the UK?
-eoriNumber.agent.export.heading = What is the EORI number of the business taking the goods out of the UK?
-eoriNumber.hint = You need an EORI number that starts with GB or XI to use this service. For example, GB123467800000.
+eoriNumber.agent.title = What is the EORI number of the company importing the goods?
+eoriNumber.agent.heading = What is the EORI number of the company importing the goods?
+eoriNumber.hint = For example, GB123467800000
 eoriNumber.p = You need an EORI number to make a declaration using this service.
 eoriNumber.a.text = Apply for an EORI number now.
 eoriNumber.a.href = https://www.gov.uk/eori
-eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.trader.error.required = Enter your EORI number
+eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.error.invalid = EORI number must be 14 characters
 
 # GoodsInVehicle
@@ -362,8 +352,8 @@ goodsInVehicle.heading = Are you travelling by vehicle?
 goodsInVehicle.error.required = Select yes if you are travelling by vehicle
 
 # VehicleSize
-vehicleSize.title = Are you taking the goods in a small vehicle?
-vehicleSize.heading = Are you taking the goods in a small vehicle?
+vehicleSize.title = Are you bringing the goods in a small vehicle?
+vehicleSize.heading = Are you bringing the goods in a small vehicle?
 vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
 vehicleSize.error.required = Select yes if you are bringing the goods in a small vehicle
 
@@ -414,12 +404,11 @@ checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
 checkYourAnswers.detailsOfTheGoods.quantity = Number of items
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
-checkYourAnswers.detailsOfTheGoods.country = Destination
+checkYourAnswers.detailsOfTheGoods.country = Country
 checkYourAnswers.detailsOfTheGoods.price = Price paid
-checkYourAnswers.detailsOfTheGoods.taxDue = Payment Due
+checkYourAnswers.detailsOfTheGoods.taxDue = Tax due
 checkYourAnswers.addMoreGoods = Add more goods
 checkYourAnswers.personalDetails = Personal details
-checkYourAnswers.personalDetails.customsAgentYesNoLabel = Customs agent
 checkYourAnswers.customsAgent.name = Name of customs agent
 checkYourAnswers.customsAgent.address = Customs agent address
 checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods = Name of person carrying goods
@@ -433,9 +422,7 @@ checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration
 checkYourAnswers.sendDeclaration = Now send your declaration
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
 checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into the UK for trade or business use.
-checkYourAnswers.sendDeclaration.export.acknowledgement.1 = I will need to show my declaration and purchase receipts if I am stopped by Border Force.
 checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force.
-checkYourAnswers.sendDeclaration.acknowledgement.p = By making this declaration you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the UK you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.payButton = Accept and Pay
@@ -448,7 +435,7 @@ declarationConfirmation.ul.1 = go through the
 declarationConfirmation.ul.1.strong = green channel
 declarationConfirmation.ul.1.1 = (nothing to declare) at customs
 declarationConfirmation.ul.2 = take this declaration confirmation with you
-declarationConfirmation.ul.3 = take the receipts or invoices for all the goods you are taking out of the UK
+declarationConfirmation.ul.3 = take the invoices for all the goods you are  taking out of the UK
 declarationConfirmation.date = Date of declaration
 declarationConfirmation.email = We have sent you a confirmation email to {0}.
 declarationConfirmation.makeAnotherDeclaration = Make another declaration

@@ -18,6 +18,4 @@
 
 @(msg: String, classes: Option[String] = None)(implicit messages: Messages)
 
-<legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
- <h1 class="@classes.getOrElse("govuk-fieldset__heading")">@messages(msg)</h1>
-</legend>
+<h1 class="@classes.getOrElse("govuk-heading-xl")">@messages(msg)</h1>

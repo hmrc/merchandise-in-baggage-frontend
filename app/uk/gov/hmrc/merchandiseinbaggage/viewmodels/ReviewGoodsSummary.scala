@@ -17,22 +17,19 @@
 package uk.gov.hmrc.merchandiseinbaggage.viewmodels
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, DeclarationType}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationGoods
 
 object ReviewGoodsSummary {
 
-  private def vatKey(implicit messages: Messages) = Key(Text(messages("reviewGoods.list.vatRate")))
-
-  def summaryList(goods: DeclarationGoods, declarationType: DeclarationType)(implicit messages: Messages): Seq[SummaryList] =
+  def summaryList(goods: DeclarationGoods)(implicit messages: Messages): Seq[SummaryList] =
     goods.goods.zipWithIndex.map { item =>
       import item._1._
       val idx = item._2 + 1
 
-      SummaryList(showVatIfApplies(declarationType, Seq(
+      SummaryList(Seq(
         SummaryListRow(
           key = Key(Text(messages("reviewGoods.list.item"))),
           value = Value(Text(categoryQuantityOfGoods.category)),
@@ -52,7 +49,7 @@ object ReviewGoodsSummary {
           ))
         ),
         SummaryListRow(
-          key = vatKey,
+          key = Key(Text(messages("reviewGoods.list.vatRate"))),
           value = Value(Text(s"${goodsVatRate.value}%")),
           actions = Some(Actions(
             items = Seq(
@@ -84,10 +81,7 @@ object ReviewGoodsSummary {
           ),
           classes = "govuk-summary-list__row--no-border"
         )
-      )))
+      ))
     }
 
-  private def showVatIfApplies(declarationType: DeclarationType, rows: Seq[SummaryListRow])
-                        (implicit messages: Messages): Seq[SummaryListRow] =
-    if(declarationType == Import) rows else rows.filterNot(_.key == vatKey)
 }

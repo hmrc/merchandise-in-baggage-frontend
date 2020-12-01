@@ -41,12 +41,11 @@ class PurchaseDetailsController @Inject()(
     backToCheckYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
-    import request._
     withGoodsCategory(request.goodsEntry) { category =>
       connector.getCurrencies().map { currencyPeriod =>
-        val preparedForm = goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
+        val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-        Ok(view(preparedForm, idx, category, currencyPeriod.currencies, backButtonUrl(idx), declarationJourney.declarationType))
+        Ok(view(preparedForm, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))
       }
     }
   }
@@ -56,7 +55,7 @@ class PurchaseDetailsController @Inject()(
       connector.getCurrencies().flatMap { currencyPeriod =>
         form.bindFromRequest().fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx), request.declarationJourney.declarationType))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))),
           purchaseDetailsInput =>
             currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
               .fold(actionProvider.invalidRequestF(s"currency [$purchaseDetailsInput.currency] not found")) { currency =>
