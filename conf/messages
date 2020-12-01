@@ -169,18 +169,18 @@ goodsRouteDestination.error.required = Select yes if the final destination of th
 
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods over £1500 or 1000 kilograms (kg)?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
 
 # SearchGoods
 goodsTypeQuantity.Import.title = What type of goods are you bringing into the UK?
 goodsTypeQuantity.Import.heading = What type of goods are you bringing into the UK?
-goodsTypeQuantity.Export.title = What type of goods are you taking out of the UK?
-goodsTypeQuantity.Export.heading = What type of goods are you taking out of the UK?
-goodsTypeQuantity.p = Add your goods by their type or category. For example, clothes, electronics, or food.
+goodsTypeQuantity.Export.title = What goods are you taking out of the UK?
+goodsTypeQuantity.Export.heading = What goods are you taking out of the UK?
+goodsTypeQuantity.p = Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.
 goodsTypeQuantity.category = Type of goods
 goodsTypeQuantity.category.hint = For example, clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
@@ -211,7 +211,7 @@ goodsVatRate.error.required = Select which VAT rate applies to the goods
 # SearchGoodsCountry
 searchGoodsCountry.title = In what country did you buy the {0}?
 searchGoodsCountry.heading = In what country did you buy the {0}?
-searchGoodsCountry.hint = If you bought this item on a plane or boat, enter the country you were travelling from at the time of purchase
+searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 
@@ -235,6 +235,7 @@ reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT Rate
 reviewGoods.list.country = Country
+reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = Do you need to declare more goods?
