@@ -34,7 +34,8 @@ case class Declaration(sessionId: SessionId,
                        eori: Eori,
                        journeyDetails: JourneyDetails,
                        dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-                       mibReference: MibReference = Declaration.mibReference
+                       mibReference: MibReference = Declaration.mibReference,
+                       maybeTotalCalculationResult: Option[TotalCalculationResult] = None
                       )
 
 object Declaration extends MibReferenceGenerator {

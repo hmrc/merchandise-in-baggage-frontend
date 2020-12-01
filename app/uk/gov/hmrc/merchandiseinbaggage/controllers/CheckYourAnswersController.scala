@@ -19,12 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import reactivemongo.api.commands.UpdateWriteResult
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequestBuilder, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequest}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -32,7 +31,6 @@ import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CheckYourAnswersPage
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.Success
 
 @Singleton
 class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -43,7 +41,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                            override val repo: DeclarationJourneyRepository,
                                            page: CheckYourAnswersPage)
                                           (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController with PayApiRequestBuilder {
+  extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
@@ -72,33 +70,29 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   private def declarationConfirmation(declaration: Declaration)
                                      (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] = {
-    mibConnector.persistDeclaration(declaration).flatMap { declarationId =>
-      declaration.declarationType match {
-        case Export =>
-          continueExportDeclaration(declarationId).andThen {
-            case Success(_) => mibConnector.sendEmails(declarationId)
-          }
-        case Import => continueImportDeclaration(declaration, declarationId)
-      }
+    declaration.declarationType match {
+      case Export =>
+        continueExportDeclaration(declaration)
+      case Import =>
+        continueImportDeclaration(declaration)
     }
   }
 
-  private def continueExportDeclaration(declarationId: DeclarationId)(implicit request: DeclarationJourneyRequest[AnyContent]) =
-    resetJourney(declarationId)
-      .map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+  private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =
+    for {
+      declarationId <- mibConnector.persistDeclaration(declaration)
+      _ <- resetJourney(declarationId)
+      _ <- mibConnector.sendEmails(declarationId)
+    } yield Redirect(routes.DeclarationConfirmationController.onPageLoad())
 
-  private def continueImportDeclaration(declaration: Declaration, declarationId: DeclarationId)
+  private def continueImportDeclaration(declaration: Declaration)
                                        (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
-      payApiResponse <- createPaymentSession(declaration.declarationGoods)
+      taxDue <- calculationService.paymentCalculation(declaration.declarationGoods)
+      declarationId <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
+      payApiResponse <- connector.sendPaymentRequest(PayApiRequest(declaration.mibReference, taxDue.totalTaxDue, taxDue.totalDutyDue, taxDue.totalVatDue))
       _ <- resetJourney(declarationId)
     } yield Redirect(payApiResponse.nextUrl.value)
-
-  private def createPaymentSession(goods: DeclarationGoods)(implicit headerCarrier: HeaderCarrier): Future[PayApiResponse] =
-    for {
-      payApiRequest <- buildRequest(goods, calculationService.paymentCalculation)
-      response <- connector.sendPaymentRequest(payApiRequest)
-    } yield response
 
   private def resetJourney(id: DeclarationId)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._

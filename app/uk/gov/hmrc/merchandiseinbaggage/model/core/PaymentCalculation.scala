@@ -17,11 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import play.api.i18n.Messages
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 
 case class PaymentCalculation(goods: Goods, calculationResult: CalculationResult)
+
+case class TotalCalculationResult(totalGbpValue: AmountInPence, totalTaxDue: AmountInPence, totalDutyDue: AmountInPence, totalVatDue: AmountInPence)
+
+object TotalCalculationResult {
+  implicit val format: OFormat[TotalCalculationResult] = Json.format[TotalCalculationResult]
+}
 
 case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
   def totalGbpValue: AmountInPence = AmountInPence(
@@ -39,6 +46,9 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
   def totalVatDue: AmountInPence = AmountInPence(
     paymentCalculations.map(_.calculationResult.vat.value).sum
   )
+
+  def totalCalculationResult: TotalCalculationResult =
+    TotalCalculationResult(totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
 
   def toTable(implicit messages: Messages): Table = {
     val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
