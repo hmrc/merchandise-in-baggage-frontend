@@ -290,7 +290,7 @@ paymentCalculation.li = {0} to 1 (GBP).
 paymentCalculation.p3.1 = We use
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-paymentCalculation.p3.2 = We use the rates of the month in which you make your declaration.
+paymentCalculation.p3.2 = We use the rates in the month in which you make your declaration.
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
