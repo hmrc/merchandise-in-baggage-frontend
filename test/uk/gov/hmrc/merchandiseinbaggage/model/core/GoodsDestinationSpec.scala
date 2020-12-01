@@ -22,6 +22,7 @@ import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsString, Json}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.GreatBritain
 
 class GoodsDestinationSpec extends BaseSpec with ScalaCheckPropertyChecks with OptionValues {
 
@@ -50,6 +51,10 @@ class GoodsDestinationSpec extends BaseSpec with ScalaCheckPropertyChecks with O
       forAll(gen) { goodsDestination =>
         Json.toJson(goodsDestination) mustEqual JsString(goodsDestination.toString)
       }
+    }
+
+    "remove decimals for UI rendering" in {
+      GreatBritain.threshold.formattedInPoundsUI mustBe "£1,500"
     }
   }
 
