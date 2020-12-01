@@ -21,7 +21,7 @@ import play.api.data.Forms.mapping
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.core.CategoryQuantityOfGoods
 
-object GoodsTypeQuantityView extends Mappings {
+object GoodsTypeQuantityForm extends Mappings {
 
   val form: Form[CategoryQuantityOfGoods] =
     Form(

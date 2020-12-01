@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityView.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
@@ -39,14 +39,14 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)
 
-    Ok(view(preparedForm, idx, backButtonUrl(idx)))
+    Ok(view(preparedForm, idx, request.declarationJourney.declarationType, backButtonUrl(idx)))
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, backButtonUrl(idx)))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl(idx)))),
         categoryQuantityOfGoods =>
           persistAndRedirect(
             request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)),
