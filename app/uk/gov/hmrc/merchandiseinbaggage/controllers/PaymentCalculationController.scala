@@ -20,10 +20,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentCalculationController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -41,14 +42,22 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
         request.declarationJourney.maybeGoodsDestination
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            for {
-              paymentCalculations <- calculationService.paymentCalculation(goods)
-              rates <- calculationService.getConversionRates(goods)
-            } yield {
-              if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
-                Redirect(routes.GoodsOverThresholdController.onPageLoad())
-              else
-                Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+            request.declarationJourney.declarationType match {
+              case Import =>
+                for {
+                  paymentCalculations <- calculationService.paymentCalculation(goods)
+                  rates <- calculationService.getConversionRates(goods)
+                } yield {
+                  if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
+                    Redirect(routes.GoodsOverThresholdController.onPageLoad())
+                  else
+                    Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+                }
+              case Export =>
+                if (goods.goods.map(_.purchaseDetails.numericAmount).sum > destination.threshold.inPounds)
+                  Future successful Redirect(routes.GoodsOverThresholdController.onPageLoad())
+                else
+                  Future successful Redirect(routes.CustomsAgentController.onPageLoad())
             }
           }
       }

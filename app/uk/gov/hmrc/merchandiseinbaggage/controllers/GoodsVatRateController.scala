@@ -20,6 +20,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsVatRateForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Zero
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
 
@@ -39,9 +41,17 @@ class GoodsVatRateController @Inject()(
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      val preparedForm = request.goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
-
-      Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
+      request.declarationJourney.declarationType match {
+        case Import =>
+          val preparedForm = request.goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
+          Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
+        case Export =>
+          persistAndRedirect(
+            request.goodsEntry.copy(maybeGoodsVatRate = Some(Zero)),
+            idx,
+            routes.SearchGoodsCountryController.onPageLoad(idx)
+          )
+      }
     }
   }
 
