@@ -299,8 +299,9 @@ customsAgent.hint = This is a person or business you employ to help you with cus
 customsAgent.error.required = Select yes if you are a customs agent
 
 # AgentDetails
-agentDetails.title = Enter the business name of the customs agent
-agentDetails.heading = Enter the business name of the customs agent
+agentDetails.title = What is your registered business name?
+agentDetails.heading = What is your registered business name?
+agentDetails.hint = This is your registered business name as a customs agent.
 agentDetails.error.required = Enter your registered business name
 
 # TraderDetails
