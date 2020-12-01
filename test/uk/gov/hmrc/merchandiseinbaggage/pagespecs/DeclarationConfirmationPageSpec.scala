@@ -22,7 +22,6 @@ import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationType, Goods}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
@@ -85,7 +84,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   def hasDateOfDeclaration(ldt: LocalDateTime): Assertion = {
     textOfElementWithId("declarationDateId") mustBe "Date of declaration"
-    textOfElementWithId("declarationDateFormattedId") must include(ldt.formattedDate)
+    textOfElementWithId("declarationDateFormattedId") must include(ldt.format(Declaration.formatter))
   }
 
   def hasEmailAddress(declaration: Declaration): Assertion =
@@ -102,7 +101,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
     val listItems = unifiedListItemsById("whatToDoNextUlId")
     listItems.get(0).getText mustBe "take this declaration confirmation with you"
-    listItems.get(1).getText mustBe "take the receipts or invoices for all the goods you are taking out of the UK"
+    listItems.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
   }
 
   def hasWhaToDoNextImport: Assertion = {
@@ -110,7 +109,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     val listItems = unifiedListItemsById("whatToDoNextUlId")
     listItems.get(0).getText mustBe "go through the green channel (nothing to declare) at customs"
     listItems.get(1).getText mustBe "take this declaration confirmation with you"
-    listItems.get(2).getText mustBe "take the receipts or invoices for all the goods you are taking out of the UK"
+    listItems.get(2).getText mustBe "take the invoices for all the goods you are taking out of the UK"
   }
 
   def hasGoodDetails(declaration: Declaration): Assertion = {
@@ -122,7 +121,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         textOfElementWithId(s"category_$idx") mustBe good.categoryQuantityOfGoods.category
         textOfElementWithId(s"quantityLabel_$idx") mustBe "Number of items"
         textOfElementWithId(s"quantity_$idx") mustBe good.categoryQuantityOfGoods.quantity
-        textOfElementWithId(s"countryLabel_$idx") mustBe "Destination"
+        textOfElementWithId(s"countryLabel_$idx") mustBe "Country"
         textOfElementWithId(s"country_$idx") mustBe good.countryOfPurchase
         textOfElementWithId(s"priceLabel_$idx") mustBe "Price paid"
         textOfElementWithId(s"price_$idx") mustBe good.purchaseDetails.toString

@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 
 case class PurchaseDetails(amount: String, currency: Currency) {
-  override val toString = s"£$amount"
+  override val toString = s"$amount, ${currency.displayName}"
 
   val numericAmount: BigDecimal = BigDecimal(amount)
 
