@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, Eori}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.EoriNumberPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, EoriNumberPage, TravellerDetailsPage}
@@ -34,7 +35,7 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[Eori] = declarationJourney.maybeEori
 
-  "the eori number page" should {
+  "the eori number import page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRequiresACustomsAgentDeclaration(path)
     behave like aPageWhichRenders(path, givenAnAgentJourney(), expectedAgentTitle)
@@ -55,5 +56,9 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
 
     behave like aDataCapturePageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)
+  }
+
+  "the eori number export page" should {
+    behave like aPageWhichRenders(path, givenAnAgentJourney(Export), expectedAgentExportTitle)
   }
 }

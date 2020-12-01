@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, DeclarationType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage}
 
@@ -25,7 +26,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePageSpec[P] {
   def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[F]
 
-  def givenAnAgentJourney(): Unit = givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(Yes)))
+  def givenAnAgentJourney(declarationType: DeclarationType = Import): Unit =
+    givenADeclarationJourney(startedImportJourney
+      .copy(maybeIsACustomsAgent = Some(Yes), declarationType = declarationType))
 
   def givenANonAgentJourney(): Unit = givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(No)))
 
