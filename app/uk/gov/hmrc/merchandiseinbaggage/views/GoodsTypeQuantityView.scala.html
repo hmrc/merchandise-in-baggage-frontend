@@ -17,25 +17,26 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        errorSummary: components.errorSummary,
-        button: components.button,
-        text: components.inputText,
-        h1: components.h1,
-        p: components.p)
+layout: Layout,
+formHelper: FormWithCSRF,
+errorSummary: components.errorSummary,
+button: components.button,
+text: components.inputText,
+h1: components.h1,
+p: components.p)
 
-@(form: Form[_], idx: Int, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("goodsTypeQuantity.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(messages(s"goodsTypeQuantity.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
 
   @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 
-    @h1(messages("goodsTypeQuantity.heading"))
+    @h1(messages(s"goodsTypeQuantity.$declarationType.heading"))
 
     @p(Html(messages("goodsTypeQuantity.p")))
 
