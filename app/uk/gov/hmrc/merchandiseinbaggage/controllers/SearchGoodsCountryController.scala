@@ -52,7 +52,7 @@ class SearchGoodsCountryController @Inject()(
     withGoodsCategory(request.goodsEntry) { category =>
       val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(countriesForm)(countriesForm.fill)
 
-      Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
+      Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))
     }
   }
 
@@ -62,7 +62,7 @@ class SearchGoodsCountryController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
           country =>
             persistAndRedirect(
               request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),

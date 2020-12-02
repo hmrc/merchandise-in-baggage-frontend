@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage, ReviewGoodsPage}
 
@@ -28,6 +29,9 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     extractFormDataFrom(declarationJourney.goodsEntries.entries(index - 1))
 
   def extractFormDataFrom(goodsEntry: GoodsEntry): Option[F]
+
+  def aGoodEntryExportPageTitle(path: String, title: String) =
+    behave like aPageWhichRenders(path, givenADeclarationJourney(importJourneyWithStartedGoodsEntry.copy(declarationType = Export)), title)
 
   def aGoodsEntryPage(path: Int => String,
                       title: String,

@@ -46,5 +46,7 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
 object SearchGoodsCountryPage {
   def path(idx: Int): String = s"/declare-commercial-goods/search-goods-country/$idx"
 
-  val title = "In what country did you buy the test good?"
+  val importTitle = "In what country did you buy the test good?"
+  val exportTitle = "What country are you taking the test good to?"
+  val importHint = "If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase."
 }
