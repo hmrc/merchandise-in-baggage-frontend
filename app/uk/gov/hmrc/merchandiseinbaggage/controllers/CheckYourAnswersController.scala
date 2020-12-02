@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Impo
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggage.views.html.CheckYourAnswersPage
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,18 +39,25 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                            connector: PaymentConnector,
                                            mibConnector: MibConnector,
                                            override val repo: DeclarationJourneyRepository,
-                                           page: CheckYourAnswersPage)
+                                           importView: CheckYourAnswersImportView,
+                                           exportView: CheckYourAnswersExportView)
                                           (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
       .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-        calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
-          if (declaration.declarationType == Import
-            && paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
-            Redirect(routes.GoodsOverThresholdController.onPageLoad())
-          } else Ok(page(form, declaration, paymentCalculations.totalTaxDue))
+        request.declarationJourney.declarationType match {
+          case Import =>
+            calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
+              if (paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
+                Redirect(routes.GoodsOverThresholdController.onPageLoad())
+              } else Ok(importView(form, declaration, paymentCalculations.totalTaxDue))
+            }
+          case Export =>
+            if (declaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum > declaration.goodsDestination.threshold.inPounds)
+              Future successful Redirect(routes.GoodsOverThresholdController.onPageLoad())
+            else Future successful Ok(exportView(form, declaration))
         }
       }
   }

@@ -21,7 +21,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 
 case class PurchaseDetails(amount: String, currency: Currency) {
-  //TODO if curr. code is determined from API this maybe weak and not ideal
   override val toString =
     if(currency.currencyCode == "GBP") s"£$amount" else s"$amount, ${currency.displayName}"
 
