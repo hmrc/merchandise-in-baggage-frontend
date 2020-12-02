@@ -211,8 +211,10 @@ goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # SearchGoodsCountry
-searchGoodsCountry.title = What country are the goods going to? {0}?
-searchGoodsCountry.heading = What country are the goods going to? {0}?
+searchGoodsCountry.Export.title = What country are the goods going to? {0}?
+searchGoodsCountry.Export.heading = In what country did you buy the {0}?
+searchGoodsCountry.Import.title = In what country did you buy the {0}?
+searchGoodsCountry.Import.heading = What country are the goods going to? {0}?
 searchGoodsCountry.error.required = Select the country where you bought the goods
 searchGoodsCountry.error.invalid = Select a valid country
 

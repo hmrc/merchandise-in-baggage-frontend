@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
+@import uk.gov.hmrc.merchandiseinbaggage.model.core._
 
 @this(
 layout: Layout,
@@ -26,7 +27,7 @@ errorSummary: components.errorSummary,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
@@ -49,6 +50,7 @@ button: components.button
 
 @layout(
     pageTitle = Some(title(form, "searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
+    pageTitle = Some(messages(s"searchGoodsCountry.$declarationType.title", goodsCategory)),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl)
@@ -57,7 +59,7 @@ button: components.button
 
         @errorSummary(form.errors, Some("country-auto-complete"))
 
-        @h1(messages("searchGoodsCountry.heading", goodsCategory))
+        @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory))
 
         <div class="govuk-form-group">
             <div class="autocomplete-wrapper country">
