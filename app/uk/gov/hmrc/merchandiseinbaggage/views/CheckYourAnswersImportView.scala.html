@@ -24,7 +24,7 @@
 
 @(form: Form[_], declaration: Declaration, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType)) {
 
  @helper.form(action = CheckYourAnswersController.onSubmit()) {
 

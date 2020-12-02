@@ -23,4 +23,5 @@ final class DeclarationGoodsRequest[A](declarationJourneyRequest: DeclarationJou
   extends WrappedRequest[A](declarationJourneyRequest) {
 
   val declarationJourney = declarationJourneyRequest.declarationJourney
+  val declarationType = declarationJourney.declarationType
 }

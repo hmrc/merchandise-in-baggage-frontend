@@ -17,17 +17,18 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        errorSummary: components.errorSummary,
-        button: components.button,
-        text: components.inputText)
+layout: Layout,
+formHelper: FormWithCSRF,
+errorSummary: components.errorSummary,
+button: components.button,
+text: components.inputText)
 
-@(form: Form[_], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "vehicleRegistrationNumber.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "vehicleRegistrationNumber.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
   @formHelper(action = VehicleRegistrationNumberController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

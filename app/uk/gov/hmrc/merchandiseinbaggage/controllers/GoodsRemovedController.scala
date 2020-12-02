@@ -34,6 +34,6 @@ class GoodsRemovedController @Inject()(override val controllerComponents: Messag
       case Export => routes.StartExportController.onPageLoad().url
     }
 
-    Ok(view(startAgainUrl))
+    Ok(view(startAgainUrl, request.declarationType))
   }
 }

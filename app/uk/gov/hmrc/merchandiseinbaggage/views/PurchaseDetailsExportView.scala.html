@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 
 @this(
 layout: Layout,
@@ -33,7 +34,8 @@ button: components.button
 
 @layout(
     pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
-    maybeBackButtonUrl = Some(backButtonUrl)
+    maybeBackButtonUrl = Some(backButtonUrl),
+    maybeDeclarationType = Some(Export)
 ) {
     @formHelper(action = PurchaseDetailsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

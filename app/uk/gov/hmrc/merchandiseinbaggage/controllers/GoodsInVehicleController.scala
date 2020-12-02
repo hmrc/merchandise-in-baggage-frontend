@@ -37,14 +37,14 @@ class GoodsInVehicleController @Inject()(
     backToCheckYourAnswersIfCompleteElse(routes.JourneyDetailsController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(form.fill), backButtonUrl))
+    Ok(view(request.declarationJourney.maybeTravellingByVehicle.fold(form)(form.fill), request.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
+        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationType, backButtonUrl)),
         goodsInVehicle =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle)),

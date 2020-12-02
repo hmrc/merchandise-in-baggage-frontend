@@ -20,6 +20,6 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
   <h1 class="govuk-heading-xl" id="main-message">@messages("invalidRequest.heading")</h1>
 }

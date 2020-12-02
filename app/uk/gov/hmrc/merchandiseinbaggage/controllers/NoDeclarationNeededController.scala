@@ -28,6 +28,6 @@ class NoDeclarationNeededController @Inject()(override val controllerComponents:
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view())
+    Ok(view(request.declarationType))
   }
 }

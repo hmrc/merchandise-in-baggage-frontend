@@ -53,7 +53,8 @@ button: components.button
     pageTitle = Some(title(form, s"searchGoodsCountry.$declarationType.title", titleMessageArgs = Seq(goodsCategory))),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
-    maybeBackButtonUrl = Some(backButtonUrl)
+    maybeBackButtonUrl = Some(backButtonUrl),
+    maybeDeclarationType = Some(declarationType)
 ) {
     @formHelper(action = SearchGoodsCountryController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

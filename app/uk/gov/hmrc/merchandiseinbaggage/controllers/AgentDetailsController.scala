@@ -40,14 +40,14 @@ class AgentDetailsController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeCustomsAgentName.fold(form)(form.fill)
 
-    Ok(view(preparedForm, backButtonUrl))
+    Ok(view(preparedForm, backButtonUrl, request.declarationType))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl, request.declarationType))),
         value => {
           repo.upsert(
             request.declarationJourney.copy(maybeCustomsAgentName = Some(value))

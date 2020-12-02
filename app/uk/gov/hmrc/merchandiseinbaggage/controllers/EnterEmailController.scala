@@ -41,14 +41,14 @@ class EnterEmailController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeEmailAddress.fold(form)(form.fill)
 
-    Ok(view(preparedForm, backButtonUrl))
+    Ok(view(preparedForm, request.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         email =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeEmailAddress = Some(email)), routes.JourneyDetailsController.onPageLoad())
