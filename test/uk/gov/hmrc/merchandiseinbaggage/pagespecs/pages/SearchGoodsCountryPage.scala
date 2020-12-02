@@ -46,5 +46,6 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
 object SearchGoodsCountryPage {
   def path(idx: Int): String = s"/merchandise-in-baggage/search-goods-country/$idx"
 
-  val title = "What country are the goods going to? test good?"
+  val importTitle = "In what country did you buy the test good?"
+  val exportTitle = "What country are the goods going to?"
 }

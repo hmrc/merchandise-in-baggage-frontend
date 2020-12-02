@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage.{path, title}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsVatRatePage, PurchaseDetailsPage, SearchGoodsCountryPage}
 import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.countries
 
@@ -28,9 +28,13 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
 
   private val validationMessage = "Select the country where you bought the goods"
 
-  "the search goods country page" should {
-    behave like aGoodsEntryPage(path, title, countries.head, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
+  "the search goods country page import" should {
+    behave like aGoodsEntryPage(path, importTitle, countries.head, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path(1), Set(validationMessage), givenAGoodsEntryIsStarted())
+  }
+
+  "the search goods country page export" should {
+    behave like aGoodEntryExportPageTitle(path(1), s"$exportTitle test good?")
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase

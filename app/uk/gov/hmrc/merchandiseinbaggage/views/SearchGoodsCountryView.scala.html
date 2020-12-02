@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 
 @this(
 layout: Layout,
@@ -49,8 +50,7 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(title(form, "searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
-    pageTitle = Some(messages(s"searchGoodsCountry.$declarationType.title", goodsCategory)),
+    pageTitle = Some(title(form, s"searchGoodsCountry.$declarationType.title", titleMessageArgs = Seq(goodsCategory))),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl)
@@ -60,6 +60,8 @@ button: components.button
         @errorSummary(form.errors, Some("country-auto-complete"))
 
         @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory))
+
+        @if(declarationType == Import) { <p class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
 
         <div class="govuk-form-group">
             <div class="autocomplete-wrapper country">
