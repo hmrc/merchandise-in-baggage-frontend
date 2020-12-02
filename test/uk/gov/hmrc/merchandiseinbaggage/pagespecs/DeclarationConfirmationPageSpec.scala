@@ -93,7 +93,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
   def hasPrintPageContentInPdf: Assertion = {
     attrOfElementWithId("printDeclarationId", "href") mustBe "javascript:window.print();"
     textOfElementWithId("printDeclarationId") mustBe "Print or save a copy of this page"
-    attrOfElementWithId("printDeclarationLinkId", "href") must include("/merchandise-in-baggage/assets/stylesheets/application.css")
+    attrOfElementWithId("printDeclarationLinkId", "href") must include("/declare-commercial-goods/assets/stylesheets/application.css")
     attrOfElementWithId("printDeclarationLinkId", "media") mustBe "all"
   }
 

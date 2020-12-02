@@ -46,7 +46,7 @@ class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
 }
 
 object PaymentCalculationPage {
-  val path: String = "/merchandise-in-baggage/payment-calculation"
+  val path: String = "/declare-commercial-goods/payment-calculation"
 
   def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
 }

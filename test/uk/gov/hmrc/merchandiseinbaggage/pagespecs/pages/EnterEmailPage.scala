@@ -48,7 +48,7 @@ class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
 }
 
 object EnterEmailPage {
-  val path: String = "/merchandise-in-baggage/enter-email"
+  val path: String = "/declare-commercial-goods/enter-email"
   val title: String = "Enter an email address"
 }
 

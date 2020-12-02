@@ -35,6 +35,6 @@ class GoodsRemovedPage(implicit webDriver: WebDriver) extends BasePage {
 }
 
 object GoodsRemovedPage {
-  val path: String = s"/merchandise-in-baggage/goods-removed"
+  val path: String = s"/declare-commercial-goods/goods-removed"
   val title: String = "You removed your goods"
 }

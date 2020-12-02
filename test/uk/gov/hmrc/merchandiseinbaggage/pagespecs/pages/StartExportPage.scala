@@ -23,6 +23,6 @@ class StartExportPage(implicit webDriver: WebDriver) extends BasePage {
 }
 
 object StartExportPage {
-  val path = "/merchandise-in-baggage/start-export"
+  val path = "/declare-commercial-goods/start-export"
   val title: String = "Declare commercial goods you’re taking out of the UK in accompanied baggage or small vehicles"
 }

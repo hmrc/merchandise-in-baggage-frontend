@@ -21,6 +21,6 @@ import org.openqa.selenium.WebDriver
 class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage
 
 object DeclarationConfirmationPage {
-  val path = "/merchandise-in-baggage/declaration-confirmation"
+  val path = "/declare-commercial-goods/declaration-confirmation"
   val title = "Confirmation page - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 }

@@ -36,6 +36,6 @@ class VehicleRegistrationNumberPage(implicit webDriver: WebDriver) extends Decla
 }
 
 object VehicleRegistrationNumberPage {
-  val path = "/merchandise-in-baggage/vehicle-registration-number"
+  val path = "/declare-commercial-goods/vehicle-registration-number"
   val title = "What is the registration number of the vehicle?"
 }

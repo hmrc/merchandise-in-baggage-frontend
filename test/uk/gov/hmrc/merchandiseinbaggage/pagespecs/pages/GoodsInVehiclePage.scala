@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object GoodsInVehiclePage {
-  val path: String = "/merchandise-in-baggage/goods-in-vehicle"
+  val path: String = "/declare-commercial-goods/goods-in-vehicle"
   val title: String = "Are you travelling by vehicle?"
 }
 

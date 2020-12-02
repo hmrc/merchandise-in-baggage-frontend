@@ -36,6 +36,6 @@ class AgentDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCap
 }
 
 object AgentDetailsPage {
-  val path = "/merchandise-in-baggage/agent-details"
+  val path = "/declare-commercial-goods/agent-details"
   val title = "What is your registered business name?"
 }

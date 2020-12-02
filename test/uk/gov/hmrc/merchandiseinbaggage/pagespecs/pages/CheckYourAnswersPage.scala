@@ -75,7 +75,7 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends BasePage {
 }
 
 object CheckYourAnswersPage {
-  val path = "/merchandise-in-baggage/check-your-answers"
+  val path = "/declare-commercial-goods/check-your-answers"
   val title = "Check your answers before making your declaration"
 
   val expectedSectionHeaders =

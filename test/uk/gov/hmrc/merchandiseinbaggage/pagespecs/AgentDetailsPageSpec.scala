@@ -37,7 +37,7 @@ class AgentDetailsPageSpec extends DeclarationDataCapturePageSpec[String, AgentD
       val redirectedPath = submitAndEnsurePersistence(path, givenAnImportJourneyIsStarted(), "test agent")
 
       val successfulRedirectDependingOnWhetherAddressLookupIsAvailable =
-        redirectedPath == "/merchandise-in-baggage/enter-agent-address" || redirectedPath.startsWith("/lookup-address")
+        redirectedPath == "/declare-commercial-goods/enter-agent-address" || redirectedPath.startsWith("/lookup-address")
       successfulRedirectDependingOnWhetherAddressLookupIsAvailable mustBe true
     }
   }

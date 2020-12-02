@@ -70,7 +70,7 @@ class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataC
 }
 
 object JourneyDetailsPage {
-  val path = "/merchandise-in-baggage/journey-details"
+  val path = "/declare-commercial-goods/journey-details"
 
   val title = "Journey details"
 }

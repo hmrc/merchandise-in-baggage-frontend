@@ -64,7 +64,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       "the total GBP value of the goods exceeds the threshold" in {
         givenADeclarationWithTaxDue(completedImportJourneyWithGoodsOverThreshold)
 
-        open(path) mustBe "/merchandise-in-baggage/goods-over-threshold"
+        open(path) mustBe "/declare-commercial-goods/goods-over-threshold"
       }
     }
 
@@ -234,7 +234,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
   }
 
   def mustRedirectToInvalidRequest(): Assertion =
-    readPath() mustBe "/merchandise-in-baggage/invalid-request"
+    readPath() mustBe "/declare-commercial-goods/invalid-request"
 
   import WebBrowser._
   import page._

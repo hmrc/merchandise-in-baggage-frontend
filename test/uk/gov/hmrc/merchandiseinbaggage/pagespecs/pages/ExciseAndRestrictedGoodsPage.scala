@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object ExciseAndRestrictedGoodsPage {
-  val path = "/merchandise-in-baggage/excise-and-restricted-goods"
+  val path = "/declare-commercial-goods/excise-and-restricted-goods"
   val importTitle = "Are you bringing any of the following goods to the UK?"
   val exportTitle = "Are you taking any of the following goods out of the UK?"
 }

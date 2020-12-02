@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object RemoveGoodsPage {
-  def path(index: Int): String = s"/merchandise-in-baggage/remove-goods/$index"
+  def path(index: Int): String = s"/declare-commercial-goods/remove-goods/$index"
 
   def title(goodsCategory: String): String = s"Are you sure you want to remove the $goodsCategory?"
 }
