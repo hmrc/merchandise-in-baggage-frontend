@@ -1,0 +1,235 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+@import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.taxDue
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+
+@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
+
+@(form: Form[_], declaration: Declaration, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(messages("checkYourAnswers.title")), maybeBackButtonUrl = None) {
+
+ @helper.form(action = CheckYourAnswersController.onSubmit()) {
+
+  @helper.CSRF.formField
+  @if(form.hasErrors) {
+    @errorSummary(form.errors)
+  }
+
+ <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+
+ @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
+   <dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
+     <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
+     <dd class="govuk-summary-list__actions">
+       <a id="@{s"categoryChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
+        @messages("checkYourAnswers.change")
+       </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
+     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="@{s"quantityChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
+         @messages("checkYourAnswers.change")
+       </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"vatRateLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.vatRate")</dt>
+     <dd id="@{s"vatRate_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@{s"${goods.goodsVatRate.value}%"}</dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="@{s"vatRateChangeLink_$index"}" href=@{s"${GoodsVatRateController.onPageLoad(index + 1)}"}>
+         @messages("checkYourAnswers.change")
+       </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+     <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="@{s"countryChangeLink_$index"}" href=@{s"${SearchGoodsCountryController.onPageLoad(index + 1)}"}>
+         @messages("checkYourAnswers.change")
+       </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
+     <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails</dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="@{s"priceChangeLink_$index"}" href=@{s"${PurchaseDetailsController.onPageLoad(index + 1)}"}>
+         @messages("checkYourAnswers.change")
+       </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
+     <dd class="govuk-summary-list__value">
+      <a id="@{s"removeGoodsLink_$index"}" class="govuk-link" href="@{s"${RemoveGoodsController.onPageLoad(index + 1)}"}">
+       @messages("site.remove")
+      </a>
+     </dd>
+    </div>
+   </dl>
+}
+
+  <p class="govuk-body">
+   <a id="addMoreGoodsLink" class="govuk-link" href="@CheckYourAnswersController.addMoreGoods">
+    @messages("checkYourAnswers.addMoreGoods")
+   </a>
+  </p>
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+   <div class="govuk-summary-list__row">
+     <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.paymentDue")</dt>
+     <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue.formattedInPounds</dd>
+   </div>
+
+  <input id="@taxDue" type="hidden" name="@taxDue" value="@totalTaxDue.value">
+ </dl>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+  @declaration.maybeCustomsAgent.fold(Html("")) { customsAgent =>
+   <div class="govuk-summary-list__row">
+    <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
+    <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
+    <dd class="govuk-summary-list__actions">
+     <a id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
+       @messages("checkYourAnswers.change")
+     </a>
+    </dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt id="customsAgentAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
+    <dd id="customsAgentAddress" class="govuk-summary-list__value" style="text-transform: capitalize">
+     @for(addressLine <- customsAgent.address.lines) {
+      @addressLine
+      <br>
+      }
+
+     @customsAgent.address.postcode.getOrElse("")
+    </dd>
+    <dd class="govuk-summary-list__actions">
+     <a id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
+       @messages("checkYourAnswers.change")
+     </a>
+    </dd>
+   </div>
+  }
+  <div class="govuk-summary-list__row">
+   <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
+   <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="eoriChangeLink" href=@{s"${EoriNumberController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
+   <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="nameOfPersonCarryingTheGoodsChangeLink" href=@{s"${TravellerDetailsController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt id="emailAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.emailAddress")</dt>
+   <dd id="emailAddress" class="govuk-summary-list__value">@declaration.email.email</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="emailAddressChangeLink" href=@{s"${EnterEmailController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+ </dl>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.journeyDetails")</h2>
+
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+  <div class="govuk-summary-list__row">
+   <dt id="placeOfArrivalLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.placeOfArrival")</dt>
+   <dd id="placeOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.placeOfArrival.display</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="placeOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt id="dateOfArrivalLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
+   <dd id="dateOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="dateOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+   <dt id="travellingByVehicleLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.travellingByVehicle")</dt>
+   <dd id="travellingByVehicle" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.travellingByVehicle.messageKey)</dd>
+   <dd class="govuk-summary-list__actions">
+    <a id="travellingByVehicleChangeLink" href=@{s"${GoodsInVehicleController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
+    </a>
+   </dd>
+  </div>
+  @declaration.journeyDetails.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
+   <div class="govuk-summary-list__row">
+    <dt id="vehicleRegistrationNumberLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.vehicleRegistrationNumber")</dt>
+    <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
+    <dd class="govuk-summary-list__actions">
+     <a id="vehicleRegistrationNumberChangeLink" href=@{s"${VehicleRegistrationNumberController.onPageLoad()}"}>
+       @messages("checkYourAnswers.change")
+     </a>
+    </dd>
+   </div>
+  }
+ </dl>
+
+ <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.sendDeclaration")</h2>
+
+ <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
+
+ <ul class="govuk-list govuk-list--bullet">
+  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
+  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
+ </ul>
+
+  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>
+
+ <div class="govuk-warning-text">
+  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+  <strong class="govuk-warning-text__text">
+   <span class="govuk-warning-text__assistive">@messages("checkYourAnswers.sendDeclaration.warning")</span>
+   @messages("checkYourAnswers.sendDeclaration.warning.message")
+  </strong>
+ </div>
+
+   @button(messages("checkYourAnswers.payButton"), name = Some("payButton"))
+ }
+}

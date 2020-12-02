@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyId, PayAp
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggage.views.html.CheckYourAnswersPage
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,7 +34,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
 
   private lazy val httpClient = injector.instanceOf[HttpClient]
-  private lazy val page = injector.instanceOf[CheckYourAnswersPage]
+  private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
+  private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, ""){
@@ -57,7 +58,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   }
 
   private lazy val controller = new CheckYourAnswersController(controllerComponents, actionBuilder,
-    stubbedCalculation, testPaymentConnector, testMibConnector, declarationJourneyRepository, page)
+    stubbedCalculation, testPaymentConnector, testMibConnector, declarationJourneyRepository, importView, exportView)
 
   "on submit will calculate tax and send payment request to pay api and reset declaration journey" in {
     val sessionId = SessionId()

@@ -17,13 +17,10 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-@import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.taxDue
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
 
-@(form: Form[_], declaration: Declaration, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(messages("checkYourAnswers.title")), maybeBackButtonUrl = None) {
 
@@ -59,16 +56,7 @@
      </dd>
     </div>
     <div class="govuk-summary-list__row">
-     <dt id="@{s"vatRateLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.vatRate")</dt>
-     <dd id="@{s"vatRate_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@{s"${goods.goodsVatRate.value}%"}</dd>
-     <dd class="govuk-summary-list__actions">
-      <a id="@{s"vatRateChangeLink_$index"}" href=@{s"${GoodsVatRateController.onPageLoad(index + 1)}"}>
-         @messages("checkYourAnswers.change")
-       </a>
-     </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.destination")</dt>
      <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.countryOfPurchase</dd>
      <dd class="govuk-summary-list__actions">
       <a id="@{s"countryChangeLink_$index"}" href=@{s"${SearchGoodsCountryController.onPageLoad(index + 1)}"}>
@@ -100,15 +88,6 @@
     @messages("checkYourAnswers.addMoreGoods")
    </a>
   </p>
-
- <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-   <div class="govuk-summary-list__row">
-     <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.taxDue")</dt>
-     <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue.formattedInPounds</dd>
-   </div>
-
-  <input id="@taxDue" type="hidden" name="@taxDue" value="@totalTaxDue.value">
- </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
@@ -217,9 +196,10 @@
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
  <ul class="govuk-list govuk-list--bullet">
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.1")</li>
-  <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.2")</li>
+  <li>@messages("checkYourAnswers.sendDeclaration.Export.acknowledgement.1")</li>
  </ul>
+
+  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>
 
  <div class="govuk-warning-text">
   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -229,9 +209,6 @@
   </strong>
  </div>
 
-   @declaration.declarationType match {
-     case Import => { @button(messages("checkYourAnswers.payButton"), name = Some("payButton")) }
-     case Export => { @button(messages("checkYourAnswers.makeDeclarationButton"), name = Some("makeDeclarationButton")) }
-   }
+  @button(messages("checkYourAnswers.makeDeclarationButton"), name = Some("makeDeclarationButton"))
  }
 }
