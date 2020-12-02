@@ -16,25 +16,26 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    errorSummary: components.errorSummary,
-    inputYesNo: components.inputYesNo,
-    button: components.button
+layout: Layout,
+formHelper: FormWithCSRF,
+errorSummary: components.errorSummary,
+inputYesNo: components.inputYesNo,
+button: components.button
 )
 
-@(form: Form[_], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConf: AppConfig)
+@(form: Form[_], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(messages("vehicleSize.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(messages(s"vehicleSize.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = VehicleSizeController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             form = form,
-            legend = messages("vehicleSize.heading"),
+            legend = messages(s"vehicleSize.$declarationType.heading"),
             hintKey = Some("vehicleSize.hint"),
             legendAsHeading = true
         )
