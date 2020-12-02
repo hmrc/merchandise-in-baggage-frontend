@@ -184,7 +184,7 @@ goodsTypeQuantity.Export.title = What goods are you taking out of the UK?
 goodsTypeQuantity.Export.heading = What goods are you taking out of the UK?
 goodsTypeQuantity.p = Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.
 goodsTypeQuantity.category = Type of goods
-goodsTypeQuantity.category.hint = For example, clothes
+goodsTypeQuantity.category.hint = For example clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
 goodsTypeQuantity.quantity.error.required = Enter the number of items
@@ -241,7 +241,7 @@ reviewGoods.list.country = Country
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more goods?
+reviewGoods.h3 = Do you need to declare more commercial goods?
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods
@@ -293,7 +293,7 @@ paymentCalculation.li = {0} to 1 (GBP).
 paymentCalculation.p3.1 = We use
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-paymentCalculation.p3.2 = We use the rates in the month in which you make your declaration.
+paymentCalculation.p3.2 = We use the rate in the month in which you make your declaration.
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
