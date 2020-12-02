@@ -28,9 +28,9 @@ h3: components.h3,
 p: components.p
 )
 
-@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @h1(s"goodsOverThreshold.${dest.toString}.heading")
 
     <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.p1")</p>
@@ -60,20 +60,22 @@ p: components.p
 
     @p(Html(messages("goodsOverThreshold.p6", totalValue.formattedInPounds)))
 
-    @p(Html(messages("goodsOverThreshold.p7")))
+    @if(rates.nonEmpty) {
+        @p(Html(messages("goodsOverThreshold.p7")))
 
-    <ul class="govuk-list govuk-list--bullet">
-        @for(rate <- rates) {
-            <li>@messages("goodsOverThreshold.li", rate.display)</li>
-        }
-    </ul>
+        <ul class="govuk-list govuk-list--bullet">
+            @for(rate <- rates) {
+                <li>@messages("goodsOverThreshold.li", rate.display)</li>
+            }
+        </ul>
 
-    <p class="govuk-body">
-        @messages("goodsOverThreshold.p8.1")
-        <a class="govuk-link" href="@messages("goodsOverThreshold.p8.a.href")" target="_blank">
-            @messages("goodsOverThreshold.p8.a.text")
-        </a>
-        @messages("goodsOverThreshold.p8.2")
-    </p>
+        <p class="govuk-body">
+            @messages("goodsOverThreshold.p8.1")
+            <a class="govuk-link" href="@messages("goodsOverThreshold.p8.a.href")" target="_blank">
+                @messages("goodsOverThreshold.p8.a.text")
+            </a>
+            @messages("goodsOverThreshold.p8.2")
+        </p>
+    }
 
 }

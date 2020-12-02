@@ -57,6 +57,8 @@ case class AmountInPence(value: Long) {
 
 object AmountInPence {
   implicit val format: Format[AmountInPence] = implicitly[Format[Long]].inmap(AmountInPence(_), _.value)
+
+  def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
 }
 
 case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,

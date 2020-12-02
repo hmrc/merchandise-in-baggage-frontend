@@ -42,14 +42,14 @@ class CustomsAgentController @Inject()(
     }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill), backButtonUrl))
+    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill), request.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, backButtonUrl)),
+        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationType, backButtonUrl)),
         isCustomsAgent =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),

@@ -18,18 +18,19 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.Email
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        errorSummary: components.errorSummary,
-        button: components.button,
-        text: components.inputText,
-        h1: components.h1)
+layout: Layout,
+formHelper: FormWithCSRF,
+errorSummary: components.errorSummary,
+button: components.button,
+text: components.inputText,
+h1: components.h1)
 
-@(form: Form[Email], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Email], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
   @formHelper(action = EnterEmailController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
     @h1(messages("enterEmail.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))

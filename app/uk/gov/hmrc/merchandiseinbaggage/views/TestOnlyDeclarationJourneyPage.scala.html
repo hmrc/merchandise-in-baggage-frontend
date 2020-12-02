@@ -21,7 +21,7 @@
 
 @(form: Form[String])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "Create a test declaration journey")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(title(form, "Create a test declaration journey")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
  <h1 class="govuk-heading-xl" id="main-message">Create a test declaration journey</h1>
 
  @formWithCSRF(action = testonly.routes.TestOnlyController.submitDeclarationJourneyPage) {

@@ -17,22 +17,36 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.views.FooterLinks
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.layouts
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
-        govukLayout: layouts.govukLayout,
-        govukFullWidthLayout: layouts.govukFullWidthLayout,
-        head: Head
+govukLayout: layouts.govukLayout,
+govukFullWidthLayout: layouts.govukFullWidthLayout,
+head: Head
 )
 @(pageTitle: Option[String] = None,
   headBlock: Option[Html] = None,
   scriptsBlock: Option[Html] = None,
   fullWidth: Boolean = false,
-  maybeBackButtonUrl: Option[play.api.mvc.Call])(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  maybeBackButtonUrl: Option[play.api.mvc.Call],
+  maybeDeclarationType: Option[DeclarationType]
+)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@defaultHead = {
+    @headBlock
+    @maybeDeclarationType.map { declarationType =>
+        <script>
+                dataLayer = [{
+                    'MIB_URL': '@declarationType.toString.toLowerCase' + window.location.pathname
+                }];
+        </script>
+    }
+}
 
 @if(fullWidth) {
     @govukFullWidthLayout(
         pageTitle = pageTitle,
-        headBlock = Some(head(headBlock)),
+        headBlock = Some(head(Some(defaultHead))),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
         footerItems = FooterLinks(),
@@ -41,7 +55,7 @@
 } else {
     @govukLayout(
         pageTitle = pageTitle,
-        headBlock = Some(head(headBlock)),
+        headBlock = Some(head(Some(defaultHead))),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
         footerItems = FooterLinks(),

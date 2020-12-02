@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
 @this(
 layout: Layout,
@@ -26,7 +27,7 @@ errorSummary: components.errorSummary,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
     <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
@@ -51,7 +52,8 @@ button: components.button
     pageTitle = Some(title(form, "searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
-    maybeBackButtonUrl = Some(backButtonUrl)
+    maybeBackButtonUrl = Some(backButtonUrl),
+    maybeDeclarationType = Some(declarationType)
 ) {
     @formHelper(action = SearchGoodsCountryController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

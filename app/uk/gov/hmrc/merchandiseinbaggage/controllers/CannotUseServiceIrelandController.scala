@@ -28,6 +28,6 @@ class CannotUseServiceIrelandController @Inject()(override val controllerCompone
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view())
+    Ok(view(request.declarationType))
   }
 }

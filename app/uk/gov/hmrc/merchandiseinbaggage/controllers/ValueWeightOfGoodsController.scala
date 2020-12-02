@@ -44,6 +44,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
         Ok(
           view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
             goodsDestination,
+            request.declarationType,
             backButtonUrl))
       }
   }
@@ -56,7 +57,7 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
         form(goodsDestination)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, backButtonUrl)),
+            formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, request.declarationType, backButtonUrl)),
             exceedsThreshold => {
               persistAndRedirect(
                 declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),

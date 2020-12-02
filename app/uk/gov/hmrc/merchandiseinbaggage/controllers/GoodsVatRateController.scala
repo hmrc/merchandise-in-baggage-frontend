@@ -44,7 +44,7 @@ class GoodsVatRateController @Inject()(
       request.declarationJourney.declarationType match {
         case Import =>
           val preparedForm = request.goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
-          Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
+          Future successful Ok(view(preparedForm, idx, category, Import, backButtonUrl(idx)))
         case Export =>
           persistAndRedirect(
             request.goodsEntry.copy(maybeGoodsVatRate = Some(Zero)),
@@ -61,7 +61,7 @@ class GoodsVatRateController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
+            Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
             persistAndRedirect(
               request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate)),

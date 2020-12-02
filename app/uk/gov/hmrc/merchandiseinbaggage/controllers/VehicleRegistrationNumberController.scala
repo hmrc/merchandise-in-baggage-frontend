@@ -40,14 +40,14 @@ class VehicleRegistrationNumberController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeRegistrationNumber.fold(form)(form.fill)
 
-    Ok(view(preparedForm, backButtonUrl))
+    Ok(view(preparedForm, request.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         vehicleReg => {
           repo.upsert(
             request.declarationJourney.copy(maybeRegistrationNumber = Some(vehicleReg))

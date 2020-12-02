@@ -30,7 +30,7 @@ p: components.p)
 
 @(form: Form[_], idx: Int, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"goodsTypeQuantity.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, s"goodsTypeQuantity.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
   @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

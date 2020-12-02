@@ -20,10 +20,12 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsOverThresholdController @Inject()(override val controllerComponents: MessagesControllerComponents,
@@ -38,10 +40,16 @@ class GoodsOverThresholdController @Inject()(override val controllerComponents: 
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
         request.declarationJourney.maybeGoodsDestination
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            for {
-              paymentCalculations <- calculationService.paymentCalculation(goods)
-              rates <- calculationService.getConversionRates(goods)
-            } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates))
+            request.declarationType match {
+              case Import =>
+                for {
+                  paymentCalculations <- calculationService.paymentCalculation(goods)
+                  rates <- calculationService.getConversionRates(goods)
+                } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates, Import))
+              case Export =>
+                val amount = AmountInPence.fromBigDecimal(goods.goods.map(_.purchaseDetails.numericAmount).sum)
+                Future successful Ok(view(destination, amount, Seq.empty, Export))
+            }
           }
       }
   }

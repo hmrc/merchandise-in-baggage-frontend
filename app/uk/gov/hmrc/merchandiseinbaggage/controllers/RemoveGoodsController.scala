@@ -41,7 +41,7 @@ class RemoveGoodsController @Inject()(
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      Future successful Ok(view(form, idx, category, backButtonUrl))
+      Future successful Ok(view(form, idx, category, request.declarationType, backButtonUrl))
     }
   }
 
@@ -50,7 +50,7 @@ class RemoveGoodsController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
           removeGoods => {
             if (removeGoods == Yes) {
               repo.upsert(

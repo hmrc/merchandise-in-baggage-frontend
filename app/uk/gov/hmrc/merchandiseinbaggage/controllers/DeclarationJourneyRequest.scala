@@ -21,4 +21,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 
 final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJourney, val request: Request[A])
   extends WrappedRequest[A](request) {
+
+  def declarationType = declarationJourney.declarationType
 }

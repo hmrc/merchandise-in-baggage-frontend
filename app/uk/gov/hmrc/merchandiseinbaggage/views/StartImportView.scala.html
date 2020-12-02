@@ -16,19 +16,20 @@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    h1: components.h1,
-    h3: components.h3,
-    p: components.p,
-    button: components.button
+layout: Layout,
+formHelper: FormWithCSRF,
+h1: components.h1,
+h3: components.h3,
+p: components.p,
+button: components.button
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("startImport.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(titleNoForm("startImport.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Import)) {
     @h1(messages("startImport.heading"))
 
     <p class="govuk-body-l">
