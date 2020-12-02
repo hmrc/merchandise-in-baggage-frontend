@@ -76,8 +76,8 @@ appConfig: AppConfig
 @mainContentDefault = {
     @{
         maybeBackButtonUrl.fold(Html("")){ url =>
-            // for some reason the supplied Call path does not always start with /merchandise-in-baggage
-            val pathPrefix = "/merchandise-in-baggage"
+            // for some reason the supplied Call path does not always start with /declare-commercial-goods/
+            val pathPrefix = "/declare-commercial-goods/"
             val urlString = url.toString
             val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
 

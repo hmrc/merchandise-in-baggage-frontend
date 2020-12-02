@@ -1,5 +1,5 @@
 service.name = Declare commercial goods carried in accompanied baggage or small vehicles
-service.homePageUrl = /merchandise-in-baggage-frontend
+service.homePageUrl = /declare-commercial-goods
 service.text = This is your new service
 
 # Alpha/Beta Banner

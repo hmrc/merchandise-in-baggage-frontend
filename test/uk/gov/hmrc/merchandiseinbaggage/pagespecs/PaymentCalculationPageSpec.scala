@@ -41,7 +41,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
       "the total GBP value of the goods exceeds the threshold" in {
         setUpTaxCalculationAndOpenPage(importJourneyWithGoodsOverThreshold)
 
-        page.readPath() mustBe "/merchandise-in-baggage/goods-over-threshold"
+        page.readPath() mustBe "/declare-commercial-goods/goods-over-threshold"
       }
     }
 

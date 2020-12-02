@@ -50,7 +50,7 @@ class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDat
 }
 
 object TravellerDetailsPage {
-  val path: String = "/merchandise-in-baggage/traveller-details"
+  val path: String = "/declare-commercial-goods/traveller-details"
   val title: String = "What is the name of the person carrying the goods?"
   val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
 }

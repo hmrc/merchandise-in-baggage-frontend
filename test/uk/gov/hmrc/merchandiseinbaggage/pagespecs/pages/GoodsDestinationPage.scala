@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object GoodsDestinationPage {
-  val path = "/merchandise-in-baggage/goods-destination"
+  val path = "/declare-commercial-goods/goods-destination"
   val importTitle = "Where in the UK are the goods going to?"
   val exportTitle = "Where in the UK are the goods leaving from?"
 }

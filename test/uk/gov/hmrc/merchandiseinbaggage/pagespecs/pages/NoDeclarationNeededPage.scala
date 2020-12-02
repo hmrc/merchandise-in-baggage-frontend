@@ -17,5 +17,5 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object NoDeclarationNeededPage {
-  val path = "/merchandise-in-baggage/no-declaration-needed"
+  val path = "/declare-commercial-goods/no-declaration-needed"
 }

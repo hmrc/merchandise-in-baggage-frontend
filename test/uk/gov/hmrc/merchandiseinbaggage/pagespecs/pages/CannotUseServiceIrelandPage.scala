@@ -17,5 +17,5 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object CannotUseServiceIrelandPage {
-  val path = "/merchandise-in-baggage/cannot-use-service-ireland"
+  val path = "/declare-commercial-goods/cannot-use-service-ireland"
 }

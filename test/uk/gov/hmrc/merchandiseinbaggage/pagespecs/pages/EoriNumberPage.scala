@@ -37,7 +37,7 @@ class EoriNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
 }
 
 object EoriNumberPage {
-  val path = "/merchandise-in-baggage/enter-eori-number"
+  val path = "/declare-commercial-goods/enter-eori-number"
   val expectedAgentTitle = "What is the EORI number of the business bringing the goods into the UK?"
   val expectedAgentExportTitle = "What is the EORI number of the business taking the goods out of the UK?"
   val expectedNonAgentTitle = "What is your EORI number?"

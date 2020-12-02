@@ -64,6 +64,6 @@ class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
 }
 
 object ReviewGoodsPage {
-  val path: String = "/merchandise-in-baggage/review-goods"
+  val path: String = "/declare-commercial-goods/review-goods"
   val title = "Review your goods"
 }

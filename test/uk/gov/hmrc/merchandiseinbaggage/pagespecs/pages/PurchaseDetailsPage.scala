@@ -47,7 +47,7 @@ class PurchaseDetailsPage(implicit webDriver: WebDriver) extends DeclarationData
 }
 
 object PurchaseDetailsPage {
-  def path(idx: Int): String = s"/merchandise-in-baggage/purchase-details/$idx"
+  def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
 
   val title = "How much did you pay for the test good?"
 }

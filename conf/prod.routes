@@ -1,5 +1,5 @@
 # Add all the application routes to the app.routes file
-->         /merchandise-in-baggage              app.Routes
+->         /declare-commercial-goods/              app.Routes
 ->         /                                    health.Routes
 
 GET        /admin/metrics                       com.kenshoo.play.metrics.MetricsController.metrics
