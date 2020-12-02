@@ -28,7 +28,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("startImport.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(titleNoForm("startImport.title")), maybeBackButtonUrl = None) {
     @h1(messages("startImport.heading"))
 
     <p class="govuk-body-l">

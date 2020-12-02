@@ -27,7 +27,7 @@
 
 @(form: Form[_], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("agentDetails.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "agentDetails.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
 
   @formHelper(action = AgentDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 

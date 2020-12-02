@@ -50,7 +50,7 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(messages("purchaseDetails.title", goodsCategory)),
+    pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl)

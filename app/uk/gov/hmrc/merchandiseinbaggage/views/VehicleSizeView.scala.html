@@ -27,7 +27,7 @@
 
 @(form: Form[_], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(messages("vehicleSize.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "vehicleSize.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = VehicleSizeController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)

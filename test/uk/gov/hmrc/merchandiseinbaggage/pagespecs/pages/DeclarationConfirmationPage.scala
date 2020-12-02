@@ -22,5 +22,5 @@ class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePag
 
 object DeclarationConfirmationPage {
   val path = "/merchandise-in-baggage/declaration-confirmation"
-  val title = "Confirmation page"
+  val title = "Confirmation page - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 }

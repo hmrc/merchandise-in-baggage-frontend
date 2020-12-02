@@ -29,7 +29,7 @@
 
 @(form: Form[Email], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
   @formHelper(action = EnterEmailController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
     @h1(messages("enterEmail.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))

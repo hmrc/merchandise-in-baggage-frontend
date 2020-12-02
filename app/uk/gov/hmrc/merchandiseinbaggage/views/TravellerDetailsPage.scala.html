@@ -30,7 +30,7 @@
 
 @(form: Form[Name], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages("travellerDetails.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, "travellerDetails.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
   @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
     @h1(messages("travellerDetails.heading"))

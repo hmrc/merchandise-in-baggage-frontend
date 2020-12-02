@@ -48,7 +48,7 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(messages("searchGoodsCountry.title", goodsCategory)),
+    pageTitle = Some(title(form, "searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
     headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl)
