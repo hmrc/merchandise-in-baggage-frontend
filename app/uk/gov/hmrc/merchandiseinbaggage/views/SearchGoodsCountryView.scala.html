@@ -61,7 +61,7 @@ button: components.button
 
         @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory))
 
-        @if(declarationType == Import) { <p class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
+        @if(declarationType == Import) { <p id="searchGoodsCountryHint" class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
 
         <div class="govuk-form-group">
             <div class="autocomplete-wrapper country">
