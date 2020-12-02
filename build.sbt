@@ -18,7 +18,8 @@ lazy val microservice = Project(appName, file("."))
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.merchandiseinbaggage.config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.govukfrontend.views.html.helpers._"
+      "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+      "uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils._",
     ),
     // ***************
     // Use the silencer plugin to suppress warnings

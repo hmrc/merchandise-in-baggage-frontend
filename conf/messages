@@ -1,4 +1,4 @@
-service.name = merchandise-in-baggage-frontend
+service.name = Declare commercial goods carried in accompanied baggage or small vehicles
 service.homePageUrl = /merchandise-in-baggage-frontend
 service.text = This is your new service
 
@@ -16,6 +16,7 @@ footer.termsConditions.url = /help/terms-and-conditions
 footer.govukHelp.text = Help using GOV.UK
 footer.govukHelp.url = https://www.gov.uk/help
 
+error.browser.title.prefix = Error:
 error.summary.title = There is a problem
 error.max.3.decimals = Enter a number in the correct format, for example, 25.60
 error.must.be.positive = Enter an amount greater than 0
@@ -37,6 +38,7 @@ site.startAgain = Start again
 site.change = Change
 site.remove = Remove
 site.getHelpWithThisPage = Get help with this page
+site.govuk = GOV.UK
 
 date.day = Day
 date.month = Month

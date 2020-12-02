@@ -28,7 +28,7 @@ button: components.button
 
 @(form: Form[_], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(messages(s"goodsRouteDestination.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
+@layout(pageTitle = Some(title(form, s"goodsRouteDestination.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl)) {
     @formHelper(action = GoodsRouteDestinationController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors)

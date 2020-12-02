@@ -30,7 +30,7 @@ p: components.p
 
 @(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(messages(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None) {
+@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None) {
     @h1(s"goodsOverThreshold.${dest.toString}.heading")
 
     <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.p1")</p>

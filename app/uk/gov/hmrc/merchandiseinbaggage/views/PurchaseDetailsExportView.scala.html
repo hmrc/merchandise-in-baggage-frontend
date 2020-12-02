@@ -32,7 +32,7 @@ button: components.button
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(
-    pageTitle = Some(messages("purchaseDetails.title", goodsCategory)),
+    pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
     maybeBackButtonUrl = Some(backButtonUrl)
 ) {
     @formHelper(action = PurchaseDetailsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
