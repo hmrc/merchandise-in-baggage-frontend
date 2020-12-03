@@ -52,7 +52,7 @@ class RemoveGoodsController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
-          removeGoods => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
+          removeGoods    => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
         )
     }
   }
@@ -60,17 +60,16 @@ class RemoveGoodsController @Inject()(
   def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
     if (removeGoods == Yes)
       repo.upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
-        .map { _ => redirectIfGoodRemoved(declarationJourney) }
+        .flatMap { _ => redirectIfGoodRemoved(declarationJourney) }
     else
-      noAnswerRedirect(declarationJourney)
+      redirectToCYAIfCompletedJourney(declarationJourney)
 
-  private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Result = {
-    if (declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
-    else if (declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-    else Redirect(routes.ReviewGoodsController.onPageLoad())
-  }
+  private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Result] =
+    if (declarationJourney.goodsEntries.entries.size == 1)
+      Future successful Redirect(routes.GoodsRemovedController.onPageLoad())
+    else redirectToCYAIfCompletedJourney(declarationJourney)
 
-  private def noAnswerRedirect(declarationJourney: DeclarationJourney): Future[Result] =
+  private def redirectToCYAIfCompletedJourney(declarationJourney: DeclarationJourney): Future[Result] =
     if (declarationJourney.declarationIfRequiredAndComplete.isDefined)
       Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
     else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
