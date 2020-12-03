@@ -70,7 +70,7 @@ class RemoveGoodsController @Inject()(
     else redirectToCYAIfCompletedJourney(declarationJourney)
 
   private def redirectToCYAIfCompletedJourney(declarationJourney: DeclarationJourney): Future[Result] =
-    if (declarationJourney.declarationIfRequiredAndComplete.isDefined)
+    if (declarationJourney.declarationRequiredAndComplete)
       Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
     else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
 }
