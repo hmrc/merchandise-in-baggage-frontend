@@ -17,9 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.RemoveGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
@@ -51,23 +52,24 @@ class RemoveGoodsController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
-          removeGoods => {
-            if (removeGoods == Yes) {
-              repo.upsert(
-                request.declarationJourney.copy(
-                  goodsEntries = request.declarationJourney.goodsEntries.remove(idx)
-                )
-              ).map { _ =>
-                if (request.declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
-                else if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-                else Redirect(routes.ReviewGoodsController.onPageLoad())
-              }
-            } else {
-              Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
-            }
-          }
+          removeGoods => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
         )
     }
   }
 
+  def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
+    if (removeGoods == Yes) {
+      repo.upsert(
+        declarationJourney.copy(
+          goodsEntries = declarationJourney.goodsEntries.remove(idx)
+        )
+      ).map { _ =>
+        if (declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
+        else if (declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+        else Redirect(routes.ReviewGoodsController.onPageLoad())
+      }
+    } else {
+      if(declarationJourney.declarationIfRequiredAndComplete.isDefined) Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
+      else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
+    }
 }

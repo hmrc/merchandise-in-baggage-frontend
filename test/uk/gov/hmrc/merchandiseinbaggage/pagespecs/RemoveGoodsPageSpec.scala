@@ -37,7 +37,7 @@ class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
     behave like aPageWithARequiredQuestion(path(1), requiredAnswerValidationMessage, givenAGoodsEntryIsComplete())
 
     s"redirect to ${ReviewGoodsPage.path}" when {
-      s"the user elects not to remove the goods" in {
+      s"the user selects not to remove the goods" in {
         givenAGoodsEntryIsComplete()
         open(path(1))
         page.fillOutForm(No)
