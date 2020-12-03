@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 
@@ -31,17 +31,28 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
   val view = app.injector.instanceOf[RemoveGoodsView]
   val controller = new RemoveGoodsController(controllerComponents, actionBuilder, repo, view)
 
-  s"on submit redirect back to ${routes.CheckYourAnswersController.onPageLoad().url} if answer No and journey was completed" in {
-    val result = controller.removeGoodOrRedirect(1, completedDeclarationJourney, YesNo.No)
+  "on submit if answer No" should {
+    s"redirect back to ${routes.CheckYourAnswersController.onPageLoad().url} if journey was completed" in {
+      val result = controller.removeGoodOrRedirect(1, completedDeclarationJourney, No)
 
-    status(result) mustBe Status.SEE_OTHER
-    redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+    }
+
+    s"redirect back to ${routes.ReviewGoodsController.onPageLoad().url} if journey was NOT completed" in {
+      val result = controller.removeGoodOrRedirect(1, startedImportJourney, No)
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
+    }
   }
 
-  s"on submit redirect back to ${routes.ReviewGoodsController.onPageLoad().url} if answer No and journey was not completed" in {
-    val result = controller.removeGoodOrRedirect(1, startedImportJourney, YesNo.No)
+  "on submit if answer yes" should {
+    s"redirect to ${routes.GoodsRemovedController.onPageLoad()} if goods contains an entry" in {
+      val result = controller.removeGoodOrRedirect(1, importJourneyWithStartedGoodsEntry, Yes)
 
-    status(result) mustBe Status.SEE_OTHER
-    redirectLocation(result) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.GoodsRemovedController.onPageLoad().url)
+    }
   }
 }

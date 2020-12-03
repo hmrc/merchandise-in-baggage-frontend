@@ -58,18 +58,20 @@ class RemoveGoodsController @Inject()(
   }
 
   def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
-    if (removeGoods == Yes) {
-      repo.upsert(
-        declarationJourney.copy(
-          goodsEntries = declarationJourney.goodsEntries.remove(idx)
-        )
-      ).map { _ =>
-        if (declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
-        else if (declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-        else Redirect(routes.ReviewGoodsController.onPageLoad())
-      }
-    } else {
-      if(declarationJourney.declarationIfRequiredAndComplete.isDefined) Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
-      else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
-    }
+    if (removeGoods == Yes)
+      repo.upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
+        .map { _ => redirectIfGoodRemoved(declarationJourney) }
+    else
+      noAnswerRedirect(declarationJourney)
+
+  private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Result = {
+    if (declarationJourney.goodsEntries.entries.size == 1) Redirect(routes.GoodsRemovedController.onPageLoad())
+    else if (declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+    else Redirect(routes.ReviewGoodsController.onPageLoad())
+  }
+
+  private def noAnswerRedirect(declarationJourney: DeclarationJourney): Future[Result] =
+    if (declarationJourney.declarationIfRequiredAndComplete.isDefined)
+      Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
+    else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
 }
