@@ -62,14 +62,14 @@ class RemoveGoodsController @Inject()(
       repo.upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
         .flatMap { _ => redirectIfGoodRemoved(declarationJourney) }
     else
-      redirectToCYAIfCompletedJourney(declarationJourney)
+      backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
 
   private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Result] =
     if (declarationJourney.goodsEntries.entries.size == 1)
       Future successful Redirect(routes.GoodsRemovedController.onPageLoad())
-    else redirectToCYAIfCompletedJourney(declarationJourney)
+    else backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
 
-  private def redirectToCYAIfCompletedJourney(declarationJourney: DeclarationJourney): Future[Result] =
+  private def backToCheckYourAnswersIfJourneyCompleted(declarationJourney: DeclarationJourney): Future[Result] =
     if (declarationJourney.declarationRequiredAndComplete)
       Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
     else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
