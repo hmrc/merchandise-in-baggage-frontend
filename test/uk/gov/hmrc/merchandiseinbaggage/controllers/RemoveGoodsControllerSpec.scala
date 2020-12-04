@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
@@ -53,6 +54,22 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
 
       status(result) mustBe Status.SEE_OTHER
       redirectLocation(result) mustBe Some(routes.GoodsRemovedController.onPageLoad().url)
+    }
+
+    s"redirect to ${routes.ReviewGoodsController.onPageLoad()} if goods contains more entries" in {
+      val journey = importJourneyWithStartedGoodsEntry.copy(goodsEntries = GoodsEntries(Seq(startedGoodsEntry, startedGoodsEntry)))
+      val result = controller.removeGoodOrRedirect(1, journey, Yes)
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
+    }
+
+    s"redirect to ${routes.CheckYourAnswersController.onPageLoad()} if goods contains more entries and is completed" in {
+      val journey = completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
+      val result = controller.removeGoodOrRedirect(1, journey, Yes)
+
+      status(result) mustBe Status.SEE_OTHER
+      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
     }
   }
 }
