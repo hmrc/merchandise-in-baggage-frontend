@@ -19,9 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, GoodsEntries}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.ReviewGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 
@@ -29,6 +28,18 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   override lazy val page: ReviewGoodsPage = wire[ReviewGoodsPage]
 
   private val requiredAnswerValidationMessage = "Select yes if you want to declare more goods"
+
+  private val declarationBrakeDown = Map(
+    "Price paid" -> "£99.99",
+    "Type of goods" -> "wine",
+    "Destination" -> "France",
+    "VAT Rate" -> "20%",
+    "Remove" -> "",
+    "Number of items" -> "1")
+
+  private val importDeclarationBrakeDown = declarationBrakeDown
+    .+("Price paid" -> "99.99, Euro (EUR)")
+    .-("Destination").+("Country" -> "France")
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -48,7 +59,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
       "a single export goods entry is complete" in {
         val goodsEntry = completedGoodsEntry
-          .copy(maybePurchaseDetails = Some(PurchaseDetails("99.99", Currency("brexit", "pounds", "GBP"))))
+          .copy(maybePurchaseDetails = Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil))))
 
         givenADeclarationJourney(startedImportToGreatBritainJourney
           .copy(goodsEntries = GoodsEntries(Seq(goodsEntry)), declarationType = Export))
@@ -68,7 +79,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
           Seq(
             importDeclarationBrakeDown,
             importDeclarationBrakeDown
-              .+("Price paid" -> "199.99, Eurozone Euro (EUR)", "Type of goods" -> "cheese", "Number of items" -> "3")
+              .+("Price paid" -> "199.99, Euro (EUR)", "Type of goods" -> "cheese", "Number of items" -> "3")
           )
       }
     }
@@ -114,16 +125,4 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
       }
     }
   }
-
-  val declarationBrakeDown = Map(
-    "Price paid" -> "£99.99",
-    "Type of goods" -> "wine",
-    "Destination" -> "France",
-    "VAT Rate" -> "20%",
-    "Remove" -> "",
-    "Number of items" -> "1")
-
-  val importDeclarationBrakeDown = declarationBrakeDown
-    .+("Price paid" -> "99.99, Eurozone Euro (EUR)")
-    .-("Destination").+("Country" -> "France")
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.viewmodels
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.{HtmlContent, Key, SummaryList, Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
@@ -62,7 +62,7 @@ object ReviewGoodsSummary {
         ),
         SummaryListRow(
           key = Key(Text(messages(if(declarationType == Import) "reviewGoods.list.country" else "reviewGoods.list.destination"))),
-          value = Value(Text(countryOfPurchase)),
+          value = Value(Text(messages(countryOfPurchase.countryName))),
           actions = Some(Actions(
             items = Seq(
               ActionItem(routes.SearchGoodsCountryController.onPageLoad(idx).url, Text(messages("site.change")))
@@ -71,7 +71,7 @@ object ReviewGoodsSummary {
         ),
         SummaryListRow(
           key = Key(Text(messages("reviewGoods.list.price"))),
-          value = Value(Text(purchaseDetails.toString)),
+          value = Value(Text(purchaseDetails.formatted)),
           actions = Some(Actions(
             items = Seq(
               ActionItem(routes.PurchaseDetailsController.onPageLoad(idx).url, Text(messages("site.change")))

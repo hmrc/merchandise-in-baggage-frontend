@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
@@ -29,7 +28,6 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with CoreTestData {
   implicit lazy val appConfig: AppConfig = injector.instanceOf[AppConfig]
 
-  lazy val messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 

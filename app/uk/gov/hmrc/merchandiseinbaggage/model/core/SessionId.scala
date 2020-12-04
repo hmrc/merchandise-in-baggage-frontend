@@ -63,7 +63,7 @@ object AmountInPence {
 
 case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
                       maybeGoodsVatRate: Option[GoodsVatRate] = None,
-                      maybeCountryOfPurchase: Option[String] = None,
+                      maybeCountryOfPurchase: Option[Country] = None,
                       maybePurchaseDetails: Option[PurchaseDetails] = None) {
   val goodsIfComplete: Option[Goods] =
     for {
@@ -238,7 +238,7 @@ object DeclarationJourney extends MongoDateTimeFormats {
 
 case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
                  goodsVatRate: GoodsVatRate,
-                 countryOfPurchase: String,
+                 countryOfPurchase: Country,
                  purchaseDetails: PurchaseDetails) {
 
   val calculationRequest: CalculationRequest =

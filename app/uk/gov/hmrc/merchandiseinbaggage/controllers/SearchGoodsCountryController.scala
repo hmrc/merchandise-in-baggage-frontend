@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +47,7 @@ class SearchGoodsCountryController @Inject()(
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(form)(form.fill)
+      val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(form)(c => form.fill(c.code))
 
       Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))
     }
@@ -59,11 +60,14 @@ class SearchGoodsCountryController @Inject()(
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
-          country =>
-            persistAndRedirect(
-              request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),
-              idx,
-              routes.PurchaseDetailsController.onPageLoad(idx))
+          countryCode =>
+            CountriesService.getCountryByCode(countryCode)
+              .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
+                persistAndRedirect(
+                  request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),
+                  idx,
+                  routes.PurchaseDetailsController.onPageLoad(idx))
+              }
         )
     }
   }

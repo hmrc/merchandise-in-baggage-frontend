@@ -25,7 +25,7 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
 
   import WebBrowser._
 
-  def selectCountry: Select = new Select(find(IdQuery("country-auto-complete")).get.underlying)
+  def selectCountry: Select = new Select(find(IdQuery("country")).get.underlying)
 
   override def fillOutForm(formData: String): Unit = {
     selectCountry.selectByValue(formData)
@@ -34,7 +34,7 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
   override def previouslyEnteredValuesAreDisplayed(formData: String): Assertion = {
     val selectedOptions = selectCountry.getAllSelectedOptions
     selectedOptions.size() mustBe 1
-    selectedOptions.listIterator().next().getText mustBe formData
+    selectedOptions.listIterator().next().getAttribute("value") mustBe formData
   }
 
   override def validationMessage(className: String): String = {

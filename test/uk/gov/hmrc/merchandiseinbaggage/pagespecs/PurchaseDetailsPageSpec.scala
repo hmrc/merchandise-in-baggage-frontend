@@ -21,7 +21,6 @@ import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PurchaseDetailsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurrenciesAreFound
 
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
   override lazy val page: PurchaseDetailsPage = wire[PurchaseDetailsPage]
@@ -30,11 +29,6 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
   private val amountInvalidValidationMessage = "Enter a number in the correct format, for example, 25.60"
   private val currencyValidationErrorMessage = "Select the currency used to buy the goods"
   private val amountValidationErrorMessageElementId = "price-error"
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    givenCurrenciesAreFound(wireMockServer)
-  }
 
   "the purchase details page" should {
     behave like aGoodsEntryPage(

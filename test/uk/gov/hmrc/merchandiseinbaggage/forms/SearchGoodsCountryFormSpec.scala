@@ -20,15 +20,14 @@ import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.countries
 
 class SearchGoodsCountryFormSpec extends BaseSpecWithApplication with FieldBehaviours {
-  ".value" must {
-    val fieldName = "value"
+  ".country" must {
+    val fieldName = "country"
     val requiredKey = "searchGoodsCountry.error.required"
 
     behave like mandatoryField(
-      form(countries),
+      form,
       fieldName,
       requiredError = FormError(fieldName, requiredKey)
     )

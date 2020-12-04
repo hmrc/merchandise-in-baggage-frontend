@@ -21,7 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsVatRatePage, PurchaseDetailsPage, SearchGoodsCountryPage}
-import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.countries
+import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.getAllCountries
 
 class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
@@ -29,7 +29,7 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
   private val validationMessage = "Select the country where you bought the goods"
 
   "the search goods country page import" should {
-    behave like aGoodsEntryPage(path, importTitle, countries.head, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
+    behave like aGoodsEntryPage(path, importTitle, getAllCountries.head.code, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path(1), Set(validationMessage), givenAGoodsEntryIsStarted())
   }
 
@@ -43,5 +43,5 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
     page.element("searchGoodsCountryHint").getText mustBe importHint
   }
 
-  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase.map(_.code)
 }

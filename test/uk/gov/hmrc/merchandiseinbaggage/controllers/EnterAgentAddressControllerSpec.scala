@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.connectors.AddressLookupFrontendConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, Country}
+import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.AddressLookupFrontendStub._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,7 +30,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
     val controller = new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
     val url = routes.EnterAgentAddressController.returnFromAddressLookup("id").url
     val address =
-      Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), Country("GB", Some("United Kingdom")))
+      Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), AddressLookupCountry("GB", Some("United Kingdom")))
 
     givenConfirmJourney("id", address, wireMockServer)
 

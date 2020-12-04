@@ -260,10 +260,10 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%"
 
       textOfElementWithId(s"countryLabel_$index") mustBe "Country"
-      textOfElementWithId(s"country_$index") mustBe goods.countryOfPurchase
+      textOfElementWithId(s"country_$index") mustBe messages(goods.countryOfPurchase.countryName)
 
       textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
-      textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.toString
+      textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.formatted
     }
 
     textOfElementWithId("taxDueLabel") mustBe "Payment due"

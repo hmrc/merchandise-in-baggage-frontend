@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
+import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, PurchaseDetailsInput}
 
 case class PurchaseDetails(amount: String, currency: Currency) {
-  override val toString =
-    if(currency.code == "GBP") s"£$amount" else s"$amount, ${currency.displayName}"
+  def formatted(implicit messages: Messages) =
+    if(currency.code == "GBP") s"£$amount" else s"$amount, ${messages(currency.displayName)}"
 
   val numericAmount: BigDecimal = BigDecimal(amount)
 
