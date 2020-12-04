@@ -16,48 +16,34 @@
 
 @import play.api.i18n._
 @import views.html.helper._
+@import scala.::
 
-@this()
+@this(govukSelect: GovukSelect)
 
-@(field: play.api.data.Field, elementOptions: Seq[(String, String)], displayEmptyValue: Boolean, args: (Symbol,Any)*)(implicit messages: Messages)
+@(
+        form: Form[_],
+        id: String,
+        name: String,
+        items: Seq[SelectItem],
+        label: String,
+        isPageHeading: Boolean,
+        headingMessageArgs: Seq[String] = Seq(),
+        hint: Option[String] = None,
+        classes: Option[String] = None,
+        labelClasses: Option[String] = None
+)(implicit messages: Messages)
 
-@elements = @{ new FieldElements(field.id, field, null, args.toMap, messages) }
-
-@value = @{ field.value match { case Some(x) => x case None => "" case x => x }}
-
-
-<div class="form-group @if(elements.hasErrors){ form-group-error }">
-
-    <label for="@elements.field.name" class="@elements.args.get('_labelClass) @elements.args.get('_groupClass)">
-        <span @if(elements.args.contains('_labelTextClass)) { class="@elements.args.get('_labelTextClass)"}>
-        @elements.label
-        </span>
-    </label>
-
-    @if(elements.args.contains('_inputHint) ){
-        <span id="hint-@elements.field.name" class="form-hint">
-        @elements.args.get('_inputHint)
-        </span>
-    }
-
-    @if(elements.args.contains('_additionalTitleText)){<p>@elements.args.get('_additionalTitleText)</p>}
-    @if(elements.args.contains('_errorsAboveInput)){
-        @elements.errors.map { error => <span style="display: block" class="error-message">messages(error)</span>}
-    }
-    <select aria-describedby="hint-@elements.field.name" id="@elements.field.name" name="@elements.field.name" class="@elements.args.get('_selectClass)">
-        @if(displayEmptyValue) {
-            <option value="">@elements.args.get('_emptyValueText)</option>
-        }
-        @for(option <- elementOptions) {
-            <option
-            id="@elements.field.name-@(option._1.toLowerCase.map(x => if(x == ' ') '-' else x).filterNot(x => "()".contains(x)))"
-            value="@option._1"
-            @if(value==option._1){selected="selected"}
-            >@option._2</option>
-        }
-    </select>
-    @if(!elements.args.contains('_errorsAboveInput)){
-    @elements.errors.map { error => <span style="display: block" class="error-notification">messages(error)</span>}
-}
-
-</div>
+@govukSelect(Select(
+    id = id,
+    name = name,
+    items = Seq(SelectItem.defaultObject) ++ items,
+    label = Label(
+        content = Text(messages(label, headingMessageArgs:_*)),
+        isPageHeading = isPageHeading,
+        classes = labelClasses.getOrElse(if(isPageHeading) "govuk-label--xl" else "")
+    ),
+    hint = hint.map(hintKey => Hint(
+        content = HtmlContent(messages(hintKey))
+    )),
+    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+))
