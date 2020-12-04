@@ -21,15 +21,14 @@ import java.time.LocalDate.now
 import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.http.HttpReads.Implicits.readFromJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
+import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CurrencyConversionConnector @Inject()(httpClient: HttpClient, @Named("currencyConversionBaseUrl") baseUrl: String) {
-  def getCurrencies()(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CurrencyPeriod] =
-    httpClient.GET[CurrencyPeriod](s"$baseUrl/currency-conversion/currencies/${now()}")
 
   def getConversionRate(code: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Seq[ConversionRatePeriod]] =
     httpClient.GET[Seq[ConversionRatePeriod]](s"$baseUrl/currency-conversion/rates/${now()}?cc=$code")
+
 }

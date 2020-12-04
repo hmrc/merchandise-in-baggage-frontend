@@ -19,12 +19,14 @@
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
+@import play.api.libs.json.Json
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 h1: components.h1,
 errorSummary: components.errorSummary,
+inputSelect: components.inputSelect,
 button: components.button
 )
 
@@ -35,17 +37,18 @@ button: components.button
 }
 
 @scripts = {
-    <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
+    <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
-            var selectEl = document.querySelector('#country-auto-complete')
-            if(selectEl){
-                accessibleAutocomplete.enhanceSelectElement({
-                    autoselect: true,
-                    defaultValue: selectEl.options[selectEl.options.selectedIndex].innerHTML,
-                    minLength: 2,
-                    selectElement: selectEl
-                })
-            }
+            $(document).ready(function () {
+
+                // Get IE or Edge browser version
+                var version = detectIE()
+
+                if (version !== 11) {
+                    var countrySynonymsData = @Html( Json.toJson(CountriesService.getAllCountries.map(_.toAutoCompleteJson)).toString )
+                    enhanceSelectIntoAutoComplete("country", countrySynonymsData);
+                }
+            })
     </script>
 }
 
@@ -64,22 +67,14 @@ button: components.button
 
         @if(declarationType == Import) { <p id="searchGoodsCountryHint" class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
 
-        <div class="govuk-form-group">
-            <div class="autocomplete-wrapper country">
-                <select name="value" id="country-auto-complete">
-                    @if(form("value").value.isEmpty) {
-                        <option value="" selected></option>
-                    }
-                    @for(country <- CountriesService.countries) {
-                        @if(form("value").value.contains(country)) {
-                            <option value="@country" selected>@country</option>
-                        } else {
-                            <option value="@country">@country</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
+        @inputSelect(
+            field = form("country"),
+            elementOptions = ("","") :: CountriesService.getAllCountries.map(c => (c.code,messages(c.countryName))),
+            displayEmptyValue = true,
+            '_label -> messages("label.country_this_alcohol_was_"),
+            '_inputHint -> messages("label.if_you_bought_this_alcohol_"),
+            '_errorsAboveInput -> true
+        )
 
         @button("site.continue", name = Some("continue"))
     }

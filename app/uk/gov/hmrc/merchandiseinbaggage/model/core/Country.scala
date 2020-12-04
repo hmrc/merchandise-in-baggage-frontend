@@ -14,22 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion
+package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.time.LocalDate
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json, OFormat}
 
-import play.api.libs.json.{Json, OFormat}
+case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String]) {
 
-case class Currency(countryName: String, currencyName: String, currencyCode: String) {
-  def displayName = s"${countryName.trim} ${currencyName.trim} (${currencyCode.trim})"
+  def toAutoCompleteJson(implicit messages: Messages): JsObject = Json.obj("code" -> code, "displayName" -> messages(countryName), "synonyms" -> countrySynonyms)
 }
 
-object Currency {
-  implicit val format: OFormat[Currency] = Json.format[Currency]
-}
-
-case class CurrencyPeriod(start: LocalDate, end: LocalDate, currencies: Seq[Currency])
-
-object CurrencyPeriod {
-  implicit val format: OFormat[CurrencyPeriod] = Json.format[CurrencyPeriod]
+object Country {
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

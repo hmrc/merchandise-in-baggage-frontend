@@ -33,8 +33,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, _}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -75,7 +74,7 @@ object TestOnlyController {
       Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRates.Twenty),
       Some("France"),
-      Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))))
+      Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))))
 
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
@@ -92,7 +91,7 @@ object TestOnlyController {
             Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRates.Twenty),
             Some("France"),
-            Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR")))))),
+            Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeEmailAddress = Some(Email("aa@test.com", "aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),

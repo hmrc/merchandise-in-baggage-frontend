@@ -42,11 +42,16 @@ head: Head
     }
 }
 
+@defaultScripts = {
+    @scriptsBlock
+    <script src="@routes.Assets.versioned("javascripts/application.js")"></script>
+}
+
 @if(fullWidth) {
     @govukFullWidthLayout(
         pageTitle = pageTitle,
         headBlock = Some(head(Some(defaultHead))),
-        scriptsBlock = scriptsBlock,
+        scriptsBlock = Some(defaultScripts),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)
@@ -54,7 +59,7 @@ head: Head
     @govukLayout(
         pageTitle = pageTitle,
         headBlock = Some(head(Some(defaultHead))),
-        scriptsBlock = scriptsBlock,
+        scriptsBlock = Some(defaultScripts),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)

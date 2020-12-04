@@ -19,12 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.connectors.CurrencyConversionConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.PurchaseDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,7 +31,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class PurchaseDetailsController @Inject()(
                                            override val controllerComponents: MessagesControllerComponents,
-                                           connector: CurrencyConversionConnector,
                                            actionProvider: DeclarationJourneyActionProvider,
                                            override val repo: DeclarationJourneyRepository,
                                            importView: PurchaseDetailsImportView,
@@ -47,11 +45,9 @@ class PurchaseDetailsController @Inject()(
     withGoodsCategory(request.goodsEntry) { category =>
       request.declarationJourney.declarationType match {
         case Import =>
-          connector.getCurrencies().map { currencyPeriod =>
-            val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
+          val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
-            Ok(importView(preparedForm, idx, category, currencyPeriod.currencies, backButtonUrl(idx)))
-          }
+          Future successful Ok(importView(preparedForm, idx, category, backButtonUrl(idx)))
         case Export =>
           val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
@@ -64,37 +60,38 @@ class PurchaseDetailsController @Inject()(
     withGoodsCategory(request.goodsEntry) { category =>
       request.declarationJourney.declarationType match {
         case Import =>
-          connector.getCurrencies().flatMap { currencyPeriod =>
-            form.bindFromRequest().fold(
-              formWithErrors =>
-                Future successful BadRequest(importView(formWithErrors, idx, category, currencyPeriod.currencies, backButtonUrl(idx))),
-              purchaseDetailsInput =>
-                currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
-                  .fold(actionProvider.invalidRequestF(s"currency [$purchaseDetailsInput.currency] not found")) { currency =>
-                    val updatedGoodsEntry =
-                      request.goodsEntry.copy(
-                        maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
+          form.bindFromRequest().fold(
+            formWithErrors =>
+              Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
+            purchaseDetailsInput =>
+              CurrencyService.getCurrencyByCode(purchaseDetailsInput.currency)
+                .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
+                  val updatedGoodsEntry =
+                    request.goodsEntry.copy(
+                      maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
 
-                    val updatedDeclarationJourney =
-                      request.declarationJourney.copy(
-                        goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
+                  val updatedDeclarationJourney =
+                    request.declarationJourney.copy(
+                      goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
 
-                    repo.upsert(updatedDeclarationJourney).map { _ =>
-                      Redirect(routes.ReviewGoodsController.onPageLoad())
-                    }
+                  repo.upsert(updatedDeclarationJourney).map { _ =>
+                    Redirect(routes.ReviewGoodsController.onPageLoad())
                   }
-            )
-          }
+                }
+          )
         case Export =>
           form.bindFromRequest().fold(
             formWithErrors =>
               Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
             purchaseDetailsInput =>
-              persistAndRedirect(
-                request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, Currency("United Kingdom", "Pound", "GBP")))),
-                idx,
-                routes.ReviewGoodsController.onPageLoad()
-              )
+              CurrencyService.getCurrencyByCode(purchaseDetailsInput.currency)
+                .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
+                  persistAndRedirect(
+                    request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
+                    idx,
+                    routes.ReviewGoodsController.onPageLoad()
+                  )
+                }
           )
       }
     }
