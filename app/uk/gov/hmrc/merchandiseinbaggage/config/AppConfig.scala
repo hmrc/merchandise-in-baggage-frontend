@@ -23,7 +23,6 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 
 @Singleton
 class AppConfig() extends MongoConfiguration with MibConfiguration {
-  lazy val footerLinkItems: Seq[String] = configSource("footerLinkItems").loadOrThrow[Seq[String]]
 
   private val serviceIdentifier = "mib"
 

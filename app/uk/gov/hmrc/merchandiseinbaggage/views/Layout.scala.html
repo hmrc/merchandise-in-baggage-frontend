@@ -15,7 +15,6 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-@import uk.gov.hmrc.merchandiseinbaggage.views.FooterLinks
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.layouts
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 
@@ -49,7 +48,6 @@ head: Head
         headBlock = Some(head(Some(defaultHead))),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
-        footerItems = FooterLinks(),
         maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)
 } else {
@@ -58,7 +56,6 @@ head: Head
         headBlock = Some(head(Some(defaultHead))),
         scriptsBlock = scriptsBlock,
         beforeContentBlock = None,
-        footerItems = FooterLinks(),
         maybeBackButtonUrl = maybeBackButtonUrl
     )(contentBlock)
 }
