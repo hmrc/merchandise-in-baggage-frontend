@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
 
 @this(
 govukTemplate: GovukTemplate,
@@ -27,7 +28,8 @@ govukBackLink: GovukBackLink,
 phaseBanner: components.phaseBanner,
 hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
 hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-appConfig: AppConfig
+appConfig: AppConfig,
+hmrcStandardFooter: HmrcStandardFooter
 )
 
 @(
@@ -35,12 +37,10 @@ appConfig: AppConfig
         headBlock: Option[Html] = None,
         headerBlock: Option[Html] = None,
         beforeContentBlock: Option[Html] = None,
-        footerBlock: Option[Html] = None,
-        footerItems: Seq[FooterItem] = Seq.empty,
         bodyEndBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
         maybeBackButtonUrl: Option[play.api.mvc.Call]
-)(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig)
+)(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
 @headDefault = {
     @headBlock
@@ -60,12 +60,6 @@ appConfig: AppConfig
 @beforeContentDefault = {
     @phaseBanner("beta")
     @bodyEndBlock.map(x => x)
-}
-
-@footerDefault = {
-@footerBlock.getOrElse {
-    @govukFooter(new Footer(meta = Some(Meta(items = Some(footerItems)))))
-}
 }
 
 @bodyEndDefault = {
@@ -99,7 +93,7 @@ appConfig: AppConfig
     headBlock = Some(headDefault),
     headerBlock = headerDefault,
     beforeContentBlock = Some(beforeContentDefault),
-    footerBlock = footerDefault,
+    footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
     bodyEndBlock = Some(bodyEndDefault),
 )(mainContentDefault)
