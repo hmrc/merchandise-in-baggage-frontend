@@ -38,7 +38,7 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
 
   "the purchase details page" should {
     behave like aGoodsEntryPage(
-      path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path)
+      path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path, false)
 
     behave like
       aPageWithARequiredQuestion(

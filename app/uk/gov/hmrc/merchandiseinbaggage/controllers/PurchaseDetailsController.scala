@@ -71,10 +71,17 @@ class PurchaseDetailsController @Inject()(
               purchaseDetailsInput =>
                 currencyPeriod.currencies.find(_.currencyCode == purchaseDetailsInput.currency)
                   .fold(actionProvider.invalidRequestF(s"currency [$purchaseDetailsInput.currency] not found")) { currency =>
-                    persistAndRedirect(
-                      request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
-                      idx,
-                      routes.ReviewGoodsController.onPageLoad())
+                    val updatedGoodsEntry =
+                      request.goodsEntry.copy(
+                        maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
+
+                    val updatedDeclarationJourney =
+                      request.declarationJourney.copy(
+                        goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
+
+                    repo.upsert(updatedDeclarationJourney).map { _ =>
+                      Redirect(routes.ReviewGoodsController.onPageLoad())
+                    }
                   }
             )
           }

@@ -37,7 +37,8 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
                       title: String,
                       formData: F,
                       maybeExpectedRedirect: Option[Int => String],
-                      expectedBackPath: Int => String): Unit = {
+                      expectedBackPath: Int => String,
+                      cyaRouting: Boolean = true): Unit = {
     behave like aPageWhichRequiresADeclarationJourney(path(1))
     behave like aPageWhichRequiresADeclarationJourney(path(2))
     behave like aPageWhichRenders(path(1), givenAGoodsEntryIsStarted(), title)
@@ -61,8 +62,10 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsComplete(), formData, ReviewGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenTwoGoodsEntriesAreComplete(), formData, ReviewGoodsPage.path)
 
-    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(1), 1, formData)
-    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(2), 2, formData)
+    if(cyaRouting) {
+      behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(1), 1, formData)
+      behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(2), 2, formData)
+    }
 
     behave like aPageWithABackButton(path(1), givenAGoodsEntryIsStarted(), expectedBackPath(1))
     behave like aPageWithABackButton(path(2), givenASecondGoodsEntryIsStarted(), expectedBackPath(2))

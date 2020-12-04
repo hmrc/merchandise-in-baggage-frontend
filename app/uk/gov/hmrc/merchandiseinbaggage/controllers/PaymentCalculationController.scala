@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
@@ -34,8 +34,12 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
                                             (implicit val appConfig: AppConfig, ec: ExecutionContext)
   extends DeclarationJourneyController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]):Call =
     backToCheckYourAnswersIfCompleteElse(routes.ReviewGoodsController.onPageLoad())
+
+  private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]):Call =
+    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    else default
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
@@ -51,7 +55,7 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
                   if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
                     Redirect(routes.GoodsOverThresholdController.onPageLoad())
                   else
-                    Ok(view(paymentCalculations, rates, routes.CustomsAgentController.onPageLoad(), backButtonUrl))
+                    Ok(view(paymentCalculations, rates, checkYourAnswersIfComplete(routes.CustomsAgentController.onPageLoad()), backButtonUrl))
                 }
               case Export =>
                 if (goods.goods.map(_.purchaseDetails.numericAmount).sum > destination.threshold.inPounds)
