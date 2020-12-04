@@ -52,7 +52,7 @@ hmrcStandardFooter: HmrcStandardFooter
     @govukHeader(Header(
         homepageUrl = Some("https://www.gov.uk/"),
         serviceName = Some(messages("service.name")),
-        serviceUrl = Some(messages("service.homePageUrl")),
+        attributes = Map(("style", "pointer-events: none; cursor: default;")),
         containerClasses = None))
 }
 }
