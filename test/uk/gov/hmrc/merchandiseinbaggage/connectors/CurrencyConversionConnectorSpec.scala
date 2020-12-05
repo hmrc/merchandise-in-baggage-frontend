@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 import org.scalatest.concurrent.Eventually
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.{ConversionRatePeriod, CurrencyPeriod}
+import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, WireMockSupport}
 
@@ -28,14 +28,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class CurrencyConversionConnectorSpec extends BaseSpecWithApplication with WireMockSupport with Eventually {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[CurrencyConversionConnector]
-
-  "get list of currencies for a given date" in {
-    givenCurrenciesAreFound(wireMockServer)
-
-    val response: CurrencyPeriod = connector.getCurrencies().futureValue
-
-    response mustBe Json.parse(currencyConversionResponse).as[CurrencyPeriod]
-  }
 
   "get conversion rate for a given currency code" in {
     givenCurrencyIsFound("USD", wireMockServer)

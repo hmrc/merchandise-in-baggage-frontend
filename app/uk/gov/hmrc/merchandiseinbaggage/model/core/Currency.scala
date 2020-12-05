@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api
+package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import play.api.i18n.Messages
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, PurchaseDetailsInput}
+import play.api.libs.json.{JsObject, Json}
 
-case class PurchaseDetails(amount: String, currency: Currency) {
-  def formatted(implicit messages: Messages) =
-    if(currency.code == "GBP") s"£$amount" else s"$amount, ${messages(currency.displayName)}"
+case class Currency(code: String, displayName: String, valueForConversion: Option[String], currencySynonyms: List[String]) {
 
-  val numericAmount: BigDecimal = BigDecimal(amount)
+  def toAutoCompleteJson(implicit messages: Messages): JsObject = Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
 
-  def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.code)
 }
 
-object PurchaseDetails {
-  implicit val format: OFormat[PurchaseDetails] = Json.format[PurchaseDetails]
+object Currency {
+  implicit val formats = Json.format[Currency]
 }

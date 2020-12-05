@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.data.Form
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
@@ -46,11 +45,9 @@ class SearchGoodsCountryController @Inject()(
     }
   }
 
-  val countriesForm: Form[String] = form(CountriesService.countries)
-
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(countriesForm)(countriesForm.fill)
+      val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(form)(c => form.fill(c.code))
 
       Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))
     }
@@ -58,16 +55,19 @@ class SearchGoodsCountryController @Inject()(
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      countriesForm
+      form
         .bindFromRequest()
         .fold(
           formWithErrors =>
             Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
-          country =>
-            persistAndRedirect(
-              request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),
-              idx,
-              routes.PurchaseDetailsController.onPageLoad(idx))
+          countryCode =>
+            CountriesService.getCountryByCode(countryCode)
+              .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
+                persistAndRedirect(
+                  request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),
+                  idx,
+                  routes.PurchaseDetailsController.onPageLoad(idx))
+              }
         )
     }
   }

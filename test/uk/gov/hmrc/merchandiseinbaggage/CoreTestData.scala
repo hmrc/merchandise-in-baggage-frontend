@@ -27,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = PayApiRequest(
@@ -52,7 +51,7 @@ trait CoreTestData {
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 
   val overThresholdGoods: GoodsEntries = GoodsEntries(completedGoodsEntry.copy(
-    maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("Eurozone", "Euro", "EUR")))))
+    maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
 
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(sessionId)
 
@@ -98,8 +97,8 @@ trait CoreTestData {
     completedDeclarationJourney.copy(
       maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
 
-  val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR"))
-  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, "EU", aPurchaseDetails)
+  val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
+  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu=true, Nil), aPurchaseDetails)
 
   val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)

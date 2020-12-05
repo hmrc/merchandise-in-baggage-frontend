@@ -17,8 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, PaymentCalculations}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, DeclarationJourney, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurrencyIsFound
 
@@ -41,7 +40,7 @@ trait TaxCalculation {
         .map(_.purchaseDetails.currency)
         .toSet
         .foreach { ccy: Currency =>
-          givenCurrencyIsFound(ccy.currencyCode, wireMockServer)
+          givenCurrencyIsFound(ccy.code, wireMockServer)
           ()
         }
 

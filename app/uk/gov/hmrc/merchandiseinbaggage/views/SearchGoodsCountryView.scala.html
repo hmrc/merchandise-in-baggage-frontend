@@ -19,32 +19,70 @@
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
+@import play.api.libs.json.Json
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 h1: components.h1,
 errorSummary: components.errorSummary,
+inputSelect: components.inputSelect,
 button: components.button
 )
 
 @(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
+    <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
 }
 
 @scripts = {
-    <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
+    <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
-            var selectEl = document.querySelector('#country-auto-complete')
-            if(selectEl){
-                accessibleAutocomplete.enhanceSelectElement({
-                    autoselect: true,
-                    defaultValue: selectEl.options[selectEl.options.selectedIndex].innerHTML,
-                    minLength: 2,
-                    selectElement: selectEl
-                })
+
+        var selectElementId = 'country'
+        var submitOnConfirm = false
+        var dataSource = @Html( Json.toJson(CountriesService.getAllCountries.map(_.toAutoCompleteJson)).toString )
+
+            accessibleAutocomplete.enhanceSelectElement({
+                selectElement: document.querySelector('#' + selectElementId),
+                displayMenu: 'inline',
+                minLength: 2,
+                source: customSuggest,
+                confirmOnBlur: true,
+                onConfirm: function(confirmed) {
+
+                    //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+                    let foundInData = dataSource.find(e => e.displayName === $('#'+selectElementId).val())
+                    let element = !!confirmed ? confirmed : foundInData
+
+                    if(!!element) {
+                        $('select[name="'+selectElementId+'"]').val(element.code);
+                        if(submitOnConfirm) {
+                            window.setTimeout(function(){
+                                $('form').submit();
+                            }, 100);
+                        }
+                    }
+                    else {
+                        $('select[name="'+selectElementId+'"]').val('')
+                    }
+                },
+                templates: {
+                    inputValue: function(result) {
+                        return (!!result && result.displayName ? result.displayName : '');
+                    },
+                    suggestion: function(result) {
+                        return !!result.displayName ? result.displayName : result;
+                    }
+                }
+            })
+
+            function customSuggest (query, syncResults) {
+                var results = dataSource
+                syncResults(query ? results.filter(function (result) {
+                    return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+                }) : [])
             }
     </script>
 }
@@ -58,28 +96,26 @@ button: components.button
 ) {
     @formHelper(action = SearchGoodsCountryController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @errorSummary(form.errors, Some("country-auto-complete"))
+        @errorSummary(form.errors, Some("country"))
 
         @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory))
 
         @if(declarationType == Import) { <p id="searchGoodsCountryHint" class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
 
-        <div class="govuk-form-group">
-            <div class="autocomplete-wrapper country">
-                <select name="value" id="country-auto-complete">
-                    @if(form("value").value.isEmpty) {
-                        <option value="" selected></option>
-                    }
-                    @for(country <- CountriesService.countries) {
-                        @if(form("value").value.contains(country)) {
-                            <option value="@country" selected>@country</option>
-                        } else {
-                            <option value="@country">@country</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
+        @inputSelect(
+            form = form,
+            id = "country",
+            name = "country",
+            items = CountriesService.getAllCountries.map(c => SelectItem(
+                value = Some(c.code),
+                text = messages(c.countryName),
+                selected = form("country").value.contains(c.code)
+            )),
+            label = messages(s"searchGoodsCountry.declarationType.heading"),
+            isPageHeading = false,
+            headingMessageArgs = Seq(goodsCategory),
+            labelClasses = Some("govuk-visually-hidden")
+        )
 
         @button("site.continue", name = Some("continue"))
     }

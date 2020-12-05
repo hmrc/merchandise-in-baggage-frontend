@@ -20,7 +20,6 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
@@ -38,8 +37,8 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       val good = Goods(
         CategoryQuantityOfGoods("test good", "123"),
         GoodsVatRates.Twenty,
-        "France",
-        PurchaseDetails("100", Currency("Eurozone", "Euro", "EUR"))
+        Country("FR", "title.france", "FR", isEu=true, Nil),
+        PurchaseDetails("100", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
       )
 
       val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue

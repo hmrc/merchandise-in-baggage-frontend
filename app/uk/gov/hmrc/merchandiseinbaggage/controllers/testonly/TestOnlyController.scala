@@ -28,13 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormProvider
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, Country}
+import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, _}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -74,8 +73,8 @@ object TestOnlyController {
     GoodsEntry(
       Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRates.Twenty),
-      Some("France"),
-      Some(PurchaseDetails("99.99", Currency("Eurozone", "Euro", "EUR"))))
+      Some(Country("FR", "title.france", "FR", isEu=true, Nil)),
+      Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))))
 
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
@@ -91,13 +90,13 @@ object TestOnlyController {
           GoodsEntry(
             Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRates.Twenty),
-            Some("France"),
-            Some(PurchaseDetails("199.99", Currency("Eurozone", "Euro", "EUR")))))),
+            Some(Country("FR", "title.france", "FR", isEu=true, Nil)),
+            Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeEmailAddress = Some(Email("aa@test.com", "aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
-      maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), Country("GB", Some("United Kingdom")))),
+      maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))),
       maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Dover, now())),
       maybeTravellingByVehicle = Some(Yes),

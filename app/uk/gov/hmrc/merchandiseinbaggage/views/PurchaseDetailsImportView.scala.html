@@ -16,9 +16,10 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
+@import play.api.libs.json.Json
+@import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 
 @this(
 layout: Layout,
@@ -26,26 +27,63 @@ formHelper: FormWithCSRF,
 h1: components.h1,
 errorSummary: components.errorSummary,
 text: components.inputText,
+inputSelect: components.inputSelect,
 button: components.button
 )
 
-@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, currencies: Seq[Currency], backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @head = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("stylesheets/accessible-autocomplete.min.css")" >
+    <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
 }
 
 @scripts = {
-    <script src="@routes.Assets.versioned("javascripts/accessible-autocomplete.min.js")"></script>
+    <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
-            var selectEl = document.querySelector('#currency')
-            if(selectEl){
-                accessibleAutocomplete.enhanceSelectElement({
-                    autoselect: true,
-                    defaultValue: '',
-                    minLength: 2,
-                    selectElement: selectEl
-                })
+
+            var selectElementId = 'currency'
+            var submitOnConfirm = false
+            var dataSource = @Html( Json.toJson(CurrencyService.getAllCurrencies.map(_.toAutoCompleteJson)).toString )
+
+                    accessibleAutocomplete.enhanceSelectElement({
+                        selectElement: document.querySelector('#' + selectElementId),
+                        displayMenu: 'inline',
+                        minLength: 2,
+                        source: customSuggest,
+                        confirmOnBlur: true,
+                        onConfirm: function(confirmed) {
+
+                            //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+                            let foundInData = dataSource.find(e => e.displayName === $('#'+selectElementId).val())
+                            let element = !!confirmed ? confirmed : foundInData
+
+                            if(!!element) {
+                                $('select[name="'+selectElementId+'"]').val(element.code);
+                                if(submitOnConfirm) {
+                                    window.setTimeout(function(){
+                                        $('form').submit();
+                                    }, 100);
+                                }
+                            }
+                            else {
+                                $('select[name="'+selectElementId+'"]').val('')
+                            }
+                        },
+                        templates: {
+                            inputValue: function(result) {
+                                return (!!result && result.displayName ? result.displayName : '');
+                            },
+                            suggestion: function(result) {
+                                return !!result.displayName ? result.displayName : result;
+                            }
+                        }
+                    })
+
+            function customSuggest (query, syncResults) {
+                var results = dataSource
+                syncResults(query ? results.filter(function (result) {
+                    return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+                }) : [])
             }
     </script>
 }
@@ -73,23 +111,18 @@ button: components.button
             hint = Some("purchaseDetails.price.hint")
         )
 
-        <div class="govuk-form-group">
-            <label class="govuk-label" for="currency">@messages("purchaseDetails.currency.label")</label>
-            <div class="autocomplete-wrapper currency govuk-input--width-30">
-                <select name="currency" id="currency">
-                    @if(form("value").value.isEmpty) {
-                        <option value="" selected></option>
-                    }
-                    @for(currency <- currencies) {
-                        @if(form("currency").value.contains(currency.currencyCode)) {
-                            <option value="@currency.currencyCode" selected>@currency.displayName</option>
-                        } else {
-                            <option value="@currency.currencyCode">@currency.displayName</option>
-                        }
-                    }
-                </select>
-            </div>
-        </div>
+        @inputSelect(
+            form = form,
+            id = "currency",
+            name = "currency",
+            items = CurrencyService.getAllCurrencies.map(c => SelectItem(
+                value = Some(c.code),
+                text = messages(c.displayName),
+                selected = form("currency").value.contains(c.code)
+            )),
+            label = messages(s"purchaseDetails.currency.label"),
+            isPageHeading = false
+        )
 
         <p class="govuk-body">
             @messages("purchaseDetails.p.1")

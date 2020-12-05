@@ -23,34 +23,6 @@ import com.github.tomakehurst.wiremock.client.WireMock.{equalTo, get, okJson, ur
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 object CurrencyConversionStub {
-  val currencyConversionResponse: String =
-    """{
-      |  "start": "2020-10-01",
-      |  "end": "2020-10-31",
-      |  "currencies": [
-      |    {
-      |      "countryName": "Argentina",
-      |      "currencyName": "Peso",
-      |      "currencyCode": "ARS"
-      |    },
-      |    {
-      |      "countryName": "Australia",
-      |      "currencyName": "Dollar",
-      |      "currencyCode": "AUD"
-      |    },
-      |    {
-      |      "countryName": "Brazil",
-      |      "currencyName": "Real",
-      |      "currencyCode": "BRL"
-      |    },
-      |    {
-      |      "countryName": "Eurozone",
-      |      "currencyName": "Euro",
-      |      "currencyCode": "EUR"
-      |    }
-      |  ]
-      |}
-      |""".stripMargin
 
   def conversionRateResponse(code: String) =
     s"""[
@@ -62,11 +34,6 @@ object CurrencyConversionStub {
        |  }
        |]""".stripMargin
 
-
-  def givenCurrenciesAreFound(server: WireMockServer): StubMapping =
-    server
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/currencies/${LocalDate.now()}"))
-      .willReturn(okJson(currencyConversionResponse).withStatus(200)))
 
   def givenCurrencyIsFound(code: String, server: WireMockServer): StubMapping =
     server

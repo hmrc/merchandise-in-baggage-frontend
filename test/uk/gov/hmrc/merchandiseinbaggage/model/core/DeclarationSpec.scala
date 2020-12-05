@@ -19,16 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import java.time.LocalDateTime
 
 import play.api.libs.json.Json.{parse, toJson}
+import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.Currency
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
-import Declaration._
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, Country}
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class DeclarationSpec extends BaseSpec with CoreTestData {
+class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
 
   private val goods =
@@ -44,26 +43,26 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
 
   "PurchaseDetails toString" should {
     "include the price string as entered" in {
-      val currency = Currency("country", "currency", "ccy")
+      val currency = Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))
 
-      PurchaseDetails("1", currency).toString mustBe "1, country currency (ccy)"
-      PurchaseDetails("1.", currency).toString mustBe "1., country currency (ccy)"
-      PurchaseDetails("1.0", currency).toString mustBe "1.0, country currency (ccy)"
-      PurchaseDetails("1.00", currency).toString mustBe "1.00, country currency (ccy)"
-      PurchaseDetails("1.000", currency).toString mustBe "1.000, country currency (ccy)"
+      PurchaseDetails("1", currency).formatted mustBe "1, Euro (EUR)"
+      PurchaseDetails("1.", currency).formatted mustBe "1., Euro (EUR)"
+      PurchaseDetails("1.0", currency).formatted mustBe "1.0, Euro (EUR)"
+      PurchaseDetails("1.00", currency).formatted mustBe "1.00, Euro (EUR)"
+      PurchaseDetails("1.000", currency).formatted mustBe "1.000, Euro (EUR)"
 
-      PurchaseDetails("01", currency).toString mustBe "01, country currency (ccy)"
-      PurchaseDetails("01.", currency).toString mustBe "01., country currency (ccy)"
-      PurchaseDetails("01.0", currency).toString mustBe "01.0, country currency (ccy)"
-      PurchaseDetails("01.00", currency).toString mustBe "01.00, country currency (ccy)"
-      PurchaseDetails("01.000", currency).toString mustBe "01.000, country currency (ccy)"
+      PurchaseDetails("01", currency).formatted mustBe "01, Euro (EUR)"
+      PurchaseDetails("01.", currency).formatted mustBe "01., Euro (EUR)"
+      PurchaseDetails("01.0", currency).formatted mustBe "01.0, Euro (EUR)"
+      PurchaseDetails("01.00", currency).formatted mustBe "01.00, Euro (EUR)"
+      PurchaseDetails("01.000", currency).formatted mustBe "01.000, Euro (EUR)"
 
-      PurchaseDetails("0.1", currency).toString mustBe "0.1, country currency (ccy)"
-      PurchaseDetails("0.10", currency).toString mustBe "0.10, country currency (ccy)"
-      PurchaseDetails("0.100", currency).toString mustBe "0.100, country currency (ccy)"
+      PurchaseDetails("0.1", currency).formatted mustBe "0.1, Euro (EUR)"
+      PurchaseDetails("0.10", currency).formatted mustBe "0.10, Euro (EUR)"
+      PurchaseDetails("0.100", currency).formatted mustBe "0.100, Euro (EUR)"
 
-      PurchaseDetails(".01", currency).toString mustBe ".01, country currency (ccy)"
-      PurchaseDetails(".001", currency).toString mustBe ".001, country currency (ccy)"
+      PurchaseDetails(".01", currency).formatted mustBe ".01, Euro (EUR)"
+      PurchaseDetails(".001", currency).formatted mustBe ".001, Euro (EUR)"
     }
   }
 
@@ -152,7 +151,7 @@ class DeclarationSpec extends BaseSpec with CoreTestData {
           Address(
             lines = Seq("*************", "**********"),
             postcode = Some("*******"),
-            country = Country("**", Some("**************"))))
+            country = AddressLookupCountry("**", Some("**************"))))
       completedDeclarationJourney.obfuscated.maybeEori mustBe Some(Eori("**************"))
       completedDeclarationJourney.obfuscated.maybeRegistrationNumber mustBe Some("******")
     }
