@@ -19,12 +19,12 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
 
 @this(
-layout: Layout,
-formHelper: FormWithCSRF,
-h1: components.h1,
-h3: components.h3,
-p: components.p,
-button: components.button
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    h1: components.h1,
+    h3: components.h3,
+    p: components.p,
+    button: components.button
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -32,49 +32,21 @@ button: components.button
 @layout(pageTitle = Some(titleNoForm("startImport.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Import)) {
     @h1(messages("startImport.heading"))
 
-    <p class="govuk-body-l">
-        @messages("startImport.p1")
-    </p>
+    <p class="govuk-body-l">@messages("startImport.p1")</p>
 
     <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible">
 
     @p(Html(messages("startImport.p2")))
-    @p(Html(messages("startImport.p3.n")))
+    @p(Html(messages("startImport.p3")))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li><a href="#">goods that are for personal use</a></li>
-        <li><a href="/v1-5/start-export">commercial goods you are taking out of Great Britain in your accompanied baggage</a></li>
+        <li><a href="#">@messages("startImport.li.href.1")</a></li>
+        <li><a href="/v1-5/start-export">@messages("startImport.li.href.2")</a></li>
     </ul>
 
-    <div class="govuk-inset-text">
-        @messages("startImport.inset")
-        <a class="govuk-link" href="@StartExportController.onPageLoad().url">
-            @messages("startImport.inset.a.text")
-        </a>
-    </div>
-
-    <p class="govuk-body">
-        @messages("startImport.p3")
-        <a class="govuk-link" href="@messages("startImport.p3.a.href")">
-            @messages("startImport.p3.a.text")
-        </a>
-    </p>
+    <div class="govuk-inset-text">@messages("startImport.inset")</div>
 
     @h3(messages("startImport.before"))
-
-    <p class="govuk-body">
-        @messages("startImport.p4.1")
-        <a class="govuk-link" href="@messages("startImport.p4.a.href")">
-            @messages("startImport.p4.a.text")
-        </a>
-        @messages("startImport.p4.2")
-    </p>
-
-    <p class="govuk-body">
-        @messages("startImport.p5.1")
-        <span class="govuk-!-font-weight-bold">@messages("startImport.p5.2")</span>
-        @messages("startImport.p5.3")
-    </p>
 
     @p(Html(messages("startImport.use")))
 
@@ -82,19 +54,17 @@ button: components.button
         <li>@messages("startImport.use.li1")</li>
         <li>@messages("startImport.use.li2")</li>
         <li>@messages("startImport.use.li3")</li>
-        <li>@messages("startImport.use.li4")</li>
-        <li>@messages("startImport.use.li5")</li>
         <li>
-            @messages("startImport.use.li6.1")
-            <a class="govuk-link" href="@messages("startImport.use.li6.a1.href")">
-                @messages("startImport.use.li6.a1.text")
+            @messages("startImport.use.li4.1")
+            <a class="govuk-link" href="@messages("startImport.use.li4.a1.href")">
+            @messages("startImport.use.li4.a1.text")
             </a>
-            @messages("startImport.use.li6.2")
-            <a class="govuk-link" href="@messages("startImport.use.li6.a2.href")">
-                @messages("startImport.use.li6.a2.text")
+            @messages("startImport.use.li4.2")
+            <a class="govuk-link" href="@messages("startImport.use.li4.a2.href")">
+            @messages("startImport.use.li4.a2.text")
             </a>
         </li>
-        <li>@messages("startImport.use.li7")</li>
+        <li>@messages("startImport.use.li5")</li>
     </ul>
 
     <p class="govuk-body">
@@ -104,18 +74,26 @@ button: components.button
         </a>
     </p>
 
-    @h3(messages("startImport.info"))
+    @h3(messages("startImport.need"))
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+            <span class="govuk-warning-text__assistive">@messages("startImport.warning")</span>
+            @messages("startImport.warning.must") <a href="https://www.gov.uk/eori">@messages("startImport.warning.eori.a")</a> @messages("startImport.warning.eori.text")
+        </strong>
+    </div>
 
+    <p class="govuk-body-m">@messages("startImport.makeDeclaration")</p>
     <ul class="govuk-list govuk-list--bullet">
-        <li>@messages("startImport.info.li1")</li>
-        <li>@messages("startImport.info.li2")</li>
-        <li>@messages("startImport.info.li3")</li>
-        <li>@messages("startImport.info.li4")</li>
-        <li>@messages("startImport.info.li5")</li>
-        <li>@messages("startImport.info.li6")</li>
-        <li>@messages("startImport.info.li7")</li>
-        <li>@messages("startImport.info.li8")</li>
+        <li>@messages("startImport.makeDeclaration.l1")</li>
+        <li>@messages("startImport.makeDeclaration.l2")</li>
+        <li>@messages("startImport.makeDeclaration.l3")</li>
+        <li>@messages("startImport.makeDeclaration.l4")</li>
+        <li>@messages("startImport.makeDeclaration.l5")</li>
     </ul>
+
+    @h3(messages("startImport.info"))
+    <p class="govuk-body-m">@messages("startImport.info.text.1") <strong>@messages("startImport.info.strong")</strong> @messages("startImport.info.text.2")</p>
 
     @formHelper(action = StartImportController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
         @button("site.start", name = Some("startNow"))
@@ -124,4 +102,9 @@ button: components.button
     @h3(messages("startImport.after"))
 
     @p(Html(messages("startImport.p7")))
+
+    <h5 class="govuk-heading-m">@messages("startImport.changingDeclaration.h5")</h5>
+    <p class="govuk-body-m">@messages("startImport.changingDeclaration.p1")</p>
+    <p class="govuk-body-m">@messages("startImport.changingDeclaration.p2")</p>
+    <p class="govuk-body-m">@messages("startImport.changingDeclaration.p3")</p>
 }
