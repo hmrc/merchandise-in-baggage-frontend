@@ -33,7 +33,6 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWithARequiredQuestion(path, answerRequiredValidationMessage, givenAnImportJourneyIsStarted())
-    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, NorthernIreland)
 
     behave like aDataCapturePageWithConditionalRouting(
         path, givenAnImportJourneyIsStarted(), NorthernIreland, CannotUseServiceIrelandPage.path)
