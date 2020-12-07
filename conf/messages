@@ -45,11 +45,12 @@ invalidRequest.heading = Invalid request
 
 
 # StartImport
-startImport.title = Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles
-startImport.heading = Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles
-startImport.p1 = What you need to do if you’re bringing commercial goods that weigh less than 1,000 kilograms, or have a total value of less than £1,500 (to Great Britain) and less than £873 (to Northern Ireland).
-startImport.p2 = You can use this service to check the duty and tax due on goods you intend to bring with you to the UK (in your luggage or small vehicle). You can then declare and pay what you owe.
-startImport.inset = You must
+startImport.title = Declare commercial goods you’re bringing into Great Britain in accompanied baggage or small vehicles
+startImport.heading = Declare commercial goods you’re bringing into Great Britain in accompanied baggage or small vehicles
+startImport.p1 = Find out how to declare goods you’re bringing into Great Britain to sell that are less than 1,000 kilograms, or are under the value of £1,500.
+startImport.p2 = There is no duty free allowance for commercial goods you bring in to sell or use in your business. You must declare all commercial goods..
+startImport.p3.n = There is a different way to declare:
+startImport.inset = You can use this service to check the duty and tax due on goods you intend to bring with you to Great Britain (in your luggage or small vehicle). You can then declare and pay what you owe.
 startImport.inset.a.text = declare goods you’re taking out of the UK for trade or business use.
 startImport.p3 = All goods you bring into the UK to sell, or for business use, must be declared. There is a different way to
 startImport.p3.a.text = declare goods that are for personal use.

@@ -24,5 +24,5 @@ class StartImportPage(implicit webDriver: WebDriver) extends BasePage {
 
 object StartImportPage {
   val path = "/declare-commercial-goods/start-import"
-  val title: String = "Declare commercial goods you’re bringing into the UK in accompanied baggage or small vehicles"
+  val title: String = "Declare commercial goods you’re bringing into Great Britain in accompanied baggage or small vehicles"
 }
