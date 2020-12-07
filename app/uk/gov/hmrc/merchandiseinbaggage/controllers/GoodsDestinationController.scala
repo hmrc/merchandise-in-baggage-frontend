@@ -20,6 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
@@ -39,17 +40,21 @@ class GoodsDestinationController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    import request.declarationJourney._
     form
       .bindFromRequest()
       .fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
-        value =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeGoodsDestination = Some(value)),
-            if (value == NorthernIreland) routes.CannotUseServiceIrelandController.onPageLoad()
-            else routes.ExciseAndRestrictedGoodsController.onPageLoad()
-          )
+        value => {
+          val redirectIfNotComplete =
+            if (value == NorthernIreland)
+              routes.CannotUseServiceIrelandController.onPageLoad()
+            else
+              routes.ExciseAndRestrictedGoodsController.onPageLoad()
+
+          persistAndRedirect(DeclarationJourney(sessionId, declarationType, maybeGoodsDestination = Some(value)), redirectIfNotComplete)
+        }
       )
   }
 }
