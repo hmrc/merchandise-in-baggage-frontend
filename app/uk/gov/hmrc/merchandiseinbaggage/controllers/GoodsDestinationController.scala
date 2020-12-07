@@ -47,7 +47,7 @@ class GoodsDestinationController @Inject()(
         value =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeGoodsDestination = Some(value)),
-            if (value == NorthernIreland) routes.GoodsRouteDestinationController.onPageLoad()
+            if (value == NorthernIreland) routes.CannotUseServiceIrelandController.onPageLoad()
             else routes.ExciseAndRestrictedGoodsController.onPageLoad()
           )
       )

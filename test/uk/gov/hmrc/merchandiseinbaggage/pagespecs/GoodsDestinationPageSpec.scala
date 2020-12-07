@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsDestination}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsDestinationPage._
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{ExciseAndRestrictedGoodsPage, GoodsRouteDestinationPage, RadioButtonPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CannotUseServiceIrelandPage, ExciseAndRestrictedGoodsPage, RadioButtonPage}
 
 class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDestination, RadioButtonPage[GoodsDestination]] {
   override lazy val page: RadioButtonPage[GoodsDestination] = wire[RadioButtonPage[GoodsDestination]]
@@ -36,7 +36,7 @@ class GoodsDestinationPageSpec extends DeclarationDataCapturePageSpec[GoodsDesti
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, NorthernIreland)
 
     behave like aDataCapturePageWithConditionalRouting(
-        path, givenAnImportJourneyIsStarted(), NorthernIreland, GoodsRouteDestinationPage.path)
+        path, givenAnImportJourneyIsStarted(), NorthernIreland, CannotUseServiceIrelandPage.path)
     behave like aDataCapturePageWithConditionalRouting(
       path, givenAnImportJourneyIsStarted(), GreatBritain, ExciseAndRestrictedGoodsPage.path)
 
