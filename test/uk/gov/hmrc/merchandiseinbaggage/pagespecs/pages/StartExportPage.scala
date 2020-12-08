@@ -18,11 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class StartExportPage(implicit webDriver: WebDriver) extends BasePage {
-  override val ctaName: String = "startNow"
-}
+class StartExportPage(implicit webDriver: WebDriver) extends BasePage
 
 object StartExportPage {
   val path = "/declare-commercial-goods/start-export"
-  val title: String = "Declare commercial goods you’re taking out of the UK in accompanied baggage or small vehicles"
 }

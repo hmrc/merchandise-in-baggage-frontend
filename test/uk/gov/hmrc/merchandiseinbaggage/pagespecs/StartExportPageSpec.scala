@@ -22,6 +22,6 @@ class StartExportPageSpec extends StartPageSpec[StartExportPage] {
   override def page: StartExportPage = startExportPage
 
   "the Start Import page " should {
-    behave like aStartExportPage(StartExportPage.path, StartExportPage.title, GoodsDestinationPage.path)
+    behave like aStartExportPage(StartExportPage.path, GoodsDestinationPage.path)
   }
 }

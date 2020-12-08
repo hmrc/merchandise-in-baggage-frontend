@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{StartImportPage, TestOnlyDeclarationJourneyPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsDestinationPage, TestOnlyDeclarationJourneyPage}
 
 class TestOnlyDeclarationJourneyPageSpec extends StartPageSpec[TestOnlyDeclarationJourneyPage] {
   override def page: TestOnlyDeclarationJourneyPage = testOnlyDeclarationJourneyPage
 
   "the test-only Declaration page " should {
-    behave like aStartImportPage(TestOnlyDeclarationJourneyPage.path, TestOnlyDeclarationJourneyPage.title, StartImportPage.path)
+    behave like aStartImportPage(TestOnlyDeclarationJourneyPage.path, GoodsDestinationPage.path)
   }
 }

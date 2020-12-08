@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsRemovedPage._
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsRemovedPage, GoodsTypeQuantityPage, StartExportPage, StartImportPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsDestinationPage, GoodsRemovedPage, GoodsTypeQuantityPage, StartExportPage, StartImportPage}
 
 class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
   override def page: GoodsRemovedPage = wire[GoodsRemovedPage]
@@ -42,7 +42,7 @@ class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
         givenAnImportJourneyIsStarted()
 
         open(path)
-        page.startAgain() mustBe StartImportPage.path
+        page.startAgain() mustBe GoodsDestinationPage.path
       }
     }
 
@@ -51,7 +51,7 @@ class GoodsRemovedPageSpec extends BasePageSpec[GoodsRemovedPage] {
         givenAnExportJourneyIsStarted()
 
         open(path)
-        page.startAgain() mustBe StartExportPage.path
+        page.startAgain() mustBe GoodsDestinationPage.path
       }
     }
   }
