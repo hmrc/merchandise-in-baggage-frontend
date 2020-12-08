@@ -193,7 +193,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           Some(Declaration(
             sessionId,
             DeclarationType.Import,
-            NorthernIreland,
+            GreatBritain,
             completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
             completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
             completedDeclarationJourney.maybeEmailAddress.get,
