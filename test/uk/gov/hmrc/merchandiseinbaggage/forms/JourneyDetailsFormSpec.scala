@@ -21,37 +21,37 @@ import java.time.LocalDate
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.Dover
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{JourneyDetailsEntry, Ports}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.JourneyDetailsEntry
 
 class JourneyDetailsFormSpec extends FieldBehaviours {
   private val today = LocalDate.now()
 
-  placeOfArrival must {
-    val requiredMessageKey = "journeyDetails.placeOfArrival.error.required"
-    val invalidMessageKey = "journeyDetails.placeOfArrival.error.invalid"
+  port must {
+    val importRequiredMessageKey = "journeyDetails.port.error.Import.required"
+    val exportRequiredMessageKey = "journeyDetails.port.error.Export.required"
 
-    behave like mandatoryField(form, placeOfArrival, FormError(placeOfArrival, requiredMessageKey))
-    behave like anEnumField(form, placeOfArrival, Ports, invalidMessageKey)
+    behave like mandatoryField(form(Import), port, FormError(port, importRequiredMessageKey))
+    behave like mandatoryField(form(Export), port, FormError(port, exportRequiredMessageKey))
   }
 
-  dateOfArrival must {
-    val next5DaysMessageKey = "journeyDetails.dateOfArrival.error.notWithinTheNext5Days"
-    val dateInPastMessageKey = "journeyDetails.dateOfArrival.error.dateInPast"
+  dateOfTravel must {
+    val next5DaysMessageKey = "journeyDetails.dateOfTravel.error.notWithinTheNext5Days"
+    val dateInPastMessageKey = "journeyDetails.dateOfTravel.error.dateInPast"
 
-    behave like aMandatoryDateField(form, dateOfArrival)
-    behave like aDateFieldWithMin(form, dateOfArrival, today, dateInPastMessageKey)
-    behave like aDateFieldWithMax(form, dateOfArrival, today.plusDays(5), next5DaysMessageKey)
+    behave like aMandatoryDateField(form(Import), dateOfTravel)
+    behave like aDateFieldWithMin(form(Import), dateOfTravel, today, dateInPastMessageKey)
+    behave like aDateFieldWithMax(form(Import), dateOfTravel, today.plusDays(5), next5DaysMessageKey)
   }
 
   "form" must {
     "bind a place and date of arrival to a JourneyDetailsEntry" in {
-      form.bind(
+      form(Import).bind(
         Map(
-          placeOfArrival -> Dover.entryName,
-          s"$dateOfArrival.day"   -> today.getDayOfMonth.toString,
-          s"$dateOfArrival.month" -> today.getMonthValue.toString,
-          s"$dateOfArrival.year"  -> today.getYear.toString )).value.get mustBe JourneyDetailsEntry(Dover, today)
+          port -> "DVR",
+          s"$dateOfTravel.day"   -> today.getDayOfMonth.toString,
+          s"$dateOfTravel.month" -> today.getMonthValue.toString,
+          s"$dateOfTravel.year"  -> today.getYear.toString )).value.get mustBe JourneyDetailsEntry("DVR", today)
     }
   }
 }

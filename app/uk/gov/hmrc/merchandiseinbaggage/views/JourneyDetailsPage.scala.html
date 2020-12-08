@@ -18,15 +18,17 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
-@import uk.gov.hmrc.merchandiseinbaggage.model.core.{JourneyDetailsEntry, Ports}
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.JourneyDetailsEntry
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.service.PortService
+@import play.api.libs.json.Json
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 errorSummary: components.errorSummary,
 button: components.button,
-text: components.inputText,
+inputSelect: components.inputSelect,
 date: components.inputDate,
 h1: components.h1)
 
@@ -39,14 +41,50 @@ h1: components.h1)
 @scripts = {
     <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
-            var selectEl = document.querySelector('#@{placeOfArrival}')
-            if(selectEl){
-                accessibleAutocomplete.enhanceSelectElement({
-                    autoselect: true,
-                    defaultValue: selectEl.options[selectEl.options.selectedIndex].innerHtml,
-                    minLength: 2,
-                    selectElement: selectEl
-                })
+
+            var selectElementId = 'port'
+            var submitOnConfirm = false
+            var dataSource = @Html( Json.toJson(PortService.getAllPorts.map(_.toAutoCompleteJson)).toString )
+
+                    accessibleAutocomplete.enhanceSelectElement({
+                        selectElement: document.querySelector('#' + selectElementId),
+                        displayMenu: 'inline',
+                        minLength: 2,
+                        source: customSuggest,
+                        confirmOnBlur: true,
+                        onConfirm: function(confirmed) {
+
+                            //Workaround the bug sending confirmed = undefined when confirmOnBlur == true
+                            let foundInData = dataSource.find(e => e.displayName === $('#'+selectElementId).val())
+                            let element = !!confirmed ? confirmed : foundInData
+
+                            if(!!element) {
+                                $('select[name="'+selectElementId+'"]').val(element.code);
+                                if(submitOnConfirm) {
+                                    window.setTimeout(function(){
+                                        $('form').submit();
+                                    }, 100);
+                                }
+                            }
+                            else {
+                                $('select[name="'+selectElementId+'"]').val('')
+                            }
+                        },
+                        templates: {
+                            inputValue: function(result) {
+                                return (!!result && result.displayName ? result.displayName : '');
+                            },
+                            suggestion: function(result) {
+                                return !!result.displayName ? result.displayName : result;
+                            }
+                        }
+                    })
+
+            function customSuggest (query, syncResults) {
+                var results = dataSource
+                syncResults(query ? results.filter(function (result) {
+                    return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
+                }) : [])
             }
     </script>
 }
@@ -63,31 +101,25 @@ h1: components.h1)
     @errorSummary(form.errors)
     @h1(messages("journeyDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
-    <div class="govuk-form-group">
-      <label class="govuk-label" for="@placeOfArrival">@messages("journeyDetails.placeOfArrival")</label>
-      <p class="govuk-hint">@messages("journeyDetails.placeOfArrival.hint")</p>
-      <div class="autocomplete-wrapper govuk-input--width-20">
-        <select name="@placeOfArrival" id="@placeOfArrival">
-          @if(form(placeOfArrival).value.isEmpty) {
-            <option id="@{placeOfArrival}-option-empty" value="" selected></option>
-          }
-
-          @for(port <- Ports.values) {
-            @if(form(placeOfArrival).value.contains(port.entryName)) {
-              <option id="@{placeOfArrival}-option-@{port.entryName}" value="@port.entryName" selected>@{port.display}</option>
-            } else {
-              <option id="@{placeOfArrival}-option-@{port.entryName}" value="@port.entryName">@{port.display}</option>
-            }
-          }
-        </select>
-      </div>
-    </div>
+    @inputSelect(
+        form = form,
+        id = port,
+        name = port,
+        items = PortService.getAllPorts.map(c => SelectItem(
+            value = Some(c.code),
+            text = messages(c.displayName),
+            selected = form("port").value.contains(c.code)
+        )),
+        label = messages(s"journeyDetails.port.$declarationType.label"),
+        isPageHeading = false,
+        hint = Some("journeyDetails.port.hint")
+    )
 
     @date(
         form = form,
-        legendContent = messages("journeyDetails.dateOfArrival"),
-        id = dateOfArrival,
-        hintText = messages("journeyDetails.dateOfArrival.hint"),
+        legendContent = messages(s"journeyDetails.dateOfTravel.$declarationType.label"),
+        id = dateOfTravel,
+        hintText = messages("journeyDetails.dateOfTravel.hint"),
         legendClasses = "govuk-fieldset__legend--s govuk-!-font-weight-regular"
     )
 

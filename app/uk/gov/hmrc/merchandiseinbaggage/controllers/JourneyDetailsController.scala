@@ -37,19 +37,19 @@ class JourneyDetailsController @Inject()(override val controllerComponents: Mess
     backToCheckYourAnswersIfCompleteElse(routes.EnterEmailController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(form)(details => form.fill(details)), request.declarationType, backButtonUrl))
+    val journeyForm = form(request.declarationType)
+    Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(journeyForm)(details => journeyForm.fill(details)), request.declarationType, backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    form
+    form(request.declarationType)
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         journeyDetailsEntry =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry)),
-            if (journeyDetailsEntry.placeOfArrival.vehiclePort) routes.GoodsInVehicleController.onPageLoad()
-            else routes.CheckYourAnswersController.onPageLoad()
+            routes.GoodsInVehicleController.onPageLoad()
           )
       )
   }

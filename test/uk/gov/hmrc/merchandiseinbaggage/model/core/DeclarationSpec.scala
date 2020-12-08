@@ -23,7 +23,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLook
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
@@ -116,23 +115,16 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
     }
   }
 
-  "JourneyViaFootPassengerOnlyPort" should {
+  "JourneyOnFoot" should {
     "serialise and de-serialise" in {
-      val journey = JourneyViaFootPassengerOnlyPort(Heathrow, journeyDate)
-      parse(toJson(journey).toString()).validate[JourneyViaFootPassengerOnlyPort].get mustBe journey
-    }
-  }
-
-  "JourneyOnFootViaVehiclePort" should {
-    "serialise and de-serialise" in {
-      val journey = JourneyOnFootViaVehiclePort(Dover, journeyDate)
-      parse(toJson(journey).toString()).validate[JourneyOnFootViaVehiclePort].get mustBe journey
+      val journey = JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB=true, List("London Heathrow Airport", "LHR")), journeyDate)
+      parse(toJson(journey).toString()).validate[JourneyOnFoot].get mustBe journey
     }
   }
 
   "JourneyInSmallVehicle" should {
     "serialise and de-serialise" in {
-      val journey = JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
+      val journey = JourneyInSmallVehicle(Port("DVR", "title.dover", isGB=true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
       parse(toJson(journey).toString()).validate[JourneyInSmallVehicle].get mustBe journey
     }
   }
@@ -200,8 +192,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
             completedDeclarationJourney.maybeCustomsAgent,
             completedDeclarationJourney.maybeEori.get,
             JourneyInSmallVehicle(
-              Dover,
-              completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfArrival,
+              Port("DVR", "title.dover", isGB=true, List("Port of Dover")),
+              completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfTravel,
               completedDeclarationJourney.maybeRegistrationNumber.get))
             .copy(dateOfDeclaration = now).copy(mibReference = reference))
       }
@@ -228,25 +220,20 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)).declarationIfRequiredAndComplete.isDefined mustBe true
       }
 
-      "the place of arrival does not require vehicle checks" in {
+      "the user is not travelling by vehicle" in {
         completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(heathrowJourneyEntry)
-        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyViaFootPassengerOnlyPort(Heathrow, journeyDate)
+          maybeJourneyDetailsEntry = Some(heathrowJourneyEntry),
+          maybeTravellingByVehicle = Some(No)
+        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB=true, List("London Heathrow Airport", "LHR")), journeyDate)
       }
 
-      "the place of arrival requires vehicle checks but the trader is not travelling by vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry), maybeTravellingByVehicle = Some(No)
-        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFootViaVehiclePort(Dover, journeyDate)
-      }
-
-      "the place of arrival requires vehicle checks and the trader has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
+      "the trader is travelling by small vehicle has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
         completedDeclarationJourney.copy(
           maybeJourneyDetailsEntry = Some(doverJourneyEntry),
           maybeTravellingByVehicle = Some(Yes),
           maybeTravellingBySmallVehicle = Some(Yes),
           maybeRegistrationNumber = Some(vehicleRegistrationNumber)
-        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Dover, journeyDate, vehicleRegistrationNumber)
+        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Port("DVR", "title.dover", isGB=true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
       }
     }
 

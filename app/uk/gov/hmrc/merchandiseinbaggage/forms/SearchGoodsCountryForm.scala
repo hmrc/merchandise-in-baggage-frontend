@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
+import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 
 object SearchGoodsCountryForm extends Mappings {
 
   val form: Form[String] =
     Form(
       "country" -> text("searchGoodsCountry.error.required")
-        .verifying("searchGoodsCountry.error.invalid", code => CountriesService.isValidCountryCode(code)),
+        .verifying("searchGoodsCountry.error.invalid", code => CountryService.isValidCountryCode(code)),
     )
 }

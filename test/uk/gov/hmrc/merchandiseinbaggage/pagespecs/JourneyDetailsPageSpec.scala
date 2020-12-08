@@ -26,7 +26,7 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
   override lazy val page: JourneyDetailsPage = wire[JourneyDetailsPage]
 
   private val validationMessages =
-    Set("Select your place of arrival in the UK", "Date must include a day", "Date must include a month", "Date must include a year")
+    Set("Select your place of arrival in Great Britain", "Date must include a day", "Date must include a month", "Date must include a year")
 
   "the journey details page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
@@ -35,7 +35,6 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, validationMessages, givenAnImportJourneyIsStarted())
     behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), doverJourneyEntry, GoodsInVehiclePage.path)
-    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), heathrowJourneyEntry, InvalidRequestPage.path)
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, doverJourneyEntry)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), EnterEmailPage.path)
   }

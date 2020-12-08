@@ -16,66 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import enumeratum.EnumEntry
+import play.api.i18n.Messages
 import play.api.libs.json._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{footPassengerOnlyPorts, vehiclePorts}
-import uk.gov.hmrc.merchandiseinbaggage.model.{Enum, EnumFormat}
 
-import scala.collection.immutable
+case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String]) {
 
-sealed trait Port extends EnumEntry {
-  val vehiclePort: Boolean
-  val display: String = entryName
+  def toAutoCompleteJson(implicit messages: Messages): JsObject = Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+
 }
 
 object Port {
-  implicit val format: Format[Port] = EnumFormat(Ports)
+  implicit val format: OFormat[Port] = Json.format[Port]
 }
-
-sealed trait VehiclePort extends Port {
-  override val vehiclePort: Boolean = true
-}
-
-sealed trait FootPassengerOnlyPort extends Port {
-  override val vehiclePort: Boolean = false
-}
-
-object Ports extends Enum[Port] {
-  override val baseMessageKey: String = "placeOfArrival"
-  override val values: immutable.IndexedSeq[Port] = findValues
-
-  val vehiclePorts: Map[String, VehiclePort] =
-    values.flatMap {
-      case port: VehiclePort => Some(port.entryName -> port)
-      case _ => None
-    }.toMap
-
-  val footPassengerOnlyPorts: Map[String, FootPassengerOnlyPort] =
-    values.flatMap {
-      case port: FootPassengerOnlyPort => Some(port.entryName -> port)
-      case _ => None
-    }.toMap
-
-  case object Dover extends VehiclePort
-
-  case object Heathrow extends FootPassengerOnlyPort
-
-}
-
-private case class PortSubTypeFormatter[P <: Port](ports: Map[String, P], label: String) {
-  val format: Format[P] = Format(
-    Reads {
-      case JsString(value) => ports.get(value).map(JsSuccess(_)).getOrElse(JsError(s"Unknown $label value: $value"))
-      case _ => JsError("Can only parse String")
-    },
-    Writes(port => JsString(port.entryName)))
-}
-
-object VehiclePort {
-  implicit val format: Format[VehiclePort] = PortSubTypeFormatter(vehiclePorts, "VehiclePort").format
-}
-
-object FootPassengerOnlyPort {
-  implicit val format: Format[FootPassengerOnlyPort] = PortSubTypeFormatter(footPassengerOnlyPorts, "FootPassengerOnlyPort").format
-}
-

@@ -22,14 +22,15 @@ import play.api.data.Form
 import play.api.data.Forms.{mapping, of}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.{LocalDateFormatter, Mappings}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{JourneyDetailsEntry, Port, Ports}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, JourneyDetailsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 
 object JourneyDetailsForm extends Mappings {
-  val placeOfArrival = "placeOfArrival"
-  val dateOfArrival = "dateOfArrival"
+  val port = "port"
+  val dateOfTravel = "dateOfTravel"
 
-  private val dateErrorKey = "journeyDetails.dateOfArrival.error"
-  private val placeErrorKey = "journeyDetails.placeOfArrival.error"
+  private val dateErrorKey = "journeyDetails.dateOfTravel.error"
+  private val portErrorKey = "journeyDetails.port.error"
 
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
@@ -42,10 +43,11 @@ object JourneyDetailsForm extends Mappings {
     else Valid
   }
 
-  val form: Form[JourneyDetailsEntry] = Form(
+  def form(declarationType: DeclarationType): Form[JourneyDetailsEntry] = Form(
     mapping(
-      placeOfArrival -> enum[Port](Ports, s"$placeErrorKey.required", s"$placeErrorKey.invalid"),
-      dateOfArrival -> localDate.verifying(withinTheNextFiveDays)
+      port -> text(s"$portErrorKey.$declarationType.required")
+        .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
+      dateOfTravel -> localDate.verifying(withinTheNextFiveDays)
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 }
