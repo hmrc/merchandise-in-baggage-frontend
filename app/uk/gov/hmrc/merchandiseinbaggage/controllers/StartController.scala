@@ -20,60 +20,19 @@ import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 trait StartController extends DeclarationJourneyController {
   val declarationType: DeclarationType
   val repo: DeclarationJourneyRepository
   implicit val ec: ExecutionContext
 
-  val onSubmit: Action[AnyContent] = Action.async { implicit request =>
-    def next(sessionId: SessionId) = {
-      val nextCall = routes.GoodsDestinationController.onPageLoad()
-      DeclarationJourneyLogger.info(s"Persisted journey found, redirecting to $nextCall")
-      Redirect(nextCall).addingToSession((SessionKeys.sessionId, sessionId.value))
-    }
-
-    def newDeclarationJourney(sessionId: SessionId) = {
-      val declarationJourney = DeclarationJourney(sessionId = sessionId, declarationType)
-
-      repo.insert(declarationJourney).map { _ =>
-        next(sessionId)
-      }
-    }
-
-    def overwriteDeclarationType(sessionId: SessionId) = {
-      val declarationJourney = DeclarationJourney(sessionId = sessionId, declarationType)
-
-      repo.upsert(declarationJourney).map { _ =>
-        next(sessionId)
-      }
-    }
-
-    request.session.get(SessionKeys.sessionId) match {
-      case None =>
-        DeclarationJourneyLogger.info(
-          s"StartController. No session so will start a new ${declarationType.entryName} journey")
-        newDeclarationJourney(SessionId())
-
-      case Some(id) =>
-        val sessionId = SessionId(id)
-
-        repo.findBySessionId(sessionId).flatMap{
-          case Some(journey) if journey.declarationType != declarationType =>
-            DeclarationJourneyLogger.info(
-              s"StartController. Persisted journey found with different declarationType, overwriting with ${declarationType.entryName}")
-            overwriteDeclarationType(sessionId)
-          case Some(_) =>
-            DeclarationJourneyLogger.info(s"StartController. Persisted journey found")
-            Future successful next(sessionId)
-          case _ =>
-            DeclarationJourneyLogger.info(
-              s"StartController. No persisted journey found so will start a new ${declarationType.entryName} journey")
-            newDeclarationJourney(sessionId)
-        }
+  val processRequest: Action[AnyContent] = Action.async { implicit request =>
+    val sessionId = SessionId()
+    repo.insert(DeclarationJourney(sessionId, declarationType)).map { _ =>
+      Redirect(routes.GoodsDestinationController.onPageLoad())
+        .addingToSession((SessionKeys.sessionId, sessionId.value))
     }
   }
 }

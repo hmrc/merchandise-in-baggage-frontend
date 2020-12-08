@@ -21,7 +21,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 
 import scala.concurrent.ExecutionContext
 
@@ -29,10 +28,8 @@ import scala.concurrent.ExecutionContext
 class StartExportController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       override val repo: DeclarationJourneyRepository)
                                      (implicit val ec: ExecutionContext) extends StartController {
-  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
-    DeclarationJourneyLogger.info("StartExportController.onPageLoad")
-    Redirect(routes.StartExportController.onSubmit())
-  }
+
+  override val onPageLoad: Action[AnyContent] = processRequest
 
   override val declarationType: DeclarationType = Export
 }
