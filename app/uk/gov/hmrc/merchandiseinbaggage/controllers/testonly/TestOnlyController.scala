@@ -31,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormPro
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, _}
@@ -62,10 +62,10 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
           repository.insert(declarationJourney).map { _ =>
             declarationJourney.declarationType match {
               case Import =>
-                Redirect(controllers.routes.StartImportController.onSubmit())
+                Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
                   .addingToSession((sessionId, declarationJourney.sessionId.value))
               case Export =>
-                Redirect(controllers.routes.StartExportController.onSubmit())
+                Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
                   .addingToSession((sessionId, declarationJourney.sessionId.value))
             }
           }
@@ -89,7 +89,7 @@ object TestOnlyController {
       declarationType = DeclarationType.Import,
       maybeExciseOrRestrictedGoods = Some(No),
       maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No),
-      maybeGoodsDestination = Some(NorthernIreland),
+      maybeGoodsDestination = Some(GreatBritain),
       maybeValueWeightOfGoodsExceedsThreshold = Some(No),
       goodsEntries = GoodsEntries(
         Seq(
