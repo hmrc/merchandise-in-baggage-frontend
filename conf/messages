@@ -397,7 +397,7 @@ cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-im
 cannotUseServiceIreland.title = You need to submit a full import declaration
 cannotUseServiceIreland.heading = You need to submit a full import declaration
 cannotUseServiceIreland.p1 = You cannot use this service.
-cannotUseServiceIreland.p2 = If your goods are going to enter the Republic of Ireland you must
+cannotUseServiceIreland.p2 = If your goods are going to Northern Ireland you must
 cannotUseServiceIreland.p2.a.text = make a full import declaration.
 cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
