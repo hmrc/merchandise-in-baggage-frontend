@@ -22,10 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.BasePage
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait StartPageSpec[P <: BasePage] extends BasePageSpec[P] {
-  def aStartImportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
-    behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
-    behave like aPageWithNoBackButton(path)
-
+  def aStartImportPage(path: String, expectedNextPage: String): Unit = {
     s"allow the user to set up a declaration and redirect to $expectedNextPage" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0
 
@@ -37,14 +34,12 @@ trait StartPageSpec[P <: BasePage] extends BasePageSpec[P] {
     }
   }
 
-  def aStartExportPage(path: String, expectedTitle: String, expectedNextPage: String): Unit = {
-    behave like aPageWhichRenders(path, expectedTitle = expectedTitle)
-
+  def aStartExportPage(path: String, expectedNextPage: String): Unit = {
     s"allow the user to set up a declaration and redirect to $expectedNextPage" in {
       declarationJourneyRepository.findAll().futureValue.size mustBe 0
 
       open(path)
-      page.clickOnCTA() mustBe expectedNextPage
+      readPath() mustBe expectedNextPage
 
       declarationJourneyRepository.findAll().futureValue.size mustBe 1
       declarationJourneyRepository.findAll().futureValue.head.declarationType mustBe DeclarationType.Export

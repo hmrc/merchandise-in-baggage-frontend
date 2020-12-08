@@ -30,6 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController.
 import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormProvider
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.Dover
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
@@ -59,8 +60,14 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
       json => {
         Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
           repository.insert(declarationJourney).map { _ =>
-            Redirect(controllers.routes.StartImportController.onPageLoad())
-              .addingToSession((sessionId, declarationJourney.sessionId.value))
+            declarationJourney.declarationType match {
+              case Import =>
+                Redirect(controllers.routes.StartImportController.onSubmit())
+                  .addingToSession((sessionId, declarationJourney.sessionId.value))
+              case Export =>
+                Redirect(controllers.routes.StartExportController.onSubmit())
+                  .addingToSession((sessionId, declarationJourney.sessionId.value))
+            }
           }
         }
       }
