@@ -59,6 +59,16 @@ hmrcStandardFooter: HmrcStandardFooter
 
 @beforeContentDefault = {
     @phaseBanner("beta")
+    @{
+        maybeBackButtonUrl.fold(Html("")){ url =>
+        // for some reason the supplied Call path does not always start with /declare-commercial-goods/
+        val pathPrefix = "/declare-commercial-goods/"
+        val urlString = url.toString
+        val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
+
+        govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
+        }
+    }
     @bodyEndBlock.map(x => x)
 }
 
@@ -68,16 +78,6 @@ hmrcStandardFooter: HmrcStandardFooter
 }
 
 @mainContentDefault = {
-    @{
-        maybeBackButtonUrl.fold(Html("")){ url =>
-            // for some reason the supplied Call path does not always start with /declare-commercial-goods/
-            val pathPrefix = "/declare-commercial-goods/"
-            val urlString = url.toString
-            val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
-
-            govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
-        }
-    }
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
