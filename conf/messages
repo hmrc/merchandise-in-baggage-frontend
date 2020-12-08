@@ -126,10 +126,10 @@ startExport.p4.2 = 5 days
 startExport.p4.3 = before you leave the UK, not before.
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to the UK?
-exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to the UK?
-exciseAndRestrictedGoods.Export.title = Are you taking any of the following goods out of the UK?
-exciseAndRestrictedGoods.Export.heading = Are you taking any of the following goods out of the UK?
+exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to Great Britain?
+exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to Great Britain?
+exciseAndRestrictedGoods.Export.title = Are you taking any of the following goods out of Great Britain?
+exciseAndRestrictedGoods.Export.heading = Are you taking any of the following goods out of Great Britain?
 exciseAndRestrictedGoods.li1 = Alcohol, tobacco or fuel (excise goods).
 exciseAndRestrictedGoods.li2 = Controlled or restricted goods.
 exciseAndRestrictedGoods.details = What are excise, controlled and restricted goods
