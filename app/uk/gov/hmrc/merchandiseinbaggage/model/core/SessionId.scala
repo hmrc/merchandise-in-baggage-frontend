@@ -30,6 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
 
 import scala.collection.immutable
@@ -143,7 +144,7 @@ object Eori {
   implicit val format: OFormat[Eori] = Json.format[Eori]
 }
 
-case class JourneyDetailsEntry(placeOfArrival: Port, dateOfArrival: LocalDate)
+case class JourneyDetailsEntry(portCode: String, dateOfTravel: LocalDate)
 
 object JourneyDetailsEntry {
   implicit val format: OFormat[JourneyDetailsEntry] = Json.format[JourneyDetailsEntry]
@@ -188,13 +189,12 @@ case class DeclarationJourney(sessionId: SessionId,
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
   private val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap { journeyDetailsEntry =>
-    (journeyDetailsEntry.placeOfArrival, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
-      case (port: FootPassengerOnlyPort, _, _, _) =>
-        Some(JourneyViaFootPassengerOnlyPort(port, journeyDetailsEntry.dateOfArrival))
-      case (port: VehiclePort, Some(No), _, _) =>
-        Some(JourneyOnFootViaVehiclePort(port, journeyDetailsEntry.dateOfArrival))
-      case (port: VehiclePort, Some(Yes), Some(YesNo.Yes), Some(registrationNumber)) =>
-        Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfArrival, registrationNumber))
+    val maybePort = PortService.getPortByCode(journeyDetailsEntry.portCode)
+    (maybePort, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
+      case (Some(port), Some(No), _, _) =>
+        Some(JourneyOnFoot(port, journeyDetailsEntry.dateOfTravel))
+      case (Some(port), Some(Yes), Some(Yes), Some(registrationNumber)) =>
+        Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfTravel, registrationNumber))
       case _ => None
     }
   }

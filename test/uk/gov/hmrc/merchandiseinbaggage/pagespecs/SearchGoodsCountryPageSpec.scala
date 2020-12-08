@@ -21,7 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsVatRatePage, PurchaseDetailsPage, SearchGoodsCountryPage}
-import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService.getAllCountries
+import uk.gov.hmrc.merchandiseinbaggage.service.CountryService.getAllCountries
 
 class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]

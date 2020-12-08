@@ -24,7 +24,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Ports.{Dover, Heathrow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 
@@ -90,12 +89,12 @@ trait CoreTestData {
 
   val journeyDate: LocalDate = LocalDate.now
 
-  val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Dover, journeyDate)
-  val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry(Heathrow, journeyDate)
+  val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("DVR", journeyDate)
+  val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("LHR", journeyDate)
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney.copy(
-      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry(Heathrow, journeyDate)))
+      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
 
   val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
   val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu=true, Nil), aPurchaseDetails)

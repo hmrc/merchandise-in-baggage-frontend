@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.service.CountriesService
+@import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 @import play.api.libs.json.Json
@@ -42,7 +42,7 @@ button: components.button
 
         var selectElementId = 'country'
         var submitOnConfirm = false
-        var dataSource = @Html( Json.toJson(CountriesService.getAllCountries.map(_.toAutoCompleteJson)).toString )
+        var dataSource = @Html( Json.toJson(CountryService.getAllCountries.map(_.toAutoCompleteJson)).toString )
 
             accessibleAutocomplete.enhanceSelectElement({
                 selectElement: document.querySelector('#' + selectElementId),
@@ -106,7 +106,7 @@ button: components.button
             form = form,
             id = "country",
             name = "country",
-            items = CountriesService.getAllCountries.map(c => SelectItem(
+            items = CountryService.getAllCountries.map(c => SelectItem(
                 value = Some(c.code),
                 text = messages(c.countryName),
                 selected = form("country").value.contains(c.code)

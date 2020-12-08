@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Country
 
-object CountriesService {
+object CountryService {
 
   def getAllCountries: List[Country] = countries
 

@@ -22,6 +22,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyInSmallVehicle}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
@@ -239,7 +240,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
   import WebBrowser._
   import page._
 
-  def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence): Unit = patiently {
+  def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence)(implicit messages: Messages): Unit = patiently {
     findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
 
     def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
@@ -293,7 +294,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("emailAddress") mustBe declaration.email.email
 
     textOfElementWithId("placeOfArrivalLabel") mustBe "Place of arrival"
-    textOfElementWithId("placeOfArrival") mustBe declaration.journeyDetails.placeOfArrival.display
+    textOfElementWithId("placeOfArrival") mustBe messages(declaration.journeyDetails.port.displayName)
 
     textOfElementWithId("dateOfArrivalLabel") mustBe "Date of arrival"
     textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfArrival

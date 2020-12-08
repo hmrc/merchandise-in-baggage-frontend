@@ -27,38 +27,38 @@ class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataC
 
   import WebBrowser._
 
-  def selectPlaceOfArrival: Select = new Select(find(IdQuery(placeOfArrival)).get.underlying)
+  def selectPort: Select = new Select(find(IdQuery(port)).get.underlying)
 
-  def dayInput: Element = find(NameQuery(s"$dateOfArrival.day")).get
+  def dayInput: Element = find(NameQuery(s"$dateOfTravel.day")).get
 
-  def monthInput: Element = find(NameQuery(s"$dateOfArrival.month")).get
+  def monthInput: Element = find(NameQuery(s"$dateOfTravel.month")).get
 
-  def yearInput: Element = find(NameQuery(s"$dateOfArrival.year")).get
+  def yearInput: Element = find(NameQuery(s"$dateOfTravel.year")).get
 
   override def fillOutForm(journeyDetailsEntry: JourneyDetailsEntry): Unit = {
-    selectPlaceOfArrival.selectByValue(journeyDetailsEntry.placeOfArrival.entryName)
+    selectPort.selectByValue(journeyDetailsEntry.portCode)
 
     dayInput.underlying.clear()
-    dayInput.underlying.sendKeys(journeyDetailsEntry.dateOfArrival.getDayOfMonth.toString)
+    dayInput.underlying.sendKeys(journeyDetailsEntry.dateOfTravel.getDayOfMonth.toString)
 
     monthInput.underlying.clear()
-    monthInput.underlying.sendKeys(journeyDetailsEntry.dateOfArrival.getMonthValue.toString)
+    monthInput.underlying.sendKeys(journeyDetailsEntry.dateOfTravel.getMonthValue.toString)
 
     yearInput.underlying.clear()
-    yearInput.underlying.sendKeys(journeyDetailsEntry.dateOfArrival.getYear.toString)
+    yearInput.underlying.sendKeys(journeyDetailsEntry.dateOfTravel.getYear.toString)
   }
 
   override def previouslyEnteredValuesAreDisplayed(journeyDetailsEntry: JourneyDetailsEntry): Assertion = {
-    val selectedOptions = selectPlaceOfArrival.getAllSelectedOptions
+    val selectedOptions = selectPort.getAllSelectedOptions
     selectedOptions.size() mustBe 1
-    selectedOptions.listIterator().next().getText mustBe journeyDetailsEntry.placeOfArrival.display
+    selectedOptions.listIterator().next().getAttribute("value") mustBe journeyDetailsEntry.portCode
 
     def valueMustEqual(element: Element, datePortion: Int) =
       element.underlying.getAttribute("value") mustBe datePortion.toString
 
-    valueMustEqual(dayInput, journeyDetailsEntry.dateOfArrival.getDayOfMonth)
-    valueMustEqual(monthInput, journeyDetailsEntry.dateOfArrival.getMonthValue)
-    valueMustEqual(yearInput, journeyDetailsEntry.dateOfArrival.getYear)
+    valueMustEqual(dayInput, journeyDetailsEntry.dateOfTravel.getDayOfMonth)
+    valueMustEqual(monthInput, journeyDetailsEntry.dateOfTravel.getMonthValue)
+    valueMustEqual(yearInput, journeyDetailsEntry.dateOfTravel.getYear)
   }
 
   def clickOnSubmitButtonMustRedirectTo(path: String): Assertion = patiently {
