@@ -44,13 +44,15 @@ class ExciseAndRestrictedGoodsController @Inject()(override val controllerCompon
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(
-      request.declarationJourney.maybeExciseOrRestrictedGoods.fold(form)(form.fill),
+      request.declarationJourney.maybeExciseOrRestrictedGoods
+        .fold(form(request.declarationType))
+        (form(request.declarationType).fill),
       request.declarationJourney.declarationType,
       backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    form
+    form(request.declarationType)
       .bindFromRequest()
       .fold(
         formWithErrors =>

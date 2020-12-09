@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, YesNo}
 
 object ExciseAndRestrictedGoodsForm extends Mappings {
 
-  val form: Form[YesNo] =
+  def form(declarationType: DeclarationType): Form[YesNo] =
     Form(
-      "value" -> yesNo("exciseAndRestrictedGoods.error.required")
+      "value" -> yesNo(s"exciseAndRestrictedGoods.error.$declarationType.required")
     )
 
 }
