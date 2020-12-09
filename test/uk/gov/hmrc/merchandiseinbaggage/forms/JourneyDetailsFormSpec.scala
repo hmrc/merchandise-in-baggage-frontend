@@ -49,7 +49,7 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       form(Import, firstJanuary).bind(formData(firstJanuary)).value.get mustBe JourneyDetailsEntry("DVR", firstJanuary)
     }
 
-    "bind a place and date of arrival retrospectively declaration in January 2021 to a JourneyDetailsEntry" in {
+    "bind a place and date of declaration retrospectively for year 2021 to a JourneyDetailsEntry" in {
       val formSubmission: DeclarationType => Form[JourneyDetailsEntry] =
         declarationType => form(declarationType, firstJanuary.plusDays(1)).bind(formData(firstJanuary))
 
@@ -59,7 +59,7 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       formSubmission(Export).value mustBe Some(JourneyDetailsEntry("DVR", firstJanuary))
     }
 
-    "bind date of arrival retrospectively for declaration in 2021 but restrict the earliest date allowable to be 1/1/21" in {
+    "bind date of declaration retrospectively for year 2021 but restrict the earliest date allowable to be 1/1/21" in {
       val dateFromInPastFrom2020 = LocalDate.of(2020, 12, 31)
       val importSubmittedForm = form(Import, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
       val exportSubmittedForm = form(Export, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))

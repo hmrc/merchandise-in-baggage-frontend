@@ -69,7 +69,7 @@ trait ArrivalDateValidationFlagConfiguration {
     configSource("today-date-for-validation-flag").loadOrThrow[ArrivalDateValidationFlagConf]
 
   import arrivalOrDepartureDateFlag._
-  lazy val firstJanuary2021 = LocalDate.of(year, month, day)
+  lazy val configurationDate = LocalDate.of(year, month, day)
 }
 
 final case class ArrivalDateValidationFlagConf(is2021: Boolean, year: Int, month: Int, day: Int)
