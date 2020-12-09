@@ -35,13 +35,12 @@ object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfigu
 
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
-  private val dateValidation: (LocalDate, Boolean) => Constraint[LocalDate] =
-    (declarationDate, dateOfArrivalFlag) => Constraint { value: LocalDate =>
+  private val dateValidation: (LocalDate, Boolean, DeclarationType) => Constraint[LocalDate] =
+    (declarationDate, dateOfArrivalFlag, declarationType) => Constraint { value: LocalDate =>
       val today = if(dateOfArrivalFlag) firstJanuary2021 else declarationDate
-      val fiveDaysTime = today.plusDays(5)
 
-      if (value.isBefore(today) && value.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
-      else if(value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+      if (isPastAnd2020(value, today)) Invalid(s"$dateErrorKey.$declarationType.dateInPast")
+      else if(afterFiveDays(value, today)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
       else Valid
   }
 
@@ -49,7 +48,11 @@ object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfigu
     mapping(
       port -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
-      dateOfTravel -> localDate.verifying(dateValidation(today, is2021Flag))
+      dateOfTravel -> localDate.verifying(dateValidation(today, is2021Flag, declarationType))
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
+
+  private def afterFiveDays(value: LocalDate, today: LocalDate): Boolean = value.isAfter(today.plusDays(5))
+
+  private def isPastAnd2020(value: LocalDate, today: LocalDate) = value.isBefore(today) && value.getYear < 2021
 }
