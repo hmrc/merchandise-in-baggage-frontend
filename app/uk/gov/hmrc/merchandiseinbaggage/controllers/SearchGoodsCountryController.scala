@@ -47,7 +47,8 @@ class SearchGoodsCountryController @Inject()(
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      val preparedForm = request.goodsEntry.maybeCountryOfPurchase.fold(form)(c => form.fill(c.code))
+      val preparedForm = request.goodsEntry.maybeCountryOfPurchase
+        .fold(form(request.declarationType))(c => form(request.declarationType).fill(c.code))
 
       Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))
     }
@@ -55,7 +56,7 @@ class SearchGoodsCountryController @Inject()(
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      form
+      form(request.declarationType)
         .bindFromRequest()
         .fold(
           formWithErrors =>

@@ -19,10 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.VehicleSizeForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 
 class VehicleSizeFormSpec extends YesNoFieldBehaviours {
 
-  val requiredKey = "vehicleSize.error.required"
+  val importRequiredKey = "vehicleSize.error.Import.required"
+  val exportRequiredKey = "vehicleSize.error.Export.required"
   val invalidKey = "error.yesNo"
 
   ".value" must {
@@ -30,15 +32,21 @@ class VehicleSizeFormSpec extends YesNoFieldBehaviours {
     val fieldName = "value"
 
     behave like yesNoField(
-      form,
+      form(Import),
       fieldName,
       invalidError = FormError(fieldName, invalidKey)
     )
 
     behave like mandatoryField(
-      form,
+      form(Import),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, importRequiredKey)
+    )
+
+    behave like mandatoryField(
+      form(Export),
+      fieldName,
+      requiredError = FormError(fieldName, exportRequiredKey)
     )
   }
 }

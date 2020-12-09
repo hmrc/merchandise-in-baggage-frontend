@@ -139,8 +139,8 @@ exciseAndRestrictedGoods.details.restricted = Controlled or restricted goods:
 exciseAndRestrictedGoods.details.restricted.p = Goods that need a licence, or are subject to health or environmental controls. For example, firearms, explosives and ammunition.
 exciseAndRestrictedGoods.details.restricted.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.required = Select yes if you are bringing in excise, restricted or controlled goods
-exciseAndRestrictedGoods.error.enum = Select one of the options below
+exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, restricted or controlled goods
+exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, restricted or controlled goods
 
 
 # GoodsDestination
@@ -151,7 +151,8 @@ goodsDestination.Export.heading = Where in the UK are the goods leaving from?
 goodsDestination.NorthernIreland = Northern Ireland
 goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland, Wales, or Isle of Man
-goodsDestination.error.required = Select which country in the UK the goods are going to
+goodsDestination.error.Import.required = Select which country in the UK the goods are going to
+goodsDestination.error.Export.required = Select if the goods are leaving from Northern Ireland or Great Britain
 
 
 # GoodsRouteDestination
@@ -181,6 +182,7 @@ goodsTypeQuantity.category.hint = For example clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
 goodsTypeQuantity.quantity.error.required = Enter the number of items
+goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
 
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
@@ -208,7 +210,8 @@ searchGoodsCountry.Export.title = What country are you taking the {0} to?
 searchGoodsCountry.Export.heading = What country are you taking the {0} to?
 searchGoodsCountry.Import.title = In what country did you buy the {0}?
 searchGoodsCountry.Import.heading = In what country did you buy the {0}?
-searchGoodsCountry.error.required = Select the country where you bought the goods
+searchGoodsCountry.error.Import.required = Select the country where you bought the goods
+searchGoodsCountry.error.Export.required = Select the country the goods are going to
 searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.error.invalid = Select a valid country
 
@@ -368,7 +371,8 @@ vehicleSize.Import.heading = Are you bringing the goods in a small vehicle?
 vehicleSize.Export.title = Are you taking the goods in a small vehicle?
 vehicleSize.Export.heading = Are you taking the goods in a small vehicle?
 vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
-vehicleSize.error.required = Select yes if you are bringing the goods in a small vehicle
+vehicleSize.error.Import.required = Select yes if you are bringing the goods in a small vehicle
+vehicleSize.error.Export.required = Select yes if you are taking the goods in a small vehicle
 
 # VehicleRegistrationNumber
 vehicleRegistrationNumber.title = What is the registration number of the vehicle?

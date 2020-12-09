@@ -18,16 +18,26 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import play.api.data.Forms.mapping
+import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.core.CategoryQuantityOfGoods
 
 object GoodsTypeQuantityForm extends Mappings {
 
+  private val regex: String = "[0-9 A-Za-z]*"
+
+  private def isValidQuantity(invalidMessageKey: String): Constraint[String] = Constraint { value: String =>
+    if (value.trim matches regex) Valid
+    else Invalid(invalidMessageKey)
+  }
+
   val form: Form[CategoryQuantityOfGoods] =
     Form(
       mapping(
         "category" -> text("goodsTypeQuantity.category.error.required"),
-        "quantity" -> text("goodsTypeQuantity.quantity.error.required")
+        "quantity" ->
+          text("goodsTypeQuantity.quantity.error.required")
+          .verifying(isValidQuantity("goodsTypeQuantity.quantity.error.invalid"))
       )(CategoryQuantityOfGoods.apply)(CategoryQuantityOfGoods.unapply)
     )
 

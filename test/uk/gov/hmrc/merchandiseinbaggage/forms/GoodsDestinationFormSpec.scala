@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.OptionFieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsDestination, GoodsDestinations}
 
 class GoodsDestinationFormSpec extends OptionFieldBehaviours {
@@ -26,19 +27,26 @@ class GoodsDestinationFormSpec extends OptionFieldBehaviours {
   ".value" must {
 
     val fieldName = "value"
-    val requiredKey = "goodsDestination.error.required"
+    val importRequiredKey = "goodsDestination.error.Import.required"
+    val exportRequiredKey = "goodsDestination.error.Export.required"
 
     behave like optionsField[GoodsDestination](
-      form,
+      form(Import),
       fieldName,
       validValues = GoodsDestinations.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
 
     behave like mandatoryField(
-      form,
+      form(Import),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, importRequiredKey)
+    )
+
+    behave like mandatoryField(
+      form(Export),
+      fieldName,
+      requiredError = FormError(fieldName, exportRequiredKey)
     )
   }
 
