@@ -22,10 +22,10 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class FeedbackSurveyController @Inject()(val controllerComponents: MessagesControllerComponents)(
-  implicit appConfig: AppConfig, ec: ExecutionContext) extends FrontendBaseController {
+  implicit appConfig: AppConfig) extends FrontendBaseController {
 
   def startSurvey: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Redirect(appConfig.feedbackUrl)
