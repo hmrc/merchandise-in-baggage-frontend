@@ -119,3 +119,6 @@ GET        /check-your-answers/add-goods uk.gov.hmrc.merchandiseinbaggage.contro
 
 #declaration-confirmation
 GET        /declaration-confirmation     uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationConfirmationController.onPageLoad
+
+
+GET         /start-survey                uk.gov.hmrc.merchandiseinbaggage.controllers.FeedbackSurveyController.startSurvey()

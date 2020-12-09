@@ -53,6 +53,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasGoodDetails(declarationCompleted)
         hasPersonDetails(declarationCompleted)
         hasMakeAnotherDeclarationLink
+        hasFeedbackSurveyLink
       }
 
       "make declaration for import" in {
@@ -72,6 +73,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasGoodDetails(declarationCompleted)
         hasPersonDetails(declarationCompleted)
         hasMakeAnotherDeclarationLink
+        hasFeedbackSurveyLink
       }
     }
   }
@@ -141,5 +143,11 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("makeAnotherDeclarationId") mustBe "Make another declaration"
     element("makeAnotherDeclarationId").click()
     webDriver.getCurrentUrl must include("goods-destination")
+  }
+
+  def hasFeedbackSurveyLink: Assertion = {
+    textOfElementWithId("feedbackSurveyId") mustBe "What did you think of this service?"
+    element("feedbackSurveyId").click()
+    webDriver.getCurrentUrl must include("start-survey")
   }
 }

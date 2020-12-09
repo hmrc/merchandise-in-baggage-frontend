@@ -456,6 +456,8 @@ declarationConfirmation.ul.3 = take the invoices for all the goods you are  taki
 declarationConfirmation.date = Date of declaration
 declarationConfirmation.email = We have sent you a confirmation email to {0}.
 declarationConfirmation.makeAnotherDeclaration = Make another declaration
+declarationConfirmation.feedbackSurvey = What did you think of this service?
+declarationConfirmation.feedbackSurvey.info = (takes 30 seconds)
 
 # Countries
 title.afghanistan=Afghanistan
