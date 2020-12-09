@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsDestination, GoodsDestinations}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, GoodsDestination, GoodsDestinations}
 
 object GoodsDestinationForm extends Mappings {
 
-  val form: Form[GoodsDestination] =
+  def form(declarationType: DeclarationType): Form[GoodsDestination] =
     Form(
-      "value" -> enum[GoodsDestination](GoodsDestinations, "goodsDestination.error.required")
+      "value" -> enum[GoodsDestination](GoodsDestinations, s"goodsDestination.error.$declarationType.required")
     )
 
 }

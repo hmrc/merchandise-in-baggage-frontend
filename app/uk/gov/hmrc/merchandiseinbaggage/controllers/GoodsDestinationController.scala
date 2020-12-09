@@ -35,11 +35,13 @@ class GoodsDestinationController @Inject()(
                                           )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeGoodsDestination.fold(form)(form.fill), request.declarationJourney.declarationType))
+    Ok(view(request.declarationJourney.maybeGoodsDestination
+      .fold(form(request.declarationType))
+      (form(request.declarationType).fill), request.declarationJourney.declarationType))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    form
+    form(request.declarationType)
       .bindFromRequest()
       .fold(
         formWithErrors =>

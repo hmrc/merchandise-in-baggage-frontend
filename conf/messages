@@ -151,7 +151,8 @@ goodsDestination.Export.heading = Where in the UK are the goods leaving from?
 goodsDestination.NorthernIreland = Northern Ireland
 goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland, Wales, or Isle of Man
-goodsDestination.error.required = Select which country in the UK the goods are going to
+goodsDestination.error.Import.required = Select which country in the UK the goods are going to
+goodsDestination.error.Export.required = Select if the goods are leaving from Northern Ireland or Great Britain
 
 
 # GoodsRouteDestination
