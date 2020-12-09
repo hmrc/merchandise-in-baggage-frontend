@@ -66,7 +66,7 @@ final case class MIBConf(protocol: String, host: String, port: Int)
 //TODO to be removed in 2021
 trait ArrivalDateValidationFlagConfiguration {
   lazy val arrivalOrDepartureDateFlag: ArrivalDateValidationFlagConf =
-    configSource("date-of-arrival-validation-flag").loadOrThrow[ArrivalDateValidationFlagConf]
+    configSource("today-date-for-validation-flag").loadOrThrow[ArrivalDateValidationFlagConf]
 
   import arrivalOrDepartureDateFlag._
   lazy val firstJanuary2021 = LocalDate.of(year, month, day)
