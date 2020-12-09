@@ -21,11 +21,12 @@ import java.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms.{mapping, of}
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.merchandiseinbaggage.config.ArrivalDateValidationFlagConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.{LocalDateFormatter, Mappings}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, JourneyDetailsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 
-object JourneyDetailsForm extends Mappings {
+object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfiguration {
   val port = "port"
   val dateOfTravel = "dateOfTravel"
 
@@ -34,20 +35,21 @@ object JourneyDetailsForm extends Mappings {
 
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
-  private val dateValidation: LocalDate => Constraint[LocalDate] = today => Constraint { value: LocalDate =>
-    val fiveDaysTime = today.plusDays(5)
+  private val dateValidation: (LocalDate, Boolean) => Constraint[LocalDate] =
+    (declarationDate, dateOfArrivalFlag) => Constraint { value: LocalDate =>
+      val today = if(dateOfArrivalFlag) firstJanuary2021 else declarationDate
+      val fiveDaysTime = today.plusDays(5)
 
-    if (value.isBefore(today) && today.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
-    else if(value.isBefore(today) && today.getYear >= 2021 && value.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
-    else if(value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
-    else Valid
+      if (value.isBefore(today) && value.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
+      else if(value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+      else Valid
   }
 
-  def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now): Form[JourneyDetailsEntry] = Form(
+  def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now, is2021Flag: Boolean = arrivalOrDepartureDateFlag.is2021): Form[JourneyDetailsEntry] = Form(
     mapping(
       port -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
-      dateOfTravel -> localDate.verifying(dateValidation(today))
+      dateOfTravel -> localDate.verifying(dateValidation(today, is2021Flag))
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 }
