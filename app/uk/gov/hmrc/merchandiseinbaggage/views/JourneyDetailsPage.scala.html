@@ -101,19 +101,19 @@ h1: components.h1)
     @errorSummary(form.errors)
     @h1(messages("journeyDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
-    @inputSelect(
-        form = form,
-        id = port,
-        name = port,
-        items = PortService.getAllPorts.map(c => SelectItem(
-            value = Some(c.code),
-            text = messages(c.displayName),
-            selected = form("port").value.contains(c.code)
-        )),
-        label = messages(s"journeyDetails.port.$declarationType.label"),
-        isPageHeading = false,
-        hint = Some("journeyDetails.port.hint")
-    )
+      @inputSelect(
+          form = form,
+          id = port,
+          name = port,
+          items = PortService.getAllPorts.map(c => SelectItem(
+              value = Some(c.code),
+              text = messages(c.displayName),
+              selected = form("port").value.contains(c.code)
+          )),
+          label = messages(s"journeyDetails.port.$declarationType.label"),
+          isPageHeading = false,
+          hint = Some("journeyDetails.port.hint")
+      )
 
     @date(
         form = form,
