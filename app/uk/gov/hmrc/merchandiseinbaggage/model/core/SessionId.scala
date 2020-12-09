@@ -41,6 +41,8 @@ object SessionId {
   implicit val format: Format[SessionId] = implicitly[Format[String]].inmap(SessionId(_), _.value)
 
   def apply(): SessionId = SessionId(randomUUID().toString)
+
+  def withValue(value: String): SessionId = SessionId(value)
 }
 
 
