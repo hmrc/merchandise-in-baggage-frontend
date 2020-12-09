@@ -111,6 +111,7 @@ button: components.button
             hint = Some("purchaseDetails.price.hint")
         )
 
+        <div style="width: 52%">
         @inputSelect(
             form = form,
             id = "currency",
@@ -123,6 +124,7 @@ button: components.button
             label = messages(s"purchaseDetails.currency.label"),
             isPageHeading = false
         )
+        </div>
 
         <p class="govuk-body">
             @messages("purchaseDetails.p.1")
