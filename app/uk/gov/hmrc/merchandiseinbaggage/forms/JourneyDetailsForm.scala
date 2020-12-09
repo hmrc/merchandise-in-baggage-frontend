@@ -39,9 +39,11 @@ object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfigu
     (declarationDate, dateOfArrivalFlag, declarationType) => Constraint { value: LocalDate =>
       val today = if(dateOfArrivalFlag) firstJanuary2021 else declarationDate
 
-      if (isPastAnd2020(value, today)) Invalid(s"$dateErrorKey.$declarationType.dateInPast")
-      else if(afterFiveDays(value, today)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
-      else Valid
+      (isPastAnd2020(value, today), afterFiveDays(value, today)) match {
+        case (true, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
+        case (_, true) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+        case _         => Valid
+      }
   }
 
   def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now, is2021Flag: Boolean = arrivalOrDepartureDateFlag.is2021): Form[JourneyDetailsEntry] = Form(
