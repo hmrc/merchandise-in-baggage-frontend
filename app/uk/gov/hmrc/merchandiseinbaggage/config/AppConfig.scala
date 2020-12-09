@@ -30,6 +30,11 @@ class AppConfig() extends MongoConfiguration with MibConfiguration {
 
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
   val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
+
+  val feedbackUrl: String = {
+    val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
+    s"$url/$serviceIdentifier"
+  }
 }
 
 object AppConfigSource {
