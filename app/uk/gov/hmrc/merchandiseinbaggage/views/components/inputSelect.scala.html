@@ -30,7 +30,8 @@
         headingMessageArgs: Seq[String] = Seq(),
         hint: Option[String] = None,
         classes: Option[String] = None,
-        labelClasses: Option[String] = None
+        labelClasses: Option[String] = None,
+        attributes: Map[String, String] = Map.empty
 )(implicit messages: Messages)
 
 @govukSelect(Select(
@@ -46,5 +47,6 @@
         content = HtmlContent(messages(hintKey))
     )),
     errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
-    classes = classes.getOrElse("")
+    classes = classes.getOrElse(""),
+    attributes = attributes
 ))

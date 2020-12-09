@@ -101,6 +101,7 @@ h1: components.h1)
     @errorSummary(form.errors)
     @h1(messages("journeyDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
+      <div style="width: 52%">
       @inputSelect(
           form = form,
           id = port,
@@ -114,6 +115,7 @@ h1: components.h1)
           isPageHeading = false,
           hint = Some("journeyDetails.port.hint")
       )
+      </div>
 
     @date(
         form = form,
