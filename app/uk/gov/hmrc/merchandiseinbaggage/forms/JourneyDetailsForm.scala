@@ -37,8 +37,8 @@ object JourneyDetailsForm extends Mappings {
   private val dateValidation: LocalDate => Constraint[LocalDate] = today => Constraint { value: LocalDate =>
     val fiveDaysTime = today.plusDays(5)
 
-    if (value.isBefore(today) && today.getYear < 2021)
-      Invalid(s"$dateErrorKey.dateInPast")
+    if (value.isBefore(today) && today.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
+    else if(value.isBefore(today) && today.getYear >= 2021 && value.getYear < 2021) Invalid(s"$dateErrorKey.dateInPast")
     else if(value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
     else Valid
   }
