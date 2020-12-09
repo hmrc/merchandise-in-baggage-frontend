@@ -33,12 +33,12 @@ button: components.button
 
 @(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("goodsVatRate.title", titleMessageArgs = Seq(goodsCategory))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, "goodsVatRate.title", titleMessageArgs = Seq(goodsCategory))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = GoodsVatRateController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors, GoodsVatRates.values.headOption.map(_.entryName))
 
-        @h1(messages("goodsVatRate.heading", goodsCategory))
+        @h1(messages("goodsVatRate.heading", goodsCategory), Some("govuk-heading-xl"))
 
         @p(Html(messages("goodsVatRate.p")))
 
@@ -79,7 +79,8 @@ button: components.button
                 HeadCell(
                     content = Text(messages("goodsVatRate.table.head.col2"))
                 )
-            ))
+            )),
+            classes = "govuk-!-margin-bottom-8"
         ))
 
         @inputRadio(
