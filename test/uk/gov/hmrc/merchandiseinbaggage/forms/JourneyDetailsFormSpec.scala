@@ -37,7 +37,7 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
   dateOfTravel must {
     val next5DaysMessageKey = "journeyDetails.dateOfTravel.error.notWithinTheNext5Days"
-    val dateInPastMessageKey = "journeyDetails.dateOfTravel.error.Import.dateInPast"
+    val dateInPastMessageKey = "journeyDetails.dateOfTravel.error.dateInPast"
 
     behave like aMandatoryDateField(form(Import), dateOfTravel)
     behave like aDateFieldWithMin(form(Import), dateOfTravel, firstJanuary, dateInPastMessageKey)
@@ -61,11 +61,9 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
     "bind date of arrival retrospectively for declaration in 2021 but restrict the earliest date allowable to be 1/1/21" in {
       val dateFromInPastFrom2020 = LocalDate.of(2020, 12, 31)
-      val importSubmittedForm = form(Import, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
-      val exportSubmittedForm = form(Export, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
+      val submittedForm = form(Import, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
 
-      importSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Import.dateInPast"
-      exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast"
+      submittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.dateInPast"
     }
 
     "bind config flag date of arrival/departure if flag is false for QA" in {
@@ -74,36 +72,7 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       val today = LocalDate.now
 
       form(Import, today.plusMonths(1), false).bind(formData(dateFromInPastIn2021)).errors mustBe Seq.empty
-      form(Import, is2021Flag = true).bind(formData(dateFromInPastIn2020)).errors.head.message mustBe "journeyDetails.dateOfTravel.error.Import.dateInPast"
-    }
-
-    "bind a place and date of arrival retrospectively declaration in January 2021 to a JourneyDetailsEntry" in {
-      val dateFromInPastFrom2021 = LocalDate.of(2021, 1, 1)
-      val formSubmission: DeclarationType => Form[JourneyDetailsEntry] =
-        declarationType => form(declarationType, LocalDate.of(2021, 1, 2)).bind(
-          Map(
-            port -> "DVR",
-            s"$dateOfTravel.day" -> dateFromInPastFrom2021.getDayOfMonth.toString,
-            s"$dateOfTravel.month" -> dateFromInPastFrom2021.getMonthValue.toString,
-            s"$dateOfTravel.year" -> dateFromInPastFrom2021.getYear.toString))
-
-      formSubmission(Import).errors mustBe Seq.empty
-      formSubmission(Import).value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
-      formSubmission(Export).errors mustBe Seq.empty
-      formSubmission(Export).value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
-    }
-
-    "bind date of arrival retrospectively for declaration in 2021 but restrict the earliest date allowable to be 1/1/21" in {
-      val dateFromInPastFrom2021 = LocalDate.of(2020, 12, 31)
-      val formSubmission: DeclarationType => Form[JourneyDetailsEntry] =
-        declarationType => form(declarationType, LocalDate.of(2021, 1, 2)).bind(
-          Map(
-            port -> "DVR",
-            s"$dateOfTravel.day" -> dateFromInPastFrom2021.getDayOfMonth.toString,
-            s"$dateOfTravel.month" -> dateFromInPastFrom2021.getMonthValue.toString,
-            s"$dateOfTravel.year" -> dateFromInPastFrom2021.getYear.toString))
-
-      formSubmission(Import).errors.head.message mustBe "journeyDetails.dateOfTravel.error.dateInPast"
+      form(Import, is2021Flag = true).bind(formData(dateFromInPastIn2020)).errors.head.message mustBe "journeyDetails.dateOfTravel.error.dateInPast"
     }
   }
 
