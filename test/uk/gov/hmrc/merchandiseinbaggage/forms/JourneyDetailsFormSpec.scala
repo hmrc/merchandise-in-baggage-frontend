@@ -53,5 +53,18 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
           s"$dateOfTravel.month" -> today.getMonthValue.toString,
           s"$dateOfTravel.year"  -> today.getYear.toString )).value.get mustBe JourneyDetailsEntry("DVR", today)
     }
+
+    "bind a place and date of arrival retrospectively import declaration in January 2021 to a JourneyDetailsEntry" in {
+      val dateFromInPastFrom2021 = LocalDate.of(2021, 1, 1)
+      val formSubmission = form(Import, LocalDate.of(2021, 1, 2)).bind(
+        Map(
+          port -> "DVR",
+          s"$dateOfTravel.day" -> dateFromInPastFrom2021.getDayOfMonth.toString,
+          s"$dateOfTravel.month" -> dateFromInPastFrom2021.getMonthValue.toString,
+          s"$dateOfTravel.year" -> dateFromInPastFrom2021.getYear.toString))
+
+      formSubmission.errors mustBe Seq.empty
+      formSubmission.value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
+    }
   }
 }

@@ -34,20 +34,20 @@ object JourneyDetailsForm extends Mappings {
 
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
-  private val withinTheNextFiveDays = Constraint { value: LocalDate =>
-    val today = LocalDate.now
+  private val withinTheNextFiveDays: LocalDate => Constraint[LocalDate] = today => Constraint { value: LocalDate =>
     val fiveDaysTime = today.plusDays(5)
 
-    if (value.isBefore(today)) Invalid(s"$dateErrorKey.dateInPast")
+    if (value.isBefore(today) && today.getYear < 2021)
+      Invalid(s"$dateErrorKey.dateInPast")
     else if(value.isAfter(fiveDaysTime)) Invalid(s"$dateErrorKey.notWithinTheNext5Days")
     else Valid
   }
 
-  def form(declarationType: DeclarationType): Form[JourneyDetailsEntry] = Form(
+  def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now): Form[JourneyDetailsEntry] = Form(
     mapping(
       port -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
-      dateOfTravel -> localDate.verifying(withinTheNextFiveDays)
+      dateOfTravel -> localDate.verifying(withinTheNextFiveDays(today))
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 }
