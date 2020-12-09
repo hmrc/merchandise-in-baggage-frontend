@@ -18,11 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import java.time.LocalDate
 
-import play.api.data.FormError
+import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.JourneyDetailsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, JourneyDetailsEntry}
 
 class JourneyDetailsFormSpec extends FieldBehaviours {
   private val today = LocalDate.now()
@@ -56,15 +56,18 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
     "bind a place and date of arrival retrospectively import declaration in January 2021 to a JourneyDetailsEntry" in {
       val dateFromInPastFrom2021 = LocalDate.of(2021, 1, 1)
-      val formSubmission = form(Import, LocalDate.of(2021, 1, 2)).bind(
-        Map(
-          port -> "DVR",
-          s"$dateOfTravel.day" -> dateFromInPastFrom2021.getDayOfMonth.toString,
-          s"$dateOfTravel.month" -> dateFromInPastFrom2021.getMonthValue.toString,
-          s"$dateOfTravel.year" -> dateFromInPastFrom2021.getYear.toString))
+      val formSubmission: DeclarationType => Form[JourneyDetailsEntry] =
+        declarationType => form(declarationType, LocalDate.of(2021, 1, 2)).bind(
+          Map(
+            port -> "DVR",
+            s"$dateOfTravel.day" -> dateFromInPastFrom2021.getDayOfMonth.toString,
+            s"$dateOfTravel.month" -> dateFromInPastFrom2021.getMonthValue.toString,
+            s"$dateOfTravel.year" -> dateFromInPastFrom2021.getYear.toString))
 
-      formSubmission.errors mustBe Seq.empty
-      formSubmission.value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
+      formSubmission(Import).errors mustBe Seq.empty
+      formSubmission(Import).value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
+      formSubmission(Export).errors mustBe Seq.empty
+      formSubmission(Export).value mustBe Some(JourneyDetailsEntry("DVR", dateFromInPastFrom2021))
     }
   }
 }
