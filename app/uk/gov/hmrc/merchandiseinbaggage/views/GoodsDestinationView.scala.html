@@ -32,7 +32,7 @@ button: components.button
 @layout(pageTitle = Some(title(form, s"goodsDestination.$declarationType.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = GoodsDestinationController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, GoodsDestinations.values.headOption.map(_.entryName))
 
         @inputRadio(
             form = form,

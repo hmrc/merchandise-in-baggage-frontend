@@ -182,6 +182,7 @@ goodsTypeQuantity.category.hint = For example clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
 goodsTypeQuantity.quantity.error.required = Enter the number of items
+goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
 
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
@@ -209,7 +210,8 @@ searchGoodsCountry.Export.title = What country are you taking the {0} to?
 searchGoodsCountry.Export.heading = What country are you taking the {0} to?
 searchGoodsCountry.Import.title = In what country did you buy the {0}?
 searchGoodsCountry.Import.heading = In what country did you buy the {0}?
-searchGoodsCountry.error.required = Select the country where you bought the goods
+searchGoodsCountry.error.Import.required = Select the country where you bought the goods
+searchGoodsCountry.error.Export.required = Select the country the goods are going to
 searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.error.invalid = Select a valid country
 

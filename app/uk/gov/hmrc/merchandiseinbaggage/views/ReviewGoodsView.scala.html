@@ -35,7 +35,7 @@ button: components.button
 @layout(pageTitle = Some(title(form, s"reviewGoods.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = ReviewGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 
         @h1(messages("reviewGoods.heading"))
 

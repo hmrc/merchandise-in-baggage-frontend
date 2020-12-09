@@ -20,16 +20,24 @@ import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 
 class SearchGoodsCountryFormSpec extends BaseSpecWithApplication with FieldBehaviours {
   ".country" must {
     val fieldName = "country"
-    val requiredKey = "searchGoodsCountry.error.required"
+    val importRequiredKey = "searchGoodsCountry.error.Import.required"
+    val exportRequiredKey = "searchGoodsCountry.error.Export.required"
 
     behave like mandatoryField(
-      form,
+      form(Import),
       fieldName,
-      requiredError = FormError(fieldName, requiredKey)
+      requiredError = FormError(fieldName, importRequiredKey)
+    )
+
+    behave like mandatoryField(
+      form(Export),
+      fieldName,
+      requiredError = FormError(fieldName, exportRequiredKey)
     )
   }
 }

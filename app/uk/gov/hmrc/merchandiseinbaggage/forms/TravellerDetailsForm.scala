@@ -26,7 +26,7 @@ object TravellerDetailsForm extends Mappings {
   val firstName = "firstName"
   val lastName = "lastName"
 
-  private val regex: String = "[A-Za-z'-]*"
+  private val regex: String = "[A-Za-z '-]*"
 
   private def isValidName(invalidMessageKey: String): Constraint[String] = Constraint { value: String =>
     if (value.trim matches regex) Valid

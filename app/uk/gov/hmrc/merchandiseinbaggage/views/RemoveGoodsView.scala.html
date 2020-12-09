@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
 
 @this(
 layout: Layout,
@@ -31,7 +32,7 @@ button: components.button
 @layout(pageTitle = Some(title(form, s"removeGoods.title", titleMessageArgs = Seq(goodsCategory))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = RemoveGoodsController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
-        @errorSummary(form.errors)
+        @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 
         @inputYesNo(
             form = form,
