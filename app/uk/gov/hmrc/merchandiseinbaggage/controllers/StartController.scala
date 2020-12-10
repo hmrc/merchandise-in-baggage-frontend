@@ -30,15 +30,10 @@ trait StartController extends DeclarationJourneyController {
 
   val processRequest: Action[AnyContent] = Action.async { implicit request =>
 
-    val sessionId =
-      request.session
-        .get(SessionKeys.sessionId)
-        .map(SessionId.withValue)
-        .getOrElse(SessionId())
+    val sessionId = SessionId(request.session(SessionKeys.sessionId))
 
     repo.upsert(DeclarationJourney(sessionId, declarationType)).map { _ =>
       Redirect(routes.GoodsDestinationController.onPageLoad())
-        .addingToSession((SessionKeys.sessionId, sessionId.value))
     }
   }
 }
