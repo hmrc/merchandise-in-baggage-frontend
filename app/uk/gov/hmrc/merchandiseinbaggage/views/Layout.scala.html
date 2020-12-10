@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.layouts
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 @import uk.gov.hmrc.hmrcfrontend.views.html.components._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 @this(
     govukLayout: layouts.govukLayout,
@@ -37,10 +38,10 @@
     @headBlock
     @hmrcTimeoutDialog(TimeoutDialog(
         name="abc",
-        timeout= Some(900),
-        countdown= Some(120),
-        keepAliveUrl= Some("#"),
-        signOutUrl= Some("/sign-out"),
+        timeout= Some(s"${appConfig.timeout}".toInt),
+        countdown= Some(s"${appConfig.countdown}".toInt),
+        keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
+        signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
         language= Some("en")
     ))
     @maybeDeclarationType.map { declarationType =>

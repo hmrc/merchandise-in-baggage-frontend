@@ -31,6 +31,9 @@ class AppConfig() extends MongoConfiguration with MibConfiguration {
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
   val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
+  lazy val timeout: Int = configSource("timeout.timeout").loadOrThrow[Int]
+  lazy val countdown: Int = configSource("timeout.countdown").loadOrThrow[Int]
+
   val feedbackUrl: String = {
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
     s"$url/$serviceIdentifier"
