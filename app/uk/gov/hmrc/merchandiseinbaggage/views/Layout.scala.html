@@ -38,8 +38,8 @@
     @headBlock
     @hmrcTimeoutDialog(TimeoutDialog(
         name="abc",
-        timeout= Some(s"${appConfig.timeout}".toInt),
-        countdown= Some(s"${appConfig.countdown}".toInt),
+        timeout= Some(appConfig.timeout),
+        countdown= Some(appConfig.countdown),
         keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
         signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
         language= Some("en")
