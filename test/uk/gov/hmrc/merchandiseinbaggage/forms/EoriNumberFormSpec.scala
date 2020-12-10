@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.EoriNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 
 class EoriNumberFormSpec extends FieldBehaviours {
@@ -26,15 +27,27 @@ class EoriNumberFormSpec extends FieldBehaviours {
     val fieldName = "eori"
 
     behave like mandatoryField(
-      form(No),
+      form(No, Import),
       fieldName,
-      requiredError = FormError(fieldName, "eoriNumber.trader.error.required")
+      requiredError = FormError(fieldName, "eoriNumber.trader.Import.error.required")
     )
 
     behave like mandatoryField(
-      form(Yes),
+      form(Yes, Import),
       fieldName,
-      requiredError = FormError(fieldName, "eoriNumber.agent.error.required")
+      requiredError = FormError(fieldName, "eoriNumber.agent.Import.error.required")
+    )
+
+    behave like mandatoryField(
+      form(No, Export),
+      fieldName,
+      requiredError = FormError(fieldName, "eoriNumber.trader.Export.error.required")
+    )
+
+    behave like mandatoryField(
+      form(Yes, Export),
+      fieldName,
+      requiredError = FormError(fieldName, "eoriNumber.agent.Export.error.required")
     )
   }
 }
