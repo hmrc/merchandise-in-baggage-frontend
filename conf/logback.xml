@@ -53,6 +53,10 @@
         <appender-ref ref="STDOUT"/>
     </logger>
 
+    <logger name="reactivemongo" level="WARN"/>
+
+    <logger name="play.api.mvc.LegacySessionCookieBaker" level="OFF"/>
+
     <root level="INFO">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
