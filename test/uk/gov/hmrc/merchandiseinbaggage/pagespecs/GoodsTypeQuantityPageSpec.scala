@@ -19,13 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{CategoryQuantityOfGoods, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsTypeQuantityPage.{path, title}
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsTypeQuantityPage, GoodsVatRatePage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsTypeQuantityPage, GoodsVatRatePage, ReviewGoodsPage, ValueWeightOfGoodsPage}
 
 class GoodsTypeQuantityPageSpec extends GoodsEntryPageSpec[CategoryQuantityOfGoods, GoodsTypeQuantityPage] {
   override def page: GoodsTypeQuantityPage = wire[GoodsTypeQuantityPage]
 
   "the goods type quantity page" should {
-    val back: Int => String = _ => ValueWeightOfGoodsPage.path
+    val back: Int => String = i => if(i == 1) ValueWeightOfGoodsPage.path else ReviewGoodsPage.path
 
     behave like aGoodsEntryPage(path, title, CategoryQuantityOfGoods("test good", "123"), Some(GoodsVatRatePage.path), back)
     behave like aPageWithARequiredQuestion(path(1), "Enter a type of goods", givenAnImportJourneyIsStarted(), "category-error")

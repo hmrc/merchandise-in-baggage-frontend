@@ -34,7 +34,9 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
   extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(idx: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    backToCheckYourAnswersOrReviewGoodsElse(routes.ValueWeightOfGoodsController.onPageLoad(), idx)
+    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    else if (request.declarationJourney.goodsEntries.declarationGoodsComplete) routes.ReviewGoodsController.onPageLoad()
+    else routes.ValueWeightOfGoodsController.onPageLoad()
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategoryQuantityOfGoods.fold(form)(form.fill)

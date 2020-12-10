@@ -91,7 +91,7 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
     val goods = entries.flatMap(_.goodsIfComplete)
 
-    if (entries.nonEmpty && (goods.size == entries.size)) Some(DeclarationGoods(goods))
+    if (goods.nonEmpty) Some(DeclarationGoods(goods))
     else None
   }
 
