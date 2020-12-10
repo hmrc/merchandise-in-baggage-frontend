@@ -48,7 +48,7 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
   private val form = formProvider()
 
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
-    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId()))))))
+    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId(request.session("sessionId"))))))))
   }
 
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>

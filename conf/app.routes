@@ -11,9 +11,11 @@ GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggage.contro
 
 # StartImport
 GET        /start-import                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartImportController.onPageLoad
+GET        /process-start-import         uk.gov.hmrc.merchandiseinbaggage.controllers.StartImportController.processRequest
 
 # StartExport
 GET        /start-export                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.onPageLoad
+GET        /process-start-export         uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.processRequest
 
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggage.controllers.ExciseAndRestrictedGoodsController.onPageLoad
