@@ -47,11 +47,15 @@
 
     <logger name="uk.gov" level="INFO"/>
 
-    <logger name="application" level="DEBUG"/>
+    <logger name="application" level="WARN"/>
 
     <logger name="connector" level="TRACE">
         <appender-ref ref="STDOUT"/>
     </logger>
+
+    <logger name="reactivemongo" level="WARN"/>
+
+    <logger name="play.api.mvc.LegacySessionCookieBaker" level="OFF"/>
 
     <root level="INFO">
         <appender-ref ref="FILE"/>

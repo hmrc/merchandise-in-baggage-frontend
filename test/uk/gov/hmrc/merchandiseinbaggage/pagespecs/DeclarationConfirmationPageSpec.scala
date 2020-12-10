@@ -103,7 +103,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
     val listItems = unifiedListItemsById("whatToDoNextUlId")
     listItems.get(0).getText mustBe "take this declaration confirmation with you"
-    listItems.get(1).getText mustBe "take the invoices for all the goods you are taking out of the UK"
+    listItems.get(1).getText mustBe "take the invoices for all the goods you are taking out of the GB"
   }
 
   def hasWhaToDoNextImport: Assertion = {
@@ -111,7 +111,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     val listItems = unifiedListItemsById("whatToDoNextUlId")
     listItems.get(0).getText mustBe "go through the green channel (nothing to declare) at customs"
     listItems.get(1).getText mustBe "take this declaration confirmation with you"
-    listItems.get(2).getText mustBe "take the invoices for all the goods you are taking out of the UK"
+    listItems.get(2).getText mustBe "take the invoices for all the goods you are taking out of the GB"
   }
 
   def hasGoodDetails(declaration: Declaration): Assertion = {

@@ -16,19 +16,22 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class StartImportController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       override val repo: DeclarationJourneyRepository)
                                      (implicit val ec: ExecutionContext) extends StartController {
-  override val onPageLoad: Action[AnyContent] = processRequest
+  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
+    Redirect(routes.StartImportController.processRequest())
+  }
+
 
   override val declarationType: DeclarationType = Import
 }

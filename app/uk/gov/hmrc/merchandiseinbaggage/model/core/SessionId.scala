@@ -16,11 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.text.NumberFormat.getCurrencyInstance
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import java.util.Locale.UK
-import java.util.UUID.randomUUID
-
 import enumeratum.EnumEntry
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
@@ -33,6 +28,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
 
+import java.text.NumberFormat.getCurrencyInstance
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
+import java.util.Locale.UK
+import java.util.UUID.randomUUID
 import scala.collection.immutable
 
 case class SessionId(value: String)
@@ -41,8 +40,6 @@ object SessionId {
   implicit val format: Format[SessionId] = implicitly[Format[String]].inmap(SessionId(_), _.value)
 
   def apply(): SessionId = SessionId(randomUUID().toString)
-
-  def withValue(value: String): SessionId = SessionId(value)
 }
 
 
