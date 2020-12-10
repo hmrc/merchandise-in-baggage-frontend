@@ -19,17 +19,20 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcReportTechnicalIssue
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcTrackingConsentSnippet
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardFooter
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 
 @this(
-govukTemplate: GovukTemplate,
-govukHeader: GovukHeader,
-govukFooter: GovukFooter,
-govukBackLink: GovukBackLink,
-phaseBanner: components.phaseBanner,
-hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
-hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-appConfig: AppConfig,
-hmrcStandardFooter: HmrcStandardFooter
+        govukTemplate: GovukTemplate,
+        govukHeader: GovukHeader,
+        govukFooter: GovukFooter,
+        govukBackLink: GovukBackLink,
+        phaseBanner: components.phaseBanner,
+        hmrcReportTechnicalIssue: HmrcReportTechnicalIssue,
+        hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
+        appConfig: AppConfig,
+        hmrcStandardFooter: HmrcStandardFooter
 )
 
 @(
@@ -43,8 +46,8 @@ hmrcStandardFooter: HmrcStandardFooter
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
 @headDefault = {
-    @headBlock
-    @hmrcTrackingConsentSnippet()
+@headBlock
+@hmrcTrackingConsentSnippet()
 }
 
 @headerDefault = {
@@ -58,18 +61,18 @@ hmrcStandardFooter: HmrcStandardFooter
 }
 
 @beforeContentDefault = {
-    @phaseBanner("beta")
-    @{
-        maybeBackButtonUrl.fold(Html("")){ url =>
+@phaseBanner("beta")
+@{
+    maybeBackButtonUrl.fold(Html("")) { url =>
         // for some reason the supplied Call path does not always start with /declare-commercial-goods/
         val pathPrefix = "/declare-commercial-goods/"
         val urlString = url.toString
-        val fullPathUrl = if (urlString.startsWith(pathPrefix) ) urlString else s"$pathPrefix$urlString"
+        val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
 
         govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
-        }
     }
-    @bodyEndBlock.map(x => x)
+}
+@bodyEndBlock.map(x => x)
 }
 
 @bodyEndDefault = {
@@ -82,7 +85,11 @@ hmrcStandardFooter: HmrcStandardFooter
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             @contentBlock
-            <a href="@{appConfig.contactUrl}" class="govuk-link" id="contactLink">@messages("site.getHelpWithThisPage")</a>
+            @hmrcReportTechnicalIssue(
+                ReportTechnicalIssue(
+                    serviceCode = appConfig.serviceIdentifier,
+                    language = if(messages.lang.code == "en") En else Cy)
+            )
         </div>
     </div>
 }
