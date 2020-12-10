@@ -78,11 +78,6 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
       case (false, true)  => routes.ReviewGoodsController.onPageLoad // user clicked change link from /review-goods
       case (false, false) => default // normal journey flow / user is adding more goods from /review-goods
     }
-
-  def backToCheckYourAnswersOrReviewGoodsElse(backIfIncomplete: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
-    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
-    else if (request.declarationJourney.goodsEntries.entries(index-1).isComplete) routes.ReviewGoodsController.onPageLoad()
-    else backIfIncomplete
 }
 
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
