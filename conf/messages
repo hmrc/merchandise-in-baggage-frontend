@@ -349,15 +349,17 @@ eoriNumber.trader.Import.title = What is your EORI number?
 eoriNumber.trader.Import.heading = What is your EORI number?
 eoriNumber.trader.Export.title = What is your EORI number?
 eoriNumber.trader.Export.heading = What is your EORI number?
-eoriNumber.agent.Import.title = What is the EORI number of the business bringing the goods into the UK?
-eoriNumber.agent.Import.heading = What is the EORI number of the business bringing the goods into the UK?
-eoriNumber.agent.Export.title = What is the EORI number of the business taking the goods out of the UK?
-eoriNumber.agent.Export.heading = What is the EORI number of the business taking the goods out of the UK?
-eoriNumber.p = You need an EORI number that starts with GB to use this service. For example, GB123467800000.
-eoriNumber.a.text = Apply for an EORI number now.
+eoriNumber.agent.Import.title = What is the EORI number of the business bringing the goods into Great Britain?
+eoriNumber.agent.Import.heading = What is the EORI number of the business bringing the goods into Great Britain?
+eoriNumber.agent.Export.title = What is the EORI number of the business taking the goods out of Great Britain?
+eoriNumber.agent.Export.heading = What is the EORI number of the business taking the goods out of Great Britain?
+eoriNumber.hint = You need an EORI number that starts with GB to use this service. For example, GB123467800000.
+eoriNumber.a.text = Apply for an EORI number
 eoriNumber.a.href = https://www.gov.uk/eori
-eoriNumber.trader.error.required = Enter your EORI number
-eoriNumber.agent.error.required = Enter the EORI number of the business bringing the goods
+eoriNumber.trader.Import.error.required = Enter your EORI number
+eoriNumber.trader.Export.error.required = Enter your EORI number
+eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
+eoriNumber.agent.Export.error.required = Enter the EORI number of the business taking the goods
 eoriNumber.error.invalid = EORI number must be 14 characters
 
 # GoodsInVehicle
