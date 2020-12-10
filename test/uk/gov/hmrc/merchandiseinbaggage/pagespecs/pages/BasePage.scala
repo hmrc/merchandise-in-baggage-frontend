@@ -54,7 +54,7 @@ abstract class BasePage(implicit webDriver: WebDriver)
 
   def bannerText(): String = find(ClassNameQuery("govuk-phase-banner__content__tag")).head.underlying.getText
 
-  def contactLink(): Element = find(IdQuery("contactLink")).head
+  def contactLink(): Element = find(xpath("//*[@id='main-content']/div/div/a")).head
 
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
 

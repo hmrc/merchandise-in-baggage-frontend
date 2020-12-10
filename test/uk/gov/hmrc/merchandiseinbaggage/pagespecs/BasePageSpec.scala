@@ -75,8 +75,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       page.bannerText() mustBe "beta"
 
       val contactLink = page.contactLink()
-      contactLink.attribute("href").head.contains("/contact/contact-hmrc-unauthenticated?service=mib") mustBe true
-      contactLink.underlying.getText mustBe "Get help with this page"
+      contactLink.attribute("href").head.contains("/contact/problem_reports_nonjs?newTab=true&service=mib") mustBe true
+      //contactLink.underlying.getText mustBe "Get help with this page (opens in new tab)"
     }
 
 
