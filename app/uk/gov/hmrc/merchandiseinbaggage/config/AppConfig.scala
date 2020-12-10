@@ -22,14 +22,12 @@ import pureconfig.generic.auto._ // Do not remove this
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 
 @Singleton
-class AppConfig() extends MongoConfiguration with MibConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration with ContactFrontedConfiguration {
 
   private val serviceIdentifier = "mib"
 
-  private val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
-
-  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
-  val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
+  val betaFeedbackUrl = s"$cfUrl/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
+  val contactUrl = s"$cfUrl/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
   val feedbackUrl: String = {
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
@@ -54,3 +52,11 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
+
+final case class ContactFrontedConf(host: String, port: Int, protocol: String)
+
+trait ContactFrontedConfiguration {
+  lazy val cfConf: ContactFrontedConf = configSource("microservice.services.contact-frontend").loadOrThrow[ContactFrontedConf]
+
+  val cfUrl  = s"${cfConf.protocol}://${cfConf.host}:${cfConf.port}"
+}
