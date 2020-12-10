@@ -404,12 +404,17 @@ cannotUseService.Import.link.text = Make a full import declaration
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 # CannotUseServiceIreland
-cannotUseServiceIreland.title = You need to submit a full import declaration
-cannotUseServiceIreland.heading = You need to submit a full import declaration
+cannotUseServiceIreland.Import.title = You need to submit a full import declaration
+cannotUseServiceIreland.Export.title = You need to submit a full export declaration
+cannotUseServiceIreland.Import.heading = You need to submit a full import declaration
+cannotUseServiceIreland.Export.heading = You need to submit a full export declaration
 cannotUseServiceIreland.p1 = You cannot use this service.
-cannotUseServiceIreland.p2 = If your goods are going to Northern Ireland you must
-cannotUseServiceIreland.p2.a.text = make a full import declaration.
-cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+cannotUseServiceIreland.Import.p2 = If your goods are going to Northern Ireland you must
+cannotUseServiceIreland.Export.p2 = If your taking goods out of Northern Ireland you must
+cannotUseServiceIreland.Import.p2.a.text = make a full import declaration.
+cannotUseServiceIreland.Export.p2.a.text = make a full export declaration.
+cannotUseServiceIreland.Import.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
+cannotUseServiceIreland.Export.p2.a.href = https://www.gov.uk/guidance/making-a-full-export-declaration
 
 # NoDeclarationNeeded
 noDeclarationNeeded.title = You do not need to make a declaration

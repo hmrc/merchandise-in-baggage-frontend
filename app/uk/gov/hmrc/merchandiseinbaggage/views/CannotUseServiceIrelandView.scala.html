@@ -26,15 +26,15 @@ link: components.link
 
 @(declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("cannotUseServiceIreland.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
-    @h1("cannotUseServiceIreland.heading")
+@layout(pageTitle = Some(titleNoForm(s"cannotUseServiceIreland.$declarationType.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+    @h1(s"cannotUseServiceIreland.$declarationType.heading")
 
     @p(Html(messages("cannotUseServiceIreland.p1")))
 
     <p class="govuk-body">
-        @messages("cannotUseServiceIreland.p2")
-        <a class="govuk-link" href="@messages("cannotUseServiceIreland.p2.a.href")">
-            @messages("cannotUseServiceIreland.p2.a.text")
+        @messages(s"cannotUseServiceIreland.$declarationType.p2")
+        <a class="govuk-link" href="@messages(s"cannotUseServiceIreland.$declarationType.p2.a.href")">
+            @messages(s"cannotUseServiceIreland.$declarationType.p2.a.text")
         </a>
     </p>
 }
