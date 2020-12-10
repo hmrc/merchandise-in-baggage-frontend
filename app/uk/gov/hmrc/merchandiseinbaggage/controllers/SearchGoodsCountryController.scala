@@ -39,9 +39,9 @@ class SearchGoodsCountryController @Inject()(
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) = {
     request.declarationJourney.declarationType match {
       case Import =>
-        backToCheckYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
+        checkYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
       case Export =>
-        backToCheckYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
+        checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
     }
   }
 
