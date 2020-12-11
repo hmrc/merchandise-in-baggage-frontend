@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SessionExpiredView
@@ -31,6 +31,9 @@ class SessionExpiredController @Inject()(override val controllerComponents: Mess
   extends DeclarationJourneyController {
 
   override val onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view()).removingFromSession(SessionKeys.sessionId)
+    removeSession(request)(Ok(view()))
   }
+
+  def removeSession(implicit request: Request[_]): Result => Result = result =>
+    result.removingFromSession(SessionKeys.sessionId)
 }
