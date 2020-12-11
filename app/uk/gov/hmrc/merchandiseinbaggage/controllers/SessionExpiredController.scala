@@ -20,14 +20,17 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.views.html.SessionExpiredView
 
 import scala.concurrent.ExecutionContext
 
-class SessionExpiredController @Inject()(override val controllerComponents: MessagesControllerComponents)
+class SessionExpiredController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                         view: SessionExpiredView
+                                        )
                                         (implicit ec: ExecutionContext, appConfig: AppConfig)
   extends DeclarationJourneyController {
 
   override val onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok("").removingFromSession(SessionKeys.sessionId)
+    Ok(view()).removingFromSession(SessionKeys.sessionId)
   }
 }

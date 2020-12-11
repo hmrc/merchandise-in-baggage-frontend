@@ -31,19 +31,20 @@
   scriptsBlock: Option[Html] = None,
   fullWidth: Boolean = false,
   maybeBackButtonUrl: Option[play.api.mvc.Call],
-  maybeDeclarationType: Option[DeclarationType]
+  maybeDeclarationType: Option[DeclarationType],
+  timeOut: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @defaultHead = {
     @headBlock
-    @hmrcTimeoutDialog(TimeoutDialog(
-        name="abc",
-        timeout= Some(appConfig.timeout),
-        countdown= Some(appConfig.countdown),
-        keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
-        signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
-        language= Some("en")
-    ))
+        @{if(timeOut) hmrcTimeoutDialog(TimeoutDialog(
+                            name="abc",
+                            timeout= Some(appConfig.timeout),
+                            countdown= Some(appConfig.countdown),
+                            keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
+                            signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
+                            language= Some("en")
+                        ))}
     @maybeDeclarationType.map { declarationType =>
         <script>
                 dataLayer = [{

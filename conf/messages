@@ -403,6 +403,13 @@ cannotUseService.Export.link.href = https://www.gov.uk/guidance/making-a-full-ex
 cannotUseService.Import.link.text = Make a full import declaration
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
+#Session expired
+sessionExpired.title = For your security, this service has been reset
+sessionExpired.heading = For your security, this service has been reset
+sessionExpired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
+sessionExpired.Import.restart = Start another import declaration
+sessionExpired.Export.restart = Start another export declaration
+
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = You need to submit a full import declaration
 cannotUseServiceIreland.Export.title = You need to submit a full export declaration
