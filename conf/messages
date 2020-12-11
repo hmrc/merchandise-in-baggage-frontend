@@ -404,11 +404,12 @@ cannotUseService.Import.link.text = Make a full import declaration
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 #Session expired
-sessionExpired.title = For your security, this service has been reset
-sessionExpired.heading = For your security, this service has been reset
-sessionExpired.guidance = The details you have given have been deleted because you did not continue the service for 15 minutes.
-sessionExpired.Import.restart = Start another import declaration
-sessionExpired.Export.restart = Start another export declaration
+sessionExpired.title = For your security, your progress was deleted
+sessionExpired.heading = For your security, your progress was deleted
+sessionExpired.guidance = We deleted any information you entered as you have not done anything in 15 minutes. You will need to start again.
+sessionExpired.restart.p = Start a new declaration if you are:
+sessionExpired.Import.restart = bringing commercial goods in to Great Britain
+sessionExpired.Export.restart = taking commercial goods out of Great Britain
 sessionExpired.keepAliveButtonText = Continue
 sessionExpired.signOutButtonText = Exit
 
