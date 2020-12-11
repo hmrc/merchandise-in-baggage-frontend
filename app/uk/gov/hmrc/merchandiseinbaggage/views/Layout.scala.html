@@ -43,6 +43,8 @@
                             countdown= Some(appConfig.countdown),
                             keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
                             signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
+                            keepAliveButtonText= Some(messages("sessionExpired.keepAliveButtonText")),
+                            signOutButtonText= Some(messages("sessionExpired.signOutButtonText")),
                             language= Some("en")
                         ))}
     @maybeDeclarationType.map { declarationType =>
