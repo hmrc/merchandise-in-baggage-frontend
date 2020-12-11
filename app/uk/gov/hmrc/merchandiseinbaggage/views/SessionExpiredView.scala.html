@@ -24,7 +24,7 @@
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
-    h2: components.h2,
+    h1: components.h1,
     p: components.p,
     link: components.link,
     button: components.button
@@ -36,16 +36,14 @@
 
 @layout(pageTitle = Some(messages("sessionExpired.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false) {
 
-    @h2(messages("sessionExpired.heading"))
+    @h1(messages("sessionExpired.heading"))
+    <br>
 
     @p(Html(messages("sessionExpired.guidance")))
     @p(Html(messages("sessionExpired.restart.p")))
 
-    <p class="govuk-body">
-        @link(StartImportController.onPageLoad().url, messages("sessionExpired.Import.restart"), true)
-    </p>
-    <p class="govuk-body">
-        @link(StartExportController.onPageLoad().url, messages("sessionExpired.Export.restart"), true)
-    </p>
-
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@link(StartImportController.onPageLoad().url, messages("sessionExpired.Import.restart"), true)</li>
+        <li>@link(StartExportController.onPageLoad().url, messages("sessionExpired.Export.restart"), true)</li>
+    </ul>
 }
