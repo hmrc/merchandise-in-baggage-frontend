@@ -56,7 +56,7 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
 
         PaymentCalculation(good, result)
       }
-    }.map(PaymentCalculations)
+    }.map(PaymentCalculations.apply)
 
   def getConversionRates(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[Seq[ConversionRatePeriod]] = {
     val codes = declarationGoods.goods.map(_.purchaseDetails.currency.code).distinct.mkString("&cc=")

@@ -35,7 +35,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
   "the Payment Calculation Page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
-    behave like aPageWithABackButton(path, setUpTaxCalculationAndOpenPage(), ReviewGoodsPage.path)
+    behave like aPageWithABackButton(path, setUpTaxCalculationAndOpenPage(), ReviewGoodsPage.path, shouldGoCya = false)
 
     "redirect to /goods-over-threshold" when {
       "the total GBP value of the goods exceeds the threshold" in {
