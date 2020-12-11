@@ -37,7 +37,9 @@ button: components.button
 
         @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 
-        @h1(messages("reviewGoods.heading"))
+        <h1 class="govuk-heading-xl">
+            @messages("reviewGoods.heading")
+        </h1>
 
         @for(list <- ReviewGoodsSummary.summaryList(goods, declarationType)) {
             @summaryList(list)
