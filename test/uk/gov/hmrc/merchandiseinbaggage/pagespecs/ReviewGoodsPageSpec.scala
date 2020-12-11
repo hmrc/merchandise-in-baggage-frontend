@@ -33,7 +33,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
     "Price paid" -> "£99.99",
     "Type of goods" -> "wine",
     "Destination" -> "France",
-    "VAT Rate" -> "20%",
+    "VAT rate" -> "20%",
     "Remove" -> "",
     "Number of items" -> "1")
 
@@ -66,7 +66,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         open(path)
 
         page.headerText() mustBe title
-        page.goodsSummariesAsMap mustBe Seq(declarationBrakeDown.filterNot(_._1 == "VAT Rate"))
+        page.goodsSummariesAsMap mustBe Seq(declarationBrakeDown.filterNot(_._1 == "VAT rate"))
       }
 
       "multiple import goods entries are complete" in {
