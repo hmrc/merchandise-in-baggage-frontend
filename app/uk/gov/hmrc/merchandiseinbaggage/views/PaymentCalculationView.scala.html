@@ -31,7 +31,9 @@ button: components.button
 @(paymentCalculations: PaymentCalculations, rates: Seq[ConversionRatePeriod], next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
- @h1(messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds))
+ <h1 class="govuk-heading-xl">
+  @messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds)
+ </h1>
 
  @table(paymentCalculations.toTable)
 

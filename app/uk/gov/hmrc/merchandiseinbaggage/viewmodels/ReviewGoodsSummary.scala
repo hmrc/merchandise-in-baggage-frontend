@@ -20,12 +20,17 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, DeclarationType}
 
 object ReviewGoodsSummary {
 
-  private def vatKey(implicit messages: Messages) = Key(Text(messages("reviewGoods.list.vatRate")))
+  private def vatKey(implicit messages: Messages): String = messages("reviewGoods.list.vatRate")
+
+  private def countryKey(declarationType: DeclarationType)(implicit messages: Messages): String = declarationType match {
+    case Import => messages("reviewGoods.list.country")
+    case Export => messages("reviewGoods.list.destination")
+  }
 
   def summaryList(goods: DeclarationGoods, declarationType: DeclarationType)(implicit messages: Messages): Seq[SummaryList] =
     goods.goods.zipWithIndex.map { item =>
@@ -38,7 +43,11 @@ object ReviewGoodsSummary {
           value = Value(Text(categoryQuantityOfGoods.category)),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.GoodsTypeQuantityController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(
+                routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+                Text(messages("site.change")),
+                visuallyHiddenText = Some(messages("reviewGoods.list.item"))
+              )
             )
           ))
         ),
@@ -47,25 +56,37 @@ object ReviewGoodsSummary {
           value = Value(Text(categoryQuantityOfGoods.quantity)),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.GoodsTypeQuantityController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(
+                routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+                Text(messages("site.change")),
+                visuallyHiddenText = Some(messages("reviewGoods.list.quantity"))
+              )
             )
           ))
         ),
         SummaryListRow(
-          key = vatKey,
+          key = Key(Text(vatKey)),
           value = Value(Text(s"${goodsVatRate.value}%")),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.GoodsVatRateController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(
+                routes.GoodsVatRateController.onPageLoad(idx).url,
+                Text(messages("site.change")),
+                visuallyHiddenText = Some(vatKey)
+              )
             )
           ))
         ),
         SummaryListRow(
-          key = Key(Text(messages(if(declarationType == Import) "reviewGoods.list.country" else "reviewGoods.list.destination"))),
+          key = Key(Text(countryKey(declarationType))),
           value = Value(Text(messages(countryOfPurchase.countryName))),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.SearchGoodsCountryController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(
+                routes.SearchGoodsCountryController.onPageLoad(idx).url,
+                Text(messages("site.change")),
+                visuallyHiddenText = Some(countryKey(declarationType))
+              )
             )
           ))
         ),
@@ -74,7 +95,11 @@ object ReviewGoodsSummary {
           value = Value(Text(purchaseDetails.formatted)),
           actions = Some(Actions(
             items = Seq(
-              ActionItem(routes.PurchaseDetailsController.onPageLoad(idx).url, Text(messages("site.change")))
+              ActionItem(
+                routes.PurchaseDetailsController.onPageLoad(idx).url,
+                Text(messages("site.change")),
+                visuallyHiddenText = Some(messages("reviewGoods.list.price"))
+              )
             )
           ))
         ),
@@ -89,5 +114,5 @@ object ReviewGoodsSummary {
 
   private def showVatIfApplies(declarationType: DeclarationType, rows: Seq[SummaryListRow])
                               (implicit messages: Messages): Seq[SummaryListRow] =
-    if(declarationType == Import) rows else rows.filterNot(_.key == vatKey)
+    if(declarationType == Import) rows else rows.filterNot(_.key.content.toString contains vatKey)
 }
