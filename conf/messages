@@ -28,7 +28,6 @@ site.start = Start now
 site.startAgain = Start again
 site.change = Change
 site.remove = Remove
-site.getHelpWithThisPage = Get help with this page
 site.govuk = GOV.UK
 
 date.day = Day

@@ -76,7 +76,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
       val contactLink = page.contactLink()
       contactLink.attribute("href").head.contains("/contact/problem_reports_nonjs?newTab=true&service=mib") mustBe true
-      //contactLink.underlying.getText mustBe "Get help with this page (opens in new tab)"
+      contactLink.underlying.getText mustBe "Is this page not working properly? (opens in new tab)"
     }
 
 
