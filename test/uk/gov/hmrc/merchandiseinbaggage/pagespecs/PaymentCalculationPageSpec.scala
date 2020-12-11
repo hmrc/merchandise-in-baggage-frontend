@@ -50,7 +50,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
       val paymentCalculations = taxCalculation.paymentCalculations
 
       page.headerText() mustBe title(taxCalculation.totalTaxDue)
-      page.summaryHeaders mustBe Seq("Type of goods", "Customs Duty", "VAT", "Total")
+      page.summaryHeaders mustBe Seq("Type of goods", "Value of goods", "Customs Duty", "VAT", "Total")
 
       Range(0, 1).foreach { index =>
         val calculationResult = paymentCalculations(index).calculationResult
@@ -59,12 +59,13 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
         page.summaryRow(index) mustBe
           Seq(
             goods.categoryQuantityOfGoods.category,
-            calculationResult.duty.formattedInPounds,
-            s"${calculationResult.vat.formattedInPounds} at ${goods.goodsVatRate.value}%",
-            calculationResult.taxDue.formattedInPounds)
+            calculationResult.gbpAmount.formattedInPoundsUI,
+            calculationResult.duty.formattedInPoundsUI,
+            s"${calculationResult.vat.formattedInPoundsUI} at ${goods.goodsVatRate.value}%",
+            calculationResult.taxDue.formattedInPoundsUI)
       }
 
-      page.summaryRow(2) mustBe Seq("Payment due", taxCalculation.totalTaxDue.formattedInPounds)
+      page.summaryRow(2) mustBe Seq("Payment due", taxCalculation.totalTaxDue.formattedInPoundsUI)
     }
 
     "redirect to the customs agent page" when {

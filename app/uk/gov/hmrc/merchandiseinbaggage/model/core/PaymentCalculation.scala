@@ -65,32 +65,38 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
           Text(tc.goods.categoryQuantityOfGoods.category)
         ),
         TableRow(
-          Text(tc.calculationResult.duty.formattedInPounds)
+          Text(tc.calculationResult.gbpAmount.formattedInPoundsUI),
+          classes = "govuk-table__cell--numeric"
+        ),
+        TableRow(
+          Text(tc.calculationResult.duty.formattedInPoundsUI),
+          classes = "govuk-table__cell--numeric"
         ),
         TableRow(
           Text(
             messages(
               "paymentCalculation.table.col3.row",
-              tc.calculationResult.vat.formattedInPounds,
+              tc.calculationResult.vat.formattedInPoundsUI,
               tc.goods.goodsVatRate.value
             )
-          )
+          ),
+          classes = "govuk-table__cell--numeric",
+          attributes = Map("nowrap" -> "nowrap")
         ),
         TableRow(
-          Text(tc.calculationResult.taxDue.formattedInPounds)
+          Text(tc.calculationResult.taxDue.formattedInPoundsUI),
+          classes = "govuk-table__cell--numeric"
         )
       )
     } :+ Seq(
       TableRow(
         content = Text(messages("paymentCalculation.table.total")),
-        classes = "govuk-table__header",
-        colspan = Some(3),
-        attributes = Map("style" -> "border: none")
+        classes = "govuk-table__header"
       ),
       TableRow(
-        content = Text(totalTaxDue.formattedInPounds),
-        classes = "govuk-table__header",
-        attributes = Map("style" -> "border: none")
+        content = Text(totalTaxDue.formattedInPoundsUI),
+        classes = "govuk-table__cell--numeric govuk-!-font-weight-bold",
+        colspan = Some(4)
       )
     )
 
@@ -99,16 +105,24 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       attributes = Map("style" -> "margin-bottom:60px"),
       head = Some(Seq(
         HeadCell(
-          Text(messages("paymentCalculation.table.col1.head"))
+          Text(messages("paymentCalculation.table.col1.head")),
+          attributes = Map("nowrap" -> "nowrap")
         ),
         HeadCell(
-          Text(messages("paymentCalculation.table.col2.head"))
+          Text(messages("paymentCalculation.table.col2.head")),
+          attributes = Map("nowrap" -> "nowrap")
         ),
         HeadCell(
-          Text(messages("paymentCalculation.table.col3.head"))
+          Text(messages("paymentCalculation.table.col3.head")),
+          attributes = Map("nowrap" -> "nowrap")
         ),
         HeadCell(
-          Text(messages("paymentCalculation.table.col4.head"))
+          Text(messages("paymentCalculation.table.col4.head")),
+          attributes = Map("nowrap" -> "nowrap")
+        ),
+        HeadCell(
+          Text(messages("paymentCalculation.table.col5.head")),
+          attributes = Map("nowrap" -> "nowrap")
         )
       ))
     )
