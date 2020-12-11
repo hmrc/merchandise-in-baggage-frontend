@@ -111,7 +111,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
   }
 
-  def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String): Unit = {
+  def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String, shouldGoCya: Boolean = true): Unit = {
     s"enable the user to navigate from $path back to $backPath" when {
       "the journey is incomplete" in {
         setUp
@@ -121,12 +121,14 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       }
     }
 
-    s"enable the user to navigate back from $path to ${CheckYourAnswersPage.path} rather than $backPath" when {
-      "the journey is complete" in {
-        givenACompleteDeclarationJourney()
-        open(path)
-        page.maybeBackButton.isDefined mustBe true
-        page.clickOnBackButton() mustBe CheckYourAnswersPage.path
+    if(shouldGoCya) {
+      s"enable the user to navigate back from $path to ${CheckYourAnswersPage.path} rather than $backPath" when {
+        "the journey is complete" in {
+          givenACompleteDeclarationJourney()
+          open(path)
+          page.maybeBackButton.isDefined mustBe true
+          page.clickOnBackButton() mustBe CheckYourAnswersPage.path
+        }
       }
     }
   }

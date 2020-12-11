@@ -44,8 +44,8 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageThatRequiresAtLeastOneCompletedGoodsEntry(path)
-    behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), PurchaseDetailsPage.path(1))
-    behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), PurchaseDetailsPage.path(2))
+    behave like aPageWithABackButton(path, givenAGoodsEntryIsComplete(), PurchaseDetailsPage.path(1), shouldGoCya = false)
+    behave like aPageWithABackButton(path, givenTwoGoodsEntriesAreComplete(), PurchaseDetailsPage.path(2), shouldGoCya = false)
     behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAGoodsEntryIsComplete())
 
     "render correctly" when {

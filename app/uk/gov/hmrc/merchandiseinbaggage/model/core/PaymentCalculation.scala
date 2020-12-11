@@ -24,7 +24,15 @@ import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 
 case class PaymentCalculation(goods: Goods, calculationResult: CalculationResult)
 
-case class TotalCalculationResult(totalGbpValue: AmountInPence, totalTaxDue: AmountInPence, totalDutyDue: AmountInPence, totalVatDue: AmountInPence)
+object PaymentCalculation {
+  implicit val format: OFormat[PaymentCalculation] = Json.format[PaymentCalculation]
+}
+
+case class TotalCalculationResult(paymentCalculations: PaymentCalculations,
+                                  totalGbpValue: AmountInPence,
+                                  totalTaxDue: AmountInPence,
+                                  totalDutyDue: AmountInPence,
+                                  totalVatDue: AmountInPence)
 
 object TotalCalculationResult {
   implicit val format: OFormat[TotalCalculationResult] = Json.format[TotalCalculationResult]
@@ -48,7 +56,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
   )
 
   def totalCalculationResult: TotalCalculationResult =
-    TotalCalculationResult(totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
+    TotalCalculationResult(this, totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
 
   def toTable(implicit messages: Messages): Table = {
     val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
@@ -105,4 +113,8 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       ))
     )
   }
+}
+
+object PaymentCalculations {
+  implicit val format: OFormat[PaymentCalculations] = Json.format[PaymentCalculations]
 }

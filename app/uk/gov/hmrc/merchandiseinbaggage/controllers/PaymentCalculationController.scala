@@ -34,8 +34,8 @@ class PaymentCalculationController @Inject()(override val controllerComponents: 
                                             (implicit val appConfig: AppConfig, ec: ExecutionContext)
   extends DeclarationJourneyController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]):Call =
-    backToCheckYourAnswersIfCompleteElse(routes.ReviewGoodsController.onPageLoad())
+  private val backButtonUrl: Call =
+    routes.ReviewGoodsController.onPageLoad()
 
   private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]):Call =
     if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
