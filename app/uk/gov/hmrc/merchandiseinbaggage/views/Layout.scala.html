@@ -38,7 +38,7 @@
 @defaultHead = {
     @headBlock
         @{if(timeOut) hmrcTimeoutDialog(TimeoutDialog(
-                            name="abc",
+                            name="timeOutDialog",
                             timeout= Some(appConfig.timeout),
                             countdown= Some(appConfig.countdown),
                             keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
