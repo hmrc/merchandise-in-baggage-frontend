@@ -16,13 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.config
 
+import java.time.LocalDate
+
 import javax.inject.Singleton
 import pureconfig.ConfigSource
-import pureconfig.generic.auto._ // Do not remove this
+import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 
 @Singleton
-class AppConfig() extends MongoConfiguration with MibConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration with ArrivalDateValidationFlagConfiguration {
 
   val serviceIdentifier = "mib"
 
@@ -60,3 +62,14 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
+
+//TODO to be removed in 2021
+trait ArrivalDateValidationFlagConfiguration {
+  lazy val arrivalOrDepartureDateFlag: ArrivalDateValidationFlagConf =
+    configSource("retrospective-declaration-date").loadOrThrow[ArrivalDateValidationFlagConf]
+
+  import arrivalOrDepartureDateFlag._
+  lazy val configurationDate = LocalDate.of(year, month, day)
+}
+
+final case class ArrivalDateValidationFlagConf(is2021: Boolean, year: Int, month: Int, day: Int)
