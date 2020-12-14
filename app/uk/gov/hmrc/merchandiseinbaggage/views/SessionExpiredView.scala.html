@@ -39,11 +39,11 @@
     @h1(messages("sessionExpired.heading"))
     <br>
 
-    @p(Html(messages("sessionExpired.guidance")))
-    @p(Html(messages("sessionExpired.restart.p")))
+    @p(Html(messages("sessionExpired.guidance")), Some("expiredGuidanceId"))
+    @p(Html(messages("sessionExpired.restart.p")), Some("expiredRestartId"))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li>@link(StartImportController.onPageLoad().url, messages("sessionExpired.Import.restart"), true)</li>
-        <li>@link(StartExportController.onPageLoad().url, messages("sessionExpired.Export.restart"), true)</li>
+        <li id="expiredUlIdOne">@link(StartImportController.onPageLoad().url, messages("sessionExpired.Import.restart"), true)</li>
+        <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad().url, messages("sessionExpired.Export.restart"), true)</li>
     </ul>
 }
