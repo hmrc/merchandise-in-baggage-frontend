@@ -14,27 +14,10 @@
  * limitations under the License.
  *@
 
-@this(govukDetails: GovukDetails)
+@this()
 
-@(
-        summaryText: String,
-        id: Option[String] = None,
-        open: Boolean = false,
-        classes: Option[String] = None
-)(content: Html)
+@(msg: String, classes: Option[String] = None)(implicit messages: Messages)
 
-<div class="form-group">
-    <details
-    @if(open){ open}
-    @if(id.isDefined){ id="@{id.get}"}
-        class="govuk-details @if(classes){@classes}">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-        @summaryText
-        </span>
-    </summary>
-    <div class="govuk-details__text">
-    @content
-</div>
-    </details>
-</div>
+<legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+    <h2 class="@classes.getOrElse("govuk-fieldset__heading")">@messages(msg)</h2>
+</legend>

@@ -30,6 +30,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
 
   def page: P
 
+  val messageApi: Map[String, String] = messagesApi.messages("default")
+
   def readPath(): String = new java.net.URL(webDriver.getCurrentUrl).getPath
 
   def open(path: String): String = {

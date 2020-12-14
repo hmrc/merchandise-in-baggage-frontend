@@ -16,6 +16,6 @@
 
 @this()
 
-@(content: Html)
+@(content: Html, elmId: Option[String] = None)
 
-<p class="govuk-body">@content</p>
+<p @if(elmId.isDefined){ id="@{elmId.get}"} class="govuk-body">@content</p>

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(govukDetails: GovukDetails)
+package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-@(
-        summaryText: String,
-        id: Option[String] = None,
-        open: Boolean = false,
-        classes: Option[String] = None
-)(content: Html)
+import org.openqa.selenium.WebDriver
+import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 
-<div class="form-group">
-    <details
-    @if(open){ open}
-    @if(id.isDefined){ id="@{id.get}"}
-        class="govuk-details @if(classes){@classes}">
-    <summary class="govuk-details__summary">
-        <span class="govuk-details__summary-text">
-        @summaryText
-        </span>
-    </summary>
-    <div class="govuk-details__text">
-    @content
-</div>
-    </details>
-</div>
+class SessionExpiredPage(implicit webDriver: WebDriver) extends BasePage
+
+object SessionExpiredPage extends BaseSpecWithApplication {
+  val path = "/declare-commercial-goods/sign-out"
+}
