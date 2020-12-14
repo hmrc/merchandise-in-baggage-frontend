@@ -32,7 +32,9 @@ trait CoreTestData {
     MibReference("MIBI1234567890"),
     AmountInPence(1),
     AmountInPence(2),
-    AmountInPence(3)
+    AmountInPence(3),
+    "http://localhost:8281/declare-commercial-goods/declaration-confirmation",
+    "http://localhost:8281/declare-commercial-goods/check-your-answers"
   )
 
   val sessionId: SessionId = SessionId()

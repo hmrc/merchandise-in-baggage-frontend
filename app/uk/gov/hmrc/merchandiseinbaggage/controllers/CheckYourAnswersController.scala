@@ -97,7 +97,17 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
     for {
       taxDue <- calculationService.paymentCalculation(declaration.declarationGoods)
       declarationId <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      payApiResponse <- connector.sendPaymentRequest(PayApiRequest(declaration.mibReference, taxDue.totalTaxDue, taxDue.totalDutyDue, taxDue.totalVatDue))
+      payApiResponse <- connector
+        .sendPaymentRequest(
+          PayApiRequest(
+            declaration.mibReference,
+            taxDue.totalTaxDue,
+            taxDue.totalDutyDue,
+            taxDue.totalVatDue,
+            routes.DeclarationConfirmationController.onPageLoad().absoluteURL(),
+            routes.CheckYourAnswersController.onPageLoad().absoluteURL()
+          )
+        )
       _ <- resetJourney(declarationId)
     } yield Redirect(payApiResponse.nextUrl.value)
 
