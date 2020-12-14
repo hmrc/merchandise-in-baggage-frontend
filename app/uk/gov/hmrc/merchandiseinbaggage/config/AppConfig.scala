@@ -34,6 +34,9 @@ class AppConfig() extends MongoConfiguration with MibConfiguration {
   lazy val timeout: Int = configSource("timeout.timeout").loadOrThrow[Int]
   lazy val countdown: Int = configSource("timeout.countdown").loadOrThrow[Int]
 
+  lazy val paymentsReturnUrl: String = configSource("payments.returnUrl").loadOrThrow[String]
+  lazy val paymentsBackUrl: String = configSource("payments.backUrl").loadOrThrow[String]
+
   val feedbackUrl: String = {
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
     s"$url/$serviceIdentifier"

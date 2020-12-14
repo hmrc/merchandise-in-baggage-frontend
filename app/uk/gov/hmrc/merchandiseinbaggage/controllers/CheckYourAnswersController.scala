@@ -104,8 +104,8 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
             taxDue.totalTaxDue,
             taxDue.totalDutyDue,
             taxDue.totalVatDue,
-            routes.DeclarationConfirmationController.onPageLoad().absoluteURL(),
-            routes.CheckYourAnswersController.onPageLoad().absoluteURL()
+            appConfig.paymentsReturnUrl,
+            appConfig.paymentsBackUrl
           )
         )
       _ <- resetJourney(declarationId)
