@@ -87,12 +87,12 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
     } :+ Seq(
       TableRow(
         content = Text(messages("paymentCalculation.table.total")),
-        classes = "govuk-table__header"
+        classes = "govuk-table__header",
+        colspan = Some(4)
       ),
       TableRow(
         content = Text(totalTaxDue.formattedInPoundsUI),
-        classes = "govuk-!-font-weight-bold",
-        colspan = Some(4)
+        classes = "govuk-!-font-weight-bold"
       )
     )
 

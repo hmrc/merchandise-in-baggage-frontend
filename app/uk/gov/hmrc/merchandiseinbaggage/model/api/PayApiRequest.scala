@@ -27,8 +27,12 @@ object MibReference {
   implicit val format: Format[MibReference] = ValueClassFormat.format(value => MibReference.apply(value))(_.value)
 }
 
-case class PayApiRequest(mibReference: MibReference, amountInPence: AmountInPence, vatAmountInPence: AmountInPence,
-                         dutyAmountInPence: AmountInPence)
+case class PayApiRequest(mibReference: MibReference,
+                         amountInPence: AmountInPence,
+                         vatAmountInPence: AmountInPence,
+                         dutyAmountInPence: AmountInPence,
+                         returnUrl: String,
+                         backUrl: String)
 
 object PayApiRequest {
   implicit val format: Format[PayApiRequest] = Json.format[PayApiRequest]
