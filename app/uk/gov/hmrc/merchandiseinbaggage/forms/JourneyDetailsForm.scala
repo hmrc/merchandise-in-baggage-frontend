@@ -43,7 +43,7 @@ object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfigu
         case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
         case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
         case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
-        case _         => Valid
+        case _            => Valid
       }
   }
 
