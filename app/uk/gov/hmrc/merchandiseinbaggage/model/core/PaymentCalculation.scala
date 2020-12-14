@@ -65,12 +65,10 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
           Text(tc.goods.categoryQuantityOfGoods.category)
         ),
         TableRow(
-          Text(tc.calculationResult.gbpAmount.formattedInPoundsUI),
-          classes = "govuk-table__cell--numeric"
+          Text(tc.calculationResult.gbpAmount.formattedInPoundsUI)
         ),
         TableRow(
-          Text(tc.calculationResult.duty.formattedInPoundsUI),
-          classes = "govuk-table__cell--numeric"
+          Text(tc.calculationResult.duty.formattedInPoundsUI)
         ),
         TableRow(
           Text(
@@ -80,12 +78,10 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
               tc.goods.goodsVatRate.value
             )
           ),
-          classes = "govuk-table__cell--numeric",
           attributes = Map("nowrap" -> "nowrap")
         ),
         TableRow(
-          Text(tc.calculationResult.taxDue.formattedInPoundsUI),
-          classes = "govuk-table__cell--numeric"
+          Text(tc.calculationResult.taxDue.formattedInPoundsUI)
         )
       )
     } :+ Seq(
@@ -95,7 +91,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       ),
       TableRow(
         content = Text(totalTaxDue.formattedInPoundsUI),
-        classes = "govuk-table__cell--numeric govuk-!-font-weight-bold",
+        classes = "govuk-!-font-weight-bold",
         colspan = Some(4)
       )
     )
