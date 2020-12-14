@@ -84,6 +84,10 @@ button: components.button
                     return (result.synonyms.findIndex( function(s) { return s.toLowerCase().indexOf(query.toLowerCase()) !== -1 } ) !== -1 ) || (result.displayName.toLowerCase().indexOf(query.toLowerCase()) !== -1)
                 }) : [])
             }
+
+            @if(form("country").error.isDefined) {
+                document.getElementById("country").setAttribute("style", "border: 2px solid #d4351c;")
+            }
     </script>
 }
 
