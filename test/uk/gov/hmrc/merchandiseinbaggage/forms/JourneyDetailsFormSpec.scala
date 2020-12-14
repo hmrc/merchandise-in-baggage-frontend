@@ -68,6 +68,16 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast"
     }
 
+    "bind date of declaration retrospectively for year 2021 but restrict the earliest date allowable to be 1/1/21 and within 30 days" in {
+      val dateFromInPastFrom2020 = LocalDate.of(2021, 1, 1)
+      val thirtyFirstJanuary = firstJanuary.plusDays(31)
+      val importSubmittedForm = form(Import, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
+      val exportSubmittedForm = form(Export, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
+
+      importSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Import.dateInPast.within.30.days"
+      exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days"
+    }
+
     "bind config flag date of arrival/departure if flag is false for QA" in {
       val dateFromInPastIn2021 = LocalDate.of(2021, 1, 1)
       val dateFromInPastIn2020 = LocalDate.of(2020, 12, 31)

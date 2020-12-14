@@ -344,6 +344,8 @@ journeyDetails.dateOfTravel.error.invalid = Please enter a valid date
 journeyDetails.dateOfTravel.error.notWithinTheNext5Days = Enter a date within the next 5 days
 journeyDetails.dateOfTravel.error.Import.dateInPast = Date of arrival must be after 1 January 2021
 journeyDetails.dateOfTravel.error.Export.dateInPast = Date of departure must be after 1 January 2021
+journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days = Date of departure must be in the past 30 days
+journeyDetails.dateOfTravel.error.Import.dateInPast.within.30.days = Date of arrival must be in the past 30 days
 
 # EoriNumber
 eoriNumber.trader.Import.title = What is your EORI number?
