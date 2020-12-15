@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.generators
 
-import java.time.ZoneOffset.UTC
-import java.time.{Instant, LocalDate}
-
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.{alphaStr, choose}
@@ -61,12 +58,4 @@ trait Generators {
       val vector = xs.toVector
       choose(0, vector.size - 1).flatMap(vector(_))
     }
-
-  def datesBetween(min: LocalDate, max: LocalDate): Gen[LocalDate] = {
-    def toMillis(date: LocalDate): Long = date.atStartOfDay.atZone(UTC).toInstant.toEpochMilli
-
-    Gen.choose(toMillis(min), toMillis(max)).map { millis =>
-      Instant.ofEpochMilli(millis).atOffset(UTC).toLocalDate
-    }
-  }
 }
