@@ -16,18 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.forms.behaviours
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE
-
-import enumeratum.EnumEntry
-import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.forms.FormSpec
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.LocalDateFormatter.{dayBlankErrorKey, monthBlankErrorKey, yearBlankErrorKey}
 import uk.gov.hmrc.merchandiseinbaggage.generators.Generators
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
