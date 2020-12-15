@@ -111,33 +111,42 @@
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
- <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-  @declaration.maybeCustomsAgent.fold(Html("")) { customsAgent =>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
-    <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
-    <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
+    <dt id="customsAgentYesNoLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.customsAgentYesNoLabel")</dt>
+    <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold("No")(_ => "Yes")</dt>
     <dd class="govuk-summary-list__actions">
-     <a id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
-       @messages("checkYourAnswers.change")
+     <a id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
+      @messages("checkYourAnswers.change")
      </a>
     </dd>
    </div>
+   @declaration.maybeCustomsAgent.map { customsAgent =>
    <div class="govuk-summary-list__row">
-    <dt id="customsAgentAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
-    <dd id="customsAgentAddress" class="govuk-summary-list__value" style="text-transform: capitalize">
-     @for(addressLine <- customsAgent.address.lines) {
-      @addressLine
-      <br>
-      }
+     <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
+     <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
+        @messages("checkYourAnswers.change")
+      </a>
+     </dd>
+    </div>
+    <div class="govuk-summary-list__row">
+     <dt id="customsAgentAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
+     <dd id="customsAgentAddress" class="govuk-summary-list__value" style="text-transform: capitalize">
+      @for(addressLine <- customsAgent.address.lines) {
+       @addressLine
+       <br>
+       }
 
-     @customsAgent.address.postcode.getOrElse("")
-    </dd>
-    <dd class="govuk-summary-list__actions">
-     <a id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
-       @messages("checkYourAnswers.change")
-     </a>
-    </dd>
-   </div>
+      @customsAgent.address.postcode.getOrElse("")
+     </dd>
+     <dd class="govuk-summary-list__actions">
+      <a id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
+        @messages("checkYourAnswers.change")
+      </a>
+     </dd>
+    </div>
   }
   <div class="govuk-summary-list__row">
    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>

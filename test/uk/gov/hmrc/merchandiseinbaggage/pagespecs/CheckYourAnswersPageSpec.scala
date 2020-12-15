@@ -271,12 +271,16 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("taxDueValue") mustBe totalTaxDue.formattedInPounds
 
     declaration.maybeCustomsAgent.fold {
+      textOfElementWithId("customsAgentYesNoLabel") mustBe "Customs agent"
+      textOfElementWithId("customsAgentYesNo") mustBe "No"
       elementIsNotRenderedWithId("customsAgentNameLabel")
       elementIsNotRenderedWithId("customsAgentName")
 
       elementIsNotRenderedWithId("customsAgentAddressLabel")
       elementIsNotRenderedWithId("customsAgentAddress")
     } { customsAgent =>
+      textOfElementWithId("customsAgentYesNoLabel") mustBe "Customs agent"
+      textOfElementWithId("customsAgentYesNo") mustBe "Yes"
       textOfElementWithId("customsAgentNameLabel") mustBe "Name of customs agent"
       textOfElementWithId("customsAgentName") mustBe customsAgent.name
 
