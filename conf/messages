@@ -417,7 +417,7 @@ sessionExpired.restart.p = Start a new declaration if you are:
 sessionExpired.Import.restart = bringing commercial goods into Great Britain
 sessionExpired.Export.restart = taking commercial goods out of Great Britain
 sessionExpired.keepAliveButtonText = Continue
-sessionExpired.signOutButtonText = Exit
+sessionExpired.signOutButtonText = Delete your progress
 sessionExpired.message = For your security, we will time you out in
 
 # CannotUseServiceIreland
