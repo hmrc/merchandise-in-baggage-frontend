@@ -462,13 +462,13 @@ checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration number
 checkYourAnswers.sendDeclaration = Now send your declaration
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
-checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into the GB for trade or business use.
-checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force.
-checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = I will need to show my declaration and purchase receipts if I am stopped by Border Force.
+checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
+checkYourAnswers.sendDeclaration.acknowledgement.2 = I will need to show my declaration and invoices if I am stopped by Border Force
+checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
 checkYourAnswers.sendDeclaration.confirm = By making this declaration you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.sendDeclaration.warning = Warning
-checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the GB you may be fined a penalty and have your goods detained by Border Force.
-checkYourAnswers.payButton = Accept and Pay
+checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering Great Britain you may be fined a penalty and have your goods detained by Border Force.
+checkYourAnswers.payButton = Accept and pay
 checkYourAnswers.makeDeclarationButton = Make declaration
 
 # DeclarationConfirmation
