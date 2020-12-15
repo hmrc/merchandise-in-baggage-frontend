@@ -465,7 +465,7 @@ checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = I will need to show 
 checkYourAnswers.sendDeclaration.confirm = By making this declaration you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering the GB you may be fined a penalty and have your goods detained by Border Force.
-checkYourAnswers.payButton = Accept and Pay
+checkYourAnswers.payButton = Accept and pay
 checkYourAnswers.makeDeclarationButton = Make declaration
 
 # DeclarationConfirmation
