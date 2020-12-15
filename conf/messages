@@ -418,6 +418,7 @@ sessionExpired.Import.restart = bringing commercial goods into Great Britain
 sessionExpired.Export.restart = taking commercial goods out of Great Britain
 sessionExpired.keepAliveButtonText = Continue
 sessionExpired.signOutButtonText = Exit
+sessionExpired.message = For your security, we will time you out in
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = You need to submit a full import declaration
