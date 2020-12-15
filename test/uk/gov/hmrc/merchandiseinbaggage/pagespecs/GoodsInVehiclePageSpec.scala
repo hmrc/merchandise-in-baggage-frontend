@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, J
 class GoodsInVehiclePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioButtonPage[YesNo]] {
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
-  private val requiredAnswerValidationMessage = "Select yes if you are travelling by vehicle"
+  private val requiredAnswerValidationMessage = "Select yes if the goods are arriving by vehicle"
 
   "the goods in vehicle page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
