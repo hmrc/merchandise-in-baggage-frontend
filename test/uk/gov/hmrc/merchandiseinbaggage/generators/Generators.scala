@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.generators
 
-import java.time.ZoneOffset.UTC
-import java.time.{Instant, LocalDate}
-
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalacheck.Gen.{alphaStr, choose}
