@@ -43,7 +43,7 @@
      <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
      <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
      <dd class="govuk-summary-list__actions">
-       <a id="@{s"categoryChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
+       <a class="govuk-link" id="@{s"categoryChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
         @messages("checkYourAnswers.change")
        </a>
      </dd>
@@ -52,7 +52,7 @@
      <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
      <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
      <dd class="govuk-summary-list__actions">
-      <a id="@{s"quantityChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
+      <a class="govuk-link" id="@{s"quantityChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
          @messages("checkYourAnswers.change")
        </a>
      </dd>
@@ -61,7 +61,7 @@
      <dt id="@{s"vatRateLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.vatRate")</dt>
      <dd id="@{s"vatRate_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@{s"${goods.goodsVatRate.value}%"}</dd>
      <dd class="govuk-summary-list__actions">
-      <a id="@{s"vatRateChangeLink_$index"}" href=@{s"${GoodsVatRateController.onPageLoad(index + 1)}"}>
+      <a class="govuk-link" id="@{s"vatRateChangeLink_$index"}" href=@{s"${GoodsVatRateController.onPageLoad(index + 1)}"}>
          @messages("checkYourAnswers.change")
        </a>
      </dd>
@@ -70,7 +70,7 @@
      <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
      <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(goods.countryOfPurchase.countryName)</dd>
      <dd class="govuk-summary-list__actions">
-      <a id="@{s"countryChangeLink_$index"}" href=@{s"${SearchGoodsCountryController.onPageLoad(index + 1)}"}>
+      <a class="govuk-link" id="@{s"countryChangeLink_$index"}" href=@{s"${SearchGoodsCountryController.onPageLoad(index + 1)}"}>
          @messages("checkYourAnswers.change")
        </a>
      </dd>
@@ -79,14 +79,14 @@
      <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
      <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails.formatted</dd>
      <dd class="govuk-summary-list__actions">
-      <a id="@{s"priceChangeLink_$index"}" href=@{s"${PurchaseDetailsController.onPageLoad(index + 1)}"}>
+      <a class="govuk-link" id="@{s"priceChangeLink_$index"}" href=@{s"${PurchaseDetailsController.onPageLoad(index + 1)}"}>
          @messages("checkYourAnswers.change")
        </a>
      </dd>
     </div>
     <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
      <dd class="govuk-summary-list__value">
-      <a id="@{s"removeGoodsLink_$index"}" class="govuk-link" href="@{s"${RemoveGoodsController.onPageLoad(index + 1)}"}">
+      <a class="govuk-link" id="@{s"removeGoodsLink_$index"}" class="govuk-link" href="@{s"${RemoveGoodsController.onPageLoad(index + 1)}"}">
        @messages("site.remove")
       </a>
      </dd>
@@ -95,7 +95,7 @@
 }
 
   <p class="govuk-body">
-   <a id="addMoreGoodsLink" class="govuk-link" href="@CheckYourAnswersController.addMoreGoods">
+   <a class="govuk-link" id="addMoreGoodsLink" class="govuk-link" href="@CheckYourAnswersController.addMoreGoods">
     @messages("checkYourAnswers.addMoreGoods")
    </a>
   </p>
@@ -116,7 +116,7 @@
     <dt id="customsAgentYesNoLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.customsAgentYesNoLabel")</dt>
     <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold("No")(_ => "Yes")</dt>
     <dd class="govuk-summary-list__actions">
-     <a id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
+     <a class="govuk-link" id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
      </a>
     </dd>
@@ -126,7 +126,7 @@
      <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
      <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
      <dd class="govuk-summary-list__actions">
-      <a id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
+      <a class="govuk-link" id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
         @messages("checkYourAnswers.change")
       </a>
      </dd>
@@ -142,7 +142,7 @@
       @customsAgent.address.postcode.getOrElse("")
      </dd>
      <dd class="govuk-summary-list__actions">
-      <a id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
+      <a class="govuk-link" id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
         @messages("checkYourAnswers.change")
       </a>
      </dd>
@@ -152,7 +152,7 @@
    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
    <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="eoriChangeLink" href=@{s"${EoriNumberController.onPageLoad()}"}>
+    <a class="govuk-link" id="eoriChangeLink" href=@{s"${EoriNumberController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -161,7 +161,7 @@
    <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="nameOfPersonCarryingTheGoodsChangeLink" href=@{s"${TravellerDetailsController.onPageLoad()}"}>
+    <a class="govuk-link" id="nameOfPersonCarryingTheGoodsChangeLink" href=@{s"${TravellerDetailsController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -170,7 +170,7 @@
    <dt id="emailAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.emailAddress")</dt>
    <dd id="emailAddress" class="govuk-summary-list__value">@declaration.email.email</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="emailAddressChangeLink" href=@{s"${EnterEmailController.onPageLoad()}"}>
+    <a class="govuk-link" id="emailAddressChangeLink" href=@{s"${EnterEmailController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -184,7 +184,7 @@
    <dt id="placeOfArrivalLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.placeOfArrival")</dt>
    <dd id="placeOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.port.displayName)</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="placeOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
+    <a class="govuk-link" id="placeOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -193,7 +193,7 @@
    <dt id="dateOfArrivalLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
    <dd id="dateOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="dateOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
+    <a class="govuk-link" id="dateOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -202,7 +202,7 @@
    <dt id="travellingByVehicleLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.travellingByVehicle")</dt>
    <dd id="travellingByVehicle" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.travellingByVehicle.messageKey)</dd>
    <dd class="govuk-summary-list__actions">
-    <a id="travellingByVehicleChangeLink" href=@{s"${GoodsInVehicleController.onPageLoad()}"}>
+    <a class="govuk-link" id="travellingByVehicleChangeLink" href=@{s"${GoodsInVehicleController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
     </a>
    </dd>
@@ -212,7 +212,7 @@
     <dt id="vehicleRegistrationNumberLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.vehicleRegistrationNumber")</dt>
     <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
     <dd class="govuk-summary-list__actions">
-     <a id="vehicleRegistrationNumberChangeLink" href=@{s"${VehicleRegistrationNumberController.onPageLoad()}"}>
+     <a class="govuk-link" id="vehicleRegistrationNumberChangeLink" href=@{s"${VehicleRegistrationNumberController.onPageLoad()}"}>
        @messages("checkYourAnswers.change")
      </a>
     </dd>
