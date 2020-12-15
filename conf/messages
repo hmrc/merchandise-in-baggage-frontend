@@ -417,7 +417,8 @@ sessionExpired.restart.p = Start a new declaration if you are:
 sessionExpired.Import.restart = bringing commercial goods into Great Britain
 sessionExpired.Export.restart = taking commercial goods out of Great Britain
 sessionExpired.keepAliveButtonText = Continue
-sessionExpired.signOutButtonText = Exit
+sessionExpired.signOutButtonText = Delete your progress
+sessionExpired.message = For your security, we will time you out in
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = You need to submit a full import declaration
@@ -468,7 +469,7 @@ checkYourAnswers.personalDetails.customsAgentYesNoLabel = Customs agent
 checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = I will need to show my declaration and invoices if I am stopped by Border Force
 checkYourAnswers.sendDeclaration.confirm = By making this declaration you are confirming that, to the best of your knowledge, the details you are providing are correct.
 checkYourAnswers.sendDeclaration.warning = Warning
-checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before entering Great Britain you may be fined a penalty and have your goods detained by Border Force.
+checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before leaving Great Britain you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.payButton = Accept and pay
 checkYourAnswers.makeDeclarationButton = Make declaration
 

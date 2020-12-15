@@ -41,6 +41,7 @@
                             name="timeOutDialog",
                             timeout= Some(appConfig.timeout),
                             countdown= Some(appConfig.countdown),
+                            message= Some(messages("sessionExpired.message")),
                             keepAliveUrl= Some(s"${TimeOutController.onPageLoad.url}"),
                             signOutUrl= Some(s"${SessionExpiredController.onPageLoad.url}"),
                             keepAliveButtonText= Some(messages("sessionExpired.keepAliveButtonText")),
