@@ -18,5 +18,5 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object VehicleSizePage{
   val path = "/declare-commercial-goods/vehicle-size"
-  val title = "Are you bringing the goods in a small vehicle?"
+  val title = "Are the goods arriving in a small vehicle?"
 }
