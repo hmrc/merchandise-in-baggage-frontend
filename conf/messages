@@ -363,7 +363,7 @@ eoriNumber.trader.Import.error.required = Enter your EORI number
 eoriNumber.trader.Export.error.required = Enter your EORI number
 eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.agent.Export.error.required = Enter the EORI number of the business taking the goods
-eoriNumber.error.invalid = EORI number must start with GB and be 14 characters
+eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
 
 # GoodsInVehicle
 goodsInVehicle.title = Are you travelling by vehicle?
