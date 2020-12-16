@@ -48,7 +48,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created)
 
-    givenADeclarationJourneyIsPersisted(exportJourney.copy(declarationId = Some(id)))
+    givenADeclarationJourneyIsPersisted(exportJourney.copy(declarationId = id))
     givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
@@ -57,7 +57,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val connector = new MibConnector(client, "") {
-      override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Declaration] =
+      override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
         Future.failed(new Exception("not found"))
     }
 

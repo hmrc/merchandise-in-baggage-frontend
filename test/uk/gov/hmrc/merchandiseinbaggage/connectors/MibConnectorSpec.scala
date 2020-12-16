@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationId
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
@@ -27,26 +26,23 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
   val client = app.injector.instanceOf[MibConnector]
   implicit val hc = HeaderCarrier()
+  val declarationWithId = declaration.copy(declarationId = stubbedDeclarationId)
 
   "send a declaration to backend to be persisted" in {
-    givenDeclarationIsPersistedInBackend(wireMockServer, declaration)
+    givenDeclarationIsPersistedInBackend(wireMockServer, declarationWithId)
 
-    client.persistDeclaration(declaration).futureValue mustBe stubbedDeclarationId
+    client.persistDeclaration(declarationWithId).futureValue mustBe stubbedDeclarationId
   }
 
   "find a persisted declaration from backend by declarationId" in {
-    val id = DeclarationId("1234")
+    givenPersistedDeclarationIsFound(wireMockServer, declarationWithId, stubbedDeclarationId)
 
-    givenPersistedDeclarationIsFound(wireMockServer, declaration, id)
-
-    client.findDeclaration(id).futureValue mustBe declaration
+    client.findDeclaration(stubbedDeclarationId).futureValue mustBe Some(declarationWithId)
   }
 
   "sendEmails should return as expected" in {
-    val id = DeclarationId("1234")
+    givenSendEmailsSuccess(wireMockServer, stubbedDeclarationId)
 
-    givenSendEmailsSuccess(wireMockServer, id)
-
-    client.findDeclaration(id).futureValue mustBe declaration
+    client.sendEmails(stubbedDeclarationId).futureValue mustBe (())
   }
 }

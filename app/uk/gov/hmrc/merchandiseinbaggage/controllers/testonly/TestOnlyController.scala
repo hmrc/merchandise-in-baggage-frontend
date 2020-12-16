@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers.testonly
 
 import java.time.LocalDate.now
-
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.libs.json.Json

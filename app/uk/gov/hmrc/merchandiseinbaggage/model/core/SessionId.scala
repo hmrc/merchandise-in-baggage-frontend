@@ -31,6 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfusc
 import java.text.NumberFormat.getCurrencyInstance
 import java.time.{LocalDate, LocalDateTime, ZoneOffset}
 import java.util.Locale.UK
+import java.util.UUID
 import java.util.UUID.randomUUID
 import scala.collection.immutable
 
@@ -167,7 +168,7 @@ case class DeclarationJourney(sessionId: SessionId,
                               maybeTravellingByVehicle: Option[YesNo] = None,
                               maybeTravellingBySmallVehicle: Option[YesNo] = None,
                               maybeRegistrationNumber: Option[String] = None,
-                              declarationId: Option[DeclarationId] = None
+                              declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)
                              ) {
   lazy val obfuscated: DeclarationJourney =
     this.copy(
@@ -222,7 +223,7 @@ case class DeclarationJourney(sessionId: SessionId,
 
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
+      Declaration(declarationId, sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
     }
   }
 

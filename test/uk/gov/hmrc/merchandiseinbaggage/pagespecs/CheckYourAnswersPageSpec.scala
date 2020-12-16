@@ -209,15 +209,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     "allow the user to make a declaration if exporting" in {
       val sessionId = SessionId()
       val created = LocalDateTime.now.withSecond(0).withNano(0)
-      val id = DeclarationId("1234")
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(sessionId = sessionId, declarationType = DeclarationType.Export,
-          createdAt = created, declarationId = Some(id))
+          createdAt = created, declarationId = stubbedDeclarationId)
 
       givenDeclarationIsPersistedInBackend(wireMockServer)
       givenADeclarationWithTaxDue(exportJourney).futureValue
       givenTaxArePaid(wireMockServer)
-      givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, exportJourney.declarationId.get)
+      givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, exportJourney.declarationId)
 
       open(path)
 

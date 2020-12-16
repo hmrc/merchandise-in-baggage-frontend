@@ -24,7 +24,8 @@ import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
-case class Declaration(sessionId: SessionId,
+case class Declaration(declarationId: DeclarationId,
+                       sessionId: SessionId,
                        declarationType: DeclarationType,
                        goodsDestination: GoodsDestination,
                        declarationGoods: DeclarationGoods,

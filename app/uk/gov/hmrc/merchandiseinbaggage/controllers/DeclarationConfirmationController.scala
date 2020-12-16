@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class DeclarationConfirmationController @Inject()(
@@ -34,8 +33,11 @@ class DeclarationConfirmationController @Inject()(
   extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationId.fold(actionProvider.invalidRequestF(incompleteMessage)) { declarationId =>
-      connector.findDeclaration(declarationId).map(declaration => Ok(view(declaration)))
+    val declarationId = request.declarationJourney.declarationId
+    connector.findDeclaration(declarationId).map {
+      case Some(declaration) =>
+        Ok(view(declaration))
+      case None => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
   }
 }
