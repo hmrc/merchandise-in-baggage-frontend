@@ -17,12 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import javax.inject.{Inject, Named, Singleton}
+import play.api.http.HeaderNames.LOCATION
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Call
-import play.api.http.HeaderNames.LOCATION
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig
-import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
 
 import scala.concurrent.{ExecutionContext, Future}

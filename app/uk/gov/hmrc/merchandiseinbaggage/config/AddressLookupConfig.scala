@@ -27,6 +27,18 @@ class AddressLookupConfig @Inject()() {
          |  "version": 2,
          |  "options": {
          |    "continueUrl": "$continueUrl"
+         |  },
+         |  "labels": {
+         |    "en": {
+         |      "appLevelLabels": {
+         |        "navTitle": "Declare commercial goods carried in accompanied baggage or small vehicles"
+         |      }
+         |    },
+         |    "cy": {
+         |      "appLevelLabels": {
+         |        "navTitle": "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+         |      }
+         |    }
          |  }
          |}
          |""".stripMargin).as[JsObject]
