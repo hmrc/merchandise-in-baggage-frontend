@@ -34,7 +34,7 @@ h1: components.h1)
 @layout(pageTitle = Some(title(form, "travellerDetails.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
   @formHelper(action = TravellerDetailsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
     @errorSummary(form.errors)
-    @h1(messages("travellerDetails.heading"))
+    @h1(messages("travellerDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
     @hint(messages("travellerDetails.hint"), "travellerDetailsHintId")
 
     @text(

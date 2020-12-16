@@ -38,7 +38,7 @@ button: components.button
 
         @errorSummary(form.errors, GoodsVatRates.values.headOption.map(_.entryName))
 
-        @h1(messages("goodsVatRate.heading", goodsCategory), Some("govuk-heading-xl"))
+        @h1(messages("goodsVatRate.heading", goodsCategory), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
         @p(Html(messages("goodsVatRate.p")))
 
