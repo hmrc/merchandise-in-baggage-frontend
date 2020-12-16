@@ -102,7 +102,7 @@ button: components.button
 
         @errorSummary(form.errors, Some("country"))
 
-        @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory))
+        @h1(messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
         @if(declarationType == Import) { <p id="searchGoodsCountryHint" class="govuk-hint">@messages("searchGoodsCountry.hint")</p> }
 
@@ -115,7 +115,7 @@ button: components.button
                 text = messages(c.countryName),
                 selected = form("country").value.contains(c.code)
             )),
-            label = messages(s"searchGoodsCountry.declarationType.heading"),
+            label = messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory),
             isPageHeading = false,
             headingMessageArgs = Seq(goodsCategory),
             labelClasses = Some("govuk-visually-hidden")

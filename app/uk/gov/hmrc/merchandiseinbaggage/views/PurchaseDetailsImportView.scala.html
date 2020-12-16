@@ -103,7 +103,7 @@ button: components.button
 
         @errorSummary(form.errors)
 
-        @h1(messages("purchaseDetails.heading", goodsCategory))
+        @h1(messages("purchaseDetails.heading", goodsCategory), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
         @text(
             form = form,
