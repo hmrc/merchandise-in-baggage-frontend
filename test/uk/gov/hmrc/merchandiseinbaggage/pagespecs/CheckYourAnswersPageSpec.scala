@@ -25,6 +25,7 @@ import org.scalatestplus.selenium.WebBrowser
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyInSmallVehicle}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
@@ -41,14 +42,24 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     behave like aPageWithNoBackButton(path)
 
     "render correctly" when {
-      "the declaration is complete" in {
+      "the import declaration is complete" in {
         val taxDue = givenADeclarationWithTaxDue(completedDeclarationJourney).futureValue
         val declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
         open(path)
 
         page.headerText() mustBe title
-        mustRenderDetail(declaration, taxDue.totalTaxDue)
+        mustRenderDetail(declaration, Some(taxDue.totalTaxDue))
+      }
+
+      "the export declaration is complete" in {
+        val exportJourney = completedDeclarationJourney.copy(declarationType = Export)
+        givenADeclarationWithTaxDue(exportJourney).futureValue
+
+        open(path)
+
+        page.headerText() mustBe title
+        mustRenderDetail(exportJourney.declarationIfRequiredAndComplete.get)
       }
 
       "the declaration is complete but sparse" in {
@@ -57,7 +68,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
 
         open(path)
 
-        mustRenderDetail(declaration, taxDue.totalTaxDue)
+        mustRenderDetail(declaration, Some(taxDue.totalTaxDue))
       }
     }
 
@@ -239,7 +250,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
   import WebBrowser._
   import page._
 
-  def mustRenderDetail(declaration: Declaration, totalTaxDue: AmountInPence)(implicit messages: Messages): Unit = patiently {
+  def mustRenderDetail(declaration: Declaration, totalTaxDue: Option[AmountInPence] = None)(implicit messages: Messages): Unit = patiently {
     findAll(TagNameQuery("h2")).map(_.underlying.getText).toSeq.dropRight(1) mustBe expectedSectionHeaders
 
     def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
@@ -256,18 +267,20 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       textOfElementWithId(s"quantityLabel_$index") mustBe "Number of items"
       textOfElementWithId(s"quantity_$index") mustBe goods.categoryQuantityOfGoods.quantity
 
-      textOfElementWithId(s"vatRateLabel_$index") mustBe "VAT rate"
-      textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%"
+      totalTaxDue.map(_ => textOfElementWithId(s"vatRateLabel_$index") mustBe "VAT rate")
+      totalTaxDue.map(_ => textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%")
 
-      textOfElementWithId(s"countryLabel_$index") mustBe "Country"
+      totalTaxDue.fold(textOfElementWithId(s"countryLabel_$index") mustBe "Destination")(_ =>
+        textOfElementWithId(s"countryLabel_$index") mustBe "Country"
+      )
       textOfElementWithId(s"country_$index") mustBe messages(goods.countryOfPurchase.countryName)
 
       textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
       textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.formatted
     }
 
-    textOfElementWithId("taxDueLabel") mustBe "Payment due"
-    textOfElementWithId("taxDueValue") mustBe totalTaxDue.formattedInPounds
+    totalTaxDue.map(_ => textOfElementWithId("taxDueLabel") mustBe "Payment due")
+    totalTaxDue.map(amount => textOfElementWithId("taxDueValue") mustBe amount.formattedInPounds)
 
     declaration.maybeCustomsAgent.fold {
       textOfElementWithId("customsAgentYesNoLabel") mustBe "Customs agent"
