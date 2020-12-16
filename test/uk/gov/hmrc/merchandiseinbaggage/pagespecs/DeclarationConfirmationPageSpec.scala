@@ -40,7 +40,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Export)
         val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
-        givenADeclarationJourney(declarationJourney.copy(declarationId = Some(id)))
+        givenADeclarationJourney(declarationJourney.copy(declarationId = id))
         givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
         open(path)
 
@@ -60,7 +60,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Import)
         val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
-        givenADeclarationJourney(declarationJourney.copy(declarationId = Some(id)))
+        givenADeclarationJourney(declarationJourney.copy(declarationId = id))
         givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
         open(path)
 

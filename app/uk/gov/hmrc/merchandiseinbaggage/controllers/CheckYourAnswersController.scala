@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -30,6 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -88,7 +88,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =
     for {
       declarationId <- mibConnector.persistDeclaration(declaration)
-      _ <- resetJourney(declarationId)
+      _ <- resetJourney()
       _ <- mibConnector.sendEmails(declarationId)
     } yield Redirect(routes.DeclarationConfirmationController.onPageLoad())
 
@@ -96,7 +96,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
                                        (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
       taxDue <- calculationService.paymentCalculation(declaration.declarationGoods)
-      declarationId <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
+      _ <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
       payApiResponse <- connector
         .sendPaymentRequest(
           PayApiRequest(
@@ -108,11 +108,11 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
             appConfig.paymentsBackUrl
           )
         )
-      _ <- resetJourney(declarationId)
+      _ <- resetJourney()
     } yield Redirect(payApiResponse.nextUrl.value)
 
-  private def resetJourney(id: DeclarationId)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
+  private def resetJourney()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = Some(id)))
+    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
   }
 }

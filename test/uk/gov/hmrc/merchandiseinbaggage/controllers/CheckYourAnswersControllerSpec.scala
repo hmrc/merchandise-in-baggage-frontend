@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val id = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val importJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = Some(id))
+      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
@@ -76,7 +76,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     redirectLocation(eventualResult) mustBe Some("http://host")
 
     import importJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = Some(id))
+    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = id)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }
@@ -86,7 +86,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val stubbedId = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val exportJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = Some(stubbedId))
+      .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
 
@@ -98,7 +98,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
 
     import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = Some(stubbedId))
+    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = stubbedId)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }

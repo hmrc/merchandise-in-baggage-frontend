@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.time.LocalDateTime
-
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
@@ -25,6 +24,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
+
+import java.util.UUID
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
@@ -180,9 +181,11 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       "the user has completed the journey" in {
         val now = LocalDateTime.now
         val reference = MibReference("xx")
+        val declarationId = DeclarationId(UUID.randomUUID().toString)
         completedDeclarationJourney.declarationIfRequiredAndComplete
-          .map(_.copy(dateOfDeclaration = now).copy(mibReference = reference)) mustBe
+          .map(_.copy(dateOfDeclaration = now).copy(mibReference = reference, declarationId = declarationId)) mustBe
           Some(Declaration(
+            declarationId,
             sessionId,
             DeclarationType.Import,
             GreatBritain,
