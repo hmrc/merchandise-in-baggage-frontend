@@ -48,7 +48,6 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created)
 
-    givenADeclarationJourneyIsPersistedServiceTimeoutPageSpe(exportJourney.copy(declarationId = id))
     givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
