@@ -16,21 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.MessagesControllerComponents
+import javax.inject.Inject
+import play.api.mvc._
+import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.views.html.ProgressDeletedView
 
-import scala.concurrent.ExecutionContext
-
-@Singleton
-class TimeOutController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                  actionProvider: DeclarationJourneyActionProvider,
-                                  repo: DeclarationJourneyRepository,
-                               )(implicit ec: ExecutionContext, appConfig: AppConfig)
+class ProgressDeletedController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                          view: ProgressDeletedView
+                                         )(implicit appConfig: AppConfig)
   extends DeclarationJourneyController {
 
-  override val onPageLoad = actionProvider.journeyAction.async { implicit request =>
-    repo.upsert(request.declarationJourney).map { _ => NoContent }
+  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
+    removeSession(request)(Ok(view()))
   }
+
+  def removeSession(implicit request: Request[_]): Result => Result = result =>
+    result.removingFromSession(SessionKeys.sessionId)
 }

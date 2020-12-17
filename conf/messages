@@ -409,16 +409,25 @@ cannotUseService.Export.link.href = https://www.gov.uk/guidance/making-a-full-ex
 cannotUseService.Import.link.text = Make a full import declaration
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
-#Session expired
-sessionExpired.title = For your security, your progress was deleted
-sessionExpired.heading = For your security, your progress was deleted
-sessionExpired.guidance = We deleted any information you entered as you have not done anything in 15 minutes. You will need to start again.
-sessionExpired.restart.p = Start a new declaration if you are:
-sessionExpired.Import.restart = bringing commercial goods into Great Britain
-sessionExpired.Export.restart = taking commercial goods out of Great Britain
+#Session expired dialog box
 sessionExpired.keepAliveButtonText = Continue
 sessionExpired.signOutButtonText = Delete your progress
 sessionExpired.message = For your security, we will time you out in
+
+#ProgressDeleted
+progressDeleted.title = You deleted your progress
+progressDeleted.heading = You deleted your progress
+progressDeleted.restart.p = Start a new declaration if you are:
+progressDeleted.Import.restart = bringing commercial goods into Great Britain
+progressDeleted.Export.restart = taking commercial goods out of Great Britain
+
+#Time-out
+timeOut.title = For your security, we deleted your progress
+timeOut.heading = For your security, we deleted your progress
+timeOut.guidance = We deleted any information you entered because you have not done anything in 15 minutes. You will need to start again.
+timeOut.restart.p = Start a new declaration if you are:
+timeOut.Import.restart = bringing commercial goods into Great Britain
+timeOut.Export.restart = taking commercial goods out of Great Britain
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = You need to submit a full import declaration

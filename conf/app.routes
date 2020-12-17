@@ -5,8 +5,9 @@
 
 GET        /assets/*file                 controllers.Assets.versioned(path = "/public", file: Asset)
 
-GET        /keepalive                    uk.gov.hmrc.merchandiseinbaggage.controllers.TimeOutController.onPageLoad
-GET        /sign-out                     uk.gov.hmrc.merchandiseinbaggage.controllers.SessionExpiredController.onPageLoad
+GET        /keepalive                    uk.gov.hmrc.merchandiseinbaggage.controllers.KeepAliveController.onPageLoad
+GET        /progress-deleted             uk.gov.hmrc.merchandiseinbaggage.controllers.ProgressDeletedController.onPageLoad
+GET        /service-timed-out            uk.gov.hmrc.merchandiseinbaggage.controllers.ServiceTimeoutController.onPageLoad
 
 # Invalid journey state
 GET        /invalid-request              uk.gov.hmrc.merchandiseinbaggage.controllers.InvalidRequestController.onPageLoad

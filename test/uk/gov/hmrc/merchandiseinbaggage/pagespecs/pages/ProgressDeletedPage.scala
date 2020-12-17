@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 
-class SessionExpiredPage(implicit webDriver: WebDriver) extends BasePage
+class ProgressDeletedPage(implicit webDriver: WebDriver) extends BasePage
 
-object SessionExpiredPage extends BaseSpecWithApplication {
-  val path = "/declare-commercial-goods/sign-out"
+object ProgressDeletedPage extends BaseSpecWithApplication {
+  val path = "/declare-commercial-goods/progress-deleted"
 }
