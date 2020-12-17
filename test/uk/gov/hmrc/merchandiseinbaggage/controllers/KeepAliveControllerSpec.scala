@@ -16,28 +16,30 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import java.time.LocalDateTime
+
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.core.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.views.html.SessionExpiredView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SessionExpiredControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
+class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
-  val view = app.injector.instanceOf[SessionExpiredView]
   val repo = app.injector.instanceOf[DeclarationJourneyRepository]
-  val controller = new SessionExpiredController(controllerComponents, view)
+  val controller = new KeepAliveController(controllerComponents, actionBuilder, repo)
 
-  //TODO improve this test
-  "return 200" in {
+
+  "return NoContent with no changes to declaration journey" in {
     val id = SessionId("unchanged")
-    val journey = startedImportToGreatBritainJourney.copy(sessionId = id)
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val journey = startedImportToGreatBritainJourney.copy(sessionId = id, createdAt = created)
     givenADeclarationJourneyIsPersisted(journey)
 
-    val result = controller.onPageLoad(buildGet(routes.SessionExpiredController.onPageLoad().url, id))
+    val result = controller.onPageLoad(buildGet(routes.ServiceTimeoutController.onPageLoad().url, id))
 
-    status(result) mustBe 200
+    status(result) mustBe 204
+    repo.findBySessionId(id).futureValue mustBe Some(journey)
   }
 }

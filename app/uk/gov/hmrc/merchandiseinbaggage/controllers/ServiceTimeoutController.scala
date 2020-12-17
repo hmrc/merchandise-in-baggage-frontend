@@ -16,18 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import javax.inject.{Inject, Singleton}
+import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.views.html.SessionExpiredView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.TimeoutExitView
 
-import scala.concurrent.ExecutionContext
-
-class SessionExpiredController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                         view: SessionExpiredView
-                                        )
-                                        (implicit ec: ExecutionContext, appConfig: AppConfig)
+@Singleton
+class ServiceTimeoutController @Inject()(override val controllerComponents: MessagesControllerComponents,
+                                         view: TimeoutExitView
+                                        )(implicit appConfig: AppConfig)
   extends DeclarationJourneyController {
 
   override val onPageLoad: Action[AnyContent] = Action { implicit request =>
