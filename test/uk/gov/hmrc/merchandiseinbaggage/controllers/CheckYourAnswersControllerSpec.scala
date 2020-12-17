@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
-
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
@@ -28,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -60,7 +59,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val controller = new CheckYourAnswersController(controllerComponents, actionBuilder,
     stubbedCalculation, testPaymentConnector, testMibConnector, declarationJourneyRepository, importView, exportView)
 
-  "on submit will calculate tax and send payment request to pay api and reset declaration journey" in {
+  "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()
     val id = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
@@ -74,14 +73,9 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("http://host")
-
-    import importJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = id)
-
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }
 
-  "on submit will redirect to declaration-confirmation if exporting and reset declaration journey" in {
+  "on submit will redirect to declaration-confirmation if exporting" in {
     val sessionId = SessionId()
     val stubbedId = DeclarationId("xxx")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
@@ -96,11 +90,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
-
-    import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = stubbedId)
-
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }
 
   "on submit will redirect to invalid request when redirected from declaration confirmation with journey reset" in {

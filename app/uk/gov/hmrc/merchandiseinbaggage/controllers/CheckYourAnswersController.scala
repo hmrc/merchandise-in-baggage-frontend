@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
@@ -88,7 +87,6 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
   private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =
     for {
       declarationId <- mibConnector.persistDeclaration(declaration)
-      _ <- resetJourney()
       _ <- mibConnector.sendEmails(declarationId)
     } yield Redirect(routes.DeclarationConfirmationController.onPageLoad())
 
@@ -108,11 +106,5 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
             appConfig.paymentsBackUrl
           )
         )
-      _ <- resetJourney()
     } yield Redirect(payApiResponse.nextUrl.value)
-
-  private def resetJourney()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
-    import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
-  }
 }

@@ -37,9 +37,9 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   private val view = app.injector.instanceOf[DeclarationConfirmationView]
   private val client = app.injector.instanceOf[HttpClient]
   private val connector = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
-  private val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector)
+  private val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
 
-  "on page load return 200 if declaration exists" in {
+  "on page load return 200 if declaration exists and resets the journey" in {
     val sessionId = SessionId()
     val id = DeclarationId("456")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
@@ -48,11 +48,16 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created)
 
-    givenADeclarationJourneyIsPersisted(exportJourney.copy(declarationId = id))
+    givenADeclarationJourneyIsPersistedServiceTimeoutPageSpe(exportJourney.copy(declarationId = id))
     givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 200
+
+    import exportJourney._
+    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = id)
+
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
@@ -61,7 +66,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
         Future.failed(new Exception("not found"))
     }
 
-    val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector)
+    val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
     val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     val eventualResult = controller.onPageLoad()(request)
