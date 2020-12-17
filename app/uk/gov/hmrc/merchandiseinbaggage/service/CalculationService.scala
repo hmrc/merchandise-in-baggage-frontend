@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import java.time.LocalDate
-
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
