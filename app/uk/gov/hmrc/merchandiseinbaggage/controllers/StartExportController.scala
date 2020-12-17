@@ -29,7 +29,7 @@ class StartExportController @Inject()(override val controllerComponents: Message
                                       override val repo: DeclarationJourneyRepository)
                                      (implicit val ec: ExecutionContext) extends StartController {
 
-  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
+  override val onPageLoad: Action[AnyContent] = Action {
     Redirect(routes.StartExportController.processRequest())
   }
 

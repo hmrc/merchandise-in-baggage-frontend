@@ -23,7 +23,7 @@
 layout: Layout,
 formHelper: FormWithCSRF,
 h1: components.h1,
-h3: components.h3,
+h2: components.h2,
 summaryList: GovukSummaryList,
 errorSummary: components.errorSummary,
 inputYesNo: components.inputYesNo,
@@ -37,15 +37,13 @@ button: components.button
 
         @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 
-        <h1 class="govuk-heading-xl">
-            @messages("reviewGoods.heading")
-        </h1>
+        @h1(messages("reviewGoods.heading"))
 
         @for(list <- ReviewGoodsSummary.summaryList(goods, declarationType)) {
             @summaryList(list)
         }
 
-        @h3(messages("reviewGoods.h3"))
+        @h2(messages("reviewGoods.h3"), classes = Some("govuk-heading-m"))
 
         @inputYesNo(
             form = form,

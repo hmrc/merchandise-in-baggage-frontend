@@ -22,7 +22,7 @@
 @this(
 layout: Layout,
 h1: components.h1,
-h3: components.h3,
+h2: components.h2,
 p: components.p,
 table: GovukTable,
 button: components.button
@@ -35,7 +35,7 @@ button: components.button
 
  @table(paymentCalculations.toTable)
 
- @h3(messages("paymentCalculation.h3"))
+ @h2(messages("paymentCalculation.h3"), classes = Some("govuk-heading-m"))
 
  @p(Html(messages("paymentCalculation.p1")))
 

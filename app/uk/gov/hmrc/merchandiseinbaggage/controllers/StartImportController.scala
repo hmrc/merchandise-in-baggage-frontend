@@ -28,7 +28,8 @@ import scala.concurrent.ExecutionContext
 class StartImportController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                       override val repo: DeclarationJourneyRepository)
                                      (implicit val ec: ExecutionContext) extends StartController {
-  override val onPageLoad: Action[AnyContent] = Action { implicit request =>
+
+  override val onPageLoad: Action[AnyContent] = Action {
     Redirect(routes.StartImportController.processRequest())
   }
 
