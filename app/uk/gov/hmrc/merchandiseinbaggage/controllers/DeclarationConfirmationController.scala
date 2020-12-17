@@ -17,18 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationConfirmationController @Inject()(
                                                    override val controllerComponents: MessagesControllerComponents,
                                                    actionProvider: DeclarationJourneyActionProvider,
                                                    view: DeclarationConfirmationView,
-                                                   connector: MibConnector
+                                                   connector: MibConnector,
+                                                   val repo: DeclarationJourneyRepository,
                                                  )(implicit ec: ExecutionContext, appConf: AppConfig)
   extends DeclarationJourneyController {
 
@@ -36,8 +40,14 @@ class DeclarationConfirmationController @Inject()(
     val declarationId = request.declarationJourney.declarationId
     connector.findDeclaration(declarationId).map {
       case Some(declaration) =>
+        resetJourney()
         Ok(view(declaration))
       case None => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
+  }
+
+  private def resetJourney()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
+    import request.declarationJourney._
+    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
   }
 }
