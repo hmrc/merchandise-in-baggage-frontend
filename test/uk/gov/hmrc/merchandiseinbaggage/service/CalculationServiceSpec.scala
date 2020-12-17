@@ -60,4 +60,17 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
     }
   }
 
+  "getConversionRates" must {
+    "ignore GBP" in {
+      val goods = Goods(
+        CategoryQuantityOfGoods("test good", "123"),
+        GoodsVatRates.Twenty,
+        Country("FR", "title.france", "FR", isEu=true, Nil),
+        PurchaseDetails("100", Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")))
+      )
+
+      service.getConversionRates(DeclarationGoods(goods)).futureValue mustBe Seq.empty
+    }
+  }
+
 }

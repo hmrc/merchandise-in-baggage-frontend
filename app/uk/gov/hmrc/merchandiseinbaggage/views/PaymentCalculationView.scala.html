@@ -39,13 +39,15 @@ button: components.button
 
  @p(Html(messages("paymentCalculation.p1")))
 
- @p(Html(messages("paymentCalculation.p2")))
+ @if(rates.nonEmpty) {
+  @p(Html(messages("paymentCalculation.p2")))
 
- <ul class="govuk-list govuk-list--bullet">
+  <ul class="govuk-list govuk-list--bullet">
   @for(rate <- rates) {
    <li>@messages("paymentCalculation.li", rate.display)</li>
   }
- </ul>
+  </ul>
+ }
 
  <p class="govuk-body">
   @messages("paymentCalculation.p3.1")
