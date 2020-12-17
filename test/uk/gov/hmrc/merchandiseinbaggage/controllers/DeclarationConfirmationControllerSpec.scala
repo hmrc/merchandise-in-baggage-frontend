@@ -46,7 +46,9 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     val exportJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created)
+      .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
+
+    givenADeclarationJourneyIsPersisted(exportJourney)
 
     givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, id)
 
