@@ -42,9 +42,9 @@
                             timeout= Some(appConfig.timeout),
                             countdown= Some(appConfig.countdown),
                             message= Some(messages("sessionExpired.message")),
-                            keepAliveUrl= Some(s"${KeepAliveController.onPageLoad.url}"),
-                            signOutUrl= Some(s"${ProgressDeletedController.onPageLoad.url}"),
-                            timeoutUrl= Some(s"${ServiceTimeoutController.onPageLoad.url}"),
+                            keepAliveUrl= Some(s"${KeepAliveController.onKeepAlive.url}"),
+                            signOutUrl= Some(s"${KeepAliveController.onProgressDelete.url}"),
+                            timeoutUrl= Some(s"${KeepAliveController.onServiceTimeout.url}"),
                             keepAliveButtonText= Some(messages("sessionExpired.keepAliveButtonText")),
                             signOutButtonText= Some(messages("sessionExpired.signOutButtonText")),
                             language= Some("en")
