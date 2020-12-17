@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import java.time.LocalDate
+
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
@@ -35,9 +37,11 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
     Future.traverse(declarationGoods.goods) { good =>
       val code = good.purchaseDetails.currency.code
 
-      connector.getConversionRate(code).map { rates =>
-        val rate: BigDecimal = rates.find(_.currencyCode == code).fold(BigDecimal(0))(_.rate)
+      val futureRate: Future[BigDecimal] =
+        if(code == "GBP") Future.successful(BigDecimal(1))
+        else connector.getConversionRate(code).map(_.find(_.currencyCode == code).fold(BigDecimal(0))(_.rate))
 
+      futureRate.map { rate =>
         val converted: BigDecimal = (good.purchaseDetails.numericAmount / rate).setScale(2, HALF_UP)
 
         val duty = (converted * 0.033).setScale(2, HALF_UP)
@@ -59,8 +63,13 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
     }.map(PaymentCalculations.apply)
 
   def getConversionRates(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[Seq[ConversionRatePeriod]] = {
-    val codes = declarationGoods.goods.map(_.purchaseDetails.currency.code).distinct.mkString("&cc=")
+    val codes = declarationGoods.goods
+      .filterNot(_.purchaseDetails.currency.code == "GBP")
+      .map(_.purchaseDetails.currency.code).distinct.mkString("&cc=")
 
-    connector.getConversionRate(codes)
+    if(codes.isEmpty)
+      Future(Seq.empty)
+    else
+      connector.getConversionRate(codes)
   }
 }
