@@ -17,8 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{ProgressDeletedView, ServiceTimeoutView}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
@@ -26,10 +30,23 @@ import scala.concurrent.ExecutionContext
 class KeepAliveController @Inject()(override val controllerComponents: MessagesControllerComponents,
                                     actionProvider: DeclarationJourneyActionProvider,
                                     repo: DeclarationJourneyRepository,
-                                   )(implicit ec: ExecutionContext)
-  extends DeclarationJourneyController {
+                                    progressDeletedView: ProgressDeletedView,
+                                    serviceTimeoutView: ServiceTimeoutView,
+                                   )(implicit ec: ExecutionContext, appConfig: AppConfig)
+  extends FrontendBaseController {
 
-  override val onPageLoad = actionProvider.journeyAction.async { implicit request =>
+  val onKeepAlive = actionProvider.journeyAction.async { implicit request =>
     repo.upsert(request.declarationJourney).map { _ => NoContent }
   }
+
+  val onProgressDelete: Action[AnyContent] = Action { implicit request =>
+    removeSession(request)(Ok(progressDeletedView()))
+  }
+
+  val onServiceTimeout: Action[AnyContent] = Action { implicit request =>
+    removeSession(request)(Ok(serviceTimeoutView()))
+  }
+
+  private def removeSession(implicit request: Request[_]): Result => Result = result =>
+    result.removingFromSession(SessionKeys.sessionId)
 }

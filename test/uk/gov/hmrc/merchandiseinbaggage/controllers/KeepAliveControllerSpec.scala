@@ -22,13 +22,16 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.core.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{ProgressDeletedView, ServiceTimeoutView}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
   val repo = app.injector.instanceOf[DeclarationJourneyRepository]
-  val controller = new KeepAliveController(controllerComponents, actionBuilder, repo)
+  val deletedView = app.injector.instanceOf[ProgressDeletedView]
+  val serviceTimeoutView = app.injector.instanceOf[ServiceTimeoutView]
+  val controller = new KeepAliveController(controllerComponents, actionBuilder, repo, deletedView, serviceTimeoutView)
 
 
   "return NoContent with no changes to declaration journey" in {
@@ -37,9 +40,19 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
     val journey = startedImportToGreatBritainJourney.copy(sessionId = id, createdAt = created)
     givenADeclarationJourneyIsPersisted(journey)
 
-    val result = controller.onPageLoad(buildGet(routes.ServiceTimeoutController.onPageLoad().url, id))
+    val result = controller.onKeepAlive(buildGet(routes.KeepAliveController.onKeepAlive().url, id))
 
     status(result) mustBe 204
     repo.findBySessionId(id).futureValue mustBe Some(journey)
+  }
+
+  "return 200" in {
+    val id = SessionId("unchanged")
+    val journey = startedImportToGreatBritainJourney.copy(sessionId = id)
+    givenADeclarationJourneyIsPersisted(journey)
+
+    val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete().url, id))
+
+    status(result) mustBe 200
   }
 }
