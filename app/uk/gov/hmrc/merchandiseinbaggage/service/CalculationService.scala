@@ -33,11 +33,13 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
 
   def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
     Future.traverse(declarationGoods.goods) { good =>
-      val code = good.purchaseDetails.currency.code
+      val code = good.purchaseDetails.currency.valueForConversion
 
-      val futureRate: Future[BigDecimal] =
-        if(code == "GBP") Future.successful(BigDecimal(1))
-        else connector.getConversionRate(code).map(_.find(_.currencyCode == code).fold(BigDecimal(0))(_.rate))
+      val futureRate: Future[BigDecimal] = code match {
+        case None => Future.successful(BigDecimal(1))
+        case Some(c) =>
+          connector.getConversionRate(c).map(_.find(_.currencyCode == c).fold(BigDecimal(0))(_.rate))
+      }
 
       futureRate.map { rate =>
         val converted: BigDecimal = (good.purchaseDetails.numericAmount / rate).setScale(2, HALF_UP)
@@ -62,7 +64,7 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
 
   def getConversionRates(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[Seq[ConversionRatePeriod]] = {
     val codes = declarationGoods.goods
-      .filterNot(_.purchaseDetails.currency.code == "GBP")
+      .filterNot(_.purchaseDetails.currency.valueForConversion.isEmpty)
       .map(_.purchaseDetails.currency.code).distinct.mkString("&cc=")
 
     if(codes.isEmpty)
