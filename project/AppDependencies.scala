@@ -10,7 +10,8 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "simple-reactivemongo"       % "7.30.0-play-27",
     "com.github.pureconfig"   %% "pureconfig"                 % "0.13.0",
     "com.beachape"            %% "enumeratum-play"            % "1.5.13",
-    "org.webjars.npm"         %  "accessible-autocomplete"    % "2.0.3"
+    "org.webjars.npm"         %  "accessible-autocomplete"    % "2.0.3",
+    "uk.gov.hmrc"             %% "play-language"              % "4.4.0-play-27"
   )
 
   val test = Seq(
