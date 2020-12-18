@@ -50,7 +50,7 @@
    @Html("")
   }
   <li>@messages("declarationConfirmation.ul.2")</li>
-  <li>@messages("declarationConfirmation.ul.3")</li>
+  <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.3")</li>
  </ul>
 
  <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>

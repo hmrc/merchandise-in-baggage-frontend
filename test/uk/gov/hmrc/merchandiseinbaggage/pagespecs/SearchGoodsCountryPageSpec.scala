@@ -40,7 +40,7 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
   "render hint if is an import" in {
     givenAGoodsEntryIsStarted()
     open(path(1))
-    page.element("searchGoodsCountryHint").getText mustBe importHint
+    page.element("country-hint").getText mustBe importHint
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase.map(_.code)
