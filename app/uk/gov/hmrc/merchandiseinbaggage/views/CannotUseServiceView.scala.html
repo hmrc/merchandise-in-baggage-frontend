@@ -38,13 +38,12 @@ link: components.link
      <li>@messages("cannotUseService.li1", goodsDestination.threshold.formattedInPoundsUI)</li>
      <li>@messages("cannotUseService.li2")</li>
      <li>@messages("cannotUseService.li3")</li>
-     <li>
-      <a class="govuk-link" target="_blank" href="@messages("cannotUseService.li4.a.href")">
-      @messages("cannotUseService.li4.a.text")
-      </a>
-     </li>
+        <li>
+            <a class="govuk-link" href="https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage" target="_blank">
+                @messages("cannotUseService.li4")
+            </a>
+        </li>
      <li>@messages("cannotUseService.li5")</li>
-     <li>@messages("cannotUseService.li6")</li>
     </ul>
 
     @p(link(messages(s"cannotUseService.$declarationType.link.href"), s"cannotUseService.$declarationType.link.text"))
