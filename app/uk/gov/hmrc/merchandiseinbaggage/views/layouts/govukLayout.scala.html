@@ -70,6 +70,14 @@
         govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
     }
 }
+
+@if(appConfig.languageTranslationEnabled) {
+    @views.html.language_selection(
+        appConfig.languageMap,
+        appConfig.routeToSwitchLanguage,
+        Some("lang"))
+}
+
 @bodyEndBlock.map(x => x)
 }
 

@@ -26,7 +26,7 @@ class ProgressDeletedPageSpec extends BasePageSpec[ProgressDeletedPage] {
   "the progress deleted page render" in {
     open(path)
 
-    page.mustRenderBasicContent(path, messageApi("progressDeleted.title"))
+    page.mustRenderBasicContent(path, messages("progressDeleted.title"))
     page.headerText mustBe messages("progressDeleted.heading")
     page.textOfElementWithId("expiredRestartId") mustBe messages("progressDeleted.restart.p")
     page.textOfElementWithId("expiredUlIdOne") mustBe messages("progressDeleted.Import.restart")

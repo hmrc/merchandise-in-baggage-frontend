@@ -26,7 +26,7 @@ class ServiceTimeoutPageSpec extends BasePageSpec[ServiceTimeoutPage] {
   "the session expired page render" in {
     open(path)
 
-    page.mustRenderBasicContent(path, messageApi("timeOut.title"))
+    page.mustRenderBasicContent(path, messages("timeOut.title"))
     page.headerText mustBe messages("timeOut.heading")
     page.textOfElementWithId("expiredGuidanceId") mustBe messages("timeOut.guidance")
     page.textOfElementWithId("expiredRestartId") mustBe messages("timeOut.restart.p")

@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.config
 
+import play.api.i18n.Lang
+import play.api.mvc.Call
 import java.time.LocalDate
-
 import javax.inject.Singleton
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @Singleton
 class AppConfig() extends MongoConfiguration with MibConfiguration with ArrivalDateValidationFlagConfiguration {
@@ -43,6 +45,16 @@ class AppConfig() extends MongoConfiguration with MibConfiguration with ArrivalD
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
     s"$url/$serviceIdentifier"
   }
+
+  lazy val languageTranslationEnabled: Boolean = configSource("features.welsh-translation").loadOrThrow[Boolean]
+
+  def languageMap: Map[String, Lang] = Map(
+    "english" -> Lang("en"),
+    "cymraeg" -> Lang("cy")
+  )
+
+  def routeToSwitchLanguage: String => Call =
+    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 }
 
 object AppConfigSource {
