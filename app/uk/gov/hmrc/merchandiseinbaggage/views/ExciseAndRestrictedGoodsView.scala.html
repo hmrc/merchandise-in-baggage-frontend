@@ -56,7 +56,7 @@ button: components.button
                 <span class="govuk-!-font-weight-bold">@messages("exciseAndRestrictedGoods.details.restricted")</span>
                 @messages("exciseAndRestrictedGoods.details.restricted.p")
                 <a class="govuk-link" target="_blank" href="@messages("exciseAndRestrictedGoods.details.restricted.p.a.href")">
-                    @messages("exciseAndRestrictedGoods.details.restricted.p.a.text")
+                    @messages(s"exciseAndRestrictedGoods.details.restricted.${declarationType}.p.a.text")
                 </a>
             </p>
         }
