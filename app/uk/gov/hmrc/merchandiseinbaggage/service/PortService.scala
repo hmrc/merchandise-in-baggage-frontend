@@ -62,7 +62,7 @@ object PortService {
     Port("LDY", "title.derry_port", isGB=false,List("Foyle Port", "Londonderry Port")),
     Port("DSA", "title.doncaster_sheffield_airport", isGB=true, List("Robin Hood Airport", "DSA")),
     Port("DVR", "title.dover", isGB=true, List("Port of Dover")),
-    Port("DUN", "title.dundee_aiport", isGB=true, List("DND")),
+    Port("DUN", "title.dundee_airport", isGB=true, List("DND")),
     Port("EMA", "title.east_midlands_airport", isGB=true, List("EMA")),
     Port("EBD", "title.ebbsfleet", isGB=true, Nil),
     Port("EDI", "title.edinburgh_airport", isGB=true, List("EDI")),
