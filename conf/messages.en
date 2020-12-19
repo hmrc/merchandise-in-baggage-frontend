@@ -29,6 +29,7 @@ site.startAgain = Start again
 site.change = Change
 site.remove = Remove
 site.govuk = GOV.UK
+site.back = Back
 
 date.day = Day
 date.month = Month
@@ -401,7 +402,9 @@ checkYourAnswers.payButton = Accept and pay
 checkYourAnswers.makeDeclarationButton = Make declaration
 
 # DeclarationConfirmation
-declarationConfirmation.title = Confirmation page
+declarationConfirmation.title = Declaration complete
+declarationConfirmation.banner.title = Declaration complete
+declarationConfirmation.yourReferenceNumber.label = Your reference number
 declarationConfirmation.h2.1 = What you need to do next
 declarationConfirmation.ul.p = Make sure that you:
 declarationConfirmation.ul.1 = go through the
@@ -415,6 +418,7 @@ declarationConfirmation.email = We have sent you a confirmation email to {0}.
 declarationConfirmation.makeAnotherDeclaration = Make another declaration
 declarationConfirmation.feedbackSurvey = What did you think of this service?
 declarationConfirmation.feedbackSurvey.info = (takes 30 seconds)
+declarationConfirmation.printOrSave.label = Print or save a copy of this page
 
 # Countries
 title.afghanistan=Afghanistan

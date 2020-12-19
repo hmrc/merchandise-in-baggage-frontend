@@ -1,38 +1,38 @@
-service.name = Declare commercial goods carried in accompanied baggage or small vehicles
+service.name = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 service.homePageUrl = /declare-commercial-goods
-service.text = This is your new service
 
 # Alpha/Beta Banner
-feedback.before = This is a new service - your
-feedback.link = feedback
-feedback.after = will help us to improve it.
+feedback.before = Gwasanaeth newydd yn hwn – bydd eich
+feedback.link = adborth
+feedback.after = yn ein helpu i’w wella.
 
 error.browser.title.prefix = Error:
 error.summary.title = There is a problem
 error.max.3.decimals = Enter a number in the correct format, for example, 25.60
 error.must.be.positive = Enter an amount greater than 0
 error.nonNumeric = Please enter a number
-error.date.day_blank = Date must include a day
-error.date.day_invalid = Day must be between 1 and 31
-error.date.month_blank = Date must include a month
-error.date.month_invalid = Month must be between 1 and 12
-error.date.year_blank = Date must include a year
+error.date.day_blank = Mae’n rhaid i’r dyddiad gynnwys diwrnod
+error.date.day_invalid = Mae’n rhaid i’r diwrnod fod rhwng 1 a 31
+error.date.month_blank = Mae’n rhaid i’r dyddiad gynnwys mis
+error.date.month_invalid = Mae'n rhaid i'r mis fod rhwng 1 a 12
+error.date.year_blank = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 error.date.year_invalid = Enter a valid year, for example, 2020
 error.yesNo = Please enter Yes or No
 
-site.yes = Yes
-site.no = No
-site.continue = Continue
+site.yes = Iawn
+site.no = Na
+site.continue = Yn eich blaen
 site.confirm = Confirm
 site.start = Start now
 site.startAgain = Start again
-site.change = Change
-site.remove = Remove
+site.change = Newid
+site.remove = Dileu
 site.govuk = GOV.UK
+site.back = Yn ôl
 
-date.day = Day
-date.month = Month
-date.year = Year
+date.day = Diwrnod
+date.month = Mis
+date.year = Blwyddyn
 
 payment.button = Pay now
 next.button = Next
@@ -46,20 +46,20 @@ invalidRequest.heading = Invalid request
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to Great Britain?
 exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to Great Britain?
-exciseAndRestrictedGoods.Export.title = Are you taking any of the following goods out of Great Britain?
-exciseAndRestrictedGoods.Export.heading = Are you taking any of the following goods out of Great Britain?
-exciseAndRestrictedGoods.li1 = Alcohol, tobacco or fuel (excise goods).
-exciseAndRestrictedGoods.li2 = Controlled or restricted goods.
-exciseAndRestrictedGoods.details = What are excise, controlled and restricted goods
-exciseAndRestrictedGoods.details.excise = Excise goods:
-exciseAndRestrictedGoods.details.excise.p = products containing alcohol including beers, wines and spirits; tobacco products including cigarettes, cigars and loose tobacco; energy products including hydrocarbon oils and biofuels for use as motor or heating fuel.
-exciseAndRestrictedGoods.details.restricted = Controlled or restricted goods:
-exciseAndRestrictedGoods.details.restricted.p = Goods that need a licence, or are subject to health or environmental controls. For example, firearms, explosives and ammunition.
+exciseAndRestrictedGoods.Export.title = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
+exciseAndRestrictedGoods.Export.heading = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
+exciseAndRestrictedGoods.li1 = Alcohol, tybaco neu danwydd (nwyddau ecséis).
+exciseAndRestrictedGoods.li2 = Nwyddau o dan reolaeth neu nwyddau cyfyngedig.
+exciseAndRestrictedGoods.details = Beth yw nwyddau ecséis, nwyddau o dan reolaeth a nwyddau cyfyngedig?
+exciseAndRestrictedGoods.details.excise = Nwyddau ecséis:
+exciseAndRestrictedGoods.details.excise.p = cynhyrchion sy’n cynnwys alcohol, gan gynnwys cwrw, gwinoedd a gwirodydd; cynhyrchion tybaco, gan gynnwys sigaréts, sigarau a thybaco rhydd; cynhyrchion ynni, gan gynnwys olewau hydrocarbon a biodanwyddau i’w defnyddio ar gyfer tanwydd cerbyd a gwresogi.
+exciseAndRestrictedGoods.details.restricted = Nwyddau o dan reolaeth neu nwyddau cyfyngedig:
+exciseAndRestrictedGoods.details.restricted.p = Nwyddau sydd angen trwydded, neu sy’n destun rheolaethau iechyd neu amgylcheddol. Er enghraifft, arfau tanio, ffrwydron a bwledi a chetris.
 exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Check if you are taking controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
 exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, restricted or controlled goods
-exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, restricted or controlled goods
+exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn cymryd nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o’r wlad
 
 
 # GoodsDestination
@@ -67,11 +67,11 @@ goodsDestination.Import.title = Where in the UK are the goods going to?
 goodsDestination.Import.heading = Where in the UK are the goods going to?
 goodsDestination.Export.title = Where in the UK are the goods leaving from?
 goodsDestination.Export.heading = Where in the UK are the goods leaving from?
-goodsDestination.NorthernIreland = Northern Ireland
-goodsDestination.GreatBritain = Great Britain
-goodsDestination.GreatBritain.hint = England, Scotland, Wales, or Isle of Man
+goodsDestination.NorthernIreland = Gogledd Iwerddon
+goodsDestination.GreatBritain = Prydain Fawr
+goodsDestination.GreatBritain.hint = Cymru, Lloegr, yr Alban neu Ynys Manaw
 goodsDestination.error.Import.required = Select which country in the UK the goods are going to
-goodsDestination.error.Export.required = Select if the goods are leaving from Northern Ireland or Great Britain
+goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o Ogledd Iwerddon neu Brydain.
 
 
 # GoodsRouteDestination
@@ -83,25 +83,25 @@ goodsRouteDestination.error.required = Select yes if the final destination of th
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
-valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
-valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.title = A yw cyfanswm gwerth y nwyddau’n fwy na £873 neu a ydynt yn pwyso dros 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau’n fwy na £1,500 neu a ydynt yn pwyso dros 1,000 cilogram?
+valueWeightOfGoods.NorthernIreland.heading = A yw cyfanswm gwerth y nwyddau’n fwy na £873 neu a ydynt yn pwyso dros 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau’n fwy na £1,500 neu a ydynt yn pwyso dros 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau dros £1,500 neu os ydynt yn pwyso mwy na 1,000 cilogram
+valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau dros £873 neu os ydynt yn pwyso mwy na 1,000 cilogram
 
 # SearchGoods
 goodsTypeQuantity.Import.title = What type of goods are you bringing into Great Britain?
 goodsTypeQuantity.Import.heading = What type of goods are you bringing into Great Britain?
-goodsTypeQuantity.Export.title = What goods are you taking out of Great Britain?
-goodsTypeQuantity.Export.heading = What goods are you taking out of Great Britain?
-goodsTypeQuantity.p = Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.
-goodsTypeQuantity.category = Type of goods
-goodsTypeQuantity.category.hint = For example clothes
-goodsTypeQuantity.category.error.required = Enter a type of goods
-goodsTypeQuantity.quantity = Number of items
-goodsTypeQuantity.quantity.error.required = Enter the number of items
-goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
+goodsTypeQuantity.Export.title = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
+goodsTypeQuantity.Export.heading = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
+goodsTypeQuantity.p = Ychwanegwch eich nwyddau yn ôl eu math neu gategori, er enghraifft, electroneg. Gallwch ychwanegu rhagor o nwyddau’n nes ymlaen os oes gennych fwy nag un math.
+goodsTypeQuantity.category = Math o nwyddau
+goodsTypeQuantity.category.hint = Er enghraifft, dillad
+goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
+goodsTypeQuantity.quantity = Nifer o eitemau
+goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
+goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
 
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
@@ -125,18 +125,18 @@ goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # SearchGoodsCountry
-searchGoodsCountry.Export.title = What country are you taking the {0} to?
-searchGoodsCountry.Export.heading = What country are you taking the {0} to?
+searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
+searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Import.title = In what country did you buy the {0}?
 searchGoodsCountry.Import.heading = In what country did you buy the {0}?
 searchGoodsCountry.error.Import.required = Select the country where you bought the goods
-searchGoodsCountry.error.Export.required = Select the country the goods are going to
+searchGoodsCountry.error.Export.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
 searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
-purchaseDetails.title = How much did you pay for the {0}?
-purchaseDetails.heading = How much did you pay for the {0}?
+purchaseDetails.title = Faint y gwnaethoch ei dalu am y {0}?
+purchaseDetails.heading = Faint y gwnaethoch ei dalu am y {0}?
 purchaseDetails.price.label = Price paid
 purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency
@@ -144,27 +144,27 @@ purchaseDetails.p.1 = We use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
-purchaseDetails.price.error.required = Enter the amount you paid for the goods
-purchaseDetails.price.error.invalid = Price paid must be a number
+purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
+purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm fod yn rhif
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
 
 # ReviewGoods
-reviewGoods.title = Review your goods
-reviewGoods.heading = Review your goods
-reviewGoods.list.item = Type of goods
-reviewGoods.list.quantity = Number of items
+reviewGoods.title = Adolygu’ch nwyddau
+reviewGoods.heading = Adolygu’ch nwyddau
+reviewGoods.list.item = Math o nwyddau
+reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = VAT rate
 reviewGoods.list.country = Country
-reviewGoods.list.destination = Destination
-reviewGoods.list.price = Price paid
+reviewGoods.list.destination = Cyrchfan
+reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more commercial goods?
-reviewGoods.error.required = Select yes if you want to declare more goods
+reviewGoods.h3 = A oes angen i chi ddatgan rhagor o nwyddau masnachol?
+reviewGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddatgan rhagor o nwyddau
 
 # RemoveGoods
-removeGoods.title = Are you sure you want to remove the {0}?
-removeGoods.heading = Are you sure you want to remove the {0}?
-removeGoods.error.required = Select yes if you want to remove the goods
+removeGoods.title = A ydych yn siŵr eich bod am ddileu’r {0}?
+removeGoods.heading = A ydych yn siŵr eich bod am ddileu’r {0}?
+removeGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddileu’r nwyddau
 
 # GoodsRemoved
 goodsRemoved.title = You removed your goods
@@ -214,115 +214,115 @@ paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchang
 paymentCalculation.p3.2 = We use the rate in the month in which you make your declaration.
 
 # CustomsAgent
-customsAgent.title = Are you a customs agent?
-customsAgent.heading = Are you a customs agent?
-customsAgent.hint = This is a person or business that helps with customs administration. They do not transport goods.
-customsAgent.error.required = Select yes if you are a customs agent
+customsAgent.title = A ydych yn asiant tollau?
+customsAgent.heading = A ydych yn asiant tollau?
+customsAgent.hint = Person neu fusnes rydych yn ei gyflogi yw hwn i’ch helpu gyda gweinyddu tollau Nid ydynt yn cludo’r nwyddau ar eich cyfer.
+customsAgent.error.required = Dewiswch ‘Iawn’ os ydych yn asiant tollau
 
 # AgentDetails
-agentDetails.title = What is your registered business name?
-agentDetails.heading = What is your registered business name?
-agentDetails.hint = This is your registered business name as a customs agent.
-agentDetails.error.required = Enter your registered business name
+agentDetails.title = Beth yw enw cofrestredig eich busnes?
+agentDetails.heading = Beth yw enw cofrestredig eich busnes?
+agentDetails.hint = Hwn yw enw cofrestredig eich busnes fel asiant tollau.
+agentDetails.error.required = Nodwch enw’ch busnes cofrestredig
 
 # TraderDetails
-travellerDetails.title = What is the name of the person carrying the goods?
-travellerDetails.heading = What is the name of the person carrying the goods?
-travellerDetails.hint = Enter their full legal name as it appears on their passport or birth certificate.
-travellerDetails.firstName = First name
-travellerDetails.lastName = Last name
-travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
-travellerDetails.firstName.error.invalid = First name must only include letters a to z, apostrophes, hyphens and spaces
-travellerDetails.lastName.error.required = Enter the last name of the person carrying the goods
-travellerDetails.lastName.error.invalid = Last name must only include letters a to z, apostrophes, hyphens and spaces
+travellerDetails.title = Beth yw enw’r person sy’n cario’r nwyddau?
+travellerDetails.heading = Beth yw enw’r person sy’n cario’r nwyddau?
+travellerDetails.hint = Nodwch ei enw cyfreithiol llawn fel y mae’n ymddangos ar ei basbort neu dystysgrif geni.
+travellerDetails.firstName = Enw cyntaf
+travellerDetails.lastName = Enw olaf
+travellerDetails.firstName.error.required = Nodwch enw cyntaf y person sy’n cludo’r nwyddau
+travellerDetails.firstName.error.invalid = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z, collnodau, cysylltnodau neu fylchau yn unig
+travellerDetails.lastName.error.required = Nodwch enw olaf y person sy’n cludo’r nwyddau
+travellerDetails.lastName.error.invalid = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z, collnodau, cysylltnodau neu fylchau yn unig
 
 
 # EnterEmail
-enterEmail.title = Enter an email address
-enterEmail.heading = Enter an email address
-enterEmail.hint = We will only use this to send you confirmation of your declaration.
-enterEmail.email = Email address
-enterEmail.confirmation = Confirm email address
-enterEmail.error.required = Enter an email address
+enterEmail.title = Nodwch gyfeiriad e-bost
+enterEmail.heading = Nodwch gyfeiriad e-bost
+enterEmail.hint = Byddwn ond yn defnyddio hwn i anfon cadarnhad o’ch datganiad atoch.
+enterEmail.email = Cyfeiriad e-bost
+enterEmail.confirmation = Cadarnhau cyfeiriad e-bost
+enterEmail.error.required = Nodwch gyfeiriad e-bost
 enterEmail.error.invalid = Enter an email address in the correct format, like name@example.com
 enterEmail.error.notMatching = Email addresses must match - check the email address and try again
 
 # JourneyDetails
-journeyDetails.title = Journey details
-journeyDetails.heading = Journey details
+journeyDetails.title = Manylion y siwrnai
+journeyDetails.heading = Manylion y siwrnai
 journeyDetails.port.Import.label = Place of arrival in Great Britain
-journeyDetails.port.Export.label = Place of departure in Great Britain
-journeyDetails.port.hint = For example, Heathrow airport or Dover
+journeyDetails.port.Export.label = Man ymadael
+journeyDetails.port.hint = Er enghraifft, maes awyr Heathrow neu Dover
 journeyDetails.port.error.Import.required = Select your place of arrival in Great Britain
-journeyDetails.port.error.Export.required = Select your place of departure
+journeyDetails.port.error.Export.required = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.port.error.Import.invalid = Please enter a valid place of arrival
 journeyDetails.port.error.Export.invalid = Please enter a valid place of departure
 journeyDetails.dateOfTravel.Import.label = Date of arrival
-journeyDetails.dateOfTravel.Export.label = Date of departure
-journeyDetails.dateOfTravel.hint = For example, 12 05 2021
+journeyDetails.dateOfTravel.Export.label = Dyddiad ymadael
+journeyDetails.dateOfTravel.hint = Er enghraifft, 12 05 2021
 journeyDetails.dateOfTravel.error.invalid = Please enter a valid date
-journeyDetails.dateOfTravel.error.notWithinTheNext5Days = Enter a date within the next 5 days
+journeyDetails.dateOfTravel.error.notWithinTheNext5Days = Nodwch ddyddiad cyn pen y 5 diwrnod nesaf
 journeyDetails.dateOfTravel.error.Import.dateInPast = Date of arrival must be after 1 January 2021
-journeyDetails.dateOfTravel.error.Export.dateInPast = Date of departure must be after 1 January 2021
-journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days = Date of departure must be in the past 30 days
+journeyDetails.dateOfTravel.error.Export.dateInPast = Mae’n rhaid i’r dyddiad gadael fod ar ôl 1 Ionawr 2021
+journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days = Mae’n rhaid i’r dyddiad gadael fod yn y 30 diwrnod diwethaf
 journeyDetails.dateOfTravel.error.Import.dateInPast.within.30.days = Date of arrival must be in the past 30 days
 
 # EoriNumber
-eoriNumber.trader.Import.title = What is your EORI number?
-eoriNumber.trader.Import.heading = What is your EORI number?
-eoriNumber.trader.Export.title = What is your EORI number?
-eoriNumber.trader.Export.heading = What is your EORI number?
+eoriNumber.trader.Import.title = Beth yw’ch rhif EORI?
+eoriNumber.trader.Import.heading = Beth yw’ch rhif EORI?
+eoriNumber.trader.Export.title = Beth yw’ch rhif EORI?
+eoriNumber.trader.Export.heading = Beth yw’ch rhif EORI?
 eoriNumber.agent.Import.title = What is the EORI number of the business bringing the goods into Great Britain?
 eoriNumber.agent.Import.heading = What is the EORI number of the business bringing the goods into Great Britain?
-eoriNumber.agent.Export.title = What is the EORI number of the business taking the goods out of Great Britain?
-eoriNumber.agent.Export.heading = What is the EORI number of the business taking the goods out of Great Britain?
+eoriNumber.agent.Export.title = Beth yw rhif EORI y busnes sy’n mynd â’r nwyddau allan o Brydain Fawr?
+eoriNumber.agent.Export.heading = Beth yw rhif EORI y busnes sy’n mynd â’r nwyddau allan o Brydain Fawr?
 eoriNumber.hint = You need an EORI number that starts with GB to use this service. For example, GB123467800000.
 eoriNumber.a.text = Apply for an EORI number
 eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.trader.Import.error.required = Enter your EORI number
 eoriNumber.trader.Export.error.required = Enter your EORI number
 eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
-eoriNumber.agent.Export.error.required = Enter the EORI number of the business taking the goods
+eoriNumber.agent.Export.error.required = Nodwch rif EORI y busnes sy’n cymryd y nwyddau allan o Brydain Fawr
 eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
 
 # GoodsInVehicle
 goodsInVehicle.Import.title = Are the goods arriving by vehicle?
 goodsInVehicle.Import.heading = Are the goods arriving by vehicle?
-goodsInVehicle.Export.title = Are the goods being taken by vehicle?
-goodsInVehicle.Export.heading = Are the goods being taken by vehicle?
+goodsInVehicle.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
+goodsInVehicle.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
 goodsInVehicle.error.Import.required = Select yes if the goods are arriving by vehicle
-goodsInVehicle.error.Export.required = Select yes if the goods are being taken by vehicle
+goodsInVehicle.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd
 
 # VehicleSize
 vehicleSize.Import.title = Are the goods arriving in a small vehicle?
 vehicleSize.Import.heading = Are the goods arriving in a small vehicle?
-vehicleSize.Export.title = Are the goods being taken in a small vehicle?
-vehicleSize.Export.heading = Are the goods being taken in a small vehicle?
-vehicleSize.hint = A small motor vehicle weighs no more than 3.5 tonnes and can carry no more than 9 people.
+vehicleSize.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
+vehicleSize.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
+vehicleSize.hint = Nid yw cerbyd modur bach yn pwyso dros 3.5 tunnell, ac ni all gario mwy na 9 o bobl.
 vehicleSize.error.Import.required = Select yes if the goods are arriving in a small vehicle
-vehicleSize.error.Export.required = Select yes if the goods are being taken in a small vehicle
+vehicleSize.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd bach
 
 # VehicleRegistrationNumber
-vehicleRegistrationNumber.title = What is the registration number of the vehicle?
-vehicleRegistrationNumber.heading = What is the registration number of the vehicle?
-vehicleRegistrationNumber.hint = You can find this on the number plate on the front and back of a vehicle.
-vehicleRegistrationNumber.error.required = Enter the vehicle registration number
+vehicleRegistrationNumber.title = Beth yw rhif cofrestru’r cerbyd?
+vehicleRegistrationNumber.heading = Beth yw rhif cofrestru’r cerbyd?
+vehicleRegistrationNumber.hint = Gallwch ddod o hyd i hwn ar y platiau rhif ar flaen a chefn cerbyd.
+vehicleRegistrationNumber.error.required = Nodwch rif cofrestru’r cerbyd
 
 # CannotUseService
-cannotUseService.Export.title = You need to submit a full export declaration
-cannotUseService.Export.heading = You need to submit a full export declaration
+cannotUseService.Export.title = Mae angen i chi gyflwyno datganiad allforio llawn
+cannotUseService.Export.heading = Mae angen i chi gyflwyno datganiad allforio llawn
 cannotUseService.Import.title = You need to submit a full import declaration
 cannotUseService.Import.heading = You need to submit a full import declaration
-cannotUseService.Export.p1 = You have told us you are taking out goods that you cannot declare using this service.
-cannotUseService.Export.p2 = You need to make a full export declaration if you are taking out (any of the following):
+cannotUseService.Export.p1 = Rydych wedi rhoi gwybod i ni eich bod yn mynd â nwyddau na allwch eu datgan gan ddefnyddio’r gwasanaeth hwn.
+cannotUseService.Export.p2 = Mae angen i chi gyflwyno datganiad allforio llawn os ydych yn mynd ag (unrhyw un o’r canlynol):
 cannotUseService.Import.p1 = You have told us you are bringing in goods that you cannot declare using this service.
 cannotUseService.Import.p2 = You need to make a full import declaration if you are bringing (any of the following):
-cannotUseService.li1 = goods over the value of {0}
-cannotUseService.li2 = goods that weigh more than 1,000 kilograms
-cannotUseService.li3 = alcohol, tobacco or fuel
-cannotUseService.li4 = controlled or restricted goods (opens in new tab)
-cannotUseService.li5 = a vehicle that weighs over 3.5 tonnes and can carry more than 9 people
-cannotUseService.Export.link.text = Make a full export declaration
+cannotUseService.li1 = nwyddau sydd â gwerth dros {0}
+cannotUseService.li2 = nwyddau sy’n pwyso dros 1,000 o gilogramau
+cannotUseService.li3 = alcohol, tybaco neu danwydd
+cannotUseService.li4 = nwyddau cyfyngedig (yn agor tab newydd)
+cannotUseService.li5 = cerbyd sy’n pwyso dros 3.5 tunnell ac sy’n gallu cario mwy na 9 o bobl
+cannotUseService.Export.link.text = Cyflwyno datganiad allforio llawn
 cannotUseService.Export.link.href = https://www.gov.uk/guidance/making-a-full-export-declaration
 cannotUseService.Import.link.text = Make a full import declaration
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
@@ -349,14 +349,14 @@ timeOut.Export.restart = taking commercial goods out of Great Britain
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = You need to submit a full import declaration
-cannotUseServiceIreland.Export.title = You need to submit a full export declaration
+cannotUseServiceIreland.Export.title = Mae angen i chi gyflwyno datganiad allforio llawn
 cannotUseServiceIreland.Import.heading = You need to submit a full import declaration
-cannotUseServiceIreland.Export.heading = You need to submit a full export declaration
-cannotUseServiceIreland.p1 = You cannot use this service.
+cannotUseServiceIreland.Export.heading = Mae angen i chi gyflwyno datganiad allforio llawn
+cannotUseServiceIreland.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn.
 cannotUseServiceIreland.Import.p2 = If your goods are going to Northern Ireland you must
 cannotUseServiceIreland.Export.p2 = If you are taking goods out of Northern Ireland you must
 cannotUseServiceIreland.Import.p2.a.text = make a full import declaration.
-cannotUseServiceIreland.Export.p2.a.text = make a full export declaration.
+cannotUseServiceIreland.Export.p2.a.text = Cyflwyno datganiad allforio llawn
 cannotUseServiceIreland.Import.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 cannotUseServiceIreland.Export.p2.a.href = https://www.gov.uk/guidance/making-a-full-export-declaration
 
@@ -366,55 +366,58 @@ noDeclarationNeeded.heading = You do not need to make a declaration
 noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do not need to be declared.
 
 # CheckYourAnswers
-checkYourAnswers.title = Check your answers before making your declaration
-checkYourAnswers.change = Change
-checkYourAnswers.detailsOfTheGoods = Details of the goods
-checkYourAnswers.detailsOfTheGoods.category = Type of goods
-checkYourAnswers.detailsOfTheGoods.quantity = Number of items
+checkYourAnswers.title = Gwirio’ch atebion cyn cyflwyno’ch datganiad
+checkYourAnswers.change = Newid
+checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
+checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
+checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
 checkYourAnswers.detailsOfTheGoods.country = Country
-checkYourAnswers.detailsOfTheGoods.destination = Destination
-checkYourAnswers.detailsOfTheGoods.price = Price paid
+checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
+checkYourAnswers.detailsOfTheGoods.price = Y pris a dalwyd
 checkYourAnswers.detailsOfTheGoods.paymentDue = Payment due
-checkYourAnswers.addMoreGoods = Add more goods
-checkYourAnswers.personalDetails = Personal details
+checkYourAnswers.addMoreGoods = Ychwanegu nwyddau eraill
+checkYourAnswers.personalDetails = Manylion personol
 checkYourAnswers.customsAgent.name = Name of customs agent
 checkYourAnswers.customsAgent.address = Customs agent address
-checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods = Name of person carrying goods
-checkYourAnswers.personalDetails.emailAddress = Email address
-checkYourAnswers.personalDetails.eori = EORI number
-checkYourAnswers.journeyDetails = Journey details
+checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods = Enw’r person sy’n cario’r nwyddau
+checkYourAnswers.personalDetails.emailAddress = Cyfeiriad e-bost
+checkYourAnswers.personalDetails.eori = Rhif EORI
+checkYourAnswers.journeyDetails = Manylion y siwrnai
 checkYourAnswers.journeyDetails.placeOfArrival = Place of arrival
 checkYourAnswers.journeyDetails.dateOfArrival = Date of arrival
 checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
-checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration number
-checkYourAnswers.sendDeclaration = Now send your declaration
-checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Rhif cofrestru’r cerbyd
+checkYourAnswers.sendDeclaration = Nawr anfonwch eich datganiad
+checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall:
 checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
-checkYourAnswers.personalDetails.customsAgentYesNoLabel = Customs agent
-checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
-checkYourAnswers.sendDeclaration.confirm = By making this declaration you are confirming that, to the best of your knowledge, the details you are providing are correct.
+checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
+checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
+checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
 checkYourAnswers.sendDeclaration.warning = Warning
-checkYourAnswers.sendDeclaration.warning.message = If you do not declare all your goods before leaving Great Britain you may be fined a penalty and have your goods detained by Border Force.
+checkYourAnswers.sendDeclaration.warning.message = Os nad ydych yn datgan eich nwyddau i gyd cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
 checkYourAnswers.payButton = Accept and pay
-checkYourAnswers.makeDeclarationButton = Make declaration
+checkYourAnswers.makeDeclarationButton = Cyflwyno datganiad
 
 # DeclarationConfirmation
-declarationConfirmation.title = Confirmation page
-declarationConfirmation.h2.1 = What you need to do next
-declarationConfirmation.ul.p = Make sure that you:
+declarationConfirmation.title = Datganiad wedi’i gwblhau
+declarationConfirmation.banner.title = Datganiad wedi’i gwblhau
+declarationConfirmation.yourReferenceNumber.label = Eich cyfeirnod
+declarationConfirmation.h2.1 = Yr hyn y mae angen i chi ei wneud nesaf
+declarationConfirmation.ul.p = Gwnewch yn siŵr eich bod yn:
 declarationConfirmation.ul.1 = go through the
 declarationConfirmation.ul.1.strong = green channel
 declarationConfirmation.ul.1.1 = (nothing to declare) at customs
-declarationConfirmation.ul.2 = take this declaration confirmation with you
+declarationConfirmation.ul.2 = mynd â’r cadarnhad o ddatganiad hwn gyda chi
 declarationConfirmation.Import.ul.3 = take the receipts or invoices for all the goods you are bringing into Great Britain
-declarationConfirmation.Export.ul.3 = take the receipts or invoices for all the goods you are taking out of Great Britain
-declarationConfirmation.date = Date of declaration
-declarationConfirmation.email = We have sent you a confirmation email to {0}.
+declarationConfirmation.Export.ul.3 = mynd â’r anfonebau neu’r derbynebau ar gyfer yr holl nwyddau rydych yn mynd â nhw allan o Brydain Fawr
+declarationConfirmation.date = Dyddiad y datganiad
+declarationConfirmation.email = Rydym wedi anfon e-bost cadarnhau at {0}.
 declarationConfirmation.makeAnotherDeclaration = Make another declaration
 declarationConfirmation.feedbackSurvey = What did you think of this service?
 declarationConfirmation.feedbackSurvey.info = (takes 30 seconds)
+declarationConfirmation.printOrSave.label = Argraffu neu gadw copi o’r dudalen hon
 
 # Countries
 title.afghanistan=Afghanistan
