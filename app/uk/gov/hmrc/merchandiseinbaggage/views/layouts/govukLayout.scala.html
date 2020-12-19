@@ -67,7 +67,7 @@
         val urlString = url.toString
         val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
 
-        govukBackLink(BackLink(href = fullPathUrl, content = Text("Back")))
+        govukBackLink(BackLink(href = fullPathUrl, content = Text(messages("site.back"))))
     }
 }
 
