@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{Port, YesNo}
 sealed trait JourneyDetails {
   val port: Port
   val dateOfTravel: LocalDate
-  val formattedDateOfArrival: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfTravel)
+  val formattedDateOfTravel: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfTravel)
   val travellingByVehicle: YesNo = No
   val maybeRegistrationNumber: Option[String] = None
 }

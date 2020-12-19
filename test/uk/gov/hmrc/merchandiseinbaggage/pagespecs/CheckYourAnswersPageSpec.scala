@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import java.time.LocalDateTime
-
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
@@ -25,7 +24,7 @@ import org.scalatestplus.selenium.WebBrowser
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyInSmallVehicle}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
@@ -309,11 +308,11 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("emailAddressLabel") mustBe "Email address"
     textOfElementWithId("emailAddress") mustBe declaration.email.email
 
-    textOfElementWithId("placeOfArrivalLabel") mustBe "Place of arrival"
+    textOfElementWithId("placeOfArrivalLabel") mustBe { if(declaration.declarationType == Import) "Place of arrival" else "Place of Departure"}
     textOfElementWithId("placeOfArrival") mustBe messages(declaration.journeyDetails.port.displayName)
 
-    textOfElementWithId("dateOfArrivalLabel") mustBe "Date of arrival"
-    textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfArrival
+    textOfElementWithId("dateOfArrivalLabel") mustBe { if(declaration.declarationType == Import) "Date of arrival" else "Date of Departure"}
+    textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfTravel
 
     textOfElementWithId("travellingByVehicleLabel") mustBe "Travelling by vehicle"
     textOfElementWithId("travellingByVehicle") mustBe declaration.journeyDetails.travellingByVehicle.entryName

@@ -191,7 +191,7 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt id="dateOfArrivalLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.dateOfArrival")</dt>
-   <dd id="dateOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfArrival</dd>
+   <dd id="dateOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.formattedDateOfTravel</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="dateOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
