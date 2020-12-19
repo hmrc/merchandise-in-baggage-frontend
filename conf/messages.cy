@@ -122,14 +122,14 @@ goodsVatRate.legend = Ar gyfer beth mae’r gyfradd yn berthnasol {0}?
 goodsVatRate.Zero = 0% TAW
 goodsVatRate.Five = 5% TAW
 goodsVatRate.Twenty = 20% TAW
-goodsVatRate.error.required = Select which VAT rate applies to the goods
+goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
 # SearchGoodsCountry
 searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Import.title = Ym mha wlad y gwnaethoch brynu’r {0}?
 searchGoodsCountry.Import.heading = Ym mha wlad y gwnaethoch brynu’r {0}?
-searchGoodsCountry.error.Import.required = Select the country where you bought the goods
+searchGoodsCountry.error.Import.required = Dewiswch y wlad lle gwnaethoch brynu’r nwyddau
 searchGoodsCountry.error.Export.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
 searchGoodsCountry.hint = Os prynoch y nwyddau ar awyren neu gwch, nodwch y wlad yr oeddech yn teithio ohoni ar adeg y prynu.
 searchGoodsCountry.error.invalid = Select a valid country
@@ -146,7 +146,7 @@ purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-ra
 purchaseDetails.p.2 = a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm fod yn rhif
-purchaseDetails.currency.error.required = Select the currency used to buy the goods
+purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
 
 # ReviewGoods
 reviewGoods.title = Adolygu’ch nwyddau
@@ -244,8 +244,8 @@ enterEmail.hint = Byddwn ond yn defnyddio hwn i anfon cadarnhad o’ch datganiad
 enterEmail.email = Cyfeiriad e-bost
 enterEmail.confirmation = Cadarnhau cyfeiriad e-bost
 enterEmail.error.required = Nodwch gyfeiriad e-bost
-enterEmail.error.invalid = Enter an email address in the correct format, like name@example.com
-enterEmail.error.notMatching = Email addresses must match - check the email address and try again
+enterEmail.error.invalid = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
+enterEmail.error.notMatching = Mae’n rhaid i gyfeiriadau e-bost gyd-fynd - gwiriwch y cyfeiriad e-bost a rhoi cynnig arall arni
 
 # JourneyDetails
 journeyDetails.title = Manylion y siwrnai
@@ -253,7 +253,7 @@ journeyDetails.heading = Manylion y siwrnai
 journeyDetails.port.Import.label = Man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.Export.label = Man ymadael
 journeyDetails.port.hint = Er enghraifft, maes awyr Heathrow neu Dover
-journeyDetails.port.error.Import.required = Select your place of arrival in Great Britain
+journeyDetails.port.error.Import.required = Nodwch eich man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.error.Export.required = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.port.error.Import.invalid = Please enter a valid place of arrival
 journeyDetails.port.error.Export.invalid = Please enter a valid place of departure
@@ -279,8 +279,8 @@ eoriNumber.agent.Export.heading = Beth yw rhif EORI y busnes sy’n mynd â’r 
 eoriNumber.hint = Mae angen rhif EORI arnoch sy’n dechrau gyda GB i ddefnyddio’r gwasanaeth hwn. Er enghraifft, GB123467800000.
 eoriNumber.a.text = Gwneud cais am rif EORI
 eoriNumber.a.href = https://www.gov.uk/eori
-eoriNumber.trader.Import.error.required = Enter your EORI number
-eoriNumber.trader.Export.error.required = Enter your EORI number
+eoriNumber.trader.Import.error.required = Nodwch eich rhif EORI
+eoriNumber.trader.Export.error.required = Nodwch eich rhif EORI
 eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.agent.Export.error.required = Nodwch rif EORI y busnes sy’n cymryd y nwyddau allan o Brydain Fawr
 eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
@@ -290,7 +290,7 @@ goodsInVehicle.Import.title = A yw’r nwyddau’n cyrraedd mewn cerbyd?
 goodsInVehicle.Import.heading = A yw’r nwyddau’n cyrraedd mewn cerbyd?
 goodsInVehicle.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
 goodsInVehicle.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
-goodsInVehicle.error.Import.required = Select yes if the goods are arriving by vehicle
+goodsInVehicle.error.Import.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cyrraedd mewn cerbyd
 goodsInVehicle.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd
 
 # VehicleSize
@@ -299,7 +299,7 @@ vehicleSize.Import.heading = A yw’r nwyddau’n cyrraedd mewn cerbyd bach?
 vehicleSize.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.hint = Nid yw cerbyd modur bach yn pwyso dros 3.5 tunnell, ac ni all gario mwy na 9 o bobl.
-vehicleSize.error.Import.required = Select yes if the goods are arriving in a small vehicle
+vehicleSize.error.Import.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cyrraedd mewn cerbyd bach 
 vehicleSize.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd bach
 
 # VehicleRegistrationNumber
@@ -311,12 +311,12 @@ vehicleRegistrationNumber.error.required = Nodwch rif cofrestru’r cerbyd
 # CannotUseService
 cannotUseService.Export.title = Mae angen i chi gyflwyno datganiad allforio llawn
 cannotUseService.Export.heading = Mae angen i chi gyflwyno datganiad allforio llawn
-cannotUseService.Import.title = You need to submit a full import declaration
-cannotUseService.Import.heading = You need to submit a full import declaration
+cannotUseService.Import.title = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
+cannotUseService.Import.heading = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
 cannotUseService.Export.p1 = Rydych wedi rhoi gwybod i ni eich bod yn mynd â nwyddau na allwch eu datgan gan ddefnyddio’r gwasanaeth hwn.
 cannotUseService.Export.p2 = Mae angen i chi gyflwyno datganiad allforio llawn os ydych yn mynd ag (unrhyw un o’r canlynol):
-cannotUseService.Import.p1 = You have told us you are bringing in goods that you cannot declare using this service.
-cannotUseService.Import.p2 = You need to make a full import declaration if you are bringing (any of the following):
+cannotUseService.Import.p1 = Rydych wedi rhoi gwybod i ni eich bod yn dod â nwyddau i mewn i’r wlad na allwch eu datgan gan ddefnyddio’r gwasanaeth hwn.
+cannotUseService.Import.p2 = Bydd angen i chi gyflwyno datganiad mewnforio llawn os ydych yn dod ag unrhyw un o’r canlynol i mewn i’r wlad:
 cannotUseService.li1 = nwyddau sydd â gwerth dros {0}
 cannotUseService.li2 = nwyddau sy’n pwyso dros 1,000 o gilogramau
 cannotUseService.li3 = alcohol, tybaco neu danwydd
@@ -324,7 +324,7 @@ cannotUseService.li4 = nwyddau cyfyngedig (yn agor tab newydd)
 cannotUseService.li5 = cerbyd sy’n pwyso dros 3.5 tunnell ac sy’n gallu cario mwy na 9 o bobl
 cannotUseService.Export.link.text = Cyflwyno datganiad allforio llawn
 cannotUseService.Export.link.href = https://www.gov.uk/guidance/making-a-full-export-declaration
-cannotUseService.Import.link.text = Make a full import declaration
+cannotUseService.Import.link.text = Gwneud datganiad mewnforio llawn
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 #Session expired dialog box
