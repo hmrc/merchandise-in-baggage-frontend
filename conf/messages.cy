@@ -24,7 +24,7 @@ site.no = Na
 site.continue = Yn eich blaen
 site.confirm = Confirm
 site.start = Start now
-site.startAgain = Start again
+site.startAgain = Dechrau eto
 site.change = Newid
 site.remove = Dileu
 site.govuk = GOV.UK
@@ -44,8 +44,8 @@ invalidRequest.heading = Invalid request
 
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to Great Britain?
-exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to Great Britain?
+exciseAndRestrictedGoods.Import.title = A ydych yn dod ag unrhyw un o’r nwyddau canlynol i mewn i Brydain Fawr?
+exciseAndRestrictedGoods.Import.heading = A ydych yn dod ag unrhyw un o’r nwyddau canlynol i mewn i Brydain Fawr?
 exciseAndRestrictedGoods.Export.title = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
 exciseAndRestrictedGoods.Export.heading = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
 exciseAndRestrictedGoods.li1 = Alcohol, tybaco neu danwydd (nwyddau ecséis).
@@ -55,7 +55,7 @@ exciseAndRestrictedGoods.details.excise = Nwyddau ecséis:
 exciseAndRestrictedGoods.details.excise.p = cynhyrchion sy’n cynnwys alcohol, gan gynnwys cwrw, gwinoedd a gwirodydd; cynhyrchion tybaco, gan gynnwys sigaréts, sigarau a thybaco rhydd; cynhyrchion ynni, gan gynnwys olewau hydrocarbon a biodanwyddau i’w defnyddio ar gyfer tanwydd cerbyd a gwresogi.
 exciseAndRestrictedGoods.details.restricted = Nwyddau o dan reolaeth neu nwyddau cyfyngedig:
 exciseAndRestrictedGoods.details.restricted.p = Nwyddau sydd angen trwydded, neu sy’n destun rheolaethau iechyd neu amgylcheddol. Er enghraifft, arfau tanio, ffrwydron a bwledi a chetris.
-exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
+exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Gwirio a ydych yn dod â nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Check if you are taking controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
 exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, restricted or controlled goods
@@ -63,14 +63,14 @@ exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn
 
 
 # GoodsDestination
-goodsDestination.Import.title = Where in the UK are the goods going to?
-goodsDestination.Import.heading = Where in the UK are the goods going to?
+goodsDestination.Import.title = Ble yn y DU y mae’r nwyddau’n mynd?
+goodsDestination.Import.heading = Ble yn y DU y mae’r nwyddau’n mynd?
 goodsDestination.Export.title = Where in the UK are the goods leaving from?
 goodsDestination.Export.heading = Where in the UK are the goods leaving from?
 goodsDestination.NorthernIreland = Gogledd Iwerddon
 goodsDestination.GreatBritain = Prydain Fawr
 goodsDestination.GreatBritain.hint = Cymru, Lloegr, yr Alban neu Ynys Manaw
-goodsDestination.error.Import.required = Select which country in the UK the goods are going to
+goodsDestination.error.Import.required = Dewiswch i ba wlad yn y DU y mae’r nwyddau’n mynd
 goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o Ogledd Iwerddon neu Brydain.
 
 
@@ -91,8 +91,8 @@ valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfan
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau dros £873 neu os ydynt yn pwyso mwy na 1,000 cilogram
 
 # SearchGoods
-goodsTypeQuantity.Import.title = What type of goods are you bringing into Great Britain?
-goodsTypeQuantity.Import.heading = What type of goods are you bringing into Great Britain?
+goodsTypeQuantity.Import.title = Pa fath o nwyddau ydych chi’n dod â nhw i mewn i Brydain Fawr?
+goodsTypeQuantity.Import.heading = Pa fath o nwyddau ydych chi’n dod â nhw i mewn i Brydain Fawr?
 goodsTypeQuantity.Export.title = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
 goodsTypeQuantity.Export.heading = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
 goodsTypeQuantity.p = Ychwanegwch eich nwyddau yn ôl eu math neu gategori, er enghraifft, electroneg. Gallwch ychwanegu rhagor o nwyddau’n nes ymlaen os oes gennych fwy nag un math.
@@ -104,46 +104,46 @@ goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
 goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
 
 # GoodsVatRate
-goodsVatRate.title = Check which VAT rate applies to the {0}
-goodsVatRate.heading = Check which VAT rate applies to the {0}
-goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as children’s clothes have a lower rate.
-goodsVatRate.table.head.col1 = % of VAT
-goodsVatRate.table.head.col2 = What the rate applies to
+goodsVatRate.title = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
+goodsVatRate.heading = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
+goodsVatRate.p = Mae gan y Doll Dramor ar y rhan fwyaf o nwyddau gyfradd safonol TAW o 20%, ond mae gan rai nwyddau, megis dillad plant, gyfradd is.
+goodsVatRate.table.head.col1 = % TAW
+goodsVatRate.table.head.col2 = Ar gyfer beth mae’r gyfradd yn berthnasol
 goodsVatRate.table.row1.col1.1 = 0%
-goodsVatRate.table.row1.col1.2 = Zero rate
-goodsVatRate.table.row1.col2 = Antiques; equipment for disabled, blind or partially sighted people; children’s or babywear clothes and footwear; cycle helmets – CE marked; magnetic tape adapted for recording speech for blind people; motorcycle helmets; protective boots and helmets for industrial use; publications.
+goodsVatRate.table.row1.col1.2 = Cyfradd sero
+goodsVatRate.table.row1.col2 = Hen bethau; cyfarpar ar gyfer pobl sy’n anabl, yn ddall neu’n rhannol ddall; dillad plant neu fabanod a'u hesgidiau; helmedi beicio sydd â CE wedi’i nodi arnynt; tâp magnetig sydd wedi’i addasu ar gyfer recordio lleferydd ar gyfer pobl ddall; helmedi beiciau modur; esgidiau a helmedi diogelwch at ddefnydd diwydiannol; cyhoeddiadau.
 goodsVatRate.table.row2.col1.1 = 5%
-goodsVatRate.table.row2.col1.2 = Reduced rate
-goodsVatRate.table.row2.col2 = Energy-saving materials installed in dwellings and buildings used for a relevant residential purpose; carrycots with restraint straps; children’s car seats, booster seats and booster cushions; maternity pads; mobility aids for the elderly; sanitary protection products; smoking cessation products.
+goodsVatRate.table.row2.col1.2 = Cyfradd is
+goodsVatRate.table.row2.col2 = Deunyddiau arbed ynni sydd wedi’u gosod mewn anheddau ac adeiladau a ddefnyddir at ddiben preswyl perthnasol; caricotau gyda strapiau atal; seddi car i blant, seddi atgyfnerthol a chlustogau atgyfnerthol; padiau mamolaeth; cymhorthion symud i bobl oedrannus; cynhyrchion iechydol; cynhyrchion rhoi'r gorau i ysmygu.
 goodsVatRate.table.row3.col1.1 = 20%
-goodsVatRate.table.row3.col1.2 = Standard rate
-goodsVatRate.table.row3.col2 = All other goods.
-goodsVatRate.legend = Which VAT rate applies to the {0}?
-goodsVatRate.Zero = 0% VAT
-goodsVatRate.Five = 5% VAT
-goodsVatRate.Twenty = 20% VAT
+goodsVatRate.table.row3.col1.2 = Cyfradd safonol
+goodsVatRate.table.row3.col2 = Pob math arall o nwyddau.
+goodsVatRate.legend = Ar gyfer beth mae’r gyfradd yn berthnasol {0}?
+goodsVatRate.Zero = 0% TAW
+goodsVatRate.Five = 5% TAW
+goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # SearchGoodsCountry
 searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
-searchGoodsCountry.Import.title = In what country did you buy the {0}?
-searchGoodsCountry.Import.heading = In what country did you buy the {0}?
+searchGoodsCountry.Import.title = Ym mha wlad y gwnaethoch brynu’r {0}?
+searchGoodsCountry.Import.heading = Ym mha wlad y gwnaethoch brynu’r {0}?
 searchGoodsCountry.error.Import.required = Select the country where you bought the goods
 searchGoodsCountry.error.Export.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
-searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
+searchGoodsCountry.hint = Os prynoch y nwyddau ar awyren neu gwch, nodwch y wlad yr oeddech yn teithio ohoni ar adeg y prynu.
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
 purchaseDetails.title = Faint y gwnaethoch ei dalu am y {0}?
 purchaseDetails.heading = Faint y gwnaethoch ei dalu am y {0}?
-purchaseDetails.price.label = Price paid
-purchaseDetails.price.hint = Enter the amount in the currency used
-purchaseDetails.currency.label = Currency
-purchaseDetails.p.1 = We use
-purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
+purchaseDetails.price.label = Y pris a dalwyd
+purchaseDetails.price.hint = Nodwch y swm o dan yr arian cyfred a ddefnyddir
+purchaseDetails.currency.label = Arian cyfred
+purchaseDetails.p.1 = Rydym yn defnyddio
+purchaseDetails.p.a.text = cyfraddau cyfnewid misol CThEM (yn agor tab newydd)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
+purchaseDetails.p.2 = a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm fod yn rhif
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
@@ -154,7 +154,7 @@ reviewGoods.heading = Adolygu’ch nwyddau
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = VAT rate
-reviewGoods.list.country = Country
+reviewGoods.list.country = Gwlad
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number
@@ -167,10 +167,10 @@ removeGoods.heading = A ydych yn siŵr eich bod am ddileu’r {0}?
 removeGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddileu’r nwyddau
 
 # GoodsRemoved
-goodsRemoved.title = You removed your goods
-goodsRemoved.heading = You removed your goods
-goodsRemoved.p1 = You have no goods to declare.
-goodsRemoved.link = Add other goods
+goodsRemoved.title = Gwnaethoch ddileu’ch nwyddau
+goodsRemoved.heading = Gwnaethoch ddileu’ch nwyddau
+goodsRemoved.p1 = Nid oes gennych nwyddau i’w datgan.
+goodsRemoved.link = Ychwanegu nwyddau eraill
 
 # GoodsOverThreshold
 goodsOverThreshold.NorthernIreland.title = The total value of your goods is over £873
@@ -195,23 +195,23 @@ goodsOverThreshold.p8.a.href = https://www.gov.uk/government/collections/exchang
 goodsOverThreshold.p8.2 = and the rates of the month in which you make your declaration.
 
 # PaymentCalculation
-paymentCalculation.title = Payment due on these goods {0}
-paymentCalculation.heading = Payment due on these goods {0}
-paymentCalculation.table.col1.head = Type of goods
-paymentCalculation.table.col2.head = Value of goods
-paymentCalculation.table.col3.head = Customs
-paymentCalculation.table.col4.head = VAT
-paymentCalculation.table.col5.head = Total
-paymentCalculation.table.col3.row = {0} at {1}%
-paymentCalculation.table.total = Payment due
-paymentCalculation.h3 = How we calculate your payment
-paymentCalculation.p1 = Customs Duty is charged at a flat rate of 3.3% on the total value of the goods. We then charge VAT on the combined amount of Customs Duty and the value of the goods.
-paymentCalculation.p2 = We converted the total amount at a rate of:
-paymentCalculation.li = {0} to 1 (GBP).
-paymentCalculation.p3.1 = We use
-paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
+paymentCalculation.title = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
+paymentCalculation.heading = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
+paymentCalculation.table.col1.head = Math o nwyddau
+paymentCalculation.table.col2.head = Gwerth y nwyddau
+paymentCalculation.table.col3.head = Tolldaliadau
+paymentCalculation.table.col4.head = TAW
+paymentCalculation.table.col5.head = Cyfanswm
+paymentCalculation.table.col3.row = {0} yn {1}%
+paymentCalculation.table.total = Taliad sy’n ddyledus
+paymentCalculation.h3 = Sut rydym yn cyfrifo’ch taliad
+paymentCalculation.p1 = Codir Toll Dramor ar gyfradd sylfaenol o 3.3% ar gyfanswm gwerth y nwyddau. Rydym wedyn yn codi TAW ar gyfanswm y Doll Dramor a gwerth y nwyddau.
+paymentCalculation.p2 = Gwnaethom gyfnewid y cyfanswm ar gyfradd o:
+paymentCalculation.li = {0} i 1 (GBP).
+paymentCalculation.p3.1 = Rydym yn defnyddio
+paymentCalculation.p3.a.text =  cyfraddau cyfnewid misol CThEM (yn agor tab newydd).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-paymentCalculation.p3.2 = We use the rate in the month in which you make your declaration.
+paymentCalculation.p3.2 = a’r cyfraddau yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 
 # CustomsAgent
 customsAgent.title = A ydych yn asiant tollau?
@@ -250,14 +250,14 @@ enterEmail.error.notMatching = Email addresses must match - check the email addr
 # JourneyDetails
 journeyDetails.title = Manylion y siwrnai
 journeyDetails.heading = Manylion y siwrnai
-journeyDetails.port.Import.label = Place of arrival in Great Britain
+journeyDetails.port.Import.label = Man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.Export.label = Man ymadael
 journeyDetails.port.hint = Er enghraifft, maes awyr Heathrow neu Dover
 journeyDetails.port.error.Import.required = Select your place of arrival in Great Britain
 journeyDetails.port.error.Export.required = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.port.error.Import.invalid = Please enter a valid place of arrival
 journeyDetails.port.error.Export.invalid = Please enter a valid place of departure
-journeyDetails.dateOfTravel.Import.label = Date of arrival
+journeyDetails.dateOfTravel.Import.label = Dyddiad cyrraedd
 journeyDetails.dateOfTravel.Export.label = Dyddiad ymadael
 journeyDetails.dateOfTravel.hint = Er enghraifft, 12 05 2021
 journeyDetails.dateOfTravel.error.invalid = Please enter a valid date
@@ -272,12 +272,12 @@ eoriNumber.trader.Import.title = Beth yw’ch rhif EORI?
 eoriNumber.trader.Import.heading = Beth yw’ch rhif EORI?
 eoriNumber.trader.Export.title = Beth yw’ch rhif EORI?
 eoriNumber.trader.Export.heading = Beth yw’ch rhif EORI?
-eoriNumber.agent.Import.title = What is the EORI number of the business bringing the goods into Great Britain?
-eoriNumber.agent.Import.heading = What is the EORI number of the business bringing the goods into Great Britain?
+eoriNumber.agent.Import.title = Beth yw rhif EORI y busnes sy’n dod â’r nwyddau i mewn i Brydain Fawr?
+eoriNumber.agent.Import.heading = Beth yw rhif EORI y busnes sy’n dod â’r nwyddau i mewn i Brydain Fawr?
 eoriNumber.agent.Export.title = Beth yw rhif EORI y busnes sy’n mynd â’r nwyddau allan o Brydain Fawr?
 eoriNumber.agent.Export.heading = Beth yw rhif EORI y busnes sy’n mynd â’r nwyddau allan o Brydain Fawr?
-eoriNumber.hint = You need an EORI number that starts with GB to use this service. For example, GB123467800000.
-eoriNumber.a.text = Apply for an EORI number
+eoriNumber.hint = Mae angen rhif EORI arnoch sy’n dechrau gyda GB i ddefnyddio’r gwasanaeth hwn. Er enghraifft, GB123467800000.
+eoriNumber.a.text = Gwneud cais am rif EORI
 eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.trader.Import.error.required = Enter your EORI number
 eoriNumber.trader.Export.error.required = Enter your EORI number
@@ -286,16 +286,16 @@ eoriNumber.agent.Export.error.required = Nodwch rif EORI y busnes sy’n cymryd 
 eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
 
 # GoodsInVehicle
-goodsInVehicle.Import.title = Are the goods arriving by vehicle?
-goodsInVehicle.Import.heading = Are the goods arriving by vehicle?
+goodsInVehicle.Import.title = A yw’r nwyddau’n cyrraedd mewn cerbyd?
+goodsInVehicle.Import.heading = A yw’r nwyddau’n cyrraedd mewn cerbyd?
 goodsInVehicle.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
 goodsInVehicle.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd?
 goodsInVehicle.error.Import.required = Select yes if the goods are arriving by vehicle
 goodsInVehicle.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd
 
 # VehicleSize
-vehicleSize.Import.title = Are the goods arriving in a small vehicle?
-vehicleSize.Import.heading = Are the goods arriving in a small vehicle?
+vehicleSize.Import.title = A yw’r nwyddau’n cyrraedd mewn cerbyd bach?
+vehicleSize.Import.heading = A yw’r nwyddau’n cyrraedd mewn cerbyd bach?
 vehicleSize.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.hint = Nid yw cerbyd modur bach yn pwyso dros 3.5 tunnell, ac ni all gario mwy na 9 o bobl.
@@ -372,10 +372,10 @@ checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
 checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
-checkYourAnswers.detailsOfTheGoods.country = Country
+checkYourAnswers.detailsOfTheGoods.country = Gwlad
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
 checkYourAnswers.detailsOfTheGoods.price = Y pris a dalwyd
-checkYourAnswers.detailsOfTheGoods.paymentDue = Payment due
+checkYourAnswers.detailsOfTheGoods.paymentDue = Taliad sy’n ddyledus
 checkYourAnswers.addMoreGoods = Ychwanegu nwyddau eraill
 checkYourAnswers.personalDetails = Manylion personol
 checkYourAnswers.customsAgent.name = Name of customs agent
@@ -384,16 +384,16 @@ checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods = Enw’r person s
 checkYourAnswers.personalDetails.emailAddress = Cyfeiriad e-bost
 checkYourAnswers.personalDetails.eori = Rhif EORI
 checkYourAnswers.journeyDetails = Manylion y siwrnai
-checkYourAnswers.journeyDetails.placeOfArrival = Place of arrival
-checkYourAnswers.journeyDetails.dateOfArrival = Date of arrival
+checkYourAnswers.journeyDetails.placeOfArrival = Man cyrraedd ym Mhrydain Fawr
+checkYourAnswers.journeyDetails.dateOfArrival = Dyddiad cyrraedd
 checkYourAnswers.journeyDetails.placeOfDeparture = Man ymadael
 checkYourAnswers.journeyDetails.dateOfDeparture = Dyddiad ymadael
 checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Rhif cofrestru’r cerbyd
 checkYourAnswers.sendDeclaration = Nawr anfonwch eich datganiad
 checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall:
-checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
-checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
+checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu Toll Dramor a TAW ar nwyddau rwy’n dod â nhw i mewn i Brydain Fawr at ddefnydd masnach neu fusnes
+checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
 checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
@@ -408,11 +408,11 @@ declarationConfirmation.banner.title = Datganiad wedi’i gwblhau
 declarationConfirmation.yourReferenceNumber.label = Eich cyfeirnod
 declarationConfirmation.h2.1 = Yr hyn y mae angen i chi ei wneud nesaf
 declarationConfirmation.ul.p = Gwnewch yn siŵr eich bod yn:
-declarationConfirmation.ul.1 = go through the
-declarationConfirmation.ul.1.strong = green channel
-declarationConfirmation.ul.1.1 = (nothing to declare) at customs
+declarationConfirmation.ul.1 = mynd drwy’r
+declarationConfirmation.ul.1.strong = sianel wyrdd
+declarationConfirmation.ul.1.1 = (dim byd i’w ddatgan) wrth y tollau
 declarationConfirmation.ul.2 = mynd â’r cadarnhad o ddatganiad hwn gyda chi
-declarationConfirmation.Import.ul.3 = take the receipts or invoices for all the goods you are bringing into Great Britain
+declarationConfirmation.Import.ul.3 = mynd â’r anfonebau neu dderbynebau ar gyfer yr holl nwyddau rydych yn dod â nhw i mewn i Brydain Fawr
 declarationConfirmation.Export.ul.3 = mynd â’r anfonebau neu’r derbynebau ar gyfer yr holl nwyddau rydych yn mynd â nhw allan o Brydain Fawr
 declarationConfirmation.date = Dyddiad y datganiad
 declarationConfirmation.email = Rydym wedi anfon e-bost cadarnhau at {0}.
