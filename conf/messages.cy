@@ -58,7 +58,7 @@ exciseAndRestrictedGoods.details.restricted.p = Nwyddau sydd angen trwydded, neu
 exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Gwirio a ydych yn dod â nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Check if you are taking controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, restricted or controlled goods
+exciseAndRestrictedGoods.error.Import.required = Dewiswch ‘Iawn’ os ydych yn dod â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad
 exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn cymryd nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o’r wlad
 
 
@@ -299,7 +299,7 @@ vehicleSize.Import.heading = A yw’r nwyddau’n cyrraedd mewn cerbyd bach?
 vehicleSize.Export.title = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.Export.heading = A yw’r nwyddau’n cael eu cymryd mewn cerbyd bach?
 vehicleSize.hint = Nid yw cerbyd modur bach yn pwyso dros 3.5 tunnell, ac ni all gario mwy na 9 o bobl.
-vehicleSize.error.Import.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cyrraedd mewn cerbyd bach 
+vehicleSize.error.Import.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cyrraedd mewn cerbyd bach
 vehicleSize.error.Export.required = Dewiswch ‘Iawn’ os yw’r nwyddau’n cael eu cymryd mewn cerbyd bach
 
 # VehicleRegistrationNumber
@@ -348,9 +348,9 @@ timeOut.Import.restart = bringing commercial goods into Great Britain
 timeOut.Export.restart = taking commercial goods out of Great Britain
 
 # CannotUseServiceIreland
-cannotUseServiceIreland.Import.title = You need to submit a full import declaration
+cannotUseServiceIreland.Import.title = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
 cannotUseServiceIreland.Export.title = Mae angen i chi gyflwyno datganiad allforio llawn
-cannotUseServiceIreland.Import.heading = You need to submit a full import declaration
+cannotUseServiceIreland.Import.heading = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
 cannotUseServiceIreland.Export.heading = Mae angen i chi gyflwyno datganiad allforio llawn
 cannotUseServiceIreland.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn.
 cannotUseServiceIreland.Import.p2 = If your goods are going to Northern Ireland you must
