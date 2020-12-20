@@ -114,7 +114,7 @@
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
     <dt id="customsAgentYesNoLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.customsAgentYesNoLabel")</dt>
-    <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold("No")(_ => "Yes")</dt>
+    <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold(messages("site.no"))(_ => messages("site.yes"))</dt>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")

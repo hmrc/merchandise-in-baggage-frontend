@@ -6,9 +6,9 @@ feedback.before = Gwasanaeth newydd yn hwn – bydd eich
 feedback.link = adborth
 feedback.after = yn ein helpu i’w wella.
 
-error.browser.title.prefix = Error:
-error.summary.title = There is a problem
-error.max.3.decimals = Enter a number in the correct format, for example, 25.60
+error.browser.title.prefix = Gwall:
+error.summary.title = Mae problem wedi codi
+error.max.3.decimals = Nodwch rif yn y fformat cywir, er enghraifft, 25.60
 error.must.be.positive = Enter an amount greater than 0
 error.nonNumeric = Please enter a number
 error.date.day_blank = Mae’n rhaid i’r dyddiad gynnwys diwrnod
@@ -79,7 +79,7 @@ goodsRouteDestination.Import.title = Is the final destination of the goods the R
 goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
 goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
 goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Select yes if the final destination of the goods is the Republic of Ireland
+goodsRouteDestination.error.required = Dewiswch ‘Iawn’ os mai Gweriniaeth Iwerddon yw’r cyrchfan terfynol
 
 
 # ValueWeightOfGoods
@@ -153,7 +153,7 @@ reviewGoods.title = Adolygu’ch nwyddau
 reviewGoods.heading = Adolygu’ch nwyddau
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
-reviewGoods.list.vatRate = VAT rate
+reviewGoods.list.vatRate = Cyfradd TAW
 reviewGoods.list.country = Gwlad
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
@@ -173,26 +173,26 @@ goodsRemoved.p1 = Nid oes gennych nwyddau i’w datgan.
 goodsRemoved.link = Ychwanegu nwyddau eraill
 
 # GoodsOverThreshold
-goodsOverThreshold.NorthernIreland.title = The total value of your goods is over £873
-goodsOverThreshold.GreatBritain.title = The total value of your goods is over £1,500
-goodsOverThreshold.NorthernIreland.heading = The total value of your goods is over £873
-goodsOverThreshold.GreatBritain.heading = The total value of your goods is over £1,500
+goodsOverThreshold.NorthernIreland.title = Mae cyfanswm gwerth eich nwyddau dros £873.
+goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £1,500.
+goodsOverThreshold.NorthernIreland.heading = TMae cyfanswm gwerth eich nwyddau dros £873.
+goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £1,500.
 goodsOverThreshold.NorthernIreland.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of £873.
-goodsOverThreshold.GreatBritain.p1 = You cannot use this service to declare goods you are bringing to Great Britain that are over the value of £1,500.
-goodsOverThreshold.p2 = To declare your goods you will need to
-goodsOverThreshold.p2.a.text = make a full import declaration.
+goodsOverThreshold.GreatBritain.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau rydych yn dod â nhw gyda chi i Brydain Fawr sydd â gwerth dros £1,500.
+goodsOverThreshold.p2 = Er mwyn datgan eich nwyddau bydd angen i chi
+goodsOverThreshold.p2.a.text = gyflwyno datganiad mewnforio llawn.
 goodsOverThreshold.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
-goodsOverThreshold.p3 = If you want to use this service, you need to either:
-goodsOverThreshold.p4 = Remove goods from this declaration
-goodsOverThreshold.p5 = Make a new declaration
-goodsOverThreshold.h3 = How we calculated the value of your goods
-goodsOverThreshold.p6 = The total value of your goods is {0}.
-goodsOverThreshold.p7 = We converted this amount at a rate of:
-goodsOverThreshold.li = {0} to 1 (GBP).
-goodsOverThreshold.p8.1 = We use
-goodsOverThreshold.p8.a.text = HMRC’s monthly exchange rates (opens in new tab)
+goodsOverThreshold.p3 = Os ydych am ddefnyddio’r gwasanaeth hwn, bydd yn rhaid i chi wneud y naill neu’r llall o’r canlynol:
+goodsOverThreshold.p4 = Dileu nwyddau o’r datganiad hwn
+goodsOverThreshold.p5 = Cyflwyno datganiad newydd
+goodsOverThreshold.h3 = Sut y gwnaethom gyfrifo gwerth eich nwyddau
+goodsOverThreshold.p6 = Cyfanswm gwerth eich nwyddau yw {0}.
+goodsOverThreshold.p7 = Gwnaethom drosi’r swm hwn ar gyfradd o:
+goodsOverThreshold.li = {0} i 1 (GBP).
+goodsOverThreshold.p8.1 = Rydym yn defnyddio
+goodsOverThreshold.p8.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
 goodsOverThreshold.p8.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
-goodsOverThreshold.p8.2 = and the rates of the month in which you make your declaration.
+goodsOverThreshold.p8.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.
 
 # PaymentCalculation
 paymentCalculation.title = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
@@ -262,10 +262,10 @@ journeyDetails.dateOfTravel.Export.label = Dyddiad ymadael
 journeyDetails.dateOfTravel.hint = Er enghraifft, 12 05 2021
 journeyDetails.dateOfTravel.error.invalid = Please enter a valid date
 journeyDetails.dateOfTravel.error.notWithinTheNext5Days = Nodwch ddyddiad cyn pen y 5 diwrnod nesaf
-journeyDetails.dateOfTravel.error.Import.dateInPast = Date of arrival must be after 1 January 2021
+journeyDetails.dateOfTravel.error.Import.dateInPast = Mae’n rhaid i’r dyddiad cyrraedd fod ar ôl 1 Ionawr 2021
 journeyDetails.dateOfTravel.error.Export.dateInPast = Mae’n rhaid i’r dyddiad gadael fod ar ôl 1 Ionawr 2021
 journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days = Mae’n rhaid i’r dyddiad gadael fod yn y 30 diwrnod diwethaf
-journeyDetails.dateOfTravel.error.Import.dateInPast.within.30.days = Date of arrival must be in the past 30 days
+journeyDetails.dateOfTravel.error.Import.dateInPast.within.30.days = Mae’n rhaid i’r dyddiad cyrraedd fod yn y 30 diwrnod diwethaf
 
 # EoriNumber
 eoriNumber.trader.Import.title = Beth yw’ch rhif EORI?
@@ -328,7 +328,7 @@ cannotUseService.Import.link.text = Gwneud datganiad mewnforio llawn
 cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 
 #Session expired dialog box
-sessionExpired.keepAliveButtonText = Continue
+sessionExpired.keepAliveButtonText = Yn eich blaen
 sessionExpired.signOutButtonText = Delete your progress
 sessionExpired.message = For your security, we will time you out in
 
@@ -355,7 +355,7 @@ cannotUseServiceIreland.Export.heading = Mae angen i chi gyflwyno datganiad allf
 cannotUseServiceIreland.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn.
 cannotUseServiceIreland.Import.p2 = If your goods are going to Northern Ireland you must
 cannotUseServiceIreland.Export.p2 = If you are taking goods out of Northern Ireland you must
-cannotUseServiceIreland.Import.p2.a.text = make a full import declaration.
+cannotUseServiceIreland.Import.p2.a.text = Gwneud datganiad mewnforio llawn.
 cannotUseServiceIreland.Export.p2.a.text = Cyflwyno datganiad allforio llawn
 cannotUseServiceIreland.Import.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
 cannotUseServiceIreland.Export.p2.a.href = https://www.gov.uk/guidance/making-a-full-export-declaration
@@ -371,7 +371,7 @@ checkYourAnswers.change = Newid
 checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
 checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
-checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
+checkYourAnswers.detailsOfTheGoods.vatRate = Cyfradd TAW
 checkYourAnswers.detailsOfTheGoods.country = Gwlad
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
 checkYourAnswers.detailsOfTheGoods.price = Y pris a dalwyd
@@ -399,7 +399,7 @@ checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddan
 checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
 checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.message = Os nad ydych yn datgan eich nwyddau i gyd cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
-checkYourAnswers.payButton = Accept and pay
+checkYourAnswers.payButton = Derbyn a thalu
 checkYourAnswers.makeDeclarationButton = Cyflwyno datganiad
 
 # DeclarationConfirmation
@@ -416,7 +416,7 @@ declarationConfirmation.Import.ul.3 = mynd â’r anfonebau neu dderbynebau ar g
 declarationConfirmation.Export.ul.3 = mynd â’r anfonebau neu’r derbynebau ar gyfer yr holl nwyddau rydych yn mynd â nhw allan o Brydain Fawr
 declarationConfirmation.date = Dyddiad y datganiad
 declarationConfirmation.email = Rydym wedi anfon e-bost cadarnhau at {0}.
-declarationConfirmation.makeAnotherDeclaration = Make another declaration
+declarationConfirmation.makeAnotherDeclaration = Cyflwyno datganiad newydd
 declarationConfirmation.feedbackSurvey = What did you think of this service?
 declarationConfirmation.feedbackSurvey.info = (takes 30 seconds)
 declarationConfirmation.printOrSave.label = Argraffu neu gadw copi o’r dudalen hon
