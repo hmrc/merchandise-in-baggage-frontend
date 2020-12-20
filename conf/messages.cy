@@ -340,12 +340,12 @@ progressDeleted.Import.restart = bringing commercial goods into Great Britain
 progressDeleted.Export.restart = taking commercial goods out of Great Britain
 
 #Time-out
-timeOut.title = For your security, we deleted your progress
-timeOut.heading = For your security, we deleted your progress
-timeOut.guidance = We deleted any information you entered because you have not done anything in 15 minutes. You will need to start again.
-timeOut.restart.p = Start a new declaration if you are:
-timeOut.Import.restart = bringing commercial goods into Great Britain
-timeOut.Export.restart = taking commercial goods out of Great Britain
+timeOut.title = Er eich diogelwch, mae’ch cynnydd wedi’i ddileu
+timeOut.heading = Er eich diogelwch, mae’ch cynnydd wedi’i ddileu
+timeOut.guidance = Gwnaethom ddileu unrhyw wybodaeth a nodwyd gennych oherwydd nad ydych wedi gwneud unrhyw beth ers 15 munud. Bydd yn rhaid i chi ddechrau eto.
+timeOut.restart.p = Dechreuwch ddatganiad newydd os ydych yn:
+timeOut.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
+timeOut.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 # CannotUseServiceIreland
 cannotUseServiceIreland.Import.title = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
