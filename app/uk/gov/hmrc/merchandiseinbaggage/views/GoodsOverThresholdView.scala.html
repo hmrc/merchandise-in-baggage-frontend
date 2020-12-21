@@ -33,12 +33,12 @@ p: components.p
 @layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @h1(s"goodsOverThreshold.${dest.toString}.heading")
 
-    <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.p1")</p>
+    <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.${declarationType}.p1")</p>
 
     <p class="govuk-body">
         @messages("goodsOverThreshold.p2")
-        <a class="govuk-link" href="@messages("goodsOverThreshold.p2.a.href")">
-            @messages("goodsOverThreshold.p2.a.text")
+        <a class="govuk-link" href="@messages(s"goodsOverThreshold.p2.${declarationType}.a.href")">
+            @messages(s"goodsOverThreshold.p2.${declarationType}.a.text")
         </a>
     </p>
 
