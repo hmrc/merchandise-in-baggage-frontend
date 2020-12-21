@@ -63,7 +63,7 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration => declarationConfirmation(declaration))
+      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration => declarationConfirmation(declaration.copy(lang = messages.lang.code)))
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>

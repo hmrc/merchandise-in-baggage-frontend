@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
-
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
+
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 case class Declaration(declarationId: DeclarationId,
                        sessionId: SessionId,
@@ -36,7 +36,8 @@ case class Declaration(declarationId: DeclarationId,
                        journeyDetails: JourneyDetails,
                        dateOfDeclaration: LocalDateTime = LocalDateTime.now,
                        mibReference: MibReference = Declaration.mibReference,
-                       maybeTotalCalculationResult: Option[TotalCalculationResult] = None
+                       maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
+                       lang: String = "en"
                       )
 
 object Declaration extends MibReferenceGenerator {
