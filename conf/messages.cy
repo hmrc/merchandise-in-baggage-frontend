@@ -259,8 +259,8 @@ journeyDetails.port.Export.label = Man ymadael
 journeyDetails.port.hint = Er enghraifft, maes awyr Heathrow neu Dover
 journeyDetails.port.error.Import.required = Nodwch eich man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.error.Export.required = Nodwch eich man ymadael ym Mhrydain Fawr
-journeyDetails.port.error.Import.invalid = Please enter a valid place of arrival
-journeyDetails.port.error.Export.invalid = Please enter a valid place of departure
+journeyDetails.port.error.Import.invalid = Nodwch eich man cyrraedd ym Mhrydain Fawr
+journeyDetails.port.error.Export.invalid = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.dateOfTravel.Import.label = Dyddiad cyrraedd
 journeyDetails.dateOfTravel.Export.label = Dyddiad ymadael
 journeyDetails.dateOfTravel.hint = Er enghraifft, 12 05 2021
@@ -287,7 +287,7 @@ eoriNumber.trader.Import.error.required = Nodwch eich rhif EORI
 eoriNumber.trader.Export.error.required = Nodwch eich rhif EORI
 eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
 eoriNumber.agent.Export.error.required = Nodwch rif EORI y busnes sy’n cymryd y nwyddau allan o Brydain Fawr
-eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
+eoriNumber.error.invalid = Mae’n rhaid i’r rhif EORI ddechrau gyda GB, wedi’i ddilyn gan 12 rhif
 
 # GoodsInVehicle
 goodsInVehicle.Import.title = A yw’r nwyddau’n cyrraedd mewn cerbyd?
