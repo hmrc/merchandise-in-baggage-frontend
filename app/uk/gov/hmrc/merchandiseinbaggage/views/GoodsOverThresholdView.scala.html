@@ -37,8 +37,8 @@ p: components.p
 
     <p class="govuk-body">
         @messages("goodsOverThreshold.p2")
-        <a class="govuk-link" href="@messages("goodsOverThreshold.p2.a.href")">
-            @messages("goodsOverThreshold.p2.a.text")
+        <a class="govuk-link" href="@messages(s"goodsOverThreshold.p2.${declarationType}.a.href")">
+            @messages(s"goodsOverThreshold.p2.${declarationType}.a.text")
         </a>
     </p>
 
