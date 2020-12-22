@@ -10,7 +10,7 @@ feedback.after = will help us to improve it.
 error.browser.title.prefix = Error:
 error.summary.title = There is a problem
 error.max.3.decimals = Enter a number in the correct format, for example, 25.60
-error.must.be.positive = Enter an amount greater than 0
+error.must.be.positive = Enter an amount more than 0
 error.nonNumeric = Please enter a number
 error.date.day_blank = Date must include a day
 error.date.day_invalid = Day must be between 1 and 31
@@ -286,7 +286,7 @@ eoriNumber.a.text = Apply for an EORI number
 eoriNumber.a.href = https://www.gov.uk/eori
 eoriNumber.trader.Import.error.required = Enter your EORI number
 eoriNumber.trader.Export.error.required = Enter your EORI number
-eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods
+eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods into Great Britain
 eoriNumber.agent.Export.error.required = Enter the EORI number of the business taking the goods
 eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
 
