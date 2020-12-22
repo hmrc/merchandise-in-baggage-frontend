@@ -3,6 +3,10 @@
 
   display: inline-block;
   float: right;
+  font-family: "GDS Transport", arial, sans-serif;
+  font-size: 19px;
+  -webkit-font-smoothing: antialiased;
+  color: #0b0c0c;
 
   &::after {
     content: "";
