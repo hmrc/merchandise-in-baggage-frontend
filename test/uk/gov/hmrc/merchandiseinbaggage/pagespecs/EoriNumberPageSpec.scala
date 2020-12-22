@@ -28,7 +28,7 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
   private val eori = Eori("GB123467800000")
   private val invalidEori = Eori("AB123467800000")
 
-  private val requiredAnswerAgentValidationMessage = "Enter the EORI number of the business bringing the goods"
+  private val requiredAnswerAgentValidationMessage = "Enter the EORI number of the business bringing the goods into Great Britain"
   private val requiredAnswerNonAgentValidationMessage = "Enter your EORI number"
   private val invalidEoriValidationMessage = "EORI number must start with GB followed by 12 numbers"
   private val validationErrorMessageField = "eori-error"
