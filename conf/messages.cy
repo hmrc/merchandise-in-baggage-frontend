@@ -353,17 +353,16 @@ timeOut.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 timeOut.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 # CannotUseServiceIreland
-cannotUseServiceIreland.Import.title = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
-cannotUseServiceIreland.Export.title = Mae angen i chi gyflwyno datganiad allforio llawn
-cannotUseServiceIreland.Import.heading = Mae’n rhaid i chi gyflwyno datganiad mewnforio llawn
-cannotUseServiceIreland.Export.heading = Mae angen i chi gyflwyno datganiad allforio llawn
-cannotUseServiceIreland.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn.
-cannotUseServiceIreland.Import.p2 = If your goods are going to Northern Ireland you must
-cannotUseServiceIreland.Export.p2 = If you are taking goods out of Northern Ireland you must
-cannotUseServiceIreland.Import.p2.a.text = Gwneud datganiad mewnforio llawn.
-cannotUseServiceIreland.Export.p2.a.text = Cyflwyno datganiad allforio llawn
-cannotUseServiceIreland.Import.p2.a.href = https://www.gov.uk/guidance/making-a-full-import-declaration
-cannotUseServiceIreland.Export.p2.a.href = https://www.gov.uk/guidance/making-a-full-export-declaration
+cannotUseServiceIreland.title = Ni allwch ddefnyddio’r gwasanaeth hwn.
+cannotUseServiceIreland.heading = Ni allwch ddefnyddio’r gwasanaeth hwn
+cannotUseServiceIreland.p1 = Gwiriwch yr hyn y bydd angen i chi ei wneud os byddwch yn
+cannotUseServiceIreland.p1.Import.a.text = dod â nwyddau masnachol i mewn i Ogledd Iwerddon yn eich bagiau.
+cannotUseServiceIreland.p1.Export.a.text = mynd â nwyddau masnachol allan o Ogledd Iwerddon yn eich bagiau.
+cannotUseServiceIreland.p1.Import.a.href = https://www.gov.uk/guidance/bringing-commercial-goods-into-northern-ireland-in-your-baggage
+cannotUseServiceIreland.p1.Export.a.href = https://www.gov.uk/guidance/taking-commercial-goods-out-of-northern-ireland-in-your-baggage
+cannotUseServiceIreland.p2 = Dysgwch ragor am
+cannotUseServiceIreland.p2.a.text = fasnachu neu symud nwyddau i mewn i Ogledd Iwerddon neu oddi yno.
+cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/trading-and-moving-goods-in-and-out-of-northern-ireland-from-1-january-2021#moving-commercial-goods-in-your-baggage
 
 # NoDeclarationNeeded
 noDeclarationNeeded.title = You do not need to make a declaration
