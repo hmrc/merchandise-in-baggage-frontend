@@ -173,10 +173,10 @@ goodsRemoved.p1 = Nid oes gennych nwyddau i’w datgan.
 goodsRemoved.link = Ychwanegu nwyddau eraill
 
 # GoodsOverThreshold
-goodsOverThreshold.NorthernIreland.title = Mae cyfanswm gwerth eich nwyddau dros £873.
-goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £1,500.
-goodsOverThreshold.NorthernIreland.heading = TMae cyfanswm gwerth eich nwyddau dros £873.
-goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £1,500.
+goodsOverThreshold.NorthernIreland.title = Mae cyfanswm gwerth eich nwyddau dros £873
+goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £1,500
+goodsOverThreshold.NorthernIreland.heading = TMae cyfanswm gwerth eich nwyddau dros £873
+goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £1,500
 goodsOverThreshold.NorthernIreland.Import.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of £873.
 goodsOverThreshold.NorthernIreland.Export.p1 = You cannot use this service to declare goods you are taking out of Northern Ireland that are over the value of £873.
 goodsOverThreshold.GreatBritain.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau rydych yn dod â nhw gyda chi i Brydain Fawr sydd â gwerth dros £1,500.
@@ -334,19 +334,19 @@ cannotUseService.Import.link.href = https://www.gov.uk/guidance/making-a-full-im
 
 #Session expired dialog box
 sessionExpired.keepAliveButtonText = Yn eich blaen
-sessionExpired.signOutButtonText = Delete your progress
-sessionExpired.message = For your security, we will time you out in
+sessionExpired.signOutButtonText = Dileu eich cynnydd
+sessionExpired.message = Er eich diogelwch, byddwn yn dod â’ch sesiwn i ben cyn pen
 
 #ProgressDeleted
-progressDeleted.title = You deleted your progress
-progressDeleted.heading = You deleted your progress
+progressDeleted.title = Gwnaethoch ddileu eich cynnydd
+progressDeleted.heading = Gwnaethoch ddileu eich cynnydd
 progressDeleted.restart.p = Dechreuwch ddatganiad newydd os ydych yn:
 progressDeleted.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 progressDeleted.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 #Time-out
-timeOut.title = For your security, we deleted your progress
-timeOut.heading = For your security, we deleted your progress
+timeOut.title = Er eich diogelwch, rydym wedi dileu eich cynnydd
+timeOut.heading = Er eich diogelwch, rydym wedi dileu eich cynnydd
 timeOut.guidance = Gwnaethom ddileu unrhyw wybodaeth a nodwyd gennych oherwydd nad ydych wedi gwneud unrhyw beth ers 15 munud. Bydd yn rhaid i chi ddechrau eto.
 timeOut.restart.p = Dechreuwch ddatganiad newydd os ydych yn:
 timeOut.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
