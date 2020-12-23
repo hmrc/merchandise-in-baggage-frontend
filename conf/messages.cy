@@ -14,7 +14,7 @@ error.nonNumeric = Please enter a number
 error.date.day_blank = Mae’n rhaid i’r dyddiad gynnwys diwrnod
 error.date.day_invalid = Mae’n rhaid i’r diwrnod fod rhwng 1 a 31
 error.date.month_blank = Mae’n rhaid i’r dyddiad gynnwys mis
-error.date.month_invalid = Mae'n rhaid i'r mis fod rhwng 1 a 12
+error.date.month_invalid = Mae’n rhaid i’r mis fod rhwng 1 a 12
 error.date.year_blank = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 error.date.year_invalid = Enter a valid year, for example, 2020
 error.yesNo = Please enter Yes or No
@@ -65,8 +65,8 @@ exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn
 # GoodsDestination
 goodsDestination.Import.title = Ble yn y DU y mae’r nwyddau’n mynd?
 goodsDestination.Import.heading = Ble yn y DU y mae’r nwyddau’n mynd?
-goodsDestination.Export.title = Where in the UK are the goods leaving from?
-goodsDestination.Export.heading = Where in the UK are the goods leaving from?
+goodsDestination.Export.title = O ble yn y DU mae’r nwyddau’n gadael?
+goodsDestination.Export.heading = O ble yn y DU mae’r nwyddau’n gadael?
 goodsDestination.NorthernIreland = Gogledd Iwerddon
 goodsDestination.GreatBritain = Prydain Fawr
 goodsDestination.GreatBritain.hint = Cymru, Lloegr, yr Alban neu Ynys Manaw
@@ -145,7 +145,7 @@ purchaseDetails.p.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
-purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm fod yn rhif
+purchaseDetails.price.error.invalid = Mae’n rhaid i’r pris a dalwyd fod yn rhif
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
 
 # ReviewGoods
@@ -159,7 +159,7 @@ reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number
 reviewGoods.h3 = A oes angen i chi ddatgan rhagor o nwyddau masnachol?
-reviewGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddatgan rhagor o nwyddau
+reviewGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddatgan rhagor o eitemau
 
 # RemoveGoods
 removeGoods.title = A ydych yn siŵr eich bod am ddileu’r {0}?
