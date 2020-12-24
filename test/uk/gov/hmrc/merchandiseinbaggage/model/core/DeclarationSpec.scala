@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import java.util.UUID
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {

@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{Port, YesNo}
 
+import java.time.LocalDate
+
 sealed trait JourneyDetails {
   val port: Port
   val dateOfTravel: LocalDate
-  val formattedDateOfTravel: String = DateTimeFormatter.ofPattern("dd MMM yyyy").format(dateOfTravel)
   val travellingByVehicle: YesNo = No
   val maybeRegistrationNumber: Option[String] = None
 }

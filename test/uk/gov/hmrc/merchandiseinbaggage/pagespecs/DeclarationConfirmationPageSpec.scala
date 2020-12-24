@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationTy
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 
 class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmationPage] with WireMockSupport {
   override lazy val page: DeclarationConfirmationPage = wire[DeclarationConfirmationPage]
@@ -86,7 +87,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   def hasDateOfDeclaration(ldt: LocalDateTime): Assertion = {
     textOfElementWithId("declarationDateId") mustBe "Date of declaration"
-    textOfElementWithId("declarationDateFormattedId") must include(ldt.format(Declaration.formatter))
+    textOfElementWithId("declarationDateFormattedId") must include(ldt.formattedDate)
   }
 
   def hasEmailAddress(declaration: Declaration): Assertion =
