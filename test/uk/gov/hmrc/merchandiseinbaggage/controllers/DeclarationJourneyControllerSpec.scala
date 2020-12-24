@@ -32,11 +32,16 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, url).withSession((SessionKeys.sessionId, sessionId.value)).withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+    FakeRequest(GET, url)
+      .withSession((SessionKeys.sessionId, sessionId.value))
+      .withCSRFToken
+      .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
   def buildPost(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(POST, url).withSession((SessionKeys.sessionId, sessionId.value))
-      .withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+    FakeRequest(POST, url)
+      .withSession((SessionKeys.sessionId, sessionId.value))
+      .withCSRFToken
+      .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
   def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
     declarationJourneyRepository.insert(declarationJourney).futureValue

@@ -32,16 +32,16 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           calculationService: CalculationService,
-                                           connector: PaymentConnector,
-                                           mibConnector: MibConnector,
-                                           override val repo: DeclarationJourneyRepository,
-                                           importView: CheckYourAnswersImportView,
-                                           exportView: CheckYourAnswersExportView)
-                                          (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class CheckYourAnswersController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  calculationService: CalculationService,
+  connector: PaymentConnector,
+  mibConnector: MibConnector,
+  override val repo: DeclarationJourneyRepository,
+  importView: CheckYourAnswersImportView,
+  exportView: CheckYourAnswersExportView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
@@ -54,7 +54,9 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
               } else Ok(importView(form, declaration, paymentCalculations.totalTaxDue))
             }
           case Export =>
-            if (declaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum > declaration.goodsDestination.threshold.inPounds)
+            if (declaration.declarationGoods.goods
+                  .map(_.purchaseDetails.numericAmount)
+                  .sum > declaration.goodsDestination.threshold.inPounds)
               Future successful Redirect(routes.GoodsOverThresholdController.onPageLoad())
             else Future successful Ok(exportView(form, declaration))
         }
@@ -63,7 +65,8 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration => declarationConfirmation(declaration.copy(lang = messages.lang.code)))
+      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
+        declarationConfirmation(declaration.copy(lang = messages.lang.code)))
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -74,37 +77,34 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
     }
   }
 
-  private def declarationConfirmation(declaration: Declaration)
-                                     (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] = {
+  private def declarationConfirmation(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     declaration.declarationType match {
       case Export =>
         continueExportDeclaration(declaration)
       case Import =>
         continueImportDeclaration(declaration)
     }
-  }
 
   private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =
     for {
       declarationId <- mibConnector.persistDeclaration(declaration)
-      _ <- mibConnector.sendEmails(declarationId)
+      _             <- mibConnector.sendEmails(declarationId)
     } yield Redirect(routes.DeclarationConfirmationController.onPageLoad())
 
-  private def continueImportDeclaration(declaration: Declaration)
-                                       (implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def continueImportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
       taxDue <- calculationService.paymentCalculation(declaration.declarationGoods)
-      _ <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
+      _      <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
       payApiResponse <- connector
-        .sendPaymentRequest(
-          PayApiRequest(
-            declaration.mibReference,
-            taxDue.totalTaxDue,
-            taxDue.totalVatDue,
-            taxDue.totalDutyDue,
-            appConfig.paymentsReturnUrl,
-            appConfig.paymentsBackUrl
-          )
-        )
+                         .sendPaymentRequest(
+                           PayApiRequest(
+                             declaration.mibReference,
+                             taxDue.totalTaxDue,
+                             taxDue.totalVatDue,
+                             taxDue.totalDutyDue,
+                             appConfig.paymentsReturnUrl,
+                             appConfig.paymentsBackUrl
+                           )
+                         )
     } yield Redirect(payApiResponse.nextUrl.value)
 }

@@ -28,12 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsOverThresholdController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                             actionProvider: DeclarationJourneyActionProvider,
-                                             calculationService: CalculationService,
-                                             view: GoodsOverThresholdView)
-                                            (implicit val appConfig: AppConfig, ec: ExecutionContext)
-  extends DeclarationJourneyController {
+class GoodsOverThresholdController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  calculationService: CalculationService,
+  view: GoodsOverThresholdView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+    extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
@@ -44,7 +44,7 @@ class GoodsOverThresholdController @Inject()(override val controllerComponents: 
               case Import =>
                 for {
                   paymentCalculations <- calculationService.paymentCalculation(goods)
-                  rates <- calculationService.getConversionRates(goods)
+                  rates               <- calculationService.getConversionRates(goods)
                 } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates, Import))
               case Export =>
                 val amount = AmountInPence.fromBigDecimal(goods.goods.map(_.purchaseDetails.numericAmount).sum)

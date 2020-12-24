@@ -27,19 +27,24 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleSizeView
 import scala.concurrent.{ExecutionContext, Future}
 
 class VehicleSizeController @Inject()(
-                                       override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       override val repo: DeclarationJourneyRepository,
-                                       view: VehicleSizeView,
-                                     )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: VehicleSizeView,
+)(implicit ec: ExecutionContext, appConf: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.GoodsInVehicleController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingBySmallVehicle
-      .fold(form(request.declarationType))
-      (form(request.declarationType).fill), request.declarationJourney.declarationType, backButtonUrl))
+    Ok(
+      view(
+        request.declarationJourney.maybeTravellingBySmallVehicle
+          .fold(form(request.declarationType))(form(request.declarationType).fill),
+        request.declarationJourney.declarationType,
+        backButtonUrl
+      ))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -52,7 +57,7 @@ class VehicleSizeController @Inject()(
             request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle)),
             if (isSmallVehicle == Yes) routes.VehicleRegistrationNumberController.onPageLoad()
             else routes.CannotUseServiceController.onPageLoad()
-          )
+        )
       )
   }
 }

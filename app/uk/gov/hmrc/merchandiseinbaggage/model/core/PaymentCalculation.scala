@@ -28,11 +28,12 @@ object PaymentCalculation {
   implicit val format: OFormat[PaymentCalculation] = Json.format[PaymentCalculation]
 }
 
-case class TotalCalculationResult(paymentCalculations: PaymentCalculations,
-                                  totalGbpValue: AmountInPence,
-                                  totalTaxDue: AmountInPence,
-                                  totalDutyDue: AmountInPence,
-                                  totalVatDue: AmountInPence)
+case class TotalCalculationResult(
+  paymentCalculations: PaymentCalculations,
+  totalGbpValue: AmountInPence,
+  totalTaxDue: AmountInPence,
+  totalDutyDue: AmountInPence,
+  totalVatDue: AmountInPence)
 
 object TotalCalculationResult {
   implicit val format: OFormat[TotalCalculationResult] = Json.format[TotalCalculationResult]
@@ -99,28 +100,29 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
     Table(
       rows = tableRows,
       attributes = Map("style" -> "margin-bottom:60px"),
-      head = Some(Seq(
-        HeadCell(
-          Text(messages("paymentCalculation.table.col1.head")),
-          attributes = Map("nowrap" -> "nowrap")
-        ),
-        HeadCell(
-          Text(messages("paymentCalculation.table.col2.head")),
-          attributes = Map("nowrap" -> "nowrap")
-        ),
-        HeadCell(
-          Text(messages("paymentCalculation.table.col3.head")),
-          attributes = Map("nowrap" -> "nowrap")
-        ),
-        HeadCell(
-          Text(messages("paymentCalculation.table.col4.head")),
-          attributes = Map("nowrap" -> "nowrap")
-        ),
-        HeadCell(
-          Text(messages("paymentCalculation.table.col5.head")),
-          attributes = Map("nowrap" -> "nowrap")
-        )
-      ))
+      head = Some(
+        Seq(
+          HeadCell(
+            Text(messages("paymentCalculation.table.col1.head")),
+            attributes = Map("nowrap" -> "nowrap")
+          ),
+          HeadCell(
+            Text(messages("paymentCalculation.table.col2.head")),
+            attributes = Map("nowrap" -> "nowrap")
+          ),
+          HeadCell(
+            Text(messages("paymentCalculation.table.col3.head")),
+            attributes = Map("nowrap" -> "nowrap")
+          ),
+          HeadCell(
+            Text(messages("paymentCalculation.table.col4.head")),
+            attributes = Map("nowrap" -> "nowrap")
+          ),
+          HeadCell(
+            Text(messages("paymentCalculation.table.col5.head")),
+            attributes = Map("nowrap" -> "nowrap")
+          )
+        ))
     )
   }
 }

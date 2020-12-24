@@ -22,21 +22,21 @@ import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
 import java.time.LocalDateTime
 
-case class Declaration(declarationId: DeclarationId,
-                       sessionId: SessionId,
-                       declarationType: DeclarationType,
-                       goodsDestination: GoodsDestination,
-                       declarationGoods: DeclarationGoods,
-                       nameOfPersonCarryingTheGoods: Name,
-                       email: Email,
-                       maybeCustomsAgent: Option[CustomsAgent],
-                       eori: Eori,
-                       journeyDetails: JourneyDetails,
-                       dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-                       mibReference: MibReference = Declaration.mibReference,
-                       maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
-                       lang: String = "en"
-                      )
+case class Declaration(
+  declarationId: DeclarationId,
+  sessionId: SessionId,
+  declarationType: DeclarationType,
+  goodsDestination: GoodsDestination,
+  declarationGoods: DeclarationGoods,
+  nameOfPersonCarryingTheGoods: Name,
+  email: Email,
+  maybeCustomsAgent: Option[CustomsAgent],
+  eori: Eori,
+  journeyDetails: JourneyDetails,
+  dateOfDeclaration: LocalDateTime = LocalDateTime.now,
+  mibReference: MibReference = Declaration.mibReference,
+  maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
+  lang: String = "en")
 
 object Declaration extends MibReferenceGenerator {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]

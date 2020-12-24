@@ -27,19 +27,24 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsInVehicleView
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsInVehicleController @Inject()(
-                                          override val controllerComponents: MessagesControllerComponents,
-                                          actionProvider: DeclarationJourneyActionProvider,
-                                          override val repo: DeclarationJourneyRepository,
-                                          view: GoodsInVehicleView,
-                                        )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: GoodsInVehicleView,
+)(implicit ec: ExecutionContext, appConf: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.JourneyDetailsController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeTravellingByVehicle
-      .fold(form(request.declarationType))
-      (form(request.declarationType).fill), request.declarationType, backButtonUrl))
+    Ok(
+      view(
+        request.declarationJourney.maybeTravellingByVehicle
+          .fold(form(request.declarationType))(form(request.declarationType).fill),
+        request.declarationType,
+        backButtonUrl
+      ))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -52,7 +57,7 @@ class GoodsInVehicleController @Inject()(
             request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle)),
             if (goodsInVehicle == Yes) routes.VehicleSizeController.onPageLoad()
             else routes.CheckYourAnswersController.onPageLoad()
-          )
+        )
       )
   }
 }

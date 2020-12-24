@@ -46,8 +46,8 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
 
   val repo: DeclarationJourneyRepository
 
-  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)
-                        (implicit ec: ExecutionContext): Future[Result] =
+  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(
+    implicit ec: ExecutionContext): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
       if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
       else Redirect(redirectIfNotComplete)
@@ -59,20 +59,17 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
   def onPageLoad(idx: Int): Action[AnyContent]
 
-  def withGoodsCategory(goodsEntry: GoodsEntry)
-                       (f: String => Future[Result])
-                       (implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
+  def withGoodsCategory(goodsEntry: GoodsEntry)(f: String => Future[Result])(
+    implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
     goodsEntry.maybeCategoryQuantityOfGoods match {
       case Some(c) => f(c.category)
       case None =>
-        DeclarationJourneyLogger.warn(
-          s"Goods category not found so redirecting to ${routes.InvalidRequestController.onPageLoad()}")
+        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.InvalidRequestController.onPageLoad()}")
         Future successful Redirect(routes.InvalidRequestController.onPageLoad())
     }
 
   def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
-    (request.declarationJourney.declarationRequiredAndComplete,
-      request.declarationJourney.goodsEntries.entries(index - 1).isComplete) match {
+    (request.declarationJourney.declarationRequiredAndComplete, request.declarationJourney.goodsEntries.entries(index - 1).isComplete) match {
       case (true, true)   => routes.CheckYourAnswersController.onPageLoad() // user clicked change link from /check-your-answers
       case (true, false)  => default // user clicked add more goods from /check-your-answers
       case (false, true)  => routes.ReviewGoodsController.onPageLoad // user clicked change link from /review-goods
@@ -85,15 +82,14 @@ trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourne
 
   val repo: DeclarationJourneyRepository
 
-  def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)
-                        (implicit request: DeclarationGoodsRequest[AnyContent], ec: ExecutionContext): Future[Result] = {
+  def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)(
+    implicit request: DeclarationGoodsRequest[AnyContent],
+    ec: ExecutionContext): Future[Result] = {
     val updatedDeclarationJourney =
-      request.declarationJourney.copy(
-        goodsEntries = request.declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
+      request.declarationJourney.copy(goodsEntries = request.declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
 
     repo.upsert(updatedDeclarationJourney).map { _ =>
-      (updatedDeclarationJourney.declarationRequiredAndComplete,
-        updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete) match {
+      (updatedDeclarationJourney.declarationRequiredAndComplete, updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete) match {
         case (true, true)   => Redirect(routes.CheckYourAnswersController.onPageLoad()) // user clicked change link from /check-your-answers
         case (true, false)  => Redirect(redirectIfNotComplete) // user clicked add more goods from /check-your-answers
         case (false, true)  => Redirect(routes.ReviewGoodsController.onPageLoad()) // user clicked change link from /review-goods

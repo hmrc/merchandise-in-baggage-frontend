@@ -43,16 +43,13 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
 
     behave like
-      aPageWithARequiredQuestion(
-        path, requiredAnswerAgentValidationMessage, givenAnAgentJourney(), validationErrorMessageField)
+      aPageWithARequiredQuestion(path, requiredAnswerAgentValidationMessage, givenAnAgentJourney(), validationErrorMessageField)
 
     behave like
-      aPageWithARequiredQuestion(
-        path, requiredAnswerNonAgentValidationMessage, givenANonAgentJourney(), validationErrorMessageField)
+      aPageWithARequiredQuestion(path, requiredAnswerNonAgentValidationMessage, givenANonAgentJourney(), validationErrorMessageField)
 
     behave like
-      aPageWithValidation(
-        path, givenANonAgentJourney(), invalidEori, invalidEoriValidationMessage, validationErrorMessageField)
+      aPageWithValidation(path, givenANonAgentJourney(), invalidEori, invalidEoriValidationMessage, validationErrorMessageField)
 
     behave like aDataCapturePageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)

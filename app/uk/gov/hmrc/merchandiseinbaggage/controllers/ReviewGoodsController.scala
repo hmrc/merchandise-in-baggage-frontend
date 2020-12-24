@@ -29,15 +29,15 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ReviewGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                      actionProvider: DeclarationJourneyActionProvider,
-                                      override val repo: DeclarationJourneyRepository,
-                                      view: ReviewGoodsView)
-                                     (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class ReviewGoodsController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: ReviewGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-      routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+    routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     import request.declarationJourney._
@@ -51,17 +51,19 @@ class ReviewGoodsController @Inject()(override val controllerComponents: Message
     import request.declarationJourney._
     goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
-        form.bindFromRequest().fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType))),
-          declareMoreGoods =>
-            if (declareMoreGoods == Yes) {
-              val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType))),
+            declareMoreGoods =>
+              if (declareMoreGoods == Yes) {
+                val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
 
-              repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
-                Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
-              }
-            } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
-        )
+                repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
+                  Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
+                }
+              } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
+          )
       }
   }
 }

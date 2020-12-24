@@ -27,12 +27,15 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
   def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[F]
 
   def givenAnAgentJourney(declarationType: DeclarationType = Import): Unit =
-    givenADeclarationJourney(startedImportJourney
-      .copy(maybeIsACustomsAgent = Some(Yes), declarationType = declarationType))
+    givenADeclarationJourney(
+      startedImportJourney
+        .copy(maybeIsACustomsAgent = Some(Yes), declarationType = declarationType))
 
   def givenANonAgentJourney(): Unit = givenADeclarationJourney(startedImportJourney.copy(maybeIsACustomsAgent = Some(No)))
 
-  def aPageWhichDisplaysPreviouslyEnteredAnswers(path: String, setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
+  def aPageWhichDisplaysPreviouslyEnteredAnswers(
+    path: String,
+    setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
     "render correctly" when {
       "a declaration has been completed" in {
         val expectedData = extractFormDataFrom(completedDeclarationJourney).get
@@ -43,13 +46,17 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
       }
     }
 
-  def aDataCapturePageWithConditionalRouting(path: String, setUp: => Unit = Unit, formData: F, expectedPath: String, desc: String = ""): Unit = {
+  def aDataCapturePageWithConditionalRouting(
+    path: String,
+    setUp: => Unit = Unit,
+    formData: F,
+    expectedPath: String,
+    desc: String = ""): Unit =
     s"redirect to $expectedPath" when {
       s"the form is filled with $formData $desc" in {
         submitAndEnsurePersistence(path, setUp, formData) mustBe expectedPath
       }
     }
-  }
 
   def aDataCapturePageWithSimpleRouting(path: String, setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {
@@ -87,11 +94,12 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
     redirectPath
   }
 
-  def aPageWithValidation(path: String,
-                          setUp: => Unit,
-                          formData: F,
-                          validationMessage: String,
-                          validationMessageFieldId: String = "value-error"): Unit =
+  def aPageWithValidation(
+    path: String,
+    setUp: => Unit,
+    formData: F,
+    validationMessage: String,
+    validationMessageFieldId: String = "value-error"): Unit =
     s"display the validation message [$validationMessage] with id [$validationMessageFieldId] for form data [$formData]" when {
       "the user attempts to submit the form without answering the question" in {
         setUp

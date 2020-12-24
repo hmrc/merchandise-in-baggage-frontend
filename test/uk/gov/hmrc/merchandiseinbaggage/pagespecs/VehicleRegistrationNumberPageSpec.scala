@@ -32,7 +32,11 @@ class VehicleRegistrationNumberPageSpec extends DeclarationDataCapturePageSpec[S
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted())
-    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), registrationNumber, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(
+      path,
+      givenACompleteDeclarationJourney(),
+      registrationNumber,
+      CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), registrationNumber, InvalidRequestPage.path)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), VehicleSizePage.path)
   }

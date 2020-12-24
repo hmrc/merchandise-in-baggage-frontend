@@ -37,7 +37,8 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   private val view = app.injector.instanceOf[DeclarationConfirmationView]
   private val client = app.injector.instanceOf[HttpClient]
   private val connector = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
-  private val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
+  private val controller =
+    new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
 
   "on page load return 200 if declaration exists and resets the journey" in {
     val sessionId = SessionId()
@@ -63,11 +64,13 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val connector = new MibConnector(client, "") {
-      override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
+      override def findDeclaration(
+        declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
         Future.failed(new Exception("not found"))
     }
 
-    val controller = new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
+    val controller =
+      new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
     val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     val eventualResult = controller.onPageLoad()(request)

@@ -29,8 +29,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
 
-  class TestPaymentConnector extends PaymentConnector(
-    injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))
+  class TestPaymentConnector
+      extends PaymentConnector(injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))
 
   "send a payment request to payment service adding a generated session id to the header" in new TestPaymentConnector {
     val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
@@ -38,10 +38,10 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport 
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     wireMockServer
-      .stubFor(post(urlPathEqualTo(payUrl))
-        .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
-        .willReturn(okJson(stubbedResponse).withStatus(201))
-      )
+      .stubFor(
+        post(urlPathEqualTo(payUrl))
+          .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
+          .willReturn(okJson(stubbedResponse).withStatus(201)))
 
     val response = sendPaymentRequest(payApiRequest).futureValue
     response mustBe PayApiResponse(JourneyId("5f3bc55"), URL("http://localhost:9056/pay/initiate-journey"))

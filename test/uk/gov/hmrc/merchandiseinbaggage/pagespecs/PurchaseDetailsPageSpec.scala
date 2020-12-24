@@ -31,15 +31,19 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
   private val amountValidationErrorMessageElementId = "price-error"
 
   "the purchase details page" should {
-    behave like aGoodsEntryPage(
-      path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path, false)
+    behave like aGoodsEntryPage(path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path, false)
 
     behave like
       aPageWithARequiredQuestion(
-        path(1), amountRequiredValidationMessage, givenAGoodsEntryIsStarted(), amountValidationErrorMessageElementId)
+        path(1),
+        amountRequiredValidationMessage,
+        givenAGoodsEntryIsStarted(),
+        amountValidationErrorMessageElementId)
 
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(
-      path(1), Set(amountRequiredValidationMessage, currencyValidationErrorMessage), givenAGoodsEntryIsStarted())
+      path(1),
+      Set(amountRequiredValidationMessage, currencyValidationErrorMessage),
+      givenAGoodsEntryIsStarted())
 
     behave like
       aPageWithValidation(

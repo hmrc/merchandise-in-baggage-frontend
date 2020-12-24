@@ -22,7 +22,7 @@ import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Name
 
-class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Name]{
+class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Name] {
 
   import WebBrowser._
 

@@ -24,10 +24,10 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 
 class LanguageSwitchController @Inject()(
-                                          configuration: Configuration,
-                                          appConfig: AppConfig,
-                                          languageUtils: LanguageUtils,
-                                          val cc: MessagesControllerComponents
+  configuration: Configuration,
+  appConfig: AppConfig,
+  languageUtils: LanguageUtils,
+  val cc: MessagesControllerComponents
 ) extends LanguageController(configuration, languageUtils, cc) {
 
   override def fallbackURL: String = routes.GoodsDestinationController.onPageLoad().url

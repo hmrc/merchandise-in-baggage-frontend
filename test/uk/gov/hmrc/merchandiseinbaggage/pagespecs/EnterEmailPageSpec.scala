@@ -37,17 +37,27 @@ class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmai
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), title)
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
-    behave like aDataCapturePageWithSimpleRouting(path, givenAnImportJourneyIsStarted(), Seq(Email("test@test.com", "test@test.com")), JourneyDetailsPage.path)
-    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), emailValidationErrorField)
-    behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted(), confirmationValidationErrorField)
+    behave like aDataCapturePageWithSimpleRouting(
+      path,
+      givenAnImportJourneyIsStarted(),
+      Seq(Email("test@test.com", "test@test.com")),
+      JourneyDetailsPage.path)
+    behave like aPageWithARequiredQuestion(
+      path,
+      requiredAnswerValidationMessage,
+      givenAnImportJourneyIsStarted(),
+      emailValidationErrorField)
+    behave like aPageWithARequiredQuestion(
+      path,
+      requiredAnswerValidationMessage,
+      givenAnImportJourneyIsStarted(),
+      confirmationValidationErrorField)
 
     behave like
-      aPageWithValidation(
-        path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, emailValidationErrorField)
+      aPageWithValidation(path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, emailValidationErrorField)
 
     behave like
-      aPageWithValidation(
-        path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, confirmationValidationErrorField)
+      aPageWithValidation(path, givenAnImportJourneyIsStarted(), invalidEmail, invalidMessage, confirmationValidationErrorField)
 
     s"display the not matching validation message in the error summary list" when {
       "the user attempts to submit the form with mismatched emails" in {
@@ -59,8 +69,10 @@ class EnterEmailPageSpec extends DeclarationDataCapturePageSpec[Email, EnterEmai
       }
     }
 
-
-    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, Set(requiredAnswerValidationMessage), givenAnImportJourneyIsStarted())
+    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(
+      path,
+      Set(requiredAnswerValidationMessage),
+      givenAnImportJourneyIsStarted())
 
     behave like aPageWithABackButton(path, givenAnAgentJourney(), TravellerDetailsPage.path)
   }

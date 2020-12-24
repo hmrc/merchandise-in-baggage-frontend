@@ -28,7 +28,8 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       inserted mustBe completedDeclarationJourney
 
-      declarationJourneyRepository.findBySessionId(completedDeclarationJourney.sessionId).futureValue mustBe Some(completedDeclarationJourney)
+      declarationJourneyRepository.findBySessionId(completedDeclarationJourney.sessionId).futureValue mustBe Some(
+        completedDeclarationJourney)
     }
 
     "update a declaration journey" in {
@@ -44,9 +45,7 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       declarationJourneyRepository.timeToLiveInSeconds mustBe expectedTimeToLive
 
-      declarationJourneyRepository
-        .indices
-        .futureValue
+      declarationJourneyRepository.indices.futureValue
         .filter(_.name.contains("timeToLive"))
         .head
         .options

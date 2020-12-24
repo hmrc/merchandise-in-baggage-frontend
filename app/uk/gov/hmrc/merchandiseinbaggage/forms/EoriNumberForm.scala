@@ -32,7 +32,7 @@ object EoriNumberForm extends Mappings {
   }
 
   private def agentOrTrader(customsAgent: YesNo): String =
-    if(customsAgent == Yes) "agent" else "trader"
+    if (customsAgent == Yes) "agent" else "trader"
 
   def form(customsAgent: YesNo, declarationType: DeclarationType): Form[String] = Form(
     "eori" ->

@@ -22,10 +22,11 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotUseServiceIrelandView
 
 @Singleton
-class CannotUseServiceIrelandController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                                  actionProvider: DeclarationJourneyActionProvider,
-                                                  view: CannotUseServiceIrelandView)(implicit val appConfig: AppConfig)
-  extends DeclarationJourneyController {
+class CannotUseServiceIrelandController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  view: CannotUseServiceIrelandView)(implicit val appConfig: AppConfig)
+    extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationType))

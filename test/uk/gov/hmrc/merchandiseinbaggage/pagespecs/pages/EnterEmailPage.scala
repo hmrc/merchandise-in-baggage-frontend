@@ -21,7 +21,7 @@ import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.model.core.Email
 
-class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Email]{
+class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Email] {
 
   import WebBrowser._
 
@@ -51,4 +51,3 @@ object EnterEmailPage {
   val path: String = "/declare-commercial-goods/enter-email"
   val title: String = "Enter an email address"
 }
-

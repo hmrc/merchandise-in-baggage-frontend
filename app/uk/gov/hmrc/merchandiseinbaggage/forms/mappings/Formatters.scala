@@ -23,7 +23,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.Enum
 
 import scala.util.control.Exception.nonFatalCatch
 
-
 trait Formatters {
 
   private[mappings] def stringFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
@@ -31,7 +30,7 @@ trait Formatters {
     override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
       data.get(key) match {
         case None | Some("") => Left(Seq(FormError(key, errorKey)))
-        case Some(s) => Right(s)
+        case Some(s)         => Right(s)
       }
 
     override def unbind(key: String, value: String): Map[String, String] =
@@ -65,9 +64,9 @@ trait Formatters {
     }
 
   private[mappings] def bigDecimalFormatter(
-                                             requiredKey: String,
-                                             nonNumericKey: String,
-                                             args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    requiredKey: String,
+    nonNumericKey: String,
+    args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
       private val baseFormatter = stringFormatter(requiredKey)
 
@@ -78,12 +77,11 @@ trait Formatters {
           .map(_.replace(",", ""))
           .map(_.trim)
           .right
-          .flatMap {
-            s =>
-              nonFatalCatch
-                .either(BigDecimal(s))
-                .left
-                .map(_ => Seq(FormError(key, nonNumericKey, args)))
+          .flatMap { s =>
+            nonFatalCatch
+              .either(BigDecimal(s))
+              .left
+              .map(_ => Seq(FormError(key, nonNumericKey, args)))
           }
 
       override def unbind(key: String, value: BigDecimal): Map[String, String] =

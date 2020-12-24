@@ -28,13 +28,13 @@ object PayApiStub extends CoreTestData {
 
   def givenTaxArePaid(server: WireMockServer): StubMapping = {
     server
-      .stubFor(post(urlPathEqualTo(payUrl))
-        .willReturn(okJson(stubbedResponse).withStatus(201))
-      )
+      .stubFor(
+        post(urlPathEqualTo(payUrl))
+          .willReturn(okJson(stubbedResponse).withStatus(201)))
     server
-      .stubFor(get(urlPathEqualTo(payInitiatedJourneyUrl))
-        .willReturn(aResponse().withStatus(200))
-      )
+      .stubFor(
+        get(urlPathEqualTo(payInitiatedJourneyUrl))
+          .willReturn(aResponse().withStatus(200)))
   }
 
 }

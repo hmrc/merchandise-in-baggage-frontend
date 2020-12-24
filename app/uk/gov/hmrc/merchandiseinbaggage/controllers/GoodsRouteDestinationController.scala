@@ -28,14 +28,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRouteDestinationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
-class GoodsRouteDestinationController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                                actionProvider: DeclarationJourneyActionProvider,
-                                                override val repo: DeclarationJourneyRepository,
-                                                view: GoodsRouteDestinationView,
-                                               )(implicit appConf: AppConfig, executionContext: ExecutionContext)
-
-  extends DeclarationJourneyUpdateController {
+class GoodsRouteDestinationController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: GoodsRouteDestinationView,
+)(implicit appConf: AppConfig, executionContext: ExecutionContext)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.GoodsDestinationController.onPageLoad())
@@ -48,7 +47,7 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
     def updateAndRedirect(value: YesNo)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
       repo.upsert(request.declarationJourney.copy(maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(value))).map { _ =>
         (value, request.declarationJourney.declarationType) match {
-          case (No, _) => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
+          case (No, _)     => Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
           case (_, Import) => Redirect(routes.CannotUseServiceIrelandController.onPageLoad())
           case (_, Export) => Redirect(routes.NoDeclarationNeededController.onPageLoad())
         }
@@ -57,10 +56,8 @@ class GoodsRouteDestinationController @Inject()(override val controllerComponent
     form
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl))),
-        value =>
-          updateAndRedirect(value)
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl))),
+        value => updateAndRedirect(value)
       )
   }
 }

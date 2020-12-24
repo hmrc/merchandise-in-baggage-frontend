@@ -26,8 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultActionBuilder, repo: DeclarationJourneyRepository)
-                                                (implicit ec: ExecutionContext) {
+class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultActionBuilder, repo: DeclarationJourneyRepository)(
+  implicit ec: ExecutionContext) {
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner
 
@@ -35,19 +35,17 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
     defaultActionBuilder andThen journeyActionRefiner andThen goodsActionRefiner(idx)
 
   def invalidRequest(warnMessage: String)(implicit request: RequestHeader): Result = {
-    DeclarationJourneyLogger.warn(
-      s"$warnMessage so redirecting to ${routes.InvalidRequestController.onPageLoad()}")(request)
+    DeclarationJourneyLogger.warn(s"$warnMessage so redirecting to ${routes.InvalidRequestController.onPageLoad()}")(request)
     Redirect(routes.InvalidRequestController.onPageLoad())
   }
 
-  def invalidRequestF(warningMessage: String)(implicit request: RequestHeader): Future[Result] = {
+  def invalidRequestF(warningMessage: String)(implicit request: RequestHeader): Future[Result] =
     Future.successful(invalidRequest(warningMessage))
-  }
 
   private def journeyActionRefiner: ActionRefiner[Request, DeclarationJourneyRequest] =
     new ActionRefiner[Request, DeclarationJourneyRequest] {
 
-      override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] = {
+      override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] =
         request.session.get(SessionKeys.sessionId) match {
           case None => Future successful Left(invalidRequest("Session Id not found")(request))
           case Some(sessionId) =>
@@ -59,7 +57,6 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
               case _ => Left(invalidRequest(s"Persisted declaration journey not found for session: $sessionId")(request))
             }
         }
-      }
 
       override protected def executionContext: ExecutionContext = ec
     }
@@ -67,7 +64,7 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
   private def goodsActionRefiner(idx: Int): ActionRefiner[DeclarationJourneyRequest, DeclarationGoodsRequest] =
     new ActionRefiner[DeclarationJourneyRequest, DeclarationGoodsRequest] {
 
-      override protected def refine[A](request: DeclarationJourneyRequest[A]): Future[Either[Result, DeclarationGoodsRequest[A]]] = {
+      override protected def refine[A](request: DeclarationJourneyRequest[A]): Future[Either[Result, DeclarationGoodsRequest[A]]] =
         Future successful (request.declarationJourney.goodsEntries.entries.lift(idx - 1) match {
           case None =>
             Left(invalidRequest(s"Goods entry not found for index $idx")(request))
@@ -76,7 +73,6 @@ class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultAc
             DeclarationJourneyLogger.info("goodsActionRefiner success")(declarationJourneyRequest)
             Right(declarationJourneyRequest)
         })
-      }
 
       override protected def executionContext: ExecutionContext = ec
     }

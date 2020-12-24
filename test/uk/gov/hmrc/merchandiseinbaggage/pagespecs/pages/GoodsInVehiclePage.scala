@@ -20,4 +20,3 @@ object GoodsInVehiclePage {
   val path: String = "/declare-commercial-goods/goods-in-vehicle"
   val title: String = "Are the goods arriving by vehicle?"
 }
-

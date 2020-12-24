@@ -24,11 +24,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.Future
 
-class FeedbackSurveyController @Inject()(val controllerComponents: MessagesControllerComponents)(
-  implicit appConfig: AppConfig) extends FrontendBaseController {
+class FeedbackSurveyController @Inject()(val controllerComponents: MessagesControllerComponents)(implicit appConfig: AppConfig)
+    extends FrontendBaseController {
 
   def startSurvey: Action[AnyContent] = Action.async { implicit request =>
-    Future.successful(Redirect(appConfig.feedbackUrl)
-      .withSession(("feedbackId", request.session.get(SessionKeys.sessionId).getOrElse(""))))
+    Future.successful(
+      Redirect(appConfig.feedbackUrl)
+        .withSession(("feedbackId", request.session.get(SessionKeys.sessionId).getOrElse(""))))
   }
 }

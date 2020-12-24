@@ -29,8 +29,7 @@ import scala.collection.JavaConverters._
 
 final case class BaseUrl(value: String)
 
-abstract class BasePage(implicit webDriver: WebDriver)
-  extends Matchers with Eventually with IntegrationPatience with AppendedClues {
+abstract class BasePage(implicit webDriver: WebDriver) extends Matchers with Eventually with IntegrationPatience with AppendedClues {
 
   import WebBrowser._
 
@@ -106,5 +105,3 @@ abstract class BasePage(implicit webDriver: WebDriver)
     tableBody.findElements(By.tagName("a")).asScala.map(_.getText)
   }
 }
-
-

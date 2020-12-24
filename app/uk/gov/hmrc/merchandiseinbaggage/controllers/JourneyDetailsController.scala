@@ -26,19 +26,23 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.JourneyDetailsPage
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class JourneyDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                         actionProvider: DeclarationJourneyActionProvider,
-                                         override val repo: DeclarationJourneyRepository,
-                                         view: JourneyDetailsPage)
-                                        (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class JourneyDetailsController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: JourneyDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.EnterEmailController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val journeyForm = form(request.declarationType)
-    Ok(view(request.declarationJourney.maybeJourneyDetailsEntry.fold(journeyForm)(details => journeyForm.fill(details)), request.declarationType, backButtonUrl))
+    Ok(
+      view(
+        request.declarationJourney.maybeJourneyDetailsEntry.fold(journeyForm)(details => journeyForm.fill(details)),
+        request.declarationType,
+        backButtonUrl))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -50,7 +54,7 @@ class JourneyDetailsController @Inject()(override val controllerComponents: Mess
           persistAndRedirect(
             request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry)),
             routes.GoodsInVehicleController.onPageLoad()
-          )
+        )
       )
   }
 }

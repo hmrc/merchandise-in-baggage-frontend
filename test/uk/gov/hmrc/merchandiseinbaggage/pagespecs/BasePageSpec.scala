@@ -81,25 +81,22 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       contactLink.underlying.getText mustBe "Is this page not working properly? (opens in new tab)"
     }
 
-
-  def aPageWhichRequiresADeclarationJourney(path: String): Unit = {
+  def aPageWhichRequiresADeclarationJourney(path: String): Unit =
     s"redirect from $path to ${InvalidRequestPage.path}" when {
       "the declaration has not been started" in {
         open(path) mustBe InvalidRequestPage.path
       }
     }
-  }
 
-  def aPageWhichRequiresACustomsAgentDeclaration(path: String): Unit = {
+  def aPageWhichRequiresACustomsAgentDeclaration(path: String): Unit =
     s"redirect to ${InvalidRequestPage.path}" when {
       "the declaration has been started but the user has not declared whether or not they are a customs agent" in {
         givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
         open(path) mustBe InvalidRequestPage.path
       }
     }
-  }
 
-  def aPageThatRequiresAtLeastOneCompletedGoodsEntry(path: String): Unit = {
+  def aPageThatRequiresAtLeastOneCompletedGoodsEntry(path: String): Unit =
     s"redirect to ${InvalidRequestPage.path}" when {
       "there are no started goods entries" in {
         givenADeclarationJourney(startedImportJourney)
@@ -111,7 +108,6 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
         open(path) mustBe InvalidRequestPage.path
       }
     }
-  }
 
   def aPageWithABackButton(path: String, setUp: => Unit = Unit, backPath: String, shouldGoCya: Boolean = true): Unit = {
     s"enable the user to navigate from $path back to $backPath" when {
@@ -123,7 +119,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       }
     }
 
-    if(shouldGoCya) {
+    if (shouldGoCya) {
       s"enable the user to navigate back from $path to ${CheckYourAnswersPage.path} rather than $backPath" when {
         "the journey is complete" in {
           givenACompleteDeclarationJourney()
@@ -135,18 +131,18 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
   }
 
-  def aPageWithNoBackButton(path: String, setUp: => Unit = Unit): Unit = {
+  def aPageWithNoBackButton(path: String, setUp: => Unit = Unit): Unit =
     s"not display a back button" in {
       setUp
       open(path)
       page.maybeBackButton.isDefined mustBe false
     }
-  }
 
-  def aPageWithARequiredQuestion(path: String,
-                                 validationMessage: String,
-                                 setUp: => Unit,
-                                 validationMessageFieldId: String = "value-error"): Unit =
+  def aPageWithARequiredQuestion(
+    path: String,
+    validationMessage: String,
+    setUp: => Unit,
+    validationMessageFieldId: String = "value-error"): Unit =
     s"display the validation message [$validationMessage] with id [$validationMessageFieldId]" when {
       "the user attempts to submit the form without answering the question" in {
         setUp
@@ -156,7 +152,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
       }
     }
 
-  def aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path: String, validationMessages: Set[String], setUp: => Unit): Unit = {
+  def aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path: String, validationMessages: Set[String], setUp: => Unit): Unit =
     s"display the currency validation message in the error summary list" when {
       "the user attempts to submit the form without answering the question" in {
         setUp
@@ -165,10 +161,8 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
         page.errorSummaryRows.toSet mustBe validationMessages
       }
     }
-  }
 
   def givenAGoodsEntryIsComplete(): Unit = givenADeclarationJourney(importJourneyWithOneCompleteGoodsEntry)
 
   def givenTwoGoodsEntriesAreComplete(): Unit = givenADeclarationJourney(importJourneyWithTwoCompleteGoodsEntries)
 }
-

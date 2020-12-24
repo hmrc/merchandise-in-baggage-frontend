@@ -28,12 +28,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class EoriNumberController @Inject()(
-                                      override val controllerComponents: MessagesControllerComponents,
-                                      actionProvider: DeclarationJourneyActionProvider,
-                                      override val repo: DeclarationJourneyRepository,
-                                      view: EoriNumberView
-                                    )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: EoriNumberView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad())
@@ -53,13 +53,15 @@ class EoriNumberController @Inject()(
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
     maybeIsACustomsAgent.fold(actionProvider.invalidRequestF(invalidRequestMessage)) { isAgent =>
-      form(isAgent, request.declarationType).bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
-        eori =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
-      )
+      form(isAgent, request.declarationType)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
+          eori =>
+            persistAndRedirect(
+              request.declarationJourney.copy(maybeEori = Some(Eori(eori))),
+              routes.TravellerDetailsController.onPageLoad())
+        )
     }
   }
 }

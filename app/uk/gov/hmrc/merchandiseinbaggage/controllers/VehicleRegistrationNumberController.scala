@@ -27,12 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class VehicleRegistrationNumberController @Inject()(
-                                                     override val controllerComponents: MessagesControllerComponents,
-                                                     actionProvider: DeclarationJourneyActionProvider,
-                                                     override val repo: DeclarationJourneyRepository,
-                                                     view: VehicleRegistrationNumberView
-                                                   )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: VehicleRegistrationNumberView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.VehicleSizeController.onPageLoad())
@@ -49,11 +49,13 @@ class VehicleRegistrationNumberController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         vehicleReg => {
-          repo.upsert(
-            request.declarationJourney.copy(maybeRegistrationNumber = Some(vehicleReg))
-          ).map { _ =>
-            Redirect(routes.CheckYourAnswersController.onPageLoad())
-          }
+          repo
+            .upsert(
+              request.declarationJourney.copy(maybeRegistrationNumber = Some(vehicleReg))
+            )
+            .map { _ =>
+              Redirect(routes.CheckYourAnswersController.onPageLoad())
+            }
         }
       )
   }

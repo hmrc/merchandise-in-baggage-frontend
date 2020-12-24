@@ -39,11 +39,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
-                                   repository: DeclarationJourneyRepository,
-                                   formProvider: DeclarationJourneyFormProvider,
-                                   page: TestOnlyDeclarationJourneyPage)
-                                  (implicit val ec: ExecutionContext, appConfig: AppConfig) extends FrontendController(mcc) {
+class TestOnlyController @Inject()(
+  mcc: MessagesControllerComponents,
+  repository: DeclarationJourneyRepository,
+  formProvider: DeclarationJourneyFormProvider,
+  page: TestOnlyDeclarationJourneyPage)(implicit val ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc) {
   private val form = formProvider()
 
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
@@ -53,23 +54,25 @@ class TestOnlyController @Inject()(mcc: MessagesControllerComponents,
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>
     def onError(form: Form[String]): Future[Result] = Future successful BadRequest(page(form))
 
-    form.bindFromRequest().fold(
-      formWithErrors => onError(formWithErrors),
-      json => {
-        Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
-          repository.insert(declarationJourney).map { _ =>
-            declarationJourney.declarationType match {
-              case Import =>
-                Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                  .addingToSession((sessionId, declarationJourney.sessionId.value))
-              case Export =>
-                Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                  .addingToSession((sessionId, declarationJourney.sessionId.value))
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => onError(formWithErrors),
+        json => {
+          Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
+            repository.insert(declarationJourney).map { _ =>
+              declarationJourney.declarationType match {
+                case Import =>
+                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                    .addingToSession((sessionId, declarationJourney.sessionId.value))
+                case Export =>
+                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                    .addingToSession((sessionId, declarationJourney.sessionId.value))
+              }
             }
           }
         }
-      }
-    )
+      )
   }
 }
 
@@ -78,8 +81,9 @@ object TestOnlyController {
     GoodsEntry(
       Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRates.Twenty),
-      Some(Country("FR", "title.france", "FR", isEu=true, Nil)),
-      Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))))
+      Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+      Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
+    )
 
   def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
     DeclarationJourney(
@@ -95,13 +99,16 @@ object TestOnlyController {
           GoodsEntry(
             Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRates.Twenty),
-            Some(Country("FR", "title.france", "FR", isEu=true, Nil)),
-            Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))),
+            Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+            Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
+          )
+        )),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeEmailAddress = Some(Email("aa@test.com", "aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
-      maybeCustomsAgentAddress = Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))),
+      maybeCustomsAgentAddress =
+        Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))),
       maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("DVR", now())),
       maybeTravellingByVehicle = Some(Yes),

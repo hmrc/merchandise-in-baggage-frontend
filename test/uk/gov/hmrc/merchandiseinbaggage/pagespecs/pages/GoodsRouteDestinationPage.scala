@@ -22,4 +22,3 @@ object GoodsRouteDestinationPage {
   val importTitle = "Is the final destination of the goods the Republic of Ireland?"
   val exportTitle = "Are you taking these goods to the European Union?"
 }
-

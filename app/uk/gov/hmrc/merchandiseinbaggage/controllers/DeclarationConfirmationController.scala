@@ -28,13 +28,13 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationConfirmationController @Inject()(
-                                                   override val controllerComponents: MessagesControllerComponents,
-                                                   actionProvider: DeclarationJourneyActionProvider,
-                                                   view: DeclarationConfirmationView,
-                                                   connector: MibConnector,
-                                                   val repo: DeclarationJourneyRepository,
-                                                 )(implicit ec: ExecutionContext, appConf: AppConfig)
-  extends DeclarationJourneyController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  view: DeclarationConfirmationView,
+  connector: MibConnector,
+  val repo: DeclarationJourneyRepository,
+)(implicit ec: ExecutionContext, appConf: AppConfig)
+    extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId

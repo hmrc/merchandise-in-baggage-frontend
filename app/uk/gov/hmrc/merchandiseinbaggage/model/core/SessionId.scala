@@ -43,7 +43,6 @@ object SessionId {
   def apply(): SessionId = SessionId(randomUUID().toString)
 }
 
-
 case class CategoryQuantityOfGoods(category: String, quantity: String)
 
 object CategoryQuantityOfGoods {
@@ -62,16 +61,17 @@ object AmountInPence {
   def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
 }
 
-case class GoodsEntry(maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
-                      maybeGoodsVatRate: Option[GoodsVatRate] = None,
-                      maybeCountryOfPurchase: Option[Country] = None,
-                      maybePurchaseDetails: Option[PurchaseDetails] = None) {
+case class GoodsEntry(
+  maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
+  maybeGoodsVatRate: Option[GoodsVatRate] = None,
+  maybeCountryOfPurchase: Option[Country] = None,
+  maybePurchaseDetails: Option[PurchaseDetails] = None) {
   val goodsIfComplete: Option[Goods] =
     for {
       categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
-      goodsVatRate <- maybeGoodsVatRate
-      countryOfPurchase <- maybeCountryOfPurchase
-      priceOfGoods <- maybePurchaseDetails
+      goodsVatRate            <- maybeGoodsVatRate
+      countryOfPurchase       <- maybeCountryOfPurchase
+      priceOfGoods            <- maybePurchaseDetails
     } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods)
 
   val isComplete: Boolean = goodsIfComplete.isDefined
@@ -102,10 +102,9 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
 
-  def remove(idx: Int): GoodsEntries = {
+  def remove(idx: Int): GoodsEntries =
     if (entries.size == 1) GoodsEntries.empty
     else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
-  }
 }
 
 object GoodsEntries {
@@ -150,26 +149,26 @@ object JourneyDetailsEntry {
   implicit val format: OFormat[JourneyDetailsEntry] = Json.format[JourneyDetailsEntry]
 }
 
-case class DeclarationJourney(sessionId: SessionId,
-                              declarationType: DeclarationType,
-                              createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
-                              maybeExciseOrRestrictedGoods: Option[YesNo] = None,
-                              maybeGoodsDestination: Option[GoodsDestination] = None,
-                              maybeImportOrExportGoodsFromTheEUViaNorthernIreland: Option[YesNo] = None,
-                              maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
-                              goodsEntries: GoodsEntries = GoodsEntries.empty,
-                              maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
-                              maybeEmailAddress: Option[Email] = None,
-                              maybeIsACustomsAgent: Option[YesNo] = None,
-                              maybeCustomsAgentName: Option[String] = None,
-                              maybeCustomsAgentAddress: Option[Address] = None,
-                              maybeEori: Option[Eori] = None,
-                              maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
-                              maybeTravellingByVehicle: Option[YesNo] = None,
-                              maybeTravellingBySmallVehicle: Option[YesNo] = None,
-                              maybeRegistrationNumber: Option[String] = None,
-                              declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)
-                             ) {
+case class DeclarationJourney(
+  sessionId: SessionId,
+  declarationType: DeclarationType,
+  createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+  maybeExciseOrRestrictedGoods: Option[YesNo] = None,
+  maybeGoodsDestination: Option[GoodsDestination] = None,
+  maybeImportOrExportGoodsFromTheEUViaNorthernIreland: Option[YesNo] = None,
+  maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
+  goodsEntries: GoodsEntries = GoodsEntries.empty,
+  maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
+  maybeEmailAddress: Option[Email] = None,
+  maybeIsACustomsAgent: Option[YesNo] = None,
+  maybeCustomsAgentName: Option[String] = None,
+  maybeCustomsAgentAddress: Option[Address] = None,
+  maybeEori: Option[Eori] = None,
+  maybeJourneyDetailsEntry: Option[JourneyDetailsEntry] = None,
+  maybeTravellingByVehicle: Option[YesNo] = None,
+  maybeTravellingBySmallVehicle: Option[YesNo] = None,
+  maybeRegistrationNumber: Option[String] = None,
+  declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)) {
   lazy val obfuscated: DeclarationJourney =
     this.copy(
       maybeNameOfPersonCarryingTheGoods = maybeNameOfPersonCarryingTheGoods.map(_.obfuscated),
@@ -182,8 +181,8 @@ case class DeclarationJourney(sessionId: SessionId,
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
-      _ <- maybeIsACustomsAgent
-      customsAgentName <- maybeCustomsAgentName
+      _                   <- maybeIsACustomsAgent
+      customsAgentName    <- maybeCustomsAgentName
       customsAgentAddress <- maybeCustomsAgentAddress
       if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
@@ -202,9 +201,9 @@ case class DeclarationJourney(sessionId: SessionId,
   val declarationIfRequiredAndComplete: Option[Declaration] = {
     val ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland: Boolean =
       (maybeGoodsDestination, maybeImportOrExportGoodsFromTheEUViaNorthernIreland) match {
-        case (Some(GreatBritain), _) => true
+        case (Some(GreatBritain), _)           => true
         case (Some(NorthernIreland), Some(No)) => true
-        case _ => false
+        case _                                 => false
       }
 
     val discardedAnswersAreCompleteAndRequireADeclaration =
@@ -214,16 +213,25 @@ case class DeclarationJourney(sessionId: SessionId,
         (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
 
     for {
-      goodsDestination <- maybeGoodsDestination
-      goods <- goodsEntries.declarationGoodsIfComplete
+      goodsDestination             <- maybeGoodsDestination
+      goods                        <- goodsEntries.declarationGoodsIfComplete
       nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
-      email <- maybeEmailAddress
-      eori <- maybeEori
-      journeyDetails <- maybeCompleteJourneyDetails
-
+      email                        <- maybeEmailAddress
+      eori                         <- maybeEori
+      journeyDetails               <- maybeCompleteJourneyDetails
       if discardedAnswersAreCompleteAndRequireADeclaration
     } yield {
-      Declaration(declarationId, sessionId, declarationType, goodsDestination, goods, nameOfPersonCarryingTheGoods, email, maybeCustomsAgent, eori, journeyDetails)
+      Declaration(
+        declarationId,
+        sessionId,
+        declarationType,
+        goodsDestination,
+        goods,
+        nameOfPersonCarryingTheGoods,
+        email,
+        maybeCustomsAgent,
+        eori,
+        journeyDetails)
     }
   }
 
@@ -236,10 +244,11 @@ object DeclarationJourney extends MongoDateTimeFormats {
   val id = "sessionId"
 }
 
-case class Goods(categoryQuantityOfGoods: CategoryQuantityOfGoods,
-                 goodsVatRate: GoodsVatRate,
-                 countryOfPurchase: Country,
-                 purchaseDetails: PurchaseDetails) {
+case class Goods(
+  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  goodsVatRate: GoodsVatRate,
+  countryOfPurchase: Country,
+  purchaseDetails: PurchaseDetails) {
 
   val calculationRequest: CalculationRequest =
     CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency.code, goodsVatRate)
@@ -275,7 +284,7 @@ object YesNo extends Enum[YesNo] {
 
   def to(yesNo: YesNo): Boolean = yesNo match {
     case Yes => true
-    case No => false
+    case No  => false
   }
 
   case object Yes extends YesNo
@@ -283,5 +292,3 @@ object YesNo extends Enum[YesNo] {
   case object No extends YesNo
 
 }
-
-

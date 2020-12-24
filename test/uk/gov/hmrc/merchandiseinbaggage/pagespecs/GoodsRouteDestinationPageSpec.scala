@@ -33,17 +33,28 @@ class GoodsRouteDestinationPageSpec extends DeclarationDataCapturePageSpec[YesNo
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWithARequiredQuestion(path, answerRequiredValidationMessage, givenAnImportJourneyIsStarted())
 
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
     behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportJourneyIsStarted(), Yes, CannotUseServiceIrelandPage.path)
+      path,
+      givenAnImportJourneyIsStarted(),
+      No,
+      ExciseAndRestrictedGoodsPage.path,
+      "and declarationType is Import")
     behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Import")
+      path,
+      givenAnExportJourneyIsStarted(),
+      Yes,
+      NoDeclarationNeededPage.path,
+      "and declarationType is Export")
     behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnExportJourneyIsStarted(), Yes, NoDeclarationNeededPage.path,"and declarationType is Export")
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnExportJourneyIsStarted(), No, ExciseAndRestrictedGoodsPage.path, "and declarationType is Export")
+      path,
+      givenAnExportJourneyIsStarted(),
+      No,
+      ExciseAndRestrictedGoodsPage.path,
+      "and declarationType is Export")
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), GoodsDestinationPage.path)
   }
 
-
-  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeImportOrExportGoodsFromTheEUViaNorthernIreland
+  override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =
+    declarationJourney.maybeImportOrExportGoodsFromTheEUViaNorthernIreland
 }

@@ -88,9 +88,11 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
     }
   }
 
-  private val formData: LocalDate => Map[String, String] = dateOfArrival => Map(
-    port -> "DVR",
-    s"$dateOfTravel.day" -> dateOfArrival.getDayOfMonth.toString,
-    s"$dateOfTravel.month" -> dateOfArrival.getMonthValue.toString,
-    s"$dateOfTravel.year" -> dateOfArrival.getYear.toString)
+  private val formData: LocalDate => Map[String, String] = dateOfArrival =>
+    Map(
+      port                   -> "DVR",
+      s"$dateOfTravel.day"   -> dateOfArrival.getDayOfMonth.toString,
+      s"$dateOfTravel.month" -> dateOfArrival.getMonthValue.toString,
+      s"$dateOfTravel.year"  -> dateOfArrival.getYear.toString
+  )
 }

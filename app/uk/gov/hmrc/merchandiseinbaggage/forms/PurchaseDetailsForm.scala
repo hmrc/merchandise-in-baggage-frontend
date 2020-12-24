@@ -39,7 +39,7 @@ object PurchaseDetailsForm extends Mappings {
   val form: Form[PurchaseDetailsInput] =
     Form(
       mapping(
-        "price" -> text("purchaseDetails.price.error.required").verifying(isAValidPurchasePrice),
+        "price"    -> text("purchaseDetails.price.error.required").verifying(isAValidPurchasePrice),
         "currency" -> text("purchaseDetails.currency.error.required")
       )(PurchaseDetailsInput.apply)(PurchaseDetailsInput.unapply)
     )

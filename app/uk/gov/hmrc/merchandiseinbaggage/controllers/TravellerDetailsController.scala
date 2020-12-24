@@ -26,11 +26,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.TravellerDetailsPage
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TravellerDetailsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           override val repo: DeclarationJourneyRepository,
-                                           view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class TravellerDetailsController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.EoriNumberController.onPageLoad())

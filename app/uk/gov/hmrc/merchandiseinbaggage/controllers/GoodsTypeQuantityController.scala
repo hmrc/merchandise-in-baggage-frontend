@@ -26,12 +26,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsTypeQuantityController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                            actionProvider: DeclarationJourneyActionProvider,
-                                            override val repo: DeclarationJourneyRepository,
-                                            view: GoodsTypeQuantityView
-                                           )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController {
+class GoodsTypeQuantityController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: GoodsTypeQuantityView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(idx: Int)(implicit request: DeclarationGoodsRequest[_]) =
     if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
@@ -48,7 +48,8 @@ class GoodsTypeQuantityController @Inject()(override val controllerComponents: M
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl(idx)))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl(idx)))),
         categoryQuantityOfGoods =>
           persistAndRedirect(
             request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)),

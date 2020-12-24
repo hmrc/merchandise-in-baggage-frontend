@@ -38,17 +38,19 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, R
     behave like aPageWhichRequiresADeclarationJourney(path)
 
     behave like aPageWithARequiredQuestion(
-      path, answerRequiredValidationMessageNorthernIreland, givenAnImportToNorthernIrelandJourneyIsStarted())
-    behave like aPageWithARequiredQuestion(
-      path, answerRequiredValidationMessageGreatBritain, givenAnImportToGreatBritainJourneyIsStarted())
+      path,
+      answerRequiredValidationMessageNorthernIreland,
+      givenAnImportToNorthernIrelandJourneyIsStarted())
+    behave like aPageWithARequiredQuestion(path, answerRequiredValidationMessageGreatBritain, givenAnImportToGreatBritainJourneyIsStarted())
 
     behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportToGreatBritainJourneyIsStarted(), No, GoodsTypeQuantityPage.path(1))
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenASecondGoodsEntryIsStarted(), No, GoodsTypeQuantityPage.path(2))
+      path,
+      givenAnImportToGreatBritainJourneyIsStarted(),
+      No,
+      GoodsTypeQuantityPage.path(1))
+    behave like aDataCapturePageWithConditionalRouting(path, givenASecondGoodsEntryIsStarted(), No, GoodsTypeQuantityPage.path(2))
 
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportToGreatBritainJourneyIsStarted(), Yes, CannotUseServicePage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportToGreatBritainJourneyIsStarted(), Yes, CannotUseServicePage.path)
 
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, No)
     behave like aPageWithABackButton(path, givenAnImportToNorthernIrelandJourneyIsStarted(), ExciseAndRestrictedGoodsPage.path)

@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object InvalidRequestPage{
+object InvalidRequestPage {
   val path: String = "/declare-commercial-goods/invalid-request"
 }
-
-
-

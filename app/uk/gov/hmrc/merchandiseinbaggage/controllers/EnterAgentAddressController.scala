@@ -26,22 +26,23 @@ import scala.concurrent.ExecutionContext
 
 @Singleton
 class EnterAgentAddressController @Inject()(
-                                         override val controllerComponents: MessagesControllerComponents,
-                                         actionProvider: DeclarationJourneyActionProvider,
-                                         repo: DeclarationJourneyRepository,
-                                         addressLookupFrontendConnector: AddressLookupFrontendConnector
-                                       )(implicit ec: ExecutionContext)
-  extends FrontendBaseController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  repo: DeclarationJourneyRepository,
+  addressLookupFrontendConnector: AddressLookupFrontendConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    addressLookupFrontendConnector.initJourney(routes.EnterAgentAddressController.returnFromAddressLookup())
+    addressLookupFrontendConnector
+      .initJourney(routes.EnterAgentAddressController.returnFromAddressLookup())
       .map(Redirect(_))
   }
 
   def returnFromAddressLookup(id: String): Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     for {
       address <- addressLookupFrontendConnector.getAddress(id)
-      _ <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
+      _       <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
     } yield
       if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
       else Redirect(routes.EoriNumberController.onPageLoad())

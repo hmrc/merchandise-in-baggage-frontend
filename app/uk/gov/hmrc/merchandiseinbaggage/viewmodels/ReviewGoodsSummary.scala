@@ -37,82 +37,93 @@ object ReviewGoodsSummary {
       import item._1._
       val idx = item._2 + 1
 
-      SummaryList(showVatIfApplies(declarationType, Seq(
-        SummaryListRow(
-          key = Key(Text(messages("reviewGoods.list.item"))),
-          value = Value(Text(categoryQuantityOfGoods.category)),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                routes.GoodsTypeQuantityController.onPageLoad(idx).url,
-                Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("reviewGoods.list.item"))
-              )
+      SummaryList(
+        showVatIfApplies(
+          declarationType,
+          Seq(
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.item"))),
+              value = Value(Text(categoryQuantityOfGoods.category)),
+              actions = Some(
+                Actions(
+                  items = Seq(
+                    ActionItem(
+                      routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+                      Text(messages("site.change")),
+                      visuallyHiddenText = Some(messages("reviewGoods.list.item"))
+                    )
+                  )
+                ))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.quantity"))),
+              value = Value(Text(categoryQuantityOfGoods.quantity)),
+              actions = Some(
+                Actions(
+                  items = Seq(
+                    ActionItem(
+                      routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+                      Text(messages("site.change")),
+                      visuallyHiddenText = Some(messages("reviewGoods.list.quantity"))
+                    )
+                  )
+                ))
+            ),
+            SummaryListRow(
+              key = Key(Text(vatKey)),
+              value = Value(Text(s"${goodsVatRate.value}%")),
+              actions = Some(
+                Actions(
+                  items = Seq(
+                    ActionItem(
+                      routes.GoodsVatRateController.onPageLoad(idx).url,
+                      Text(messages("site.change")),
+                      visuallyHiddenText = Some(vatKey)
+                    )
+                  )
+                ))
+            ),
+            SummaryListRow(
+              key = Key(Text(countryKey(declarationType))),
+              value = Value(Text(messages(countryOfPurchase.countryName))),
+              actions = Some(
+                Actions(
+                  items = Seq(
+                    ActionItem(
+                      routes.SearchGoodsCountryController.onPageLoad(idx).url,
+                      Text(messages("site.change")),
+                      visuallyHiddenText = Some(countryKey(declarationType))
+                    )
+                  )
+                ))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.price"))),
+              value = Value(Text(purchaseDetails.formatted)),
+              actions = Some(
+                Actions(
+                  items = Seq(
+                    ActionItem(
+                      routes.PurchaseDetailsController.onPageLoad(idx).url,
+                      Text(messages("site.change")),
+                      visuallyHiddenText = Some(messages("reviewGoods.list.price"))
+                    )
+                  )
+                ))
+            ),
+            SummaryListRow(
+              key = Key(
+                HtmlContent(s"""<a style="font-weight: 400" href="${routes.RemoveGoodsController
+                  .onPageLoad(idx)
+                  .url}" class="govuk-link">${messages("site.remove")}</a>""")
+              ),
+              classes = "govuk-summary-list__row--no-border"
             )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(Text(messages("reviewGoods.list.quantity"))),
-          value = Value(Text(categoryQuantityOfGoods.quantity)),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                routes.GoodsTypeQuantityController.onPageLoad(idx).url,
-                Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("reviewGoods.list.quantity"))
-              )
-            )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(Text(vatKey)),
-          value = Value(Text(s"${goodsVatRate.value}%")),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                routes.GoodsVatRateController.onPageLoad(idx).url,
-                Text(messages("site.change")),
-                visuallyHiddenText = Some(vatKey)
-              )
-            )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(Text(countryKey(declarationType))),
-          value = Value(Text(messages(countryOfPurchase.countryName))),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                routes.SearchGoodsCountryController.onPageLoad(idx).url,
-                Text(messages("site.change")),
-                visuallyHiddenText = Some(countryKey(declarationType))
-              )
-            )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(Text(messages("reviewGoods.list.price"))),
-          value = Value(Text(purchaseDetails.formatted)),
-          actions = Some(Actions(
-            items = Seq(
-              ActionItem(
-                routes.PurchaseDetailsController.onPageLoad(idx).url,
-                Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("reviewGoods.list.price"))
-              )
-            )
-          ))
-        ),
-        SummaryListRow(
-          key = Key(
-            HtmlContent(s"""<a style="font-weight: 400" href="${routes.RemoveGoodsController.onPageLoad(idx).url}" class="govuk-link">${messages("site.remove")}</a>""")
-          ),
-          classes = "govuk-summary-list__row--no-border"
-        )
-      )))
+          )
+        ))
     }
 
-  private def showVatIfApplies(declarationType: DeclarationType, rows: Seq[SummaryListRow])
-                              (implicit messages: Messages): Seq[SummaryListRow] =
-    if(declarationType == Import) rows else rows.filterNot(_.key.content.toString contains vatKey)
+  private def showVatIfApplies(declarationType: DeclarationType, rows: Seq[SummaryListRow])(
+    implicit messages: Messages): Seq[SummaryListRow] =
+    if (declarationType == Import) rows else rows.filterNot(_.key.content.toString contains vatKey)
 }

@@ -33,7 +33,6 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
   val serviceTimeoutView = app.injector.instanceOf[ServiceTimeoutView]
   val controller = new KeepAliveController(controllerComponents, actionBuilder, repo, deletedView, serviceTimeoutView)
 
-
   "return NoContent with no changes to declaration journey" in {
     val id = SessionId("unchanged")
     val created = LocalDateTime.now.withSecond(0).withNano(0)

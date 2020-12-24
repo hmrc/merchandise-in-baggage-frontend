@@ -35,7 +35,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       completedGoodsEntry.maybeCategoryQuantityOfGoods.get,
       completedGoodsEntry.maybeGoodsVatRate.get,
       completedGoodsEntry.maybeCountryOfPurchase.get,
-      completedGoodsEntry.maybePurchaseDetails.get)
+      completedGoodsEntry.maybePurchaseDetails.get
+    )
 
   private val incompleteGoodsEntry = completedGoodsEntry.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
@@ -118,14 +119,15 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "JourneyOnFoot" should {
     "serialise and de-serialise" in {
-      val journey = JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB=true, List("London Heathrow Airport", "LHR")), journeyDate)
+      val journey = JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB = true, List("London Heathrow Airport", "LHR")), journeyDate)
       parse(toJson(journey).toString()).validate[JourneyOnFoot].get mustBe journey
     }
   }
 
   "JourneyInSmallVehicle" should {
     "serialise and de-serialise" in {
-      val journey = JourneyInSmallVehicle(Port("DVR", "title.dover", isGB=true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
+      val journey =
+        JourneyInSmallVehicle(Port("DVR", "title.dover", isGB = true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
       parse(toJson(journey).toString()).validate[JourneyInSmallVehicle].get mustBe journey
     }
   }
@@ -153,9 +155,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       "the user has provided all the required details" in {
         completedDeclarationJourney.maybeCustomsAgent mustBe
           Some(
-            CustomsAgent(
-              completedDeclarationJourney.maybeCustomsAgentName.get,
-              completedDeclarationJourney.maybeCustomsAgentAddress.get))
+            CustomsAgent(completedDeclarationJourney.maybeCustomsAgentName.get, completedDeclarationJourney.maybeCustomsAgentAddress.get))
       }
     }
 
@@ -184,21 +184,24 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         val declarationId = DeclarationId(UUID.randomUUID().toString)
         completedDeclarationJourney.declarationIfRequiredAndComplete
           .map(_.copy(dateOfDeclaration = now).copy(mibReference = reference, declarationId = declarationId)) mustBe
-          Some(Declaration(
-            declarationId,
-            sessionId,
-            DeclarationType.Import,
-            GreatBritain,
-            completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
-            completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
-            completedDeclarationJourney.maybeEmailAddress.get,
-            completedDeclarationJourney.maybeCustomsAgent,
-            completedDeclarationJourney.maybeEori.get,
-            JourneyInSmallVehicle(
-              Port("DVR", "title.dover", isGB=true, List("Port of Dover")),
-              completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfTravel,
-              completedDeclarationJourney.maybeRegistrationNumber.get))
-            .copy(dateOfDeclaration = now).copy(mibReference = reference))
+          Some(
+            Declaration(
+              declarationId,
+              sessionId,
+              DeclarationType.Import,
+              GreatBritain,
+              completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,
+              completedDeclarationJourney.maybeNameOfPersonCarryingTheGoods.get,
+              completedDeclarationJourney.maybeEmailAddress.get,
+              completedDeclarationJourney.maybeCustomsAgent,
+              completedDeclarationJourney.maybeEori.get,
+              JourneyInSmallVehicle(
+                Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
+                completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfTravel,
+                completedDeclarationJourney.maybeRegistrationNumber.get
+              )
+            ).copy(dateOfDeclaration = now)
+              .copy(mibReference = reference))
       }
 
       "the user is not a customs agent" in {
@@ -206,17 +209,21 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the destination is Great Britain irrespective of any answer to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None).declarationRequiredAndComplete mustBe true
-        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)).declarationRequiredAndComplete mustBe true
-        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(GreatBritain),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney
+          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None)
+          .declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney
+          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes))
+          .declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney
+          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No))
+          .declarationRequiredAndComplete mustBe true
       }
 
       "the destination is Northern Ireland and the user has answered No to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney.copy(maybeGoodsDestination = Some(NorthernIreland),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No)).declarationRequiredAndComplete mustBe true
+        completedNonCustomsAgentJourney
+          .copy(maybeGoodsDestination = Some(NorthernIreland), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No))
+          .declarationRequiredAndComplete mustBe true
       }
 
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
@@ -224,19 +231,32 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the user is not travelling by vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(heathrowJourneyEntry),
-          maybeTravellingByVehicle = Some(No)
-        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB=true, List("London Heathrow Airport", "LHR")), journeyDate)
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(heathrowJourneyEntry),
+            maybeTravellingByVehicle = Some(No)
+          )
+          .declarationIfRequiredAndComplete
+          .get
+          .journeyDetails mustBe JourneyOnFoot(
+          Port("LHR", "title.heathrow_airport", isGB = true, List("London Heathrow Airport", "LHR")),
+          journeyDate)
       }
 
       "the trader is travelling by small vehicle has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
-          maybeTravellingByVehicle = Some(Yes),
-          maybeTravellingBySmallVehicle = Some(Yes),
-          maybeRegistrationNumber = Some(vehicleRegistrationNumber)
-        ).declarationIfRequiredAndComplete.get.journeyDetails mustBe JourneyInSmallVehicle(Port("DVR", "title.dover", isGB=true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(doverJourneyEntry),
+            maybeTravellingByVehicle = Some(Yes),
+            maybeTravellingBySmallVehicle = Some(Yes),
+            maybeRegistrationNumber = Some(vehicleRegistrationNumber)
+          )
+          .declarationIfRequiredAndComplete
+          .get
+          .journeyDetails mustBe JourneyInSmallVehicle(
+          Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
+          journeyDate,
+          vehicleRegistrationNumber)
       }
     }
 
@@ -246,34 +266,43 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the place of arrival requires vehicle checks but the trader has not confirmed whether they are travelling by vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry), maybeTravellingByVehicle = None
-        ).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(doverJourneyEntry),
+            maybeTravellingByVehicle = None
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks but the trader is travelling with a vehicle that is not small" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
-          maybeTravellingByVehicle = Some(Yes),
-          maybeTravellingBySmallVehicle = Some(No)
-        ).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(doverJourneyEntry),
+            maybeTravellingByVehicle = Some(Yes),
+            maybeTravellingBySmallVehicle = Some(No)
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks and the trader is travelling with a vehicle but has not confirmed whether it is a small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
-          maybeTravellingByVehicle = Some(Yes),
-          maybeTravellingBySmallVehicle = None
-        ).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(doverJourneyEntry),
+            maybeTravellingByVehicle = Some(Yes),
+            maybeTravellingBySmallVehicle = None
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the place of arrival requires vehicle checks and the trader has not supplied the " + vehicleRegistrationNumber + "istration number of their small vehicle" in {
-        completedDeclarationJourney.copy(
-          maybeJourneyDetailsEntry = Some(doverJourneyEntry),
-          maybeTravellingByVehicle = Some(Yes),
-          maybeTravellingBySmallVehicle = Some(Yes),
-          maybeRegistrationNumber = None
-        ).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(
+            maybeJourneyDetailsEntry = Some(doverJourneyEntry),
+            maybeTravellingByVehicle = Some(Yes),
+            maybeTravellingBySmallVehicle = Some(Yes),
+            maybeRegistrationNumber = None
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not confirmed whether they are carrying excise or restricted goods" in {
@@ -289,17 +318,21 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the destination is Northern Ireland and the user has answered Yes to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney.copy(
-          maybeGoodsDestination = Some(NorthernIreland),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
-        ).declarationRequiredAndComplete mustBe false
+        completedNonCustomsAgentJourney
+          .copy(
+            maybeGoodsDestination = Some(NorthernIreland),
+            maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the destination is Northern Ireland and the user has not answered GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney.copy(
-          maybeGoodsDestination = Some(NorthernIreland),
-          maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None
-        ).declarationRequiredAndComplete mustBe false
+        completedNonCustomsAgentJourney
+          .copy(
+            maybeGoodsDestination = Some(NorthernIreland),
+            maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None
+          )
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not confirmed whether the goods exceed the threshold" in {

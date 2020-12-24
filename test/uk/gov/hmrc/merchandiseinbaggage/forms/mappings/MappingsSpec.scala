@@ -29,7 +29,7 @@ object MappingsSpec {
 
   sealed trait Foo extends EnumEntry
 
-  object Foos extends Enum[Foo]{
+  object Foos extends Enum[Foo] {
     override val baseMessageKey: String = "foo"
     override val values: immutable.IndexedSeq[Foo] = findValues
 
