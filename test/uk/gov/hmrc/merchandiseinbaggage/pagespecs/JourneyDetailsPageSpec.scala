@@ -33,7 +33,11 @@ class JourneyDetailsPageSpec extends DeclarationDataCapturePageSpec[JourneyDetai
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path)
     behave like aPageWhichRequiresADeclarationJourney(path)
     behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path, validationMessages, givenAnImportJourneyIsStarted())
-    behave like aDataCapturePageWithConditionalRouting(path, givenACompleteDeclarationJourney(), heathrowJourneyEntry, CheckYourAnswersPage.path)
+    behave like aDataCapturePageWithConditionalRouting(
+      path,
+      givenACompleteDeclarationJourney(),
+      heathrowJourneyEntry,
+      CheckYourAnswersPage.path)
     behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), doverJourneyEntry, GoodsInVehiclePage.path)
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, doverJourneyEntry)
     behave like aPageWithABackButton(path, givenAnImportJourneyIsStarted(), EnterEmailPage.path)

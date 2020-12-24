@@ -21,7 +21,8 @@ import play.api.libs.json._
 
 case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String]) {
 
-  def toAutoCompleteJson(implicit messages: Messages): JsObject = Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+  def toAutoCompleteJson(implicit messages: Messages): JsObject =
+    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
 
 }
 

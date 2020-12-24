@@ -20,10 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ConversionRatePeriod(startDate: LocalDate,
-                                endDate: LocalDate,
-                                currencyCode: String,
-                                rate: BigDecimal) {
+case class ConversionRatePeriod(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: BigDecimal) {
   def display: String = s"$rate ($currencyCode)"
 }
 

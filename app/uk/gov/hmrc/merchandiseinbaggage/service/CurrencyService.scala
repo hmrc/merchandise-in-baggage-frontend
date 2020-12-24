@@ -26,9 +26,9 @@ object CurrencyService {
 
   def isValidCurrencyCode(code: String): Boolean = getCurrencyByCode(code).isDefined
 
-  def getDisplayNameByCode(code: String): Option[String] = for(c <- currencies.find(c => c.code == code)) yield c.displayName
+  def getDisplayNameByCode(code: String): Option[String] = for (c <- currencies.find(c => c.code == code)) yield c.displayName
 
-  def getCodeByDisplayName(displayName: String): Option[String] = for(c <- currencies.find(c => c.displayName == displayName)) yield c.code
+  def getCodeByDisplayName(displayName: String): Option[String] = for (c <- currencies.find(c => c.displayName == displayName)) yield c.code
 
   val currencies = List(
     Currency("AED", "title.united_arab_emirates_dirham_aed", Some("AED"), List("UAE", "Emirati", "dubai", "abu dahbi", "abu dhabi")),
@@ -169,14 +169,57 @@ object CurrencyService {
     Currency("VUV", "title.vanuatuan_vatu_vuv", Some("VUV"), Nil),
     Currency("WST", "title.western_samoan_tala_wst", Some("WST"), Nil),
     Currency("XAF", "title.central_african_francs_xaf", Some("XAF"), List("Cameroon", "Chad", "Congo", "Equatorial Guinea", "Gabon")),
-    Currency("XCD", "title.east_caribbean_dollars_xcd", Some("XCD"), List("Dominica", "Grenada", "Montserrat", "St Christopher and Anguilla", "Saint Christopher", "St Lucia", "Saint Lucia", "St Vincent", "Saint Vincent")),
-    Currency("XOF", "title.west_african_francs_xof", Some("XOF"), List("Benin", "Burkina Faso", "Cote d'Ivoire", "Ivory Coast", "Guinea Bissau", "Mali Republic", "Niger Republic", "Senegal", "Cote dIvoire", "Cote d Ivoire", "Republic of Mali", "Republic of the Niger", "Togolese Republic", "Togo Republic", "Republic of Togo")),
-    Currency("XPF", "title.cfp_francs_xpf", Some("XPF"), List("Fr. Polynesia", "French Polynesia", "New Caledonia", "Wallis and Futuna Islands")),
+    Currency(
+      "XCD",
+      "title.east_caribbean_dollars_xcd",
+      Some("XCD"),
+      List(
+        "Dominica",
+        "Grenada",
+        "Montserrat",
+        "St Christopher and Anguilla",
+        "Saint Christopher",
+        "St Lucia",
+        "Saint Lucia",
+        "St Vincent",
+        "Saint Vincent")
+    ),
+    Currency(
+      "XOF",
+      "title.west_african_francs_xof",
+      Some("XOF"),
+      List(
+        "Benin",
+        "Burkina Faso",
+        "Cote d'Ivoire",
+        "Ivory Coast",
+        "Guinea Bissau",
+        "Mali Republic",
+        "Niger Republic",
+        "Senegal",
+        "Cote dIvoire",
+        "Cote d Ivoire",
+        "Republic of Mali",
+        "Republic of the Niger",
+        "Togolese Republic",
+        "Togo Republic",
+        "Republic of Togo"
+      )
+    ),
+    Currency(
+      "XPF",
+      "title.cfp_francs_xpf",
+      Some("XPF"),
+      List("Fr. Polynesia", "French Polynesia", "New Caledonia", "Wallis and Futuna Islands")),
     Currency("YER", "title.yemen_rial_yer", Some("YER"), Nil),
     Currency("ZAR", "title.south_african_rand_zar", Some("ZAR"), Nil),
     Currency("ZMW", "title.zambian_kwacha_zmw", Some("ZMW"), Nil),
     Currency("ZWL", "title.zimbabwean_dollars_zwl", Some("ZWL"), Nil),
-    Currency("GBP", "title.british_pounds_gbp", None, List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")),
+    Currency(
+      "GBP",
+      "title.british_pounds_gbp",
+      None,
+      List("England", "Scotland", "Wales", "Northern Ireland", "British", "sterling", "pound", "GB")),
     Currency("FKP", "title.falkland_island_pounds_fkp", None, List("Falklands")),
     Currency("GIP", "title.gibraltar_pounds_gip", None, Nil),
     Currency("GGP", "title.guernsey_pounds_ggp", None, List("Channel Islands")),

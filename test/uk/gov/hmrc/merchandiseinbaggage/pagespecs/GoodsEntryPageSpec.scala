@@ -33,12 +33,13 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
   def aGoodEntryExportPageTitle(path: String, title: String) =
     behave like aPageWhichRenders(path, givenADeclarationJourney(importJourneyWithStartedGoodsEntry.copy(declarationType = Export)), title)
 
-  def aGoodsEntryPage(path: Int => String,
-                      title: String,
-                      formData: F,
-                      maybeExpectedRedirect: Option[Int => String],
-                      expectedBackPath: Int => String,
-                      cyaRouting: Boolean = true): Unit = {
+  def aGoodsEntryPage(
+    path: Int => String,
+    title: String,
+    formData: F,
+    maybeExpectedRedirect: Option[Int => String],
+    expectedBackPath: Int => String,
+    cyaRouting: Boolean = true): Unit = {
     behave like aPageWhichRequiresADeclarationJourney(path(1))
     behave like aPageWhichRequiresADeclarationJourney(path(2))
     behave like aPageWhichRenders(path(1), givenAGoodsEntryIsStarted(), title)
@@ -62,7 +63,7 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     behave like aDataCapturePageWithConditionalRouting(path(1), 1, givenAGoodsEntryIsComplete(), formData, ReviewGoodsPage.path)
     behave like aDataCapturePageWithConditionalRouting(path(2), 2, givenTwoGoodsEntriesAreComplete(), formData, ReviewGoodsPage.path)
 
-    if(cyaRouting) {
+    if (cyaRouting) {
       behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(1), 1, formData)
       behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path(2), 2, formData)
     }
@@ -78,7 +79,10 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
       }
     }
 
-  def aPageWhichDisplaysPreviouslyEnteredAnswers(path: String, index: Int, setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
+  def aPageWhichDisplaysPreviouslyEnteredAnswers(
+    path: String,
+    index: Int,
+    setup: => Unit = givenADeclarationJourney(completedDeclarationJourney)): Unit =
     s"render correctly om $path" when {
       "a declaration has been completed" in {
         val expectedData = extractFormDataFrom(completedDeclarationJourney, index).get
@@ -89,13 +93,17 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
       }
     }
 
-  def aDataCapturePageWithConditionalRouting(path: String, index: Int, setUp: => Unit = Unit, formData: F, expectedRedirectPath: String): Unit = {
+  def aDataCapturePageWithConditionalRouting(
+    path: String,
+    index: Int,
+    setUp: => Unit = Unit,
+    formData: F,
+    expectedRedirectPath: String): Unit =
     s"redirect from $path to $expectedRedirectPath" when {
       s"the form is filled with $formData" in {
         submitAndEnsurePersistence(path, setUp, formData, index) mustBe expectedRedirectPath
       }
     }
-  }
 
   def submitAndEnsurePersistence(path: String, setUp: => Unit = Unit, formData: F, index: Int): String = {
     def ensurePersistence = {
@@ -114,11 +122,12 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
     redirectPath
   }
 
-  def aPageWithValidation(path: String,
-                          setUp: => Unit,
-                          formData: F,
-                          validationMessage: String,
-                          validationMessageFieldId: String = "value-error"): Unit =
+  def aPageWithValidation(
+    path: String,
+    setUp: => Unit,
+    formData: F,
+    validationMessage: String,
+    validationMessageFieldId: String = "value-error"): Unit =
     s"display the validation message [$validationMessage] with id [$validationMessageFieldId] for form data [$formData]" when {
       "the user attempts to submit the form without answering the question" in {
         setUp

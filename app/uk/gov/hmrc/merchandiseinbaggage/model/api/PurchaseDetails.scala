@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, PurchaseDetailsInp
 
 case class PurchaseDetails(amount: String, currency: Currency) {
   def formatted(implicit messages: Messages) =
-    if(currency.code == "GBP") s"£$amount" else s"$amount, ${messages(currency.displayName)}"
+    if (currency.code == "GBP") s"£$amount" else s"$amount, ${messages(currency.displayName)}"
 
   val numericAmount: BigDecimal = BigDecimal(amount)
 

@@ -37,7 +37,7 @@ object GoodsTypeQuantityForm extends Mappings {
         "category" -> text("goodsTypeQuantity.category.error.required"),
         "quantity" ->
           text("goodsTypeQuantity.quantity.error.required")
-          .verifying(isValidQuantity("goodsTypeQuantity.quantity.error.invalid"))
+            .verifying(isValidQuantity("goodsTypeQuantity.quantity.error.invalid"))
       )(CategoryQuantityOfGoods.apply)(CategoryQuantityOfGoods.unapply)
     )
 

@@ -25,9 +25,10 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class StartExportController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                      override val repo: DeclarationJourneyRepository)
-                                     (implicit val ec: ExecutionContext) extends StartController {
+class StartExportController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  override val repo: DeclarationJourneyRepository)(implicit val ec: ExecutionContext)
+    extends StartController {
 
   override val onPageLoad: Action[AnyContent] = Action {
     Redirect(routes.StartExportController.processRequest())

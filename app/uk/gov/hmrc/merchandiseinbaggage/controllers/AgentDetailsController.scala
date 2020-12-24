@@ -27,12 +27,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentDetailsController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        override val repo: DeclarationJourneyRepository,
-                                        view: AgentDetailsView
-                                      )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: AgentDetailsView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad())
@@ -49,11 +49,13 @@ class AgentDetailsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl, request.declarationType))),
         value => {
-          repo.upsert(
-            request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
-          ).map { _ =>
-            Redirect(routes.EnterAgentAddressController.onPageLoad())
-          }
+          repo
+            .upsert(
+              request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
+            )
+            .map { _ =>
+              Redirect(routes.EnterAgentAddressController.onPageLoad())
+            }
         }
       )
   }

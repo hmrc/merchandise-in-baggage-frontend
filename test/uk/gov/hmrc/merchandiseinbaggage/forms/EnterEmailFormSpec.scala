@@ -46,7 +46,7 @@ class EnterEmailFormSpec extends FieldBehaviours {
 
   "the emails" must {
     "match" in {
-      val notMatch: Form[Email] = form.bind(Map("email" -> "test@test.com", "confirmation" -> "example@test.com"))
+      val notMatch: Form[Email] = form.bind(Map("email"  -> "test@test.com", "confirmation" -> "example@test.com"))
       val doesMatch: Form[Email] = form.bind(Map("email" -> "test@test.com", "confirmation" -> "test@test.com"))
 
       notMatch.errors mustBe Seq(FormError("", "enterEmail.error.notMatching"))

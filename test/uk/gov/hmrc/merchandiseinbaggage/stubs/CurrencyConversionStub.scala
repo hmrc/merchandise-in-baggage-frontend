@@ -34,10 +34,10 @@ object CurrencyConversionStub {
        |  }
        |]""".stripMargin
 
-
   def givenCurrencyIsFound(code: String, server: WireMockServer): StubMapping =
     server
-      .stubFor(get(urlPathEqualTo(s"/currency-conversion/rates/${LocalDate.now()}"))
-        .withQueryParam("cc", equalTo(code))
-      .willReturn(okJson(conversionRateResponse(code))))
+      .stubFor(
+        get(urlPathEqualTo(s"/currency-conversion/rates/${LocalDate.now()}"))
+          .withQueryParam("cc", equalTo(code))
+          .willReturn(okJson(conversionRateResponse(code))))
 }

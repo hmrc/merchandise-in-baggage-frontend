@@ -28,11 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsAgentController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        override val repo: DeclarationJourneyRepository,
-                                        view: CustomsAgentView,
-                                      )(implicit ec: ExecutionContext, appConf: AppConfig) extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: CustomsAgentView,
+)(implicit ec: ExecutionContext, appConf: AppConfig)
+    extends DeclarationJourneyUpdateController {
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     request.declarationJourney.declarationType match {
       case Import =>
@@ -55,7 +56,7 @@ class CustomsAgentController @Inject()(
             request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
             if (isCustomsAgent == Yes) routes.AgentDetailsController.onPageLoad()
             else routes.EoriNumberController.onPageLoad()
-          )
+        )
       )
   }
 }

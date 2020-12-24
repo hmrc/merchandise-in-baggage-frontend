@@ -34,14 +34,15 @@ class VehicleSizePageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBut
     behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, Yes)
     behave like aPageWithARequiredQuestion(path, requiredAnswerValidationMessage, givenAnImportJourneyIsStarted())
 
-    behave like aDataCapturePageWithConditionalRouting(
-      path, givenAnImportJourneyIsStarted(), Yes, VehicleRegistrationNumberPage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportJourneyIsStarted(), Yes, VehicleRegistrationNumberPage.path)
 
     behave like aDataCapturePageWithConditionalRouting(
-      path, givenADeclarationJourney(startedImportToGreatBritainJourney), No, CannotUseServicePage.path)
+      path,
+      givenADeclarationJourney(startedImportToGreatBritainJourney),
+      No,
+      CannotUseServicePage.path)
 
-    behave like aPageWithABackButton(
-      path, givenADeclarationJourney(startedImportToGreatBritainJourney), GoodsInVehiclePage.path)
+    behave like aPageWithABackButton(path, givenADeclarationJourney(startedImportToGreatBritainJourney), GoodsInVehiclePage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] = declarationJourney.maybeTravellingBySmallVehicle

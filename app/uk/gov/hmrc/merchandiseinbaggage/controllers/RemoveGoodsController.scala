@@ -29,12 +29,12 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RemoveGoodsController @Inject()(
-                                       override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       override val repo: DeclarationJourneyRepository,
-                                       view: RemoveGoodsView
-                                     )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: RemoveGoodsView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call =
     request.declarationJourney.declarationIfRequiredAndComplete
@@ -52,16 +52,18 @@ class RemoveGoodsController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
-          removeGoods    => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
+          removeGoods => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
         )
     }
   }
 
   def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
     if (removeGoods == Yes)
-      repo.upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
-        .flatMap { _ => redirectIfGoodRemoved(declarationJourney) }
-    else
+      repo
+        .upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
+        .flatMap { _ =>
+          redirectIfGoodRemoved(declarationJourney)
+        } else
       backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
 
   private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Result] =

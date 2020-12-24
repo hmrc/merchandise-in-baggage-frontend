@@ -33,7 +33,6 @@ object TravellerDetailsForm extends Mappings {
     else Invalid(invalidMessageKey)
   }
 
-
   val form: Form[Name] = Form(
     mapping(
       firstName ->

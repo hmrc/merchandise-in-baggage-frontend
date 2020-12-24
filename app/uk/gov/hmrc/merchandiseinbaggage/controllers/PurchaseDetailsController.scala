@@ -30,13 +30,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PurchaseDetailsController @Inject()(
-                                           override val controllerComponents: MessagesControllerComponents,
-                                           actionProvider: DeclarationJourneyActionProvider,
-                                           override val repo: DeclarationJourneyRepository,
-                                           importView: PurchaseDetailsImportView,
-                                           exportView: PurchaseDetailsExportView,
-                                         )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  importView: PurchaseDetailsImportView,
+  exportView: PurchaseDetailsExportView,
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
     checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
@@ -56,44 +56,48 @@ class PurchaseDetailsController @Inject()(
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request: DeclarationGoodsRequest[AnyContent] =>
-    withGoodsCategory(request.goodsEntry) { category =>
-      request.declarationJourney.declarationType match {
-        case Import =>
-          form.bindFromRequest().fold(
-            formWithErrors =>
-              Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
-            purchaseDetailsInput =>
-              CurrencyService.getCurrencyByCode(purchaseDetailsInput.currency)
-                .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-                  val updatedGoodsEntry =
-                    request.goodsEntry.copy(
-                      maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
+  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async {
+    implicit request: DeclarationGoodsRequest[AnyContent] =>
+      withGoodsCategory(request.goodsEntry) { category =>
+        request.declarationJourney.declarationType match {
+          case Import =>
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
+                purchaseDetailsInput =>
+                  CurrencyService
+                    .getCurrencyByCode(purchaseDetailsInput.currency)
+                    .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
+                      val updatedGoodsEntry =
+                        request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
 
-                  val updatedDeclarationJourney =
-                    request.declarationJourney.copy(
-                      goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
+                      val updatedDeclarationJourney =
+                        request.declarationJourney.copy(
+                          goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
 
-                  repo.upsert(updatedDeclarationJourney).map { _ =>
-                    Redirect(routes.ReviewGoodsController.onPageLoad())
+                      repo.upsert(updatedDeclarationJourney).map { _ =>
+                        Redirect(routes.ReviewGoodsController.onPageLoad())
+                      }
                   }
-                }
-          )
-        case Export =>
-          form.bindFromRequest().fold(
-            formWithErrors =>
-              Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
-            purchaseDetailsInput =>
-              CurrencyService.getCurrencyByCode(purchaseDetailsInput.currency)
-                .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-                  persistAndRedirect(
-                    request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
-                    idx,
-                    routes.ReviewGoodsController.onPageLoad()
-                  )
-                }
-          )
+              )
+          case Export =>
+            form
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
+                purchaseDetailsInput =>
+                  CurrencyService
+                    .getCurrencyByCode(purchaseDetailsInput.currency)
+                    .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
+                      persistAndRedirect(
+                        request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
+                        idx,
+                        routes.ReviewGoodsController.onPageLoad()
+                      )
+                  }
+              )
+        }
       }
-    }
   }
 }

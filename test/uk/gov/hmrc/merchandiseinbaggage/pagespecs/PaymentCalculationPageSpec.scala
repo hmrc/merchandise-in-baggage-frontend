@@ -62,7 +62,8 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
             calculationResult.gbpAmount.formattedInPoundsUI,
             calculationResult.duty.formattedInPoundsUI,
             s"${calculationResult.vat.formattedInPoundsUI} at ${goods.goodsVatRate.value}%",
-            calculationResult.taxDue.formattedInPoundsUI)
+            calculationResult.taxDue.formattedInPoundsUI
+          )
       }
 
       page.summaryRow(2) mustBe Seq("Payment due", taxCalculation.totalTaxDue.formattedInPoundsUI)

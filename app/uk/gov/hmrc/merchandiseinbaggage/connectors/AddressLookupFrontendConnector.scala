@@ -28,10 +28,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AddressLookupFrontendConnector @Inject()(http: HttpClient,
-                                              @Named("addressLookupFrontendBaseUrl") baseUrl: String,
-                                              @Named("addressLookupCallback") callback: String,
-                                              addressLookupConfig: AddressLookupConfig) {
+class AddressLookupFrontendConnector @Inject()(
+  http: HttpClient,
+  @Named("addressLookupFrontendBaseUrl") baseUrl: String,
+  @Named("addressLookupCallback") callback: String,
+  addressLookupConfig: AddressLookupConfig) {
 
   private lazy val initJourneyUrl = s"$baseUrl/api/v2/init"
   private def confirmJourneyUrl(id: String) = s"$baseUrl/api/confirmed?id=$id"
@@ -47,6 +48,6 @@ class AddressLookupFrontendConnector @Inject()(http: HttpClient,
   }
 
   def getAddress(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Address] =
-    http.GET[JsObject](confirmJourneyUrl(id)) map ( json => (json \ "address").as[Address])
+    http.GET[JsObject](confirmJourneyUrl(id)) map (json => (json \ "address").as[Address])
 
 }

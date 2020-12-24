@@ -55,7 +55,6 @@ class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
     readPath()
   }
 
-
   def completeAndSubmitForm(input: YesNo): String = {
     click on find(IdQuery(input.entryName)).get
     click on find(NameQuery("continue")).get

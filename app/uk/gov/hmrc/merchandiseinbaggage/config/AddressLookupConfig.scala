@@ -22,24 +22,23 @@ import play.api.libs.json.{JsObject, Json}
 class AddressLookupConfig @Inject()() {
 
   def config(continueUrl: String) =
-    Json.parse(
-      s"""{
-         |  "version": 2,
-         |  "options": {
-         |    "continueUrl": "$continueUrl"
-         |  },
-         |  "labels": {
-         |    "en": {
-         |      "appLevelLabels": {
-         |        "navTitle": "Declare commercial goods carried in accompanied baggage or small vehicles"
-         |      }
-         |    },
-         |    "cy": {
-         |      "appLevelLabels": {
-         |        "navTitle": "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
-         |      }
-         |    }
-         |  }
-         |}
-         |""".stripMargin).as[JsObject]
+    Json.parse(s"""{
+                  |  "version": 2,
+                  |  "options": {
+                  |    "continueUrl": "$continueUrl"
+                  |  },
+                  |  "labels": {
+                  |    "en": {
+                  |      "appLevelLabels": {
+                  |        "navTitle": "Declare commercial goods carried in accompanied baggage or small vehicles"
+                  |      }
+                  |    },
+                  |    "cy": {
+                  |      "appLevelLabels": {
+                  |        "navTitle": "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+                  |      }
+                  |    }
+                  |  }
+                  |}
+                  |""".stripMargin).as[JsObject]
 }

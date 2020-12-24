@@ -21,7 +21,8 @@ import play.api.libs.json.{JsObject, Json}
 
 case class Currency(code: String, displayName: String, valueForConversion: Option[String], currencySynonyms: List[String]) {
 
-  def toAutoCompleteJson(implicit messages: Messages): JsObject = Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
+  def toAutoCompleteJson(implicit messages: Messages): JsObject =
+    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
 
 }
 

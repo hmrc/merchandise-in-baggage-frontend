@@ -51,8 +51,9 @@ trait CoreTestData {
 
   val completedGoodsEntry: GoodsEntry = TestOnlyController.completedGoodsEntry
 
-  val overThresholdGoods: GoodsEntries = GoodsEntries(completedGoodsEntry.copy(
-    maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+  val overThresholdGoods: GoodsEntries = GoodsEntries(
+    completedGoodsEntry.copy(
+      maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
 
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(sessionId)
 
@@ -80,8 +81,7 @@ trait CoreTestData {
     startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
   val previouslyCompleteJourneyWithIncompleteGoodsEntryAdded: DeclarationJourney =
-    completedDeclarationJourney.copy(
-      goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry, startedGoodsEntry)))
+    completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry, startedGoodsEntry)))
 
   val importJourneyWithGoodsOverThreshold: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods)
@@ -95,11 +95,12 @@ trait CoreTestData {
   val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("LHR", journeyDate)
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
-    completedDeclarationJourney.copy(
-      maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
+    completedDeclarationJourney
+      .copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
 
-  val aPurchaseDetails: PurchaseDetails = PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu=true, Nil), aPurchaseDetails)
+  val aPurchaseDetails: PurchaseDetails =
+    PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
+  val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu = true, Nil), aPurchaseDetails)
 
   val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)

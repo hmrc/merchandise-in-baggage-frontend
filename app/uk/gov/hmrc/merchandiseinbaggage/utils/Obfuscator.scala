@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 object Obfuscator {
-  def obfuscate(string: String): String = string.flatMap(_=> "*")
+  def obfuscate(string: String): String = string.flatMap(_ => "*")
 
   def maybeObfuscate(maybeString: Option[String]): Option[String] = maybeString.map(string => obfuscate(string))
 }

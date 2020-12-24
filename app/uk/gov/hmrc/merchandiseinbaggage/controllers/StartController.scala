@@ -29,7 +29,6 @@ trait StartController extends DeclarationJourneyController {
   implicit val ec: ExecutionContext
 
   val processRequest: Action[AnyContent] = Action.async { implicit request =>
-
     val sessionId = SessionId(request.session(SessionKeys.sessionId))
 
     repo.upsert(DeclarationJourney(sessionId, declarationType)).map { _ =>

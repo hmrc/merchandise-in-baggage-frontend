@@ -32,11 +32,7 @@ trait TaxCalculation {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     def givenCurrenciesAreFound(): Unit =
-      declarationJourney
-        .goodsEntries
-        .declarationGoodsIfComplete
-        .get
-        .goods
+      declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
         .map(_.purchaseDetails.currency)
         .toSet
         .foreach { ccy: Currency =>

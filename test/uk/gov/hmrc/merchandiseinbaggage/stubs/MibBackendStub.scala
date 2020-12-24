@@ -29,30 +29,31 @@ object MibBackendStub extends MibConfiguration {
 
   val stubbedDeclarationId = DeclarationId("test-mib-be-id")
 
-  def givenDeclarationIsPersistedInBackend(server: WireMockServer, declaration: Declaration): StubMapping = {
+  def givenDeclarationIsPersistedInBackend(server: WireMockServer, declaration: Declaration): StubMapping =
     server
-      .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
-        .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
-        .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
-  }
+      .stubFor(
+        post(urlPathEqualTo(s"$declarationsUrl"))
+          .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
+          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
-  def givenDeclarationIsPersistedInBackend(server: WireMockServer): StubMapping = {
+  def givenDeclarationIsPersistedInBackend(server: WireMockServer): StubMapping =
     server
-      .stubFor(post(urlPathEqualTo(s"$declarationsUrl"))
-        .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
-  }
+      .stubFor(
+        post(urlPathEqualTo(s"$declarationsUrl"))
+          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
-  def givenPersistedDeclarationIsFound(server: WireMockServer, declaration: Declaration,
-                                       declarationId: DeclarationId = stubbedDeclarationId): StubMapping = {
+  def givenPersistedDeclarationIsFound(
+    server: WireMockServer,
+    declaration: Declaration,
+    declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
     server
-      .stubFor(get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
-        .willReturn(okJson(Json.toJson(declaration).toString)))
-  }
+      .stubFor(
+        get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
+          .willReturn(okJson(Json.toJson(declaration).toString)))
 
-
-  def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping = {
+  def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
     server
-      .stubFor(get(urlPathEqualTo(s"$sendEmailsUrl/${declarationId.value}"))
-        .willReturn(aResponse().withStatus(202)))
-  }
+      .stubFor(
+        get(urlPathEqualTo(s"$sendEmailsUrl/${declarationId.value}"))
+          .willReturn(aResponse().withStatus(202)))
 }

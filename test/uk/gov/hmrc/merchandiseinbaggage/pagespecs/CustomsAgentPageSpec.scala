@@ -38,7 +38,9 @@ class CustomsAgentPageSpec extends DeclarationDataCapturePageSpec[YesNo, RadioBu
 
     behave like
       aPageWithABackButton(
-        path, givenADeclarationWithTaxDue(importJourneyWithTwoCompleteGoodsEntries).futureValue, PaymentCalculationPage.path)
+        path,
+        givenADeclarationWithTaxDue(importJourneyWithTwoCompleteGoodsEntries).futureValue,
+        PaymentCalculationPage.path)
   }
 
   private def setup(): Unit =

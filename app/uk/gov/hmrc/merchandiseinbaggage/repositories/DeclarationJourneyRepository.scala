@@ -32,7 +32,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
-  extends ReactiveRepository[DeclarationJourney, String]("declarationJourney", mongo, format, implicitly[Format[String]]) {
+    extends ReactiveRepository[DeclarationJourney, String]("declarationJourney", mongo, format, implicitly[Format[String]]) {
 
   override def indexes: Seq[Index] = Seq(
     Index(Seq(id -> Ascending), Option("primaryKey"), unique = true),
@@ -57,7 +57,7 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
   }
 
   def deleteAll(): Future[Unit] = {
-    logger.warn("DeclarationJourneyRepository.deleteAll() called" )
+    logger.warn("DeclarationJourneyRepository.deleteAll() called")
 
     super.removeAll().map(_ => ())
   }
@@ -67,9 +67,8 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
   }
 
   /**
-   * Update or Insert (UpSert)
-   */
+    * Update or Insert (UpSert)
+    */
   def upsert(declarationJourney: DeclarationJourney): Future[UpdateWriteResult] =
-    collection.update(ordered = false).one(
-      Json.obj(id -> declarationJourney.sessionId.value), declarationJourney, upsert = true)
+    collection.update(ordered = false).one(Json.obj(id -> declarationJourney.sessionId.value), declarationJourney, upsert = true)
 }

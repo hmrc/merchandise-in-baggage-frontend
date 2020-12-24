@@ -28,24 +28,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsDestinationController @Inject()(
-                                            override val controllerComponents: MessagesControllerComponents,
-                                            actionProvider: DeclarationJourneyActionProvider,
-                                            override val repo: DeclarationJourneyRepository,
-                                            view: GoodsDestinationView
-                                          )(implicit ec: ExecutionContext, appConfig: AppConfig) extends DeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: GoodsDestinationView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeGoodsDestination
-      .fold(form(request.declarationType))
-      (form(request.declarationType).fill), request.declarationJourney.declarationType))
+    Ok(
+      view(
+        request.declarationJourney.maybeGoodsDestination
+          .fold(form(request.declarationType))(form(request.declarationType).fill),
+        request.declarationJourney.declarationType
+      ))
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form(request.declarationType)
       .bindFromRequest()
       .fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
         value => {
           val redirectIfNotComplete =
             if (value == NorthernIreland)

@@ -32,12 +32,15 @@ trait Enum[A <: EnumEntry] extends PlayEnum[A] {
 }
 
 object EnumFormat {
-  def apply[T <: EnumEntry](e: Enum[T]): Format[T] = Format(
-    Reads {
-      case JsString(value) => e.withNameOption(value).map(JsSuccess(_)).getOrElse(JsError(s"Unknown ${e.getClass.getSimpleName} value: $value"))
-      case _ => JsError("Can only parse String")
-    },
-    Writes(v => JsString(v.entryName)))
+  def apply[T <: EnumEntry](e: Enum[T]): Format[T] =
+    Format(
+      Reads {
+        case JsString(value) =>
+          e.withNameOption(value).map(JsSuccess(_)).getOrElse(JsError(s"Unknown ${e.getClass.getSimpleName} value: $value"))
+        case _ => JsError("Can only parse String")
+      },
+      Writes(v => JsString(v.entryName))
+    )
 }
 
 trait EnumEntryRadioItemSupport {
@@ -63,4 +66,3 @@ trait RadioSupport[A <: EnumEntry with EnumEntryRadioItemSupport] {
     value.radioItem(form, baseMessageKey)(messages)
   }
 }
-

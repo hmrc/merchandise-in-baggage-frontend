@@ -51,7 +51,7 @@ object DeclarationJourneyLogger {
   private def sessionId(implicit r: RequestHeader) = {
     val hc = r match {
       case r: Request[_] => headerCarrier(r)
-      case r => HeaderCarrierConverter.fromHeadersAndSession(r.headers)
+      case r             => HeaderCarrierConverter.fromHeadersAndSession(r.headers)
     }
     s"sessionId: [${hc.sessionId.map(_.value).getOrElse("")}]"
   }

@@ -20,7 +20,7 @@ import play.api.mvc.WrappedRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 
 final class DeclarationGoodsRequest[A](declarationJourneyRequest: DeclarationJourneyRequest[A], val goodsEntry: GoodsEntry)
-  extends WrappedRequest[A](declarationJourneyRequest) {
+    extends WrappedRequest[A](declarationJourneyRequest) {
 
   val declarationJourney = declarationJourneyRequest.declarationJourney
   val declarationType = declarationJourney.declarationType

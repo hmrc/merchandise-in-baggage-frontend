@@ -30,16 +30,17 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   private val requiredAnswerValidationMessage = "Select yes if you want to declare more goods"
 
   private val declarationBrakeDown = Map(
-    "Price paid" -> "£99.99",
-    "Type of goods" -> "wine",
-    "Destination" -> "France",
-    "VAT rate" -> "20%",
-    "Remove" -> "",
+    "Price paid"      -> "£99.99",
+    "Type of goods"   -> "wine",
+    "Destination"     -> "France",
+    "VAT rate"        -> "20%",
+    "Remove"          -> "",
     "Number of items" -> "1")
 
   private val importDeclarationBrakeDown = declarationBrakeDown
     .+("Price paid" -> "99.99, Euro (EUR)")
-    .-("Destination").+("Country" -> "France")
+    .-("Destination")
+    .+("Country" -> "France")
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -61,8 +62,9 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         val goodsEntry = completedGoodsEntry
           .copy(maybePurchaseDetails = Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil))))
 
-        givenADeclarationJourney(startedImportToGreatBritainJourney
-          .copy(goodsEntries = GoodsEntries(Seq(goodsEntry)), declarationType = Export))
+        givenADeclarationJourney(
+          startedImportToGreatBritainJourney
+            .copy(goodsEntries = GoodsEntries(Seq(goodsEntry)), declarationType = Export))
         open(path)
 
         page.headerText() mustBe title

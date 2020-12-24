@@ -92,13 +92,13 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         "the user clicks on the change type link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsTypeLink(index-1) mustBe GoodsTypeQuantityPage.path(index)
+          page.clickOnChangeGoodsTypeLink(index - 1) mustBe GoodsTypeQuantityPage.path(index)
         }
 
         "the user clicks on the change quantity link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsQuantityLink(index-1) mustBe GoodsTypeQuantityPage.path(index)
+          page.clickOnChangeGoodsQuantityLink(index - 1) mustBe GoodsTypeQuantityPage.path(index)
         }
       }
 
@@ -220,8 +220,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       val sessionId = SessionId()
       val created = LocalDateTime.now.withSecond(0).withNano(0)
       val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = DeclarationType.Export,
-          createdAt = created, declarationId = stubbedDeclarationId)
+        .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = stubbedDeclarationId)
 
       givenDeclarationIsPersistedInBackend(wireMockServer)
       givenADeclarationWithTaxDue(exportJourney).futureValue
@@ -237,7 +236,8 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
   def mustHaveOneRequestAndSessionId(server: WireMockServer): Assertion = {
     val payApiRequestCapture = server.getAllServeEvents.asScala
       .find(_.getRequest.getAbsoluteUrl.contains("pay-api/mib-frontend/mib/journey/start"))
-      .get.getRequest
+      .get
+      .getRequest
 
     payApiRequestCapture.header(xSessionId).values.size mustBe 1
     payApiRequestCapture.header(xRequestId).values.size mustBe 1
@@ -270,8 +270,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       totalTaxDue.map(_ => textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%")
 
       totalTaxDue.fold(textOfElementWithId(s"countryLabel_$index") mustBe "Destination")(_ =>
-        textOfElementWithId(s"countryLabel_$index") mustBe "Country"
-      )
+        textOfElementWithId(s"countryLabel_$index") mustBe "Country")
       textOfElementWithId(s"country_$index") mustBe messages(goods.countryOfPurchase.countryName)
 
       textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
@@ -308,10 +307,14 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("emailAddressLabel") mustBe "Email address"
     textOfElementWithId("emailAddress") mustBe declaration.email.email
 
-    textOfElementWithId("placeOfArrivalLabel") mustBe { if(declaration.declarationType == Import) "Place of arrival" else "Place of Departure"}
+    textOfElementWithId("placeOfArrivalLabel") mustBe {
+      if (declaration.declarationType == Import) "Place of arrival" else "Place of Departure"
+    }
     textOfElementWithId("placeOfArrival") mustBe messages(declaration.journeyDetails.port.displayName)
 
-    textOfElementWithId("dateOfArrivalLabel") mustBe { if(declaration.declarationType == Import) "Date of arrival" else "Date of Departure"}
+    textOfElementWithId("dateOfArrivalLabel") mustBe {
+      if (declaration.declarationType == Import) "Date of arrival" else "Date of Departure"
+    }
     textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.dateOfTravel.formattedDate
 
     textOfElementWithId("travellingByVehicleLabel") mustBe "Travelling by vehicle"

@@ -37,13 +37,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
 
-  private lazy val testPaymentConnector = new PaymentConnector(httpClient, ""){
-    override def sendPaymentRequest(requestBody: PayApiRequest)
-                                   (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
+  private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
+    override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val testMibConnector = new MibConnector(httpClient, ""){
+  private lazy val testMibConnector = new MibConnector(httpClient, "") {
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeclarationId] =
       Future.successful(DeclarationId("xxx"))
 
@@ -56,8 +55,15 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(aPaymentCalculations)
   }
 
-  private lazy val controller = new CheckYourAnswersController(controllerComponents, actionBuilder,
-    stubbedCalculation, testPaymentConnector, testMibConnector, declarationJourneyRepository, importView, exportView)
+  private lazy val controller = new CheckYourAnswersController(
+    controllerComponents,
+    actionBuilder,
+    stubbedCalculation,
+    testPaymentConnector,
+    testMibConnector,
+    declarationJourneyRepository,
+    importView,
+    exportView)
 
   "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()

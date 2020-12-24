@@ -44,6 +44,7 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
     }
 
   def sendEmails(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    httpClient.POST[String, HttpResponse](s"$base$sendEmailsUrl/${declarationId.value}", "")
+    httpClient
+      .POST[String, HttpResponse](s"$base$sendEmailsUrl/${declarationId.value}", "")
       .map(_ => ())
 }

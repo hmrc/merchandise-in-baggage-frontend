@@ -28,12 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ValueWeightOfGoodsController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                             actionProvider: DeclarationJourneyActionProvider,
-                                             override val repo: DeclarationJourneyRepository,
-                                             view: ValueWeightOfGoodsView)
-                                            (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends DeclarationJourneyUpdateController {
+class ValueWeightOfGoodsController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: ValueWeightOfGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.ExciseAndRestrictedGoodsController.onPageLoad())
@@ -42,10 +42,12 @@ class ValueWeightOfGoodsController @Inject()(override val controllerComponents: 
     request.declarationJourney.maybeGoodsDestination
       .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
         Ok(
-          view(request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
+          view(
+            request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
             goodsDestination,
             request.declarationType,
-            backButtonUrl))
+            backButtonUrl
+          ))
       }
   }
 

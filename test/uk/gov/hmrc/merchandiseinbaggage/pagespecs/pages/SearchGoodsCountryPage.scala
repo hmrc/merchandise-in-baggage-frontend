@@ -27,9 +27,8 @@ class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationD
 
   def selectCountry: Select = new Select(find(IdQuery("country")).get.underlying)
 
-  override def fillOutForm(formData: String): Unit = {
+  override def fillOutForm(formData: String): Unit =
     selectCountry.selectByValue(formData)
-  }
 
   override def previouslyEnteredValuesAreDisplayed(formData: String): Assertion = {
     val selectedOptions = selectCountry.getAllSelectedOptions

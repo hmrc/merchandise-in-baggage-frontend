@@ -23,9 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm._
 class CheckYourAnswersFormProviderSpec extends BaseSpec {
   "bind tax due in pence to the form" in {
     form.bind(Map(taxDue -> "3012")).value mustBe Some(Answers(3012))
-   }
+  }
 
   "return error if incorrect" in {
-    form.bind(Map[String, String]()).errors mustBe List(FormError(taxDue, List("error.required"),List()))
-   }
+    form.bind(Map[String, String]()).errors mustBe List(FormError(taxDue, List("error.required"), List()))
+  }
 }

@@ -23,10 +23,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRemovedView
 
 @Singleton
-class GoodsRemovedController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                       actionProvider: DeclarationJourneyActionProvider,
-                                       view: GoodsRemovedView)(implicit val appConfig: AppConfig)
-  extends DeclarationJourneyController {
+class GoodsRemovedController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  view: GoodsRemovedView)(implicit val appConfig: AppConfig)
+    extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val startAgainUrl = request.declarationJourney.declarationType match {

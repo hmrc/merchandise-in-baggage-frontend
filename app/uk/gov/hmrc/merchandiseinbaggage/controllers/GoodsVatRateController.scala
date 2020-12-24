@@ -29,12 +29,11 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class GoodsVatRateController @Inject()(
-                                        override val controllerComponents: MessagesControllerComponents,
-                                        actionProvider: DeclarationJourneyActionProvider,
-                                        override val repo: DeclarationJourneyRepository,
-                                        view: GoodsVatRateView)
-                                      (implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: GoodsVatRateView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
     checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
@@ -60,8 +59,7 @@ class GoodsVatRateController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
             persistAndRedirect(
               request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate)),

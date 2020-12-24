@@ -24,15 +24,15 @@ trait Generators {
 
   def nonBooleans: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "true")
-      .suchThat (_ != "false")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "true")
+      .suchThat(_ != "false")
 
   def nonYesNos: Gen[String] =
     arbitrary[String]
-      .suchThat (_.nonEmpty)
-      .suchThat (_ != "Yes")
-      .suchThat (_ != "No")
+      .suchThat(_.nonEmpty)
+      .suchThat(_ != "Yes")
+      .suchThat(_ != "No")
 
   def nonEmptyString: Gen[String] = arbitrary[String] suchThat (_.nonEmpty)
 
@@ -40,7 +40,6 @@ trait Generators {
 
   def positiveBigDecimalsWithMaximum3dp: Gen[BigDecimal] =
     arbitrary[BigDecimal] retryUntil (bd => bd > 0 && bd.scale <= 3)
-
 
   def negativeBigDecimals: Gen[BigDecimal] =
     arbitrary[BigDecimal] retryUntil (bd => bd < 0)

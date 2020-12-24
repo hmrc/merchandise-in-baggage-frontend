@@ -35,8 +35,8 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 
 trait BaseSpec extends AnyWordSpec with Matchers
 
-trait BaseSpecWithApplication extends BaseSpec
-  with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures with BeforeAndAfterEach {
+trait BaseSpecWithApplication
+    extends BaseSpec with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures with BeforeAndAfterEach {
 
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))
@@ -49,13 +49,15 @@ trait BaseSpecWithApplication extends BaseSpec
   lazy val injector: Injector = app.injector
 
   override def fakeApplication(): Application =
-    new GuiceApplicationBuilder().configure(Map(
-      "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes",
-      "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
-      "microservice.services.currency-conversion.port" -> WireMockSupport.port,
-      "microservice.services.payment.port" -> WireMockSupport.port,
-      "microservice.services.merchandise-in-baggage.port" -> WireMockSupport.port
-    )).build()
+    new GuiceApplicationBuilder()
+      .configure(Map(
+        "play.http.router"                                   -> "testOnlyDoNotUseInAppConf.Routes",
+        "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
+        "microservice.services.currency-conversion.port"     -> WireMockSupport.port,
+        "microservice.services.payment.port"                 -> WireMockSupport.port,
+        "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port
+      ))
+      .build()
 
   lazy val declarationJourneyRepository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]
 
@@ -70,9 +72,8 @@ trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
     wireMockServer.start()
   }
 
-  override def afterEach(): Unit = {
+  override def afterEach(): Unit =
     wireMockServer.stop()
-  }
 }
 
 object WireMockSupport {

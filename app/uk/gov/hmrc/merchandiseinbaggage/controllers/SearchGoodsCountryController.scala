@@ -29,21 +29,20 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SearchGoodsCountryController @Inject()(
-                                              override val controllerComponents: MessagesControllerComponents,
-                                              actionProvider: DeclarationJourneyActionProvider,
-                                              override val repo: DeclarationJourneyRepository,
-                                              view: SearchGoodsCountryView
-                                            )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends IndexedDeclarationJourneyUpdateController {
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
+  view: SearchGoodsCountryView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends IndexedDeclarationJourneyUpdateController {
 
-  private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) = {
+  private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
     request.declarationJourney.declarationType match {
       case Import =>
         checkYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
       case Export =>
         checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
     }
-  }
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
@@ -60,15 +59,17 @@ class SearchGoodsCountryController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors =>
-            Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
+            Future.successful(
+              BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
           countryCode =>
-            CountryService.getCountryByCode(countryCode)
+            CountryService
+              .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
                 persistAndRedirect(
                   request.goodsEntry.copy(maybeCountryOfPurchase = Some(country)),
                   idx,
                   routes.PurchaseDetailsController.onPageLoad(idx))
-              }
+            }
         )
     }
   }

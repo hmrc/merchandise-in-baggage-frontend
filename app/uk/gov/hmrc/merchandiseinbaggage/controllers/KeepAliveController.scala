@@ -27,16 +27,19 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class KeepAliveController @Inject()(override val controllerComponents: MessagesControllerComponents,
-                                    actionProvider: DeclarationJourneyActionProvider,
-                                    repo: DeclarationJourneyRepository,
-                                    progressDeletedView: ProgressDeletedView,
-                                    serviceTimeoutView: ServiceTimeoutView,
-                                   )(implicit ec: ExecutionContext, appConfig: AppConfig)
-  extends FrontendBaseController {
+class KeepAliveController @Inject()(
+  override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
+  repo: DeclarationJourneyRepository,
+  progressDeletedView: ProgressDeletedView,
+  serviceTimeoutView: ServiceTimeoutView,
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendBaseController {
 
   val onKeepAlive = actionProvider.journeyAction.async { implicit request =>
-    repo.upsert(request.declarationJourney).map { _ => NoContent }
+    repo.upsert(request.declarationJourney).map { _ =>
+      NoContent
+    }
   }
 
   val onProgressDelete: Action[AnyContent] = Action { implicit request =>
@@ -47,6 +50,5 @@ class KeepAliveController @Inject()(override val controllerComponents: MessagesC
     removeSession(request)(Ok(serviceTimeoutView()))
   }
 
-  private def removeSession(implicit request: Request[_]): Result => Result = result =>
-    result.removingFromSession(SessionKeys.sessionId)
+  private def removeSession(implicit request: Request[_]): Result => Result = result => result.removingFromSession(SessionKeys.sessionId)
 }

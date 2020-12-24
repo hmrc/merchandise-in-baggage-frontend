@@ -30,5 +30,3 @@ case class PayApiResponse(journeyId: JourneyId, nextUrl: URL)
 object PayApiResponse {
   implicit val format: Format[PayApiResponse] = Json.format[PayApiResponse]
 }
-
-
