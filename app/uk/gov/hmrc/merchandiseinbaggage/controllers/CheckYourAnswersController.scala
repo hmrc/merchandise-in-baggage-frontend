@@ -100,8 +100,8 @@ class CheckYourAnswersController @Inject()(override val controllerComponents: Me
           PayApiRequest(
             declaration.mibReference,
             taxDue.totalTaxDue,
-            taxDue.totalDutyDue,
             taxDue.totalVatDue,
+            taxDue.totalDutyDue,
             appConfig.paymentsReturnUrl,
             appConfig.paymentsBackUrl
           )
