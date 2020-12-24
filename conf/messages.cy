@@ -16,7 +16,7 @@ error.date.day_invalid = Mae’n rhaid i’r diwrnod fod rhwng 1 a 31
 error.date.month_blank = Mae’n rhaid i’r dyddiad gynnwys mis
 error.date.month_invalid = Mae’n rhaid i’r mis fod rhwng 1 a 12
 error.date.year_blank = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
-error.date.year_invalid = Enter a valid year, for example, 2020
+error.date.year_invalid = Nodwch flwyddyn ddilys, er enghraifft, 2020
 error.yesNo = Please enter Yes or No
 
 site.yes = Iawn
