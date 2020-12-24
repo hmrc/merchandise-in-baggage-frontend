@@ -30,7 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.PayApiStub._
-
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import scala.collection.JavaConverters._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation {
@@ -312,7 +312,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("placeOfArrival") mustBe messages(declaration.journeyDetails.port.displayName)
 
     textOfElementWithId("dateOfArrivalLabel") mustBe { if(declaration.declarationType == Import) "Date of arrival" else "Date of Departure"}
-    textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.formattedDateOfTravel
+    textOfElementWithId("dateOfArrival") mustBe declaration.journeyDetails.dateOfTravel.formattedDate
 
     textOfElementWithId("travellingByVehicleLabel") mustBe "Travelling by vehicle"
     textOfElementWithId("travellingByVehicle") mustBe declaration.journeyDetails.travellingByVehicle.entryName

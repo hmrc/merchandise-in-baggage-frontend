@@ -21,8 +21,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 case class Declaration(declarationId: DeclarationId,
                        sessionId: SessionId,
@@ -42,11 +40,4 @@ case class Declaration(declarationId: DeclarationId,
 
 object Declaration extends MibReferenceGenerator {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
-  val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
-
-  implicit class DeclarationDateTime(dateOfDeclaration: LocalDateTime) {
-    def formattedDate: String = {
-      dateOfDeclaration.format(formatter)
-    }
-  }
 }

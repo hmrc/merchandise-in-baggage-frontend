@@ -964,3 +964,16 @@ title.whitby=Whitby
 title.whitehaven=Whitehaven
 title.wick=Wick
 title.workington=Workington
+
+title.january = Ionawr
+title.february = Chwefror
+title.march = Mawrth
+title.april = Ebrill
+title.may = Mai
+title.june = Mehefin
+title.july = Gorffennaf
+title.august = Awst
+title.september = Medi
+title.october = Hydref
+title.november = Tachwedd
+title.december = Rhagfyr
