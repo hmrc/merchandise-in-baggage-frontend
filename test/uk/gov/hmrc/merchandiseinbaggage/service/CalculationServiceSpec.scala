@@ -30,7 +30,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   private val service = injector.instanceOf[CalculationService]
 
   "paymentCalculation" must {
-    "take a sequence of DeclarationGoods and return PaymentCalculations" in {
+    "calculate 0% duty and correct vat for goods originated from EU" in {
 
       givenCurrencyIsFound("EUR", wireMockServer)
 
@@ -39,6 +39,35 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
         GoodsVatRates.Twenty,
         Country("FR", "title.france", "FR", isEu = true, Nil),
         PurchaseDetails("100", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
+      )
+
+      val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue
+
+      val expected: PaymentCalculations = PaymentCalculations(
+        Seq(
+          PaymentCalculation(
+            good,
+            CalculationResult(
+              AmountInPence(7835),
+              AmountInPence(0),
+              AmountInPence(1567)
+            )
+          )
+        )
+      )
+
+      result mustBe expected
+    }
+
+    "calculate correct duty and vat for goods originated from non EU" in {
+
+      givenCurrencyIsFound("INR", wireMockServer)
+
+      val good = Goods(
+        CategoryQuantityOfGoods("test good", "123"),
+        GoodsVatRates.Twenty,
+        Country("IN", "title.india", "IN", isEu = false, Nil),
+        PurchaseDetails("100", Currency("INR", "title.indian_rupees_inr", Some("INR"), Nil))
       )
 
       val result: PaymentCalculations = service.paymentCalculation(DeclarationGoods(good)).futureValue
