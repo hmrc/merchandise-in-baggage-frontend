@@ -45,7 +45,11 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector)(impli
         futureRate.map { rate =>
           val converted: BigDecimal = (good.purchaseDetails.numericAmount / rate).setScale(2, HALF_UP)
 
-          val duty = (converted * 0.033).setScale(2, HALF_UP)
+          val duty =
+            if (good.countryOfPurchase.isEu)
+              BigDecimal(0.0)
+            else
+              (converted * 0.033).setScale(2, HALF_UP)
 
           val vatRate = BigDecimal(good.goodsVatRate.value / 100.0)
 
