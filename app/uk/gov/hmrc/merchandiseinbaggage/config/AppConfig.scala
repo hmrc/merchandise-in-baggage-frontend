@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.config
 
 import play.api.i18n.Lang
 import play.api.mvc.Call
-import java.time.LocalDate
 import javax.inject.Singleton
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
@@ -26,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @Singleton
-class AppConfig() extends MongoConfiguration with MibConfiguration with ArrivalDateValidationFlagConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration {
 
   val serviceIdentifier = "mib"
 
@@ -74,14 +73,3 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
-
-//TODO to be removed in 2021
-trait ArrivalDateValidationFlagConfiguration {
-  lazy val arrivalOrDepartureDateFlag: ArrivalDateValidationFlagConf =
-    configSource("retrospective-declaration-date").loadOrThrow[ArrivalDateValidationFlagConf]
-
-  import arrivalOrDepartureDateFlag._
-  lazy val configurationDate = LocalDate.of(year, month, day)
-}
-
-final case class ArrivalDateValidationFlagConf(is2021: Boolean, year: Int, month: Int, day: Int)

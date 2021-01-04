@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,11 @@ import java.time.LocalDate
 import play.api.data.Form
 import play.api.data.Forms.{mapping, of}
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import uk.gov.hmrc.merchandiseinbaggage.config.ArrivalDateValidationFlagConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.{LocalDateFormatter, Mappings}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationType, JourneyDetailsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 
-object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfiguration {
+object JourneyDetailsForm extends Mappings {
   val port = "port"
   val dateOfTravel = "dateOfTravel"
 
@@ -35,27 +34,22 @@ object JourneyDetailsForm extends Mappings with ArrivalDateValidationFlagConfigu
 
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
-  private val dateValidation: (LocalDate, Boolean, DeclarationType) => Constraint[LocalDate] =
-    (declarationDate, todayDateFlag, declarationType) =>
-      Constraint { value: LocalDate =>
-        val today: LocalDate = if (todayDateFlag) configurationDate else declarationDate
+  private val dateValidation: (LocalDate, DeclarationType) => Constraint[LocalDate] =
+    (declarationDate, declarationType) => Constraint { value: LocalDate =>
 
-        (isPastAnd2020(value, today), afterFiveDays(value, today), isPastWithin30Days(value, today)) match {
-          case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
-          case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
-          case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
-          case _            => Valid
-        }
-    }
+      (isPastAnd2020(value, declarationDate), afterFiveDays(value, declarationDate), isPastWithin30Days(value, declarationDate)) match {
+        case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
+        case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
+        case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+        case _            => Valid
+      }
+  }
 
-  def form(
-    declarationType: DeclarationType,
-    today: LocalDate = LocalDate.now,
-    is2021Flag: Boolean = arrivalOrDepartureDateFlag.is2021): Form[JourneyDetailsEntry] = Form(
+  def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now): Form[JourneyDetailsEntry] = Form(
     mapping(
       port -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
-      dateOfTravel -> localDate.verifying(dateValidation(today, is2021Flag, declarationType))
+      dateOfTravel -> localDate.verifying(dateValidation(today, declarationType))
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 

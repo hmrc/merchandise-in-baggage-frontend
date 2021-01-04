@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,15 +76,6 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
       importSubmittedForm.errors.head.message mustBe s"$dateInPastMessageKey.within.30.days"
       exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days"
-    }
-
-    "bind config flag date of arrival/departure if flag is false for QA" in {
-      val dateFromInPastIn2021 = LocalDate.of(2021, 1, 1)
-      val dateFromInPastIn2020 = LocalDate.of(2020, 12, 31)
-      val today = LocalDate.now
-
-      form(Import, today.plusMonths(1), false).bind(formData(dateFromInPastIn2021)).errors mustBe Seq.empty
-      form(Import, is2021Flag = true).bind(formData(dateFromInPastIn2020)).errors.head.message mustBe dateInPastMessageKey
     }
   }
 
