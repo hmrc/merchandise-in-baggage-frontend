@@ -57,12 +57,12 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasFeedbackSurveyLink
       }
 
-      "make declaration for import" in {
+      "make declaration for import and given payment is success" in {
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Import)
         val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
         givenADeclarationJourney(declarationJourney.copy(declarationId = id))
-        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
+        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted.copy(paymentSuccess = Some(true)), id)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)
