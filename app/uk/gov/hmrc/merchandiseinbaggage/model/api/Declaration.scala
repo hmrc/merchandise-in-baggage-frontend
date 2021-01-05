@@ -36,6 +36,7 @@ case class Declaration(
   dateOfDeclaration: LocalDateTime = LocalDateTime.now,
   mibReference: MibReference = Declaration.mibReference,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
+  paymentSuccess: Option[Boolean] = None,
   lang: String = "en")
 
 object Declaration extends MibReferenceGenerator {

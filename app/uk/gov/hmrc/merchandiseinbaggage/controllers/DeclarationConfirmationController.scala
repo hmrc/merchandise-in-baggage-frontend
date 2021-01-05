@@ -20,7 +20,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
@@ -39,10 +41,10 @@ class DeclarationConfirmationController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
     connector.findDeclaration(declarationId).map {
-      case Some(declaration) =>
+      case Some(declaration) if showConfirmation(declaration) =>
         resetJourney()
         Ok(view(declaration))
-      case None => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
+      case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
   }
 
@@ -50,4 +52,9 @@ class DeclarationConfirmationController @Inject()(
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
   }
+
+  private def showConfirmation(declaration: Declaration): Boolean =
+    declaration.declarationType == Export ||
+      (declaration.declarationType == Import && (declaration.paymentSuccess
+        .contains(true) || appConf.isLocalEnv))
 }
