@@ -35,15 +35,15 @@ object JourneyDetailsForm extends Mappings {
   private val localDate = of(new LocalDateFormatter(s"$dateErrorKey.invalid"))
 
   private val dateValidation: (LocalDate, DeclarationType) => Constraint[LocalDate] =
-    (declarationDate, declarationType) => Constraint { value: LocalDate =>
-
-      (isPastAnd2020(value, declarationDate), afterFiveDays(value, declarationDate), isPastWithin30Days(value, declarationDate)) match {
-        case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
-        case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
-        case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
-        case _            => Valid
-      }
-  }
+    (declarationDate, declarationType) =>
+      Constraint { value: LocalDate =>
+        (isPastAnd2020(value, declarationDate), afterFiveDays(value, declarationDate), isPastWithin30Days(value, declarationDate)) match {
+          case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
+          case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
+          case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
+          case _            => Valid
+        }
+    }
 
   def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now): Form[JourneyDetailsEntry] = Form(
     mapping(
