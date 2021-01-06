@@ -17,12 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import java.time.LocalDateTime
-
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationId, DeclarationType, Goods}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmountInPence, DeclarationId, DeclarationType, Goods, TotalCalculationResult}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
@@ -60,19 +59,25 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
       "make declaration for import and given payment is success" in {
         val id = DeclarationId("456")
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Import)
-        val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
+        val persistedDeclaration = declarationJourney.declarationIfRequiredAndComplete.get
+          .copy(
+            paymentSuccess = Some(true),
+            maybeTotalCalculationResult =
+              Some(TotalCalculationResult(aPaymentCalculations, AmountInPence(10L), AmountInPence(5), AmountInPence(2), AmountInPence(3)))
+          )
         givenADeclarationJourney(declarationJourney.copy(declarationId = id))
-        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted.copy(paymentSuccess = Some(true)), id)
+        givenPersistedDeclarationIsFound(wireMockServer, persistedDeclaration, id)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)
         hasConfirmationPanelWithContents
-        hasDateOfDeclaration(declarationCompleted.dateOfDeclaration)
-        hasEmailAddress(declarationCompleted)
+        hasDateOfDeclaration(persistedDeclaration.dateOfDeclaration)
+        hasEmailAddress(persistedDeclaration)
         hasPrintPageContentInPdf
         hasWhaToDoNextImport
-        hasGoodDetails(declarationCompleted)
-        hasPersonDetails(declarationCompleted)
+        hasGoodDetails(persistedDeclaration)
+        hasPersonDetails(persistedDeclaration)
+        hasAmountPaidDetails(persistedDeclaration)
         hasMakeAnotherDeclarationLink
         hasFeedbackSurveyLink
       }
@@ -138,6 +143,16 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
     textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
     textOfElementWithId("eoriLabel") mustBe "EORI number"
     textOfElementWithId("eori") mustBe declaration.eori.value
+  }
+
+  def hasAmountPaidDetails(declaration: Declaration): Assertion = {
+    textOfElementWithId("amountDetailsId") mustBe "Amount paid"
+    textOfElementWithId("customsDutyLabel") mustBe "Customs Duty"
+    textOfElementWithId("customsDuty") mustBe declaration.maybeTotalCalculationResult.map(_.totalDutyDue.formattedInPounds).get
+    textOfElementWithId("vatLabel") mustBe "VAT"
+    textOfElementWithId("vat") mustBe declaration.maybeTotalCalculationResult.map(_.totalVatDue.formattedInPounds).get
+    textOfElementWithId("totalTaxLabel") mustBe "Total"
+    textOfElementWithId("totalTax") mustBe declaration.maybeTotalCalculationResult.map(_.totalTaxDue.formattedInPounds).get
   }
 
   def hasMakeAnotherDeclarationLink: Assertion = {
