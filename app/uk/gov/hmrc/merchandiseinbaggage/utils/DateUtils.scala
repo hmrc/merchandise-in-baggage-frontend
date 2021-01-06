@@ -24,15 +24,20 @@ import java.util.Locale
 
 object DateUtils {
 
-  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mm a", Locale.ENGLISH)
+  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mma", Locale.ENGLISH)
   val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
 
-  def translatedDate(date: String)(implicit messages: Messages): String =
-    if (messages.lang.code == "cy") {
+  def translatedDate(date: String)(implicit messages: Messages): String = {
+    val result = if (messages.lang.code == "cy") {
       val englishMonth = date.split(" ")(1)
       date.replace(englishMonth, messages(s"title.${englishMonth.toLowerCase}"))
     } else
       date
+
+    result
+      .replace("AM", "am")
+      .replace("PM", "pm")
+  }
 
   implicit class LocalDateTimeOps(dateTime: LocalDateTime) {
     def formattedDate(implicit messages: Messages): String = {
