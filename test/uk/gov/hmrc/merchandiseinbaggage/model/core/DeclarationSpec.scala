@@ -386,7 +386,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
     "provide current date and time formatted" in {
       val aDeclaration = declaration.copy(dateOfDeclaration = LocalDateTime.of(2020, 11, 10, 12, 55))
 
-      aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55 PM"
+      aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55pm"
     }
   }
 }
