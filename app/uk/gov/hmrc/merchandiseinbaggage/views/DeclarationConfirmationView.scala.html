@@ -76,6 +76,24 @@
    </dl>
   }
 
+ @if(declaration.declarationType == Import) {
+  <h2 id="amountDetailsId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.amountPaid")</h2>
+  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+   <div class="govuk-summary-list__row">
+    <dt id="customsDutyLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.customsDuty")</dt>
+    <dd id="customsDuty" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalDutyDue.formattedInPounds)</dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt id="vatLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.vat")</dt>
+    <dd id="vat" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalVatDue.formattedInPounds)</dd>
+   </div>
+   <div class="govuk-summary-list__row">
+    <dt id="totalTaxLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.totalTax")</dt>
+    <dd id="totalTax" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalTaxDue.formattedInPounds)</dd>
+   </div>
+  </dl>
+ }
+
   <h2 id="personalDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
 
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -88,6 +106,7 @@
     <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
    </div>
   </dl>
+
   <p class="govuk-body">
    <a id="makeAnotherDeclarationId" class='govuk-link' href="@GoodsDestinationController.onPageLoad().url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
   </p>

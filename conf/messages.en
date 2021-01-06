@@ -425,6 +425,10 @@ declarationConfirmation.makeAnotherDeclaration = Make another declaration
 declarationConfirmation.feedbackSurvey = What did you think of this service?
 declarationConfirmation.feedbackSurvey.info = (takes 30 seconds)
 declarationConfirmation.printOrSave.label = Print or save a copy of this page
+declarationConfirmation.amountPaid = Amount paid
+declarationConfirmation.amountPaid.customsDuty = Customs Duty
+declarationConfirmation.amountPaid.vat = VAT
+declarationConfirmation.amountPaid.totalTax = Total
 
 # Countries
 title.afghanistan=Afghanistan

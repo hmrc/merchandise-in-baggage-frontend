@@ -424,6 +424,10 @@ declarationConfirmation.makeAnotherDeclaration = Cyflwyno datganiad newydd
 declarationConfirmation.feedbackSurvey = Beth oedd eich barn am y gwasanaeth hwn?
 declarationConfirmation.feedbackSurvey.info = (mae'n cymryd 30 eiliad)
 declarationConfirmation.printOrSave.label = Argraffu neu gadw copi o’r dudalen hon
+declarationConfirmation.amountPaid = Swm a dalwyd
+declarationConfirmation.amountPaid.customsDuty = Toll Dramor
+declarationConfirmation.amountPaid.vat = TAW
+declarationConfirmation.amountPaid.totalTax = Cyfanswm
 
 # Countries
 title.afghanistan=Afghanistan
