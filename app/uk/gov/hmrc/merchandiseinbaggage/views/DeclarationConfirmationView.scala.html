@@ -34,7 +34,7 @@
  </div>
 
  <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
- <p id="declarationDateFormattedId" class="govuk-body">@declaration.dateOfDeclaration.formattedDate</p>
+ <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}.</p>
  <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.email)</p>
  <p class="govuk-body">
   <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")
