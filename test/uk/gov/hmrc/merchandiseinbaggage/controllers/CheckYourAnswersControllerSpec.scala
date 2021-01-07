@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.{CurrencyConversionConnector,
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import java.time.LocalDateTime
@@ -50,20 +50,22 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(())
   }
 
-  private lazy val stubbedCalculation = new CalculationService(conversionConnector) {
-    override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
-      Future.successful(aPaymentCalculations)
+  private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
+    new CalculationService(conversionConnector) {
+      override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+        Future.successful(aPaymentCalculations)
   }
 
-  private lazy val controller = new CheckYourAnswersController(
+  private def controller(paymentCalcs: PaymentCalculations = aPaymentCalculations) = new CheckYourAnswersController(
     controllerComponents,
     actionBuilder,
-    stubbedCalculation,
-    testPaymentConnector,
+    stubbedCalculation(paymentCalcs),
+    new PaymentService(testPaymentConnector),
     testMibConnector,
     declarationJourneyRepository,
     importView,
-    exportView)
+    exportView
+  )
 
   "on submit will calculate tax and send payment request to pay api" in {
     val sessionId = SessionId()
@@ -75,10 +77,26 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     givenADeclarationJourneyIsPersisted(importJourney)
 
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-    val eventualResult = controller.onSubmit()(request)
+    val eventualResult = controller().onSubmit()(request)
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("http://host")
+  }
+
+  "on submit will redirect to confirmation if totalTax is £0 and should not call pay api" in {
+    val sessionId = SessionId()
+    val id = DeclarationId("xxx")
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val importJourney: DeclarationJourney = completedDeclarationJourney
+      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
+
+    givenADeclarationJourneyIsPersisted(importJourney)
+
+    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+    val eventualResult = controller(aPaymentCalculationWithNoTax).onSubmit()(request)
+
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
   }
 
   "on submit will redirect to declaration-confirmation if exporting" in {
@@ -92,7 +110,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
     givenADeclarationJourneyIsPersisted(exportJourney)
 
-    val eventualResult = controller.onSubmit()(request)
+    val eventualResult = controller().onSubmit()(request)
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
@@ -104,7 +122,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
     givenADeclarationJourneyIsPersisted(declarationJourney)
 
-    val eventualResult = controller.onSubmit()(request)
+    val eventualResult = controller().onSubmit()(request)
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.InvalidRequestController.onPageLoad().url)

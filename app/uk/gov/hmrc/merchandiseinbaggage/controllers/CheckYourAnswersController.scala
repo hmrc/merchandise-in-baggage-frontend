@@ -18,14 +18,14 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, PayApiRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import javax.inject.{Inject, Singleton}
@@ -36,7 +36,7 @@ class CheckYourAnswersController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
-  connector: PaymentConnector,
+  paymentService: PaymentService,
   mibConnector: MibConnector,
   override val repo: DeclarationJourneyRepository,
   importView: CheckYourAnswersImportView,
@@ -93,18 +93,9 @@ class CheckYourAnswersController @Inject()(
 
   private def continueImportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
-      taxDue <- calculationService.paymentCalculation(declaration.declarationGoods)
-      _      <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      payApiResponse <- connector
-                         .sendPaymentRequest(
-                           PayApiRequest(
-                             declaration.mibReference,
-                             taxDue.totalTaxDue,
-                             taxDue.totalVatDue,
-                             taxDue.totalDutyDue,
-                             appConfig.paymentsReturnUrl,
-                             appConfig.paymentsBackUrl
-                           )
-                         )
-    } yield Redirect(payApiResponse.nextUrl.value)
+      taxDue      <- calculationService.paymentCalculation(declaration.declarationGoods)
+      _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
+      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, taxDue)
+
+    } yield Redirect(redirectUrl)
 }
