@@ -103,7 +103,12 @@ trait CoreTestData {
   val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu = true, Nil), aPurchaseDetails)
 
   val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
+  val aCalculationResultWithNoTax: CalculationResult = CalculationResult(AmountInPence(100), AmountInPence(0), AmountInPence(0))
+
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)
   val aPaymentCalculation: PaymentCalculation = PaymentCalculation(aGoods, aCalculationResult)
   val aPaymentCalculations: PaymentCalculations = PaymentCalculations(Seq(aPaymentCalculation))
+
+  val aPaymentCalculationWithNoTax: PaymentCalculations = PaymentCalculations(
+    Seq(aPaymentCalculation.copy(calculationResult = aCalculationResultWithNoTax)))
 }
