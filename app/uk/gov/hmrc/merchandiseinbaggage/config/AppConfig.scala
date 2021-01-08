@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.config
 
-import com.google.inject.Inject
-import play.Environment
 import play.api.i18n.Lang
 import play.api.mvc.Call
 
@@ -28,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @Singleton
-class AppConfig @Inject()(val env: Environment) extends MongoConfiguration with MibConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration {
 
   val serviceIdentifier = "mib"
 
@@ -58,7 +56,6 @@ class AppConfig @Inject()(val env: Environment) extends MongoConfiguration with 
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
-  lazy val isLocalEnv: Boolean = env.isDev || env.isTest
 }
 
 object AppConfigSource {
