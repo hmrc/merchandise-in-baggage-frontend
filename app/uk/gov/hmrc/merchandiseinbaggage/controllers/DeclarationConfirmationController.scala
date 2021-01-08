@@ -58,8 +58,6 @@ class DeclarationConfirmationController @Inject()(
     def paymentNotRequired =
       declaration.maybeTotalCalculationResult.map(_.totalTaxDue.value).getOrElse(0L) == 0L
 
-    println(paymentNotRequired)
-
     def paymentSuccess = declaration.paymentSuccess.contains(true)
 
     declaration.declarationType == Export || (declaration.declarationType == Import && (paymentNotRequired || paymentSuccess))
