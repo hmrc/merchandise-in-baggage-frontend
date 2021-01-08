@@ -53,8 +53,13 @@ class DeclarationConfirmationController @Inject()(
     repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
   }
 
-  private def showConfirmation(declaration: Declaration): Boolean =
-    declaration.declarationType == Export ||
-      (declaration.declarationType == Import && (declaration.paymentSuccess
-        .contains(true) || appConf.isLocalEnv))
+  private def showConfirmation(declaration: Declaration): Boolean = {
+
+    def paymentNotRequired =
+      declaration.maybeTotalCalculationResult.map(_.totalTaxDue.value).getOrElse(0L) == 0L
+
+    def paymentSuccess = declaration.paymentSuccess.contains(true)
+
+    declaration.declarationType == Export || (declaration.declarationType == Import && (paymentNotRequired || paymentSuccess))
+  }
 }
