@@ -78,8 +78,7 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
               tc.calculationResult.vat.formattedInPoundsUI,
               tc.goods.goodsVatRate.value
             )
-          ),
-          attributes = Map("nowrap" -> "nowrap")
+          )
         ),
         TableRow(
           Text(tc.calculationResult.taxDue.formattedInPoundsUI)
@@ -103,12 +102,10 @@ case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {
       head = Some(
         Seq(
           HeadCell(
-            Text(messages("paymentCalculation.table.col1.head")),
-            attributes = Map("nowrap" -> "nowrap")
+            Text(messages("paymentCalculation.table.col1.head"))
           ),
           HeadCell(
-            Text(messages("paymentCalculation.table.col2.head")),
-            attributes = Map("nowrap" -> "nowrap")
+            Text(messages("paymentCalculation.table.col2.head"))
           ),
           HeadCell(
             Text(messages("paymentCalculation.table.col3.head")),
