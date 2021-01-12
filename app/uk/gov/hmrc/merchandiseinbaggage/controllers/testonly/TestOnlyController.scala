@@ -104,7 +104,7 @@ object TestOnlyController {
           )
         )),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
-      maybeEmailAddress = Some(Email("aa@test.com", "aa@test.com")),
+      maybeEmailAddress = Some(Email("aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
       maybeCustomsAgentAddress =

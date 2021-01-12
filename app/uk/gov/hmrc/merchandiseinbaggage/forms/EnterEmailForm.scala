@@ -36,18 +36,10 @@ object EnterEmailForm extends Mappings {
         .getOrElse(Invalid("enterEmail.error.invalid"))
   }
 
-  private val emailsMatch: Constraint[Email] = Constraint { value =>
-    if (value.email == value.confirmation)
-      Valid
-    else
-      Invalid("enterEmail.error.notMatching")
-
-  }
   val form: Form[Email] = Form(
     mapping(
-      "email"        -> text("enterEmail.error.required").verifying(emailAddress),
-      "confirmation" -> text("enterEmail.error.required").verifying(emailAddress)
-    )(Email.apply)(Email.unapply).verifying(emailsMatch)
+      "email" -> text("enterEmail.error.required").verifying(emailAddress)
+    )(Email.apply)(Email.unapply)
   )
 
 }

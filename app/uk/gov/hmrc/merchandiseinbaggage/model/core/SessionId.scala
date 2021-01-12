@@ -125,8 +125,8 @@ object Name {
   implicit val format: OFormat[Name] = Json.format[Name]
 }
 
-case class Email(email: String, confirmation: String) {
-  lazy val obfuscated: Email = Email(obfuscate(email), obfuscate(confirmation))
+case class Email(email: String) {
+  lazy val obfuscated: Email = Email(obfuscate(email))
 }
 
 object Email {

@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
-import play.api.data.{Form, FormError}
+import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Email
 
 class EnterEmailFormSpec extends FieldBehaviours {
 
@@ -33,25 +32,4 @@ class EnterEmailFormSpec extends FieldBehaviours {
     )
   }
 
-  ".confirmation" must {
-    val fieldName = "confirmation"
-    val requiredKey = "enterEmail.error.required"
-
-    behave like mandatoryEmailField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
-  "the emails" must {
-    "match" in {
-      val notMatch: Form[Email] = form.bind(Map("email"  -> "test@test.com", "confirmation" -> "example@test.com"))
-      val doesMatch: Form[Email] = form.bind(Map("email" -> "test@test.com", "confirmation" -> "test@test.com"))
-
-      notMatch.errors mustBe Seq(FormError("", "enterEmail.error.notMatching"))
-      doesMatch.errors mustBe Seq.empty
-
-    }
-  }
 }

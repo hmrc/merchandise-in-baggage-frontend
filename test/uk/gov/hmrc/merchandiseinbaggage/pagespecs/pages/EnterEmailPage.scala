@@ -26,7 +26,6 @@ class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
   import WebBrowser._
 
   def emailInput: Element = find(NameQuery("email")).get
-  def confirmationInput: Element = find(NameQuery("confirmation")).get
 
   override def fillOutForm(formData: Email): Unit = {
     def fill(input: Element, value: String): Unit = {
@@ -35,7 +34,6 @@ class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
     }
 
     fill(emailInput, formData.email)
-    fill(confirmationInput, formData.confirmation)
   }
 
   override def previouslyEnteredValuesAreDisplayed(formData: Email): Assertion = {
@@ -43,7 +41,6 @@ class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
       element.underlying.getAttribute("value") mustBe value
 
     valueMustEqual(emailInput, formData.email)
-    valueMustEqual(confirmationInput, formData.confirmation)
   }
 }
 
