@@ -246,10 +246,8 @@ enterEmail.title = Nodwch gyfeiriad e-bost
 enterEmail.heading = Nodwch gyfeiriad e-bost
 enterEmail.hint = Byddwn ond yn defnyddio hwn i anfon cadarnhad o’ch datganiad atoch.
 enterEmail.email = Cyfeiriad e-bost
-enterEmail.confirmation = Cadarnhau cyfeiriad e-bost
 enterEmail.error.required = Nodwch gyfeiriad e-bost
 enterEmail.error.invalid = Nodwch gyfeiriad e-bost yn y fformat cywir, megis enw@enghraifft.com
-enterEmail.error.notMatching = Mae’n rhaid i gyfeiriadau e-bost gyd-fynd - gwiriwch y cyfeiriad e-bost a rhoi cynnig arall arni
 
 # JourneyDetails
 journeyDetails.title = Manylion y siwrnai

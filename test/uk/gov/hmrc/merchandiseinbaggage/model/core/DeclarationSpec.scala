@@ -139,7 +139,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be obfuscated" in {
       completedDeclarationJourney.obfuscated.maybeNameOfPersonCarryingTheGoods mustBe Some(Name("*****", "****"))
-      completedDeclarationJourney.obfuscated.maybeEmailAddress mustBe Some(Email("***********", "***********"))
+      completedDeclarationJourney.obfuscated.maybeEmailAddress mustBe Some(Email("***********"))
       completedDeclarationJourney.obfuscated.maybeCustomsAgentName mustBe Some("**********")
       completedDeclarationJourney.obfuscated.maybeCustomsAgentAddress mustBe
         Some(
