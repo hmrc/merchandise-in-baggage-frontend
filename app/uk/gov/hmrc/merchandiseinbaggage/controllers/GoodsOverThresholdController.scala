@@ -43,7 +43,7 @@ class GoodsOverThresholdController @Inject()(
             request.declarationType match {
               case Import =>
                 for {
-                  paymentCalculations <- calculationService.paymentCalculation(goods)
+                  paymentCalculations <- calculationService.paymentBECalculation(goods)
                   rates               <- calculationService.getConversionRates(goods)
                 } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates, Import))
               case Export =>

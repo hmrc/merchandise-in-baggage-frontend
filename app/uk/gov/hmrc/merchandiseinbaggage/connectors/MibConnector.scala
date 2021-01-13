@@ -23,8 +23,9 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationId
-
 import javax.inject.{Inject, Named, Singleton}
+import uk.gov.hmrc.merchandiseinbaggage.model.calculation.{CalculationRequest, CalculationResult}
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -42,6 +43,9 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
           None
       }
     }
+
+  def calculatePayment(calculationRequest: CalculationRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculationResult] =
+    httpClient.POST[CalculationRequest, CalculationResult](s"$base$declarationsUrl/calculation", calculationRequest)
 
   def sendEmails(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
     httpClient

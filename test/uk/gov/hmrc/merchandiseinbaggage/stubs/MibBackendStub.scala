@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.calculation.{CalculationRequest, CalculationResult}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationId
 
 object MibBackendStub extends MibConfiguration {
@@ -50,6 +51,13 @@ object MibBackendStub extends MibConfiguration {
       .stubFor(
         get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
           .willReturn(okJson(Json.toJson(declaration).toString)))
+
+  def givenAPaymentCalculation(server: WireMockServer, request: CalculationRequest, result: CalculationResult): StubMapping =
+    server
+      .stubFor(
+        post(urlPathEqualTo(s"$declarationsUrl/calculation"))
+          .withRequestBody(equalToJson(toJson(request).toString, true, false))
+          .willReturn(okJson(Json.toJson(result).toString)))
 
   def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
     server

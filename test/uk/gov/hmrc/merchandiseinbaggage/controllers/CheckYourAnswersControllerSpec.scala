@@ -36,6 +36,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
+  private lazy val mibConnector = injector.instanceOf[MibConnector]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
@@ -51,7 +52,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   }
 
   private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
-    new CalculationService(conversionConnector) {
+    new CalculationService(conversionConnector, mibConnector) {
       override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
         Future.successful(aPaymentCalculations)
   }

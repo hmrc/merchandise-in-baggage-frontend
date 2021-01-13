@@ -21,6 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
@@ -28,6 +29,16 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   private implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private val service = injector.instanceOf[CalculationService]
+
+  "retrieve payment calculation from mib backend" in {
+    val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567))
+    val expected = PaymentCalculations(List(PaymentCalculation(
+      aDeclarationGood.goods.head, stubbedResult)))
+
+    givenAPaymentCalculation(wireMockServer, aDeclarationGood.goods.head.calculationRequest, stubbedResult)
+
+    service.paymentBECalculation(aDeclarationGood).futureValue mustBe expected
+  }
 
   "paymentCalculation" must {
     "calculate 0% duty and correct vat for goods originated from EU" in {

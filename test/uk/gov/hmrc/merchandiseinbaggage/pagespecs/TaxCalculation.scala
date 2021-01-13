@@ -43,6 +43,6 @@ trait TaxCalculation {
     givenADeclarationJourney(declarationJourney)
     givenCurrenciesAreFound()
 
-    calculationService.paymentCalculation(declarationJourney.goodsEntries.declarationGoodsIfComplete.get)
+    calculationService.paymentBECalculation(declarationJourney.goodsEntries.declarationGoodsIfComplete.get)
   }
 }
