@@ -34,9 +34,9 @@
     @errorSummary(form.errors)
   }
 
- <h1 class="govuk-heading-xl" id="main-message">@messages("checkYourAnswers.title")</h1>
+ <h1 class="govuk-heading-xl" id="cya-title">@messages("checkYourAnswers.title")</h1>
 
- <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+ <h2 class="govuk-heading-m" id="goods-details-heading">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
 
  @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
    <dl class="govuk-summary-list">
