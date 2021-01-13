@@ -305,7 +305,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     textOfElementWithId("nameOfPersonCarryingTheGoods") mustBe declaration.nameOfPersonCarryingTheGoods.toString
 
     textOfElementWithId("emailAddressLabel") mustBe "Email address"
-    textOfElementWithId("emailAddress") mustBe declaration.email.email
+    textOfElementWithId("emailAddress") mustBe declaration.email.get.email
 
     textOfElementWithId("placeOfArrivalLabel") mustBe {
       if (declaration.declarationType == Import) "Place of arrival" else "Place of Departure"
