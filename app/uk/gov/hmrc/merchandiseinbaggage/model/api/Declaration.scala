@@ -29,7 +29,7 @@ case class Declaration(
   goodsDestination: GoodsDestination,
   declarationGoods: DeclarationGoods,
   nameOfPersonCarryingTheGoods: Name,
-  email: Email,
+  email: Option[Email],
   maybeCustomsAgent: Option[CustomsAgent],
   eori: Eori,
   journeyDetails: JourneyDetails,

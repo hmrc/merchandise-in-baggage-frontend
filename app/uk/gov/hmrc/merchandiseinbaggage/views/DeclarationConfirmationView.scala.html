@@ -35,7 +35,7 @@
 
  <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
  <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}.</p>
- <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.email)</p>
+ <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
  <p class="govuk-body">
   <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")
    <link id="printDeclarationLinkId" class="govuk-link" href="/declare-commercial-goods/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css">

@@ -96,7 +96,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
   }
 
   def hasEmailAddress(declaration: Declaration): Assertion =
-    textOfElementWithId("declarationEmailId") mustBe s"We have sent you a confirmation email to ${declaration.email.email}."
+    textOfElementWithId("declarationEmailId") mustBe s"We have sent you a confirmation email to ${declaration.email.get.email}."
 
   def hasPrintPageContentInPdf: Assertion = {
     attrOfElementWithId("printDeclarationId", "href") mustBe "javascript:window.print();"

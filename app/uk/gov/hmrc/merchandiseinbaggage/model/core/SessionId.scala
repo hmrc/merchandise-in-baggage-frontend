@@ -228,7 +228,7 @@ case class DeclarationJourney(
         goodsDestination,
         goods,
         nameOfPersonCarryingTheGoods,
-        email,
+        Some(email),
         maybeCustomsAgent,
         eori,
         journeyDetails)

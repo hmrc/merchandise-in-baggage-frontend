@@ -169,7 +169,7 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt id="emailAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.emailAddress")</dt>
-   <dd id="emailAddress" class="govuk-summary-list__value">@declaration.email.email</dd>
+   <dd id="emailAddress" class="govuk-summary-list__value">@declaration.email.map(_.email).getOrElse("")</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="emailAddressChangeLink" href=@{s"${EnterEmailController.onPageLoad()}"}>
       @messages("checkYourAnswers.change")
