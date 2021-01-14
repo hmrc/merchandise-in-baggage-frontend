@@ -70,7 +70,9 @@ final case class MongoConf(uri: String, host: String = "localhost", port: Int = 
 
 trait MibConfiguration {
   lazy val mibConf: MIBConf = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
-  lazy val declarationsUrl: String = "/declare-commercial-goods/declarations"
+  lazy val baseUrl: String = "/declare-commercial-goods"
+  lazy val declarationsUrl: String = s"$baseUrl/declarations"
+  lazy val calculationUrl: String = s"$baseUrl/calculation"
   lazy val sendEmailsUrl: String = "/declare-commercial-goods/declarations/sendEmails"
 }
 

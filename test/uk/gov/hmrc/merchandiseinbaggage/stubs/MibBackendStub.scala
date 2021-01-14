@@ -55,14 +55,14 @@ object MibBackendStub extends MibConfiguration {
   def givenAPaymentCalculation(server: WireMockServer, request: CalculationRequest, result: CalculationResult): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$declarationsUrl/calculation"))
+        post(urlPathEqualTo(s"$calculationUrl"))
           .withRequestBody(equalToJson(toJson(request).toString, true, false))
           .willReturn(okJson(Json.toJson(result).toString)))
 
   def givenAPaymentCalculation(server: WireMockServer, result: CalculationResult): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$declarationsUrl/calculation"))
+        post(urlPathEqualTo(s"$calculationUrl"))
           .willReturn(okJson(Json.toJson(result).toString)))
 
   def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
