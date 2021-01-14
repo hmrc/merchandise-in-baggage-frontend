@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import java.time.LocalDateTime
+
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
@@ -31,6 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.PayApiStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
+
 import scala.collection.JavaConverters._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation {
@@ -68,14 +70,6 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         open(path)
 
         mustRenderDetail(declaration, Some(taxDue.totalTaxDue))
-      }
-    }
-
-    "redirect to /goods-over-threshold" when {
-      "the total GBP value of the goods exceeds the threshold" in {
-        givenADeclarationWithTaxDue(completedImportJourneyWithGoodsOverThreshold)
-
-        open(path) mustBe "/declare-commercial-goods/goods-over-threshold"
       }
     }
 

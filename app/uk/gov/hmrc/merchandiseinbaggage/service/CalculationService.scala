@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.connectors.CurrencyConversionConnector
+import uk.gov.hmrc.merchandiseinbaggage.connectors.{CurrencyConversionConnector, MibConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmountInPence, DeclarationGoods, PaymentCalculation, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
@@ -28,9 +28,15 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.math.BigDecimal.RoundingMode.HALF_UP
 
 @Singleton
-class CalculationService @Inject()(connector: CurrencyConversionConnector)(implicit ec: ExecutionContext) {
+class CalculationService @Inject()(connector: CurrencyConversionConnector, mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
+  def paymentBECalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+    Future.traverse(declarationGoods.goods) { goods =>
+        mibConnector.calculatePayment(goods.calculationRequest).map(result => PaymentCalculation(goods, result))
+      }.map(PaymentCalculations.apply)
+
+  @deprecated("Call backend for calculation. All this code to be removed including CurrencyConversionConnector.")
   def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
     Future
       .traverse(declarationGoods.goods) { good =>

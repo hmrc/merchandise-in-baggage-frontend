@@ -49,7 +49,7 @@ class PaymentCalculationController @Inject()(
             request.declarationJourney.declarationType match {
               case Import =>
                 for {
-                  paymentCalculations <- calculationService.paymentCalculation(goods)
+                  paymentCalculations <- calculationService.paymentBECalculation(goods)
                   rates               <- calculationService.getConversionRates(goods)
                 } yield {
                   if (paymentCalculations.totalGbpValue.value > destination.threshold.value)

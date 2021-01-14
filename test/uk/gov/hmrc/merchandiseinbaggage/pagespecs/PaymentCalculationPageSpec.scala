@@ -17,15 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
 
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
   override def page: PaymentCalculationPage = wire[PaymentCalculationPage]
 
-  private def setUpTaxCalculationAndOpenPage(journey: DeclarationJourney = importJourneyWithTwoCompleteGoodsEntries) = {
-    val taxCalculation = givenADeclarationWithTaxDue(journey).futureValue
+  private def setUpTaxCalculationAndOpenPage(
+    journey: DeclarationJourney = importJourneyWithTwoCompleteGoodsEntries,
+    overThreshold: Option[Int] = Some(0)): PaymentCalculations = {
+    val taxCalculation = givenADeclarationWithTaxDue(journey, overThreshold).futureValue
 
     open(path)
 
@@ -39,14 +42,18 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
 
     "redirect to /goods-over-threshold" when {
       "the total GBP value of the goods exceeds the threshold" in {
-        setUpTaxCalculationAndOpenPage(importJourneyWithGoodsOverThreshold)
+        setUpTaxCalculationAndOpenPage(importJourneyWithGoodsOverThreshold, Some(1500000))
 
         page.readPath() mustBe "/declare-commercial-goods/goods-over-threshold"
       }
     }
 
     "render" in {
-      val taxCalculation = setUpTaxCalculationAndOpenPage()
+      val taxCalculation = setUpTaxCalculationAndOpenPage(
+        importJourneyWithOneCompleteGoodsEntry
+          .modify(_.goodsEntries.entries)
+          .setTo(Seq(completedGoodsEntry, completedGoodsEntry))
+      )
       val paymentCalculations = taxCalculation.paymentCalculations
 
       page.headerText() mustBe title(taxCalculation.totalTaxDue)
