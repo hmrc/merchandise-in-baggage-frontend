@@ -32,11 +32,9 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector, mibCo
   private val logger = Logger("CalculationService")
 
   def paymentBECalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
-    Future.traverse(declarationGoods.goods) { goods => {
-        mibConnector.calculatePayment(goods.calculationRequest).map(res => PaymentCalculation(goods, res))
-      }
-    }.map(PaymentCalculations.apply)
-
+    Future.traverse(declarationGoods.goods) { goods =>
+        mibConnector.calculatePayment(goods.calculationRequest).map(result => PaymentCalculation(goods, result))
+      }.map(PaymentCalculations.apply)
 
   @deprecated("Call backend for calculation. All this code to be removed including CurrencyConversionConnector.")
   def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =

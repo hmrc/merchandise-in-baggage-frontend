@@ -32,8 +32,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
   "retrieve payment calculation from mib backend" in {
     val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567))
-    val expected = PaymentCalculations(List(PaymentCalculation(
-      aDeclarationGood.goods.head, stubbedResult)))
+    val expected = PaymentCalculations(List(PaymentCalculation(aDeclarationGood.goods.head, stubbedResult)))
 
     givenAPaymentCalculation(wireMockServer, aDeclarationGood.goods.head.calculationRequest, stubbedResult)
 

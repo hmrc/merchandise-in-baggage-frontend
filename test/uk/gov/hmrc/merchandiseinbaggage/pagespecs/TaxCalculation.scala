@@ -17,18 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, DeclarationJourney, PaymentCalculations}
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurrencyIsFound
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import com.softwaremill.quicklens._
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 trait TaxCalculation {
   this: BasePageSpec[_] =>
 
-  private lazy val calculationService = injector.instanceOf[CalculationService]
-
-  def givenADeclarationWithTaxDue(declarationJourney: DeclarationJourney): Future[PaymentCalculations] = {
+  @deprecated("Using payment BE Calculation we do not need to stub currency conversion if done in the BE")
+  def givenADeclarationWithTaxDue(
+    declarationJourney: DeclarationJourney,
+    overThreshold: Option[Int] = Some(0)): Future[PaymentCalculations] = {
     implicit val hc: HeaderCarrier = HeaderCarrier()
 
     def givenCurrenciesAreFound(): Unit =
@@ -43,6 +47,21 @@ trait TaxCalculation {
     givenADeclarationJourney(declarationJourney)
     givenCurrenciesAreFound()
 
-    calculationService.paymentBECalculation(declarationJourney.goodsEntries.declarationGoodsIfComplete.get)
+    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567))
+    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567))
+    val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
+      List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(x => AmountInPence(x.value + over))))
+
+    val goods = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
+    val results: Seq[PaymentCalculation] = goods.zipWithIndex.map {
+      case (g, idx) => PaymentCalculation(g, calculations(idx))
+    }
+
+    results.foreach { r: PaymentCalculation =>
+      givenAPaymentCalculation(wireMockServer, r.calculationResult)
+    }
+
+    givenADeclarationJourney(declarationJourney)
+    Future(PaymentCalculations(results))
   }
 }

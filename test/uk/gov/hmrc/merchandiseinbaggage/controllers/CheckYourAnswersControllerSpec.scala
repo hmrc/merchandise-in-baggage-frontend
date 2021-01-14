@@ -16,21 +16,26 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import java.time.LocalDateTime
+
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{CurrencyConversionConnector, MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyId, PayApiRequest, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
+import com.softwaremill.quicklens._
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
 
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
@@ -53,7 +58,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
   private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
     new CalculationService(conversionConnector, mibConnector) {
-      override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+      override def paymentBECalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
         Future.successful(aPaymentCalculations)
   }
 
@@ -115,6 +120,27 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+  }
+
+  s"on submit will redirect to ${routes.GoodsOverThresholdController.onPageLoad().url} if over threshold" in {
+    val sessionId = SessionId()
+    val stubbedId = DeclarationId("xxx")
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val exportJourney: DeclarationJourney = completedDeclarationJourney
+      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = stubbedId)
+
+    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+    givenADeclarationJourneyIsPersisted(exportJourney)
+    givenAPaymentCalculation(wireMockServer, CalculationResult(AmountInPence(0), AmountInPence(0), AmountInPence(0)))
+
+    val eventualResult = controller(
+      aPaymentCalculations
+        .modify(_.paymentCalculations.each.calculationResult)
+        .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))).onPageLoad()(request)
+
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
   }
 
   "on submit will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
