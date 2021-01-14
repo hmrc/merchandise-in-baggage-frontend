@@ -25,7 +25,7 @@
 
 @for((list, idx) <- GoodsSummaryList.summaryList(declarationGoods, declarationType).zipWithIndex) {
     @summaryList(list)
-    <a id="remove_@idx" class="govuk-summary-list" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
+    <a id="remove_@idx" class="govuk-summary-list govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
         @messages("site.remove")
         <span class="govuk-visually-hidden">
             @declarationGoods.goods(idx).categoryQuantityOfGoods.category
