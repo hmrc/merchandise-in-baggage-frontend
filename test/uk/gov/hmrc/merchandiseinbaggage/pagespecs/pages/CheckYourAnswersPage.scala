@@ -63,7 +63,7 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends BasePage {
 
   def clickOnVehicleRegistrationNumberChangeLink(): String = clickOnChangeLink("vehicleRegistrationNumberChangeLink")
 
-  def clickOnRemoveGoodsLink(index: Int): String = clickOnChangeLink(s"removeGoodsLink_$index")
+  def clickOnRemoveGoodsLink(index: Int): String = clickOnChangeLink(s"remove_$index")
 
   def clickOnAddMoreGoodsLink(): String = clickOnChangeLink("addMoreGoodsLink")
 
