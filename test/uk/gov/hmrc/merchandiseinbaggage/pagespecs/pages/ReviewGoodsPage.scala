@@ -33,22 +33,18 @@ class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
     goodsSummary.underlying.findElements(By.className("govuk-summary-list__row")).asScala
 
   def goodsSummariesAsMap: Seq[Map[String, String]] = patiently {
-    goodsSummaries.map { goodsSummary =>
-      rows(goodsSummary).map { row =>
-        row.findElement(By.className("govuk-summary-list__key")).getText ->
-          row.findElement(By.className("govuk-summary-list__value")).getText
-      }.toMap
-    }
+    goodsSummaries
+      .map { goodsSummary =>
+        rows(goodsSummary).map { row =>
+          row.findElement(By.className("govuk-summary-list__key")).getText ->
+            row.findElement(By.className("govuk-summary-list__value")).getText
+        }.toMap
+      }
+      .filterNot(_ == Map.empty)
   }
 
   def remove(index: Int): String = patiently {
-    val goodsSummary = goodsSummaries(index)
-
-    val removeLinkRow = rows(goodsSummary).filter { row =>
-      row.findElement(By.className("govuk-summary-list__key")).getText == "Remove"
-    }.head
-
-    val removeLink = removeLinkRow.findElement(By.tagName("a"))
+    val removeLink = find(IdQuery(s"remove_$index")).get
 
     click on removeLink
 

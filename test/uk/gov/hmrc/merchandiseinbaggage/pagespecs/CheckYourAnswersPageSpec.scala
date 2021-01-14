@@ -92,13 +92,13 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         "the user clicks on the change type link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsTypeLink(index - 1) mustBe GoodsTypeQuantityPage.path(index)
+          page.clickOnChangeGoodsTypeLink(index) mustBe GoodsTypeQuantityPage.path(index)
         }
 
         "the user clicks on the change quantity link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsQuantityLink(index - 1) mustBe GoodsTypeQuantityPage.path(index)
+          page.clickOnChangeGoodsQuantityLink(index) mustBe GoodsTypeQuantityPage.path(index)
         }
       }
 
@@ -106,7 +106,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         "the user clicks on the change link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeVatRateLink(index - 1) mustBe GoodsVatRatePage.path(index)
+          page.clickOnChangeVatRateLink(index) mustBe GoodsVatRatePage.path(index)
         }
       }
 
@@ -114,7 +114,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         "the user clicks on the change link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsCountryLink(index - 1) mustBe SearchGoodsCountryPage.path(index)
+          page.clickOnChangeGoodsCountryLink(index) mustBe SearchGoodsCountryPage.path(index)
         }
       }
 
@@ -122,7 +122,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         "the user clicks on the change link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangePurchaseDetailsLink(index - 1) mustBe PurchaseDetailsPage.path(index)
+          page.clickOnChangePurchaseDetailsLink(index) mustBe PurchaseDetailsPage.path(index)
         }
       }
 
@@ -255,27 +255,6 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     def textOfElementWithId(id: String): String = find(IdQuery(id)).get.underlying.getText
 
     def elementIsNotRenderedWithId(id: String): Assertion = find(IdQuery(id)).isEmpty mustBe true
-
-    declaration.declarationGoods.goods.zipWithIndex.foreach { goodsWithIndex =>
-      val goods = goodsWithIndex._1
-      val index = goodsWithIndex._2
-
-      textOfElementWithId(s"categoryLabel_$index") mustBe "Type of goods"
-      textOfElementWithId(s"category_$index") mustBe goods.categoryQuantityOfGoods.category
-
-      textOfElementWithId(s"quantityLabel_$index") mustBe "Number of items"
-      textOfElementWithId(s"quantity_$index") mustBe goods.categoryQuantityOfGoods.quantity
-
-      totalTaxDue.map(_ => textOfElementWithId(s"vatRateLabel_$index") mustBe "VAT rate")
-      totalTaxDue.map(_ => textOfElementWithId(s"vatRate_$index") mustBe s"${goods.goodsVatRate.value}%")
-
-      totalTaxDue.fold(textOfElementWithId(s"countryLabel_$index") mustBe "Destination")(_ =>
-        textOfElementWithId(s"countryLabel_$index") mustBe "Country")
-      textOfElementWithId(s"country_$index") mustBe messages(goods.countryOfPurchase.countryName)
-
-      textOfElementWithId(s"priceLabel_$index") mustBe "Price paid"
-      textOfElementWithId(s"price_$index") mustBe goods.purchaseDetails.formatted
-    }
 
     totalTaxDue.map(_ => textOfElementWithId("taxDueLabel") mustBe "Payment due")
     totalTaxDue.map(amount => textOfElementWithId("taxDueValue") mustBe amount.formattedInPounds)

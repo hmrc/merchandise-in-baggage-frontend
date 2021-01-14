@@ -19,7 +19,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 
-@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, button: components.button)
+@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
 @(form: Form[_], declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -36,53 +36,7 @@
 
  <h2 class="govuk-heading-m" id="goods-details-heading">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
 
- @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
-   <dl class="govuk-summary-list">
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
-     <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
-     <dd class="govuk-summary-list__actions">
-       <a class="govuk-link" id="@{s"categoryChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
-        @messages("checkYourAnswers.change")
-       </a>
-     </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
-     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
-     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" id="@{s"quantityChangeLink_$index"}" href=@{s"${GoodsTypeQuantityController.onPageLoad(index + 1)}"}>
-         @messages("checkYourAnswers.change")
-       </a>
-     </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.destination")</dt>
-     <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(goods.countryOfPurchase.countryName)</dd>
-     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" id="@{s"countryChangeLink_$index"}" href=@{s"${SearchGoodsCountryController.onPageLoad(index + 1)}"}>
-         @messages("checkYourAnswers.change")
-       </a>
-     </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
-     <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails.formatted</dd>
-     <dd class="govuk-summary-list__actions">
-      <a class="govuk-link" id="@{s"priceChangeLink_$index"}" href=@{s"${PurchaseDetailsController.onPageLoad(index + 1)}"}>
-         @messages("checkYourAnswers.change")
-       </a>
-     </dd>
-    </div>
-    <div class="govuk-summary-list__row govuk-summary-list__row--no-border">
-     <dd class="govuk-summary-list__value">
-      <a class="govuk-link" id="@{s"removeGoodsLink_$index"}" class="govuk-link" href="@{s"${RemoveGoodsController.onPageLoad(index + 1)}"}">
-       @messages("site.remove")
-      </a>
-     </dd>
-    </div>
-   </dl>
-}
+  @summaryList(declaration.declarationGoods, declaration.declarationType)
 
   <p class="govuk-body">
    <a class="govuk-link" id="addMoreGoodsLink" class="govuk-link" href="@CheckYourAnswersController.addMoreGoods">

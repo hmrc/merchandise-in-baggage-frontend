@@ -29,15 +29,10 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
   private val requiredAnswerValidationMessage = "Select yes if you want to declare more goods"
 
-  private val declarationBrakeDown = Map(
-    "Price paid"      -> "£99.99",
-    "Type of goods"   -> "wine",
-    "Destination"     -> "France",
-    "VAT rate"        -> "20%",
-    "Remove"          -> "",
-    "Number of items" -> "1")
+  private val declarationBreakDown =
+    Map("Price paid" -> "£99.99", "Type of goods" -> "wine", "Destination" -> "France", "VAT rate" -> "20%", "Number of items" -> "1")
 
-  private val importDeclarationBrakeDown = declarationBrakeDown
+  private val importDeclarationBreakDown = declarationBreakDown
     .+("Price paid" -> "99.99, Euro (EUR)")
     .-("Destination")
     .+("Country" -> "France")
@@ -55,7 +50,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         open(path)
 
         page.headerText() mustBe title
-        page.goodsSummariesAsMap mustBe Seq(importDeclarationBrakeDown)
+        page.goodsSummariesAsMap mustBe Seq(importDeclarationBreakDown)
       }
 
       "a single export goods entry is complete" in {
@@ -68,7 +63,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
         open(path)
 
         page.headerText() mustBe title
-        page.goodsSummariesAsMap mustBe Seq(declarationBrakeDown.filterNot(_._1 == "VAT rate"))
+        page.goodsSummariesAsMap mustBe Seq(declarationBreakDown.filterNot(_._1 == "VAT rate"))
       }
 
       "multiple import goods entries are complete" in {
@@ -79,8 +74,8 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
         page.goodsSummariesAsMap mustBe
           Seq(
-            importDeclarationBrakeDown,
-            importDeclarationBrakeDown
+            importDeclarationBreakDown,
+            importDeclarationBreakDown
               .+("Price paid" -> "199.99, Euro (EUR)", "Type of goods" -> "cheese", "Number of items" -> "3")
           )
       }

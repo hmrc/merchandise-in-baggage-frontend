@@ -17,14 +17,14 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
-@import uk.gov.hmrc.merchandiseinbaggage.viewmodels.ReviewGoodsSummary
+@import uk.gov.hmrc.merchandiseinbaggage.viewmodels.GoodsSummaryList
 
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
 h1: components.h1,
 h2: components.h2,
-summaryList: GovukSummaryList,
+summaryList: includes.goodsSummary,
 errorSummary: components.errorSummary,
 inputYesNo: components.inputYesNo,
 button: components.button
@@ -39,9 +39,7 @@ button: components.button
 
         @h1(messages("reviewGoods.heading"))
 
-        @for(list <- ReviewGoodsSummary.summaryList(goods, declarationType)) {
-            @summaryList(list)
-        }
+        @summaryList(goods, declarationType)
 
         @h2(messages("reviewGoods.h3"), classes = Some("govuk-heading-m"))
 
