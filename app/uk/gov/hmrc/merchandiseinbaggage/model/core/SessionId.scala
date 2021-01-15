@@ -53,6 +53,7 @@ case class AmountInPence(value: Long) {
   val inPounds: BigDecimal = (BigDecimal(value) / 100).setScale(2)
   val formattedInPounds: String = getCurrencyInstance(UK).format(inPounds)
   val formattedInPoundsUI: String = formattedInPounds.split("\\.00")(0) //TODO not sure if necessary different formats
+  lazy val isPaymentRequired: Boolean = inPounds.compareTo(BigDecimal(0.0)) > 0
 }
 
 object AmountInPence {
