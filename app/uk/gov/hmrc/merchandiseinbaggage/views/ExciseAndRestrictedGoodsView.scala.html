@@ -63,9 +63,11 @@ button: components.button
 
         @inputYesNo(
             form = form,
-            legend = messages(s"exciseAndRestrictedGoods.$declarationType.heading"),
+            legend = s"${messages(s"exciseAndRestrictedGoods.$declarationType.heading")}" +
+                    s"${messages("exciseAndRestrictedGoods.li1")}" +
+                    s"${messages("exciseAndRestrictedGoods.li2")}",
             legendAsHeading = false,
-            classes = "govuk-visually-hidden",
+            classes = "govuk-visually-hidden"
         )
 
         @button("site.continue", name = Some("continue"))
