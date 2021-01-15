@@ -51,8 +51,6 @@
      <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.paymentDue")</dt>
      <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue.formattedInPounds</dd>
    </div>
-
-  <input id="@taxDue" type="hidden" name="@taxDue" value="@totalTaxDue.value">
  </dl>
 
  <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
@@ -184,6 +182,8 @@
    @messages("checkYourAnswers.sendDeclaration.warning.message")
   </strong>
  </div>
+
+  <input id="@taxDue" type="hidden" name="@taxDue" value="@totalTaxDue.value">
 
    @button(messages("checkYourAnswers.payButton"), name = Some("payButton"))
  }
