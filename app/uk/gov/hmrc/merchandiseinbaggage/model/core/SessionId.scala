@@ -251,7 +251,7 @@ case class Goods(
   purchaseDetails: PurchaseDetails) {
 
   val calculationRequest: CalculationRequest =
-    CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency.code, goodsVatRate)
+    CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, countryOfPurchase, goodsVatRate)
 }
 
 object Goods {

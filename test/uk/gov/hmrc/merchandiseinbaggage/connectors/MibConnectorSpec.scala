@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
