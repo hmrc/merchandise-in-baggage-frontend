@@ -33,10 +33,10 @@ trait TaxCalculation {
 
     givenADeclarationJourney(declarationJourney)
 
-    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)
-    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)
+    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
     val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
-      List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(x => AmountInPence(x.value + over))))
+      List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(inPence => AmountInPence(inPence.value + over))))
 
     val goods = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
     val results: Seq[PaymentCalculation] = goods.zipWithIndex.map {
