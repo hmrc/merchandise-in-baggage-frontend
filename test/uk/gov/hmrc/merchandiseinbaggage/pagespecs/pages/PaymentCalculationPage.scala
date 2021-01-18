@@ -43,6 +43,11 @@ class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
     val tableRows = tableBody.findElements(By.className("govuk-table__row")).asScala
     tableRows(index).findElements(By.className("govuk-table__cell")).asScala.map(_.getText)
   }
+
+  def countRatesListItems =
+    find(ClassNameQuery("govuk-list--bullet")).head.underlying
+      .findElements(By.tagName("li"))
+      .size()
 }
 
 object PaymentCalculationPage {

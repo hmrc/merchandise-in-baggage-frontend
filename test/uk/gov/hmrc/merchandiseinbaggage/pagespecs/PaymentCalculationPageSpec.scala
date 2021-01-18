@@ -48,7 +48,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
       }
     }
 
-    "render" in {
+    "render removing duplicated rates" in {
       val taxCalculation = setUpTaxCalculationAndOpenPage(
         importJourneyWithOneCompleteGoodsEntry
           .modify(_.goodsEntries.entries)
@@ -73,6 +73,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
           )
       }
 
+      page.countRatesListItems mustBe 1
       page.summaryRow(2) mustBe Seq("Payment due", taxCalculation.totalTaxDue.formattedInPoundsUI)
     }
 
