@@ -28,7 +28,9 @@ table: GovukTable,
 button: components.button
 )
 
-@(paymentCalculations: PaymentCalculations, rates: Seq[ConversionRatePeriod], next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(paymentCalculations: PaymentCalculations, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@rates = @{ paymentCalculations.paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod) }
 
 @layout(pageTitle = Some(titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
  @h1(messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds))
