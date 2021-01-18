@@ -66,7 +66,8 @@ class CalculationService @Inject()(connector: CurrencyConversionConnector, mibCo
           val result = CalculationResult(
             AmountInPence((converted * 100).toLong),
             AmountInPence((duty * 100).toLong),
-            AmountInPence((vat * 100).toLong)
+            AmountInPence((vat * 100).toLong),
+            None
           )
 
           logger.info(s"Payment calculation for good [$good] with fx rate [$rate] vat rate [$vatRate] gave result [$result]")

@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 class PaymentCalculationsSpec extends BaseSpec with CoreTestData {
 
   "Calculate each total tax due" in {
-    val calculationResultTwo: CalculationResult = CalculationResult(AmountInPence(20L), AmountInPence(10), AmountInPence(30))
+    val calculationResultTwo: CalculationResult = CalculationResult(AmountInPence(20L), AmountInPence(10), AmountInPence(30), None)
     val calculations = PaymentCalculations(Seq(aPaymentCalculation, PaymentCalculation(aGoods, calculationResultTwo)))
 
     calculations.totalTaxDue mustBe AmountInPence(10 + 5 + 30 + 7)

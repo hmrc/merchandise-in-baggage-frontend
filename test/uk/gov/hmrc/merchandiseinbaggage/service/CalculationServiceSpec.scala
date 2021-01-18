@@ -31,7 +31,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   private val service = injector.instanceOf[CalculationService]
 
   "retrieve payment calculation from mib backend" in {
-    val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567))
+    val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
     val expected = PaymentCalculations(List(PaymentCalculation(aDeclarationGood.goods.head, stubbedResult)))
 
     givenAPaymentCalculation(wireMockServer, aDeclarationGood.goods.head.calculationRequest, stubbedResult)
@@ -60,7 +60,8 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
             CalculationResult(
               AmountInPence(7835),
               AmountInPence(0),
-              AmountInPence(1567)
+              AmountInPence(1567),
+              None
             )
           )
         )
@@ -89,7 +90,8 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
             CalculationResult(
               AmountInPence(7835),
               AmountInPence(259),
-              AmountInPence(1619)
+              AmountInPence(1619),
+              None
             )
           )
         )

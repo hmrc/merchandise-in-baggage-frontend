@@ -18,8 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.model.calculation
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
 
-case class CalculationResult(gbpAmount: AmountInPence, duty: AmountInPence, vat: AmountInPence) {
+case class CalculationResult(
+  gbpAmount: AmountInPence,
+  duty: AmountInPence,
+  vat: AmountInPence,
+  conversionRatePeriod: Option[ConversionRatePeriod]) {
   def taxDue: AmountInPence = AmountInPence(
     duty.value + vat.value
   )
