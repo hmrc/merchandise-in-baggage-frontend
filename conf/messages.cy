@@ -400,7 +400,8 @@ checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
 checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
 checkYourAnswers.sendDeclaration.warning = Rhybudd
-checkYourAnswers.sendDeclaration.warning.message = Os nad ydych yn datgan eich nwyddau i gyd cyn dod i mewn i Brydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
+checkYourAnswers.sendDeclaration.warning.Import.message = Os nad ydych yn datgan eich nwyddau i gyd cyn dod i mewn i Brydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
+checkYourAnswers.sendDeclaration.warning.Export.message = Os nad ydych yn datgan eich nwyddau i gyd cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
 checkYourAnswers.payButton = Derbyn a thalu
 checkYourAnswers.makeDeclarationButton = Cyflwyno datganiad
 
