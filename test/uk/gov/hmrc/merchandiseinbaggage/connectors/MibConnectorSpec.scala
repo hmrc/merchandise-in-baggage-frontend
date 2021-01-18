@@ -39,7 +39,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
   "send a calculation request to backend for payment" in {
     val calculationRequest = aDeclarationGood.goods.head.calculationRequest
-    val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567))
+    val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None)
 
     givenAPaymentCalculation(wireMockServer, calculationRequest, stubbedResult)
 

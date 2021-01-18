@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBrita
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = PayApiRequest(
@@ -102,9 +103,12 @@ trait CoreTestData {
     PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
   val aGoods: Goods = Goods(aCategoryQuantityOfGoods, Twenty, Country("FR", "title.france", "FR", isEu = true, Nil), aPurchaseDetails)
 
-  val aCalculationResult: CalculationResult = CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7))
-  val aCalculationResultWithNoTax: CalculationResult = CalculationResult(AmountInPence(100), AmountInPence(0), AmountInPence(0))
+  val aConversionRatePeriod: ConversionRatePeriod = ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
+  val aCalculationResult: CalculationResult =
+    CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
 
+  val aCalculationResultWithNoTax: CalculationResult =
+    CalculationResult(AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)
   val aPaymentCalculation: PaymentCalculation = PaymentCalculation(aGoods, aCalculationResult)
   val aPaymentCalculations: PaymentCalculations = PaymentCalculations(Seq(aPaymentCalculation))

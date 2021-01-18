@@ -47,8 +47,8 @@ trait TaxCalculation {
     givenADeclarationJourney(declarationJourney)
     givenCurrenciesAreFound()
 
-    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567))
-    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567))
+    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)
+    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)
     val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
       List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(x => AmountInPence(x.value + over))))
 
