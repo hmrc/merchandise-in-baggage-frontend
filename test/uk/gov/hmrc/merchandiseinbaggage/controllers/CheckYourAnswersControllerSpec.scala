@@ -18,11 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
 
+import com.softwaremill.quicklens._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.connectors.{CurrencyConversionConnector, MibConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
@@ -30,7 +31,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
-import com.softwaremill.quicklens._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,7 +40,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
-  private lazy val conversionConnector = injector.instanceOf[CurrencyConversionConnector]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
@@ -57,8 +56,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   }
 
   private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
-    new CalculationService(conversionConnector, mibConnector) {
-      override def paymentBECalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+    new CalculationService(mibConnector) {
+      override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
         Future.successful(aPaymentCalculations)
   }
 

@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
-import uk.gov.hmrc.http.HeaderCarrier
+import com.softwaremill.quicklens._
 import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.CurrencyConversionStub.givenCurrencyIsFound
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-import com.softwaremill.quicklens._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -29,23 +27,11 @@ import scala.concurrent.Future
 trait TaxCalculation {
   this: BasePageSpec[_] =>
 
-  @deprecated("Using payment BE Calculation we do not need to stub currency conversion if done in the BE")
   def givenADeclarationWithTaxDue(
     declarationJourney: DeclarationJourney,
     overThreshold: Option[Int] = Some(0)): Future[PaymentCalculations] = {
-    implicit val hc: HeaderCarrier = HeaderCarrier()
-
-    def givenCurrenciesAreFound(): Unit =
-      declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
-        .map(_.purchaseDetails.currency)
-        .toSet
-        .foreach { ccy: Currency =>
-          givenCurrencyIsFound(ccy.code, wireMockServer)
-          ()
-        }
 
     givenADeclarationJourney(declarationJourney)
-    givenCurrenciesAreFound()
 
     val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)
     val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), None)

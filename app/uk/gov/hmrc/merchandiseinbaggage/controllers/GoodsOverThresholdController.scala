@@ -42,10 +42,10 @@ class GoodsOverThresholdController @Inject()(
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
             request.declarationType match {
               case Import =>
-                for {
-                  paymentCalculations <- calculationService.paymentBECalculation(goods)
-                  rates               <- calculationService.getConversionRates(goods)
-                } yield Ok(view(destination, paymentCalculations.totalGbpValue, rates, Import))
+                calculationService.paymentCalculation(goods).map { calculations =>
+                  import calculations._
+                  Ok(view(destination, totalGbpValue, paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod), Import))
+                }
               case Export =>
                 val amount = AmountInPence.fromBigDecimal(goods.goods.map(_.purchaseDetails.numericAmount).sum)
                 Future successful Ok(view(destination, amount, Seq.empty, Export))

@@ -19,74 +19,22 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.connectors.{CurrencyConversionConnector, MibConnector}
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmountInPence, DeclarationGoods, PaymentCalculation, PaymentCalculations}
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, PaymentCalculation, PaymentCalculations}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.math.BigDecimal.RoundingMode.HALF_UP
 
 @Singleton
-class CalculationService @Inject()(connector: CurrencyConversionConnector, mibConnector: MibConnector)(implicit ec: ExecutionContext) {
+class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentBECalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
-    Future
-      .traverse(declarationGoods.goods) { goods =>
-        mibConnector.calculatePayment(goods.calculationRequest).map(result => PaymentCalculation(goods, result))
-      }
-      .map(PaymentCalculations.apply)
-
-  @deprecated("Call backend for calculation. All this code to be removed including CurrencyConversionConnector.")
   def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
     Future
-      .traverse(declarationGoods.goods) { good =>
-        val code = good.purchaseDetails.currency.valueForConversion
-
-        val futureRate: Future[BigDecimal] = code match {
-          case None => Future.successful(BigDecimal(1))
-          case Some(c) =>
-            connector.getConversionRate(c).map(_.find(_.currencyCode == c).fold(BigDecimal(0))(_.rate))
-        }
-
-        futureRate.map { rate =>
-          val converted: BigDecimal = (good.purchaseDetails.numericAmount / rate).setScale(2, HALF_UP)
-
-          val duty =
-            if (good.countryOfPurchase.isEu)
-              BigDecimal(0.0)
-            else
-              (converted * 0.033).setScale(2, HALF_UP)
-
-          val vatRate = BigDecimal(good.goodsVatRate.value / 100.0)
-
-          val vat = ((converted + duty) * vatRate).setScale(2, HALF_UP)
-
-          val result = CalculationResult(
-            AmountInPence((converted * 100).toLong),
-            AmountInPence((duty * 100).toLong),
-            AmountInPence((vat * 100).toLong),
-            None
-          )
-
-          logger.info(s"Payment calculation for good [$good] with fx rate [$rate] vat rate [$vatRate] gave result [$result]")
-
-          PaymentCalculation(good, result)
+      .traverse(declarationGoods.goods) { goods =>
+        mibConnector.calculatePayment(goods.calculationRequest).map { result =>
+          logger.info(s"Payment calculation for good [$goods] gave result [$result]")
+          PaymentCalculation(goods, result)
         }
       }
       .map(PaymentCalculations.apply)
-
-  def getConversionRates(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[Seq[ConversionRatePeriod]] = {
-    val codes = declarationGoods.goods
-      .filterNot(_.purchaseDetails.currency.valueForConversion.isEmpty)
-      .map(_.purchaseDetails.currency.code)
-      .distinct
-      .mkString("&cc=")
-
-    if (codes.isEmpty)
-      Future(Seq.empty)
-    else
-      connector.getConversionRate(codes)
-  }
 }
