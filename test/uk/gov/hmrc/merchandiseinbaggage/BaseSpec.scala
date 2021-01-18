@@ -53,7 +53,6 @@ trait BaseSpecWithApplication
       .configure(Map(
         "play.http.router"                                   -> "testOnlyDoNotUseInAppConf.Routes",
         "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
-        "microservice.services.currency-conversion.port"     -> WireMockSupport.port,
         "microservice.services.payment.port"                 -> WireMockSupport.port,
         "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port
       ))

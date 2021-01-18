@@ -28,7 +28,6 @@ class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuratio
     bindConstant().annotatedWith(named(name)).to(servicesConfig.baseUrl(service))
 
   override def configure(): Unit = {
-    bindBaseUrl("currencyConversionBaseUrl", "currency-conversion")
     bindBaseUrl("paymentBaseUrl", "payment")
     bindBaseUrl("mibBackendBaseUrl", "merchandise-in-baggage")
     bindBaseUrl("addressLookupFrontendBaseUrl", "address-lookup-frontend")
