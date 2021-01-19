@@ -144,7 +144,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
   "on submit will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
     val declarationJourney = startedExportJourney
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, aSessionId)
 
     givenADeclarationJourneyIsPersisted(declarationJourney)
 

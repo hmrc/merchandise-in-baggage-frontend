@@ -16,6 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import java.text.NumberFormat.getCurrencyInstance
+import java.time.{LocalDate, LocalDateTime, ZoneOffset}
+import java.util.Locale.UK
+import java.util.UUID
+import java.util.UUID.randomUUID
+
 import enumeratum.EnumEntry
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json, OFormat}
@@ -26,13 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
-import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscator.{maybeObfuscate, obfuscate}
 
-import java.text.NumberFormat.getCurrencyInstance
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import java.util.Locale.UK
-import java.util.UUID
-import java.util.UUID.randomUUID
 import scala.collection.immutable
 
 case class SessionId(value: String)
@@ -118,17 +118,13 @@ object GoodsEntries {
 
 case class Name(firstName: String, lastName: String) {
   override val toString: String = s"$firstName $lastName"
-
-  lazy val obfuscated: Name = Name(obfuscate(firstName), obfuscate(lastName))
 }
 
 object Name {
   implicit val format: OFormat[Name] = Json.format[Name]
 }
 
-case class Email(email: String) {
-  lazy val obfuscated: Email = Email(obfuscate(email))
-}
+case class Email(email: String)
 
 object Email {
   implicit val format: OFormat[Email] = Json.format[Email]
@@ -136,8 +132,6 @@ object Email {
 
 case class Eori(value: String) {
   override val toString: String = value
-
-  lazy val obfuscated: Eori = Eori(obfuscate(value))
 }
 
 object Eori {
@@ -170,15 +164,6 @@ case class DeclarationJourney(
   maybeTravellingBySmallVehicle: Option[YesNo] = None,
   maybeRegistrationNumber: Option[String] = None,
   declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)) {
-  lazy val obfuscated: DeclarationJourney =
-    this.copy(
-      maybeNameOfPersonCarryingTheGoods = maybeNameOfPersonCarryingTheGoods.map(_.obfuscated),
-      maybeEmailAddress = maybeEmailAddress.map(_.obfuscated),
-      maybeCustomsAgentName = maybeObfuscate(maybeCustomsAgentName),
-      maybeCustomsAgentAddress = maybeCustomsAgentAddress.map(_.obfuscated),
-      maybeEori = maybeEori.map(_.obfuscated),
-      maybeRegistrationNumber = maybeObfuscate(maybeRegistrationNumber)
-    )
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
