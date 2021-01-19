@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import java.util.UUID
+import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
@@ -187,7 +188,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           Some(
             Declaration(
               declarationId,
-              sessionId,
+              aSessionId,
               DeclarationType.Import,
               GreatBritain,
               completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get,

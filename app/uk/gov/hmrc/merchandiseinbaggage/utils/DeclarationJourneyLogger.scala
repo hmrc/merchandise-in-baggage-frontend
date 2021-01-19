@@ -22,6 +22,7 @@ import play.api.mvc.{Request, RequestHeader}
 import uk.gov.hmrc.http.CookieNames.deviceID
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
+import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
 

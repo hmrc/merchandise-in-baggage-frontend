@@ -71,7 +71,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     val controller =
       new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, aSessionId)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 303

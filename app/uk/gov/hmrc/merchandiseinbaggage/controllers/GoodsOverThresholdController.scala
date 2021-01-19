@@ -44,7 +44,12 @@ class GoodsOverThresholdController @Inject()(
               case Import =>
                 calculationService.paymentCalculation(goods).map { calculations =>
                   import calculations._
-                  Ok(view(destination, totalGbpValue, paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct, Import))
+                  Ok(
+                    view(
+                      destination,
+                      totalGbpValue,
+                      paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct,
+                      Import))
                 }
               case Export =>
                 val amount = AmountInPence.fromBigDecimal(goods.goods.map(_.purchaseDetails.numericAmount).sum)

@@ -38,11 +38,11 @@ trait CoreTestData {
     "http://localhost:8281/declare-commercial-goods/check-your-answers"
   )
 
-  val sessionId: SessionId = SessionId()
+  val aSessionId: SessionId = SessionId()
 
-  val startedImportJourney: DeclarationJourney = DeclarationJourney(sessionId, Import)
+  val startedImportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
-  val startedExportJourney: DeclarationJourney = DeclarationJourney(sessionId, Export)
+  val startedExportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Export)
 
   val startedImportToGreatBritainJourney: DeclarationJourney =
     startedImportJourney.copy(maybeGoodsDestination = Some(GreatBritain))
@@ -56,7 +56,7 @@ trait CoreTestData {
     completedGoodsEntry.copy(
       maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
 
-  val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(sessionId)
+  val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(aSessionId)
 
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 

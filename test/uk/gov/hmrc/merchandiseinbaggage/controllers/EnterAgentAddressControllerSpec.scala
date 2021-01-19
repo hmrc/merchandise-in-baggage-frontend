@@ -37,7 +37,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
     s"store address and redirect to ${routes.EoriNumberController.onPageLoad()}" when {
       "a declaration journey has been started" in {
         givenADeclarationJourneyIsPersisted(startedImportJourney)
-        val request = buildGet(url, sessionId)
+        val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
@@ -45,7 +45,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
         startedImportJourney.maybeCustomsAgentAddress mustBe None
         declarationJourneyRepository
-          .findBySessionId(sessionId)
+          .findBySessionId(aSessionId)
           .futureValue
           .get
           .maybeCustomsAgentAddress mustBe Some(address)
@@ -55,7 +55,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
     s"store address and redirect to ${routes.CheckYourAnswersController.onPageLoad()}" when {
       "a declaration journey is complete" in {
         givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-        val request = buildGet(url, sessionId)
+        val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
@@ -63,7 +63,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
         completedDeclarationJourney.maybeCustomsAgentAddress mustNot be(Some(address))
         declarationJourneyRepository
-          .findBySessionId(sessionId)
+          .findBySessionId(aSessionId)
           .futureValue
           .get
           .maybeCustomsAgentAddress mustBe Some(address)
