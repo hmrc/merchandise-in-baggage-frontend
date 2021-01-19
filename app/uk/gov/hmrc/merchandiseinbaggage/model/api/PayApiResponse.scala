@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggage.utils.ValueClassFormat
 
 case class JourneyId(value: String)
+
 object JourneyId {
-  implicit val format: Format[JourneyId] = ValueClassFormat.format(value => JourneyId.apply(value))(_.value)
+  implicit val format: Format[JourneyId] = implicitly[Format[String]].inmap(JourneyId.apply, _.value)
 }
 
 case class PayApiResponse(journeyId: JourneyId, nextUrl: URL)
