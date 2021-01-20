@@ -25,9 +25,9 @@ p: components.p,
 link: components.link
 )
 
-@(declarationType: DeclarationType, goodsDestination: GoodsDestination)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declarationType: DeclarationType, goodsDestination: GoodsDestination, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"cannotUseService.$declarationType.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(titleNoForm(s"cannotUseService.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @h1(s"cannotUseService.$declarationType.heading")
 
     @p(Html(messages(s"cannotUseService.$declarationType.p1")))

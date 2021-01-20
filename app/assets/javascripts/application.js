@@ -4,6 +4,11 @@
 /* Taken from https://github.com/alphagov/govuk_elements/blob/master/assets/javascripts/application.js */
 
 $(document).ready(function () {
+
+    $('#back-link[href="#"]').on('click', function(e){
+        e.preventDefault();
+        window.history.back();
+    });
     // Turn off jQuery animation
     jQuery.fx.off = true;
     //Add keypress event on every link where exist role="button"
