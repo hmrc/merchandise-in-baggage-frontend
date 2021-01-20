@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.test.Helpers._
 import play.mvc.Http.Status
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 

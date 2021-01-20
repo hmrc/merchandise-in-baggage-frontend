@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage, ReviewGoodsPage}
 

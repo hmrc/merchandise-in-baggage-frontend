@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.BasePage
 
 import scala.concurrent.ExecutionContext.Implicits.global

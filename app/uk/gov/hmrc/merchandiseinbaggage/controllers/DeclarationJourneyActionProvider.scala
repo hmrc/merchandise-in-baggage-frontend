@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import controllers.Assets.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggage.model.core.SessionId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 

@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.EoriNumberForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 
 class EoriNumberFormSpec extends FieldBehaviours {
   ".value" must {

@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json.{Json, OFormat}
 
-case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String]) {
+case class Email(email: String)
 
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("code" -> code, "displayName" -> messages(countryName), "synonyms" -> countrySynonyms)
-}
-
-object Country {
-  implicit val formats: OFormat[Country] = Json.format[Country]
+object Email {
+  implicit val format: OFormat[Email] = Json.format[Email]
 }

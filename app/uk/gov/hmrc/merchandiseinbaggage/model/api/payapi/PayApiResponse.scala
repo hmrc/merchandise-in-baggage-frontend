@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion
+package uk.gov.hmrc.merchandiseinbaggage.model.api.payapi
 
-import java.time.LocalDate
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 
-import play.api.libs.json.{Json, OFormat}
+case class JourneyId(value: String)
 
-case class ConversionRatePeriod(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: BigDecimal) {
-  def display: String = s"$rate ($currencyCode)"
+object JourneyId {
+  implicit val format: Format[JourneyId] = implicitly[Format[String]].inmap(JourneyId.apply, _.value)
 }
 
-object ConversionRatePeriod {
-  implicit val format: OFormat[ConversionRatePeriod] = Json.format[ConversionRatePeriod]
+case class PayApiResponse(journeyId: JourneyId, nextUrl: URL)
+
+object PayApiResponse {
+  implicit val format: Format[PayApiResponse] = Json.format[PayApiResponse]
 }

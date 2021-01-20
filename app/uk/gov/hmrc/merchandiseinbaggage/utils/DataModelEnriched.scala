@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.utils
 
-import play.api.i18n.Messages
-import play.api.libs.json._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
+import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
-case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String]) {
+object DataModelEnriched {
 
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+  implicit class PurchaseDetailsEnriched(details: PurchaseDetails) {
+    import details._
 
-}
+    val numericAmount: BigDecimal = BigDecimal(amount)
 
-object Port {
-  implicit val format: OFormat[Port] = Json.format[Port]
+    def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.code)
+  }
 }

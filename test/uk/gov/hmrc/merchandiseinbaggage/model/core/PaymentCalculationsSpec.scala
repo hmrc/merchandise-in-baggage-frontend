@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, PaymentCalculation, PaymentCalculations}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 class PaymentCalculationsSpec extends BaseSpec with CoreTestData {

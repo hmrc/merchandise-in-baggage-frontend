@@ -21,7 +21,7 @@ import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{PayApiRequest, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{PayApiRequest, PayApiResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 

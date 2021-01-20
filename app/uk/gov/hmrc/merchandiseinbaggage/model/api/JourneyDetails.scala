@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json.{JsObject, JsResult, JsSuccess, JsValue, Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Port, YesNo}
-
 import java.time.LocalDate
+
+import play.api.libs.json._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 
 sealed trait JourneyDetails {
   val port: Port

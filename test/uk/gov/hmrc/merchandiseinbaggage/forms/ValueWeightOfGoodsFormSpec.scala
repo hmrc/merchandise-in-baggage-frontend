@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 
 class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
 

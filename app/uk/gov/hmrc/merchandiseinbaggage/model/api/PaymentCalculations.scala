@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 
 case class PaymentCalculation(goods: Goods, calculationResult: CalculationResult)
 
 object PaymentCalculation {
   implicit val format: OFormat[PaymentCalculation] = Json.format[PaymentCalculation]
-}
-
-case class TotalCalculationResult(
-  paymentCalculations: PaymentCalculations,
-  totalGbpValue: AmountInPence,
-  totalTaxDue: AmountInPence,
-  totalDutyDue: AmountInPence,
-  totalVatDue: AmountInPence)
-
-object TotalCalculationResult {
-  implicit val format: OFormat[TotalCalculationResult] = Json.format[TotalCalculationResult]
 }
 
 case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation]) {

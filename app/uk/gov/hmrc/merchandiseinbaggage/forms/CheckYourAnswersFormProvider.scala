@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.Form
 import play.api.data.Forms.{mapping, _}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 
 object CheckYourAnswersForm extends Mappings {
   val taxDue = "taxDue"

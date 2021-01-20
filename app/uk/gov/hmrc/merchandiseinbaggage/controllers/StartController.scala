@@ -18,7 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 
 import scala.concurrent.ExecutionContext

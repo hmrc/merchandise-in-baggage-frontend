@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json._
+import play.api.libs.json.Format
 import play.api.libs.functional.syntax._
 
-case class DeclarationId(value: String)
+case class MibReference(value: String)
 
-object DeclarationId {
-  implicit val format: Format[DeclarationId] = implicitly[Format[String]].inmap(DeclarationId.apply, _.value)
+object MibReference {
+  implicit val format: Format[MibReference] = implicitly[Format[String]].inmap(MibReference.apply, _.value)
 }

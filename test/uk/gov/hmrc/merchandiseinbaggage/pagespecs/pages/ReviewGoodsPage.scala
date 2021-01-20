@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable

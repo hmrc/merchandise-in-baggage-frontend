@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsDestination}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsDestinationPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CannotUseServiceIrelandPage, ExciseAndRestrictedGoodsPage, RadioButtonPage}
 

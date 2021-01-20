@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.http.HeaderNames.LOCATION
 import play.api.libs.json.Json
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 
 object AddressLookupFrontendStub {
 

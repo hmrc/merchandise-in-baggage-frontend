@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.adresslookup
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json._
+import java.time.LocalDate
 
-case class AddressLookupCountry(code: String, name: Option[String])
+import play.api.libs.json.{Json, OFormat}
 
-case class Address(lines: Seq[String], postcode: Option[String], country: AddressLookupCountry)
+case class JourneyDetailsEntry(portCode: String, dateOfTravel: LocalDate)
 
-object Address {
-  implicit val formatCountry: OFormat[AddressLookupCountry] = Json.format[AddressLookupCountry]
-
-  implicit val formatAddressLookupAddress: OFormat[Address] = Json.format[Address]
+object JourneyDetailsEntry {
+  implicit val format: OFormat[JourneyDetailsEntry] = Json.format[JourneyDetailsEntry]
 }

@@ -22,7 +22,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with CoreTestData {

@@ -17,10 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, GoodsEntries}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.ReviewGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 

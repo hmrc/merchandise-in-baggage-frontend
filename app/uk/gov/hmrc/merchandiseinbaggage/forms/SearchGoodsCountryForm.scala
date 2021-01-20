@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 
 object SearchGoodsCountryForm extends Mappings {

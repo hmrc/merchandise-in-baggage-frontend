@@ -21,7 +21,7 @@ import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.JourneyDetailsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
 
 class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[JourneyDetailsEntry] {
 

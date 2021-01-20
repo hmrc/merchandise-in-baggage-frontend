@@ -17,11 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+
 import scala.concurrent.ExecutionContext
 
 @Singleton

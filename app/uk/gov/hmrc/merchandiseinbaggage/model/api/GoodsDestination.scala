@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import enumeratum.EnumEntry
 import play.api.libs.json.Format
-import uk.gov.hmrc.merchandiseinbaggage.model.{Enum, EnumEntryRadioItemSupport, EnumFormat, RadioSupport}
 
 import scala.collection.immutable
 

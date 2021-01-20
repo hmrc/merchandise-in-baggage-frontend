@@ -24,8 +24,9 @@ import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.api.indexes.Index
 import reactivemongo.api.indexes.IndexType.Ascending
 import reactivemongo.bson.BSONDocument
+import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney.{format, id}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, SessionId}
 import uk.gov.hmrc.mongo.ReactiveRepository
 
 import scala.concurrent.ExecutionContext.Implicits.global

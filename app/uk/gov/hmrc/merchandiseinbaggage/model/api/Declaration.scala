@@ -16,11 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
-
 import java.time.LocalDateTime
+
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
 case class Declaration(
   declarationId: DeclarationId,

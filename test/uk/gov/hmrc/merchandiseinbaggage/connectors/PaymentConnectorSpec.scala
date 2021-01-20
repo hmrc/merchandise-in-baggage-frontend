@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyId, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig

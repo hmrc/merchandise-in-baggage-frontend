@@ -17,11 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
+import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.RemoveGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, YesNo}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 

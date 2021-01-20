@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.quicklens._
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import scala.concurrent.ExecutionContext.Implicits.global

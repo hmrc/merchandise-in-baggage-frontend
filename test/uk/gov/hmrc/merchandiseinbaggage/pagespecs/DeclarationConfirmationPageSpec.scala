@@ -17,11 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import java.time.LocalDateTime
+
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmountInPence, DeclarationId, DeclarationType, Goods, TotalCalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, Declaration, DeclarationId, DeclarationType, Goods, TotalCalculationResult}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._

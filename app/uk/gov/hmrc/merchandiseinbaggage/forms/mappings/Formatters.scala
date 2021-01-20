@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms.mappings
 import enumeratum.EnumEntry
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Enum
 
 import scala.util.control.Exception.nonFatalCatch
 
