@@ -17,7 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{CategoryQuantityOfGoods, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsTypeQuantityPage.{path, title}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsTypeQuantityPage, GoodsVatRatePage, ReviewGoodsPage, ValueWeightOfGoodsPage}
 

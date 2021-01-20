@@ -21,7 +21,7 @@ import org.scalatest.OptionValues
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.MappingsSpec.Foos.Bar
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Enum
 
 import scala.collection.immutable
 

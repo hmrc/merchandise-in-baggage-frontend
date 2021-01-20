@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Eori
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Eori
 
 class EoriNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Eori] {
 

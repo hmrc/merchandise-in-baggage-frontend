@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers.testonly
 
 import java.time.LocalDate.now
+
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -27,12 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormProvider
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Currency, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry, Country}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController

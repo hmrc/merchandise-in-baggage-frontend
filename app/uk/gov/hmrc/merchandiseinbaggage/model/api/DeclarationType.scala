@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
+import enumeratum.EnumEntry
 
-case class JourneyId(value: String)
+import scala.collection.immutable
 
-object JourneyId {
-  implicit val format: Format[JourneyId] = implicitly[Format[String]].inmap(JourneyId.apply, _.value)
+sealed trait DeclarationType extends EnumEntry {
+  val messageKey = s"${DeclarationType.baseMessageKey}.${entryName.toLowerCase}"
 }
 
-case class PayApiResponse(journeyId: JourneyId, nextUrl: URL)
+object DeclarationType extends Enum[DeclarationType] {
+  override val baseMessageKey: String = "declarationType"
+  override val values: immutable.IndexedSeq[DeclarationType] = findValues
 
-object PayApiResponse {
-  implicit val format: Format[PayApiResponse] = Json.format[PayApiResponse]
+  case object Import extends DeclarationType
+  case object Export extends DeclarationType
 }

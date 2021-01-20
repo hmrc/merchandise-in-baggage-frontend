@@ -21,6 +21,7 @@ import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PurchaseDetailsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
   override lazy val page: PurchaseDetailsPage = wire[PurchaseDetailsPage]

@@ -20,8 +20,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.ExciseAndRestrictedGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.NorthernIreland
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 

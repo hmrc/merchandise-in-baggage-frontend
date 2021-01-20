@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, Eori}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Eori
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.EoriNumberPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, EoriNumberPage, TravellerDetailsPage}
 

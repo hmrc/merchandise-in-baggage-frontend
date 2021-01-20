@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.ValueWeightOfGoodsPage.{greatBritainTitle, northernIrelandTitle, path}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CannotUseServicePage, ExciseAndRestrictedGoodsPage, GoodsTypeQuantityPage, RadioButtonPage}
 

@@ -21,10 +21,11 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{MibReference, PayApiRequest}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.PaymentCalculations
-
+import uk.gov.hmrc.merchandiseinbaggage.model.api.MibReference
+import uk.gov.hmrc.merchandiseinbaggage.model.api.PaymentCalculations
 import javax.inject.Inject
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

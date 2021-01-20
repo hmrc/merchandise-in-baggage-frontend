@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import enumeratum.{EnumEntry, PlayEnum}
 import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json._
+import play.api.libs.json.{Format, JsError, JsString, JsSuccess, Reads, Writes}
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.hint.Hint
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import uk.gov.hmrc.merchandiseinbaggage.model.api
 
 trait Enum[A <: EnumEntry] extends PlayEnum[A] {
   val baseMessageKey: String
@@ -32,7 +33,7 @@ trait Enum[A <: EnumEntry] extends PlayEnum[A] {
 }
 
 object EnumFormat {
-  def apply[T <: EnumEntry](e: Enum[T]): Format[T] =
+  def apply[T <: EnumEntry](e: api.Enum[T]): Format[T] =
     Format(
       Reads {
         case JsString(value) =>
@@ -61,7 +62,7 @@ trait EnumEntryRadioItemSupport {
 }
 
 trait RadioSupport[A <: EnumEntry with EnumEntryRadioItemSupport] {
-  this: Enum[A] =>
+  this: api.Enum[A] =>
   def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
     value.radioItem(form, baseMessageKey)(messages)
   }

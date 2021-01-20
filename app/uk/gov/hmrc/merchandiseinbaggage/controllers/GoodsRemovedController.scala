@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRemovedView
 
 @Singleton

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms.behaviours
 
 import play.api.data.{Form, FormError}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 
 trait YesNoFieldBehaviours extends FieldBehaviours {
 

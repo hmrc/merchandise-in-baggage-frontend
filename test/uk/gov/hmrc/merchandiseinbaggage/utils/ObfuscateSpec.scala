@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, Email, Eori, Name}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Eori, Name}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 

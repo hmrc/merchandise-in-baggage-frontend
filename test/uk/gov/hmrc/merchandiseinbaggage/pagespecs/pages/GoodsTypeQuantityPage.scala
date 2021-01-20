@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.core.CategoryQuantityOfGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
 
 class GoodsTypeQuantityPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[CategoryQuantityOfGoods] {
 

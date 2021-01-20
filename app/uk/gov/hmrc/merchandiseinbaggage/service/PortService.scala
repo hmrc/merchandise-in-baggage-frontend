@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Port
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Port
 
 object PortService {
 

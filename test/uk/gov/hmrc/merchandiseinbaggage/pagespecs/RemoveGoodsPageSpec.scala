@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.RemoveGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, GoodsRemovedPage, RadioButtonPage, ReviewGoodsPage}
 

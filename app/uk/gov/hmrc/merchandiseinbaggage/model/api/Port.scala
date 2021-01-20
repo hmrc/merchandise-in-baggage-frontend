@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.calculation
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{Country, Currency, GoodsVatRate}
+import play.api.i18n.Messages
+import play.api.libs.json._
 
-case class CalculationRequest(amount: BigDecimal, currency: Currency, country: Country, vatRate: GoodsVatRate)
+case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String]) {
 
-object CalculationRequest {
-  implicit val format: OFormat[CalculationRequest] = Json.format[CalculationRequest]
+  def toAutoCompleteJson(implicit messages: Messages): JsObject =
+    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+
+}
+
+object Port {
+  implicit val format: OFormat[Port] = Json.format[Port]
 }

@@ -23,7 +23,7 @@ import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 
 import scala.concurrent.{ExecutionContext, Future}
 

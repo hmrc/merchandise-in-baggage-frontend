@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{Json, OFormat}
 
-case class Currency(code: String, displayName: String, valueForConversion: Option[String], currencySynonyms: List[String]) {
-
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
-
+case class Eori(value: String) {
+  override val toString: String = value
 }
 
-object Currency {
-  implicit val formats = Json.format[Currency]
+object Eori {
+  implicit val format: OFormat[Eori] = Json.format[Eori]
 }

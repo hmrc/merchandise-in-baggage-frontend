@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, GoodsVatRate}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRate
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
+import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsVatRatePage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsTypeQuantityPage, RadioButtonPage, SearchGoodsCountryPage}
 

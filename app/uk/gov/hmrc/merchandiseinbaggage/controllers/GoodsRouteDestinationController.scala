@@ -20,9 +20,9 @@ import javax.inject.Inject
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsRouteDestinationForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRouteDestinationView
 

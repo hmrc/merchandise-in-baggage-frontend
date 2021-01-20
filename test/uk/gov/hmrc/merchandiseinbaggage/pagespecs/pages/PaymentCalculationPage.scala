@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.{By, WebDriver}
 import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 
 import scala.collection.JavaConverters._
 

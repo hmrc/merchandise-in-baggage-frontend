@@ -20,7 +20,7 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.VehicleSizeForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleSizeView
 

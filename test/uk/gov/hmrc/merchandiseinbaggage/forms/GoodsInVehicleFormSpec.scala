@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsInVehicleForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 
 class GoodsInVehicleFormSpec extends YesNoFieldBehaviours {
 

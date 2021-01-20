@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsVatRateForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsVatRate, GoodsVatRates}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{GoodsVatRate, GoodsVatRates}
 
 class GoodsVatRateFormSpec extends OptionFieldBehaviours {
 

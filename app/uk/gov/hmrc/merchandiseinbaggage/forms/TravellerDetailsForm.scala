@@ -20,7 +20,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Name
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
 
 object TravellerDetailsForm extends Mappings {
   val firstName = "firstName"

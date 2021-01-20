@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
-import enumeratum.EnumEntry
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
-import scala.collection.immutable
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.api.currencyconversion.ConversionRatePeriod
 
-sealed trait DeclarationType extends EnumEntry {
-  val messageKey = s"${DeclarationType.baseMessageKey}.${entryName.toLowerCase}"
+case class CalculationResult(
+  gbpAmount: AmountInPence,
+  duty: AmountInPence,
+  vat: AmountInPence,
+  conversionRatePeriod: Option[ConversionRatePeriod]) {
+  def taxDue: AmountInPence = AmountInPence(
+    duty.value + vat.value
+  )
 }
 
-object DeclarationType extends Enum[DeclarationType] {
-  override val baseMessageKey: String = "declarationType"
-  override val values: immutable.IndexedSeq[DeclarationType] = findValues
-
-  case object Import extends DeclarationType
-  case object Export extends DeclarationType
+object CalculationResult {
+  implicit val format: OFormat[CalculationResult] = Json.format[CalculationResult]
 }

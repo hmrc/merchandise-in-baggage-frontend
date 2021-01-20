@@ -21,8 +21,8 @@ import java.time.LocalDate
 import enumeratum.EnumEntry
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Enum
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 
 trait Mappings extends Formatters {
 

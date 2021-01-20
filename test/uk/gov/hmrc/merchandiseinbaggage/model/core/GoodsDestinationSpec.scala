@@ -22,7 +22,8 @@ import org.scalatest.OptionValues
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsString, Json}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.GreatBritain
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{GoodsDestination, GoodsDestinations}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 
 class GoodsDestinationSpec extends BaseSpec with ScalaCheckPropertyChecks with OptionValues {
 

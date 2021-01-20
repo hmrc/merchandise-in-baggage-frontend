@@ -18,7 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
 import com.softwaremill.quicklens._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.PaymentCalculations
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
 

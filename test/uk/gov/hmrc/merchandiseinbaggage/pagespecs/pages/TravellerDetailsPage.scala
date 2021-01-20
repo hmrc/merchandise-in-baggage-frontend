@@ -20,7 +20,7 @@ import org.openqa.selenium.WebDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Name
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
 
 class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Name] {
 

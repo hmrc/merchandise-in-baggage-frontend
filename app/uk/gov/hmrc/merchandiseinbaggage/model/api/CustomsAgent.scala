@@ -16,24 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.AmountInPence
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 
-case class MibReference(value: String)
+case class CustomsAgent(name: String, address: Address)
 
-object MibReference {
-  implicit val format: Format[MibReference] = implicitly[Format[String]].inmap(MibReference.apply, _.value)
-}
-
-case class PayApiRequest(
-  mibReference: MibReference,
-  amountInPence: AmountInPence,
-  vatAmountInPence: AmountInPence,
-  dutyAmountInPence: AmountInPence,
-  returnUrl: String,
-  backUrl: String)
-
-object PayApiRequest {
-  implicit val format: Format[PayApiRequest] = Json.format[PayApiRequest]
+object CustomsAgent {
+  implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
 }

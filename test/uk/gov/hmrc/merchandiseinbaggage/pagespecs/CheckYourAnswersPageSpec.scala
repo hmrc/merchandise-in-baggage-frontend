@@ -25,8 +25,9 @@ import org.scalatestplus.selenium.WebBrowser
 import play.api.i18n.Messages
 import uk.gov.hmrc.http.HeaderNames.{xRequestId, xSessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyInSmallVehicle}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CheckYourAnswersPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._

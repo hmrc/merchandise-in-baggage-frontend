@@ -17,16 +17,17 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.time.LocalDateTime
-import play.api.libs.json.Json.{parse, toJson}
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import java.util.UUID
+
+import play.api.libs.json.Json.{parse, toJson}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))

@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationGoods, PaymentCalculation, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, PaymentCalculation, PaymentCalculations}
 
 import scala.concurrent.{ExecutionContext, Future}
 

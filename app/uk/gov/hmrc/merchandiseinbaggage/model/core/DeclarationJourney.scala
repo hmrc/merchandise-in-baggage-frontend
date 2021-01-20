@@ -16,51 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.text.NumberFormat.getCurrencyInstance
-import java.time.{LocalDate, LocalDateTime, ZoneOffset}
-import java.util.Locale.UK
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
-import java.util.UUID.randomUUID
 
-import enumeratum.EnumEntry
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Format, Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.Enum
-import uk.gov.hmrc.merchandiseinbaggage.model.adresslookup.Address
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationRequest
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, Country}
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
-
-import scala.collection.immutable
-
-case class SessionId(value: String)
-
-object SessionId {
-  implicit val format: Format[SessionId] = implicitly[Format[String]].inmap(SessionId(_), _.value)
-
-  def apply(): SessionId = SessionId(randomUUID().toString)
-}
-
-case class CategoryQuantityOfGoods(category: String, quantity: String)
-
-object CategoryQuantityOfGoods {
-  implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
-}
-
-case class AmountInPence(value: Long) {
-  val inPounds: BigDecimal = (BigDecimal(value) / 100).setScale(2)
-  val formattedInPounds: String = getCurrencyInstance(UK).format(inPounds)
-  val formattedInPoundsUI: String = formattedInPounds.split("\\.00")(0) //TODO not sure if necessary different formats
-  lazy val isPaymentRequired: Boolean = inPounds.compareTo(BigDecimal(0.0)) > 0
-}
-
-object AmountInPence {
-  implicit val format: Format[AmountInPence] = implicitly[Format[Long]].inmap(AmountInPence(_), _.value)
-
-  def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
-}
 
 case class GoodsEntry(
   maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
@@ -114,34 +78,6 @@ object GoodsEntries {
   def apply(goodsEntry: GoodsEntry): GoodsEntries = GoodsEntries(Seq(goodsEntry))
 
   val empty: GoodsEntries = GoodsEntries()
-}
-
-case class Name(firstName: String, lastName: String) {
-  override val toString: String = s"$firstName $lastName"
-}
-
-object Name {
-  implicit val format: OFormat[Name] = Json.format[Name]
-}
-
-case class Email(email: String)
-
-object Email {
-  implicit val format: OFormat[Email] = Json.format[Email]
-}
-
-case class Eori(value: String) {
-  override val toString: String = value
-}
-
-object Eori {
-  implicit val format: OFormat[Eori] = Json.format[Eori]
-}
-
-case class JourneyDetailsEntry(portCode: String, dateOfTravel: LocalDate)
-
-object JourneyDetailsEntry {
-  implicit val format: OFormat[JourneyDetailsEntry] = Json.format[JourneyDetailsEntry]
 }
 
 case class DeclarationJourney(
@@ -228,53 +164,4 @@ object DeclarationJourney extends MongoDateTimeFormats {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   val id = "sessionId"
-}
-
-case class Goods(
-  categoryQuantityOfGoods: CategoryQuantityOfGoods,
-  goodsVatRate: GoodsVatRate,
-  countryOfPurchase: Country,
-  purchaseDetails: PurchaseDetails) {
-
-  val calculationRequest: CalculationRequest =
-    CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, countryOfPurchase, goodsVatRate)
-}
-
-object Goods {
-  implicit val format: OFormat[Goods] = Json.format[Goods]
-}
-
-case class DeclarationGoods(goods: Seq[Goods])
-
-object DeclarationGoods {
-  implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]
-
-  def apply(goods: Goods): DeclarationGoods = DeclarationGoods(Seq(goods))
-}
-
-case class CustomsAgent(name: String, address: Address)
-
-object CustomsAgent {
-  implicit val format: OFormat[CustomsAgent] = Json.format[CustomsAgent]
-}
-
-sealed trait YesNo extends EnumEntry {
-  val messageKey = s"${YesNo.baseMessageKey}.${entryName.toLowerCase}"
-}
-
-object YesNo extends Enum[YesNo] {
-  override val baseMessageKey: String = "site"
-  override val values: immutable.IndexedSeq[YesNo] = findValues
-
-  def from(bool: Boolean): YesNo = if (bool) Yes else No
-
-  def to(yesNo: YesNo): Boolean = yesNo match {
-    case Yes => true
-    case No  => false
-  }
-
-  case object Yes extends YesNo
-
-  case object No extends YesNo
-
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.Currency
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Currency
 
 object CurrencyService {
 

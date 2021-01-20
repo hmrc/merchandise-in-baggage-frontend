@@ -18,7 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, Email}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.EnterEmailPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{EnterEmailPage, JourneyDetailsPage, TravellerDetailsPage}
 

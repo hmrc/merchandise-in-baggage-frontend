@@ -19,17 +19,19 @@ package uk.gov.hmrc.merchandiseinbaggage
 import java.time.LocalDate
 
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggage.model.core.YesNo.No
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
-import uk.gov.hmrc.merchandiseinbaggage.model.currencyconversion.ConversionRatePeriod
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.currencyconversion.ConversionRatePeriod
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry}
 
 trait CoreTestData {
-  val payApiRequest: PayApiRequest = PayApiRequest(
+  val payApiRequest: PayApiRequest = payapi.PayApiRequest(
     MibReference("MIBI1234567890"),
     AmountInPence(1),
     AmountInPence(2),
