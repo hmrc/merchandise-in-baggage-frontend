@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Format
-import uk.gov.hmrc.merchandiseinbaggage.utils.ValueClassFormat
 
 case class URL(value: String) extends AnyVal
+
 object URL {
-  implicit val format: Format[URL] = ValueClassFormat.format(value => URL.apply(value))(_.value)
+  implicit val format: Format[URL] = implicitly[Format[String]].inmap(URL.apply, _.value)
 }
