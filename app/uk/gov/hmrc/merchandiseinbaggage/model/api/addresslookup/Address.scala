@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup
 
-import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json.{Json, OFormat}
 
 case class Address(lines: Seq[String], postcode: Option[String], country: AddressLookupCountry)
 
@@ -28,13 +27,3 @@ object Address {
 }
 
 case class AddressLookupCountry(code: String, name: Option[String])
-
-case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String]) {
-
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("code" -> code, "displayName" -> messages(countryName), "synonyms" -> countrySynonyms)
-}
-
-object Country {
-  implicit val formats: OFormat[Country] = Json.format[Country]
-}

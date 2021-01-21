@@ -20,11 +20,10 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,12 +47,12 @@ class GoodsOverThresholdController @Inject()(
                   Ok(
                     view(
                       destination,
-                      totalGbpValue,
+                      calculations.totalGbpValue,
                       paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct,
                       Import))
                 }
               case Export =>
-                val amount = AmountInPence.fromBigDecimal(goods.goods.map(_.purchaseDetails.numericAmount).sum)
+                val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal
                 Future successful Ok(view(destination, amount, Seq.empty, Export))
             }
           }

@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, Country}
-import uk.gov.hmrc.merchandiseinbaggage.service.PortService
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
 
 case class GoodsEntry(
   maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
@@ -99,7 +99,8 @@ case class DeclarationJourney(
   maybeTravellingByVehicle: Option[YesNo] = None,
   maybeTravellingBySmallVehicle: Option[YesNo] = None,
   maybeRegistrationNumber: Option[String] = None,
-  declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)) {
+  declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString))
+    extends MibReferenceGenerator {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
@@ -153,7 +154,10 @@ case class DeclarationJourney(
         Some(email),
         maybeCustomsAgent,
         eori,
-        journeyDetails)
+        journeyDetails,
+        LocalDateTime.now(),
+        mibReference
+      )
     }
   }
 

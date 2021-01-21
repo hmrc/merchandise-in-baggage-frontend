@@ -18,18 +18,12 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationRequest
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 case class Goods(
   categoryQuantityOfGoods: CategoryQuantityOfGoods,
   goodsVatRate: GoodsVatRate,
   countryOfPurchase: Country,
-  purchaseDetails: PurchaseDetails) {
-
-  val calculationRequest: CalculationRequest =
-    CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, countryOfPurchase, goodsVatRate)
-}
+  purchaseDetails: PurchaseDetails)
 
 object Goods {
   implicit val format: OFormat[Goods] = Json.format[Goods]
@@ -39,6 +33,4 @@ case class DeclarationGoods(goods: Seq[Goods])
 
 object DeclarationGoods {
   implicit val format: OFormat[DeclarationGoods] = Json.format[DeclarationGoods]
-
-  def apply(goods: Goods): DeclarationGoods = DeclarationGoods(Seq(goods))
 }

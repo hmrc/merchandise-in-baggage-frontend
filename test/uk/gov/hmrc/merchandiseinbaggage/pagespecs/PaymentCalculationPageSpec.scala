@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.PaymentCalculations
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] with TaxCalculation {
   override def page: PaymentCalculationPage = wire[PaymentCalculationPage]

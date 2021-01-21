@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api.currencyconversion
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import java.time.LocalDate
 
 import play.api.libs.json.{Json, OFormat}
 
-case class ConversionRatePeriod(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: BigDecimal) {
-  def display: String = s"$rate ($currencyCode)"
-}
+case class ConversionRatePeriod(startDate: LocalDate, endDate: LocalDate, currencyCode: String, rate: BigDecimal)
 
 object ConversionRatePeriod {
   implicit val format: OFormat[ConversionRatePeriod] = Json.format[ConversionRatePeriod]

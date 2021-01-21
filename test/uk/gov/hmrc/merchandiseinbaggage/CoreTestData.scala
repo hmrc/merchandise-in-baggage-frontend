@@ -25,9 +25,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
-import uk.gov.hmrc.merchandiseinbaggage.model.api.currencyconversion.ConversionRatePeriod
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry}
 
 trait CoreTestData {
@@ -111,7 +110,7 @@ trait CoreTestData {
 
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
-  val aDeclarationGood: DeclarationGoods = DeclarationGoods(aGoods)
+  val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
   val aPaymentCalculation: PaymentCalculation = PaymentCalculation(aGoods, aCalculationResult)
   val aPaymentCalculations: PaymentCalculations = PaymentCalculations(Seq(aPaymentCalculation))
 

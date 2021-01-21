@@ -16,15 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.Json
 
-case class Currency(code: String, displayName: String, valueForConversion: Option[String], currencySynonyms: List[String]) {
-
-  def toAutoCompleteJson(implicit messages: Messages): JsObject =
-    Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
-
-}
+case class Currency(code: String, displayName: String, valueForConversion: Option[String], currencySynonyms: List[String])
 
 object Currency {
   implicit val formats = Json.format[Currency]

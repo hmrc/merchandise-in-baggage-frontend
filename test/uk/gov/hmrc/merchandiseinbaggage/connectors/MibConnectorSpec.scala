@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport {
 

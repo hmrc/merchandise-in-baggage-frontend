@@ -104,7 +104,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be complete" when {
       "all goods entries are complete" in {
-        GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe Some(DeclarationGoods(goods))
+        GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(goods)))
       }
     }
 
@@ -201,9 +201,11 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
                 Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
                 completedDeclarationJourney.maybeJourneyDetailsEntry.get.dateOfTravel,
                 completedDeclarationJourney.maybeRegistrationNumber.get
-              )
-            ).copy(dateOfDeclaration = now)
-              .copy(mibReference = reference))
+              ),
+              now,
+              reference
+            )
+          )
       }
 
       "the user is not a customs agent" in {

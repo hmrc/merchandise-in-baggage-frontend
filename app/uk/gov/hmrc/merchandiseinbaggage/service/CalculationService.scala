@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, PaymentCalculation, PaymentCalculations}
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 @Singleton
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
