@@ -35,6 +35,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.PayApiStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 
 import scala.collection.JavaConverters._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with TaxCalculation {
   override lazy val page: CheckYourAnswersPage = wire[CheckYourAnswersPage]

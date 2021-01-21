@@ -16,7 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
+import play.api.i18n.Messages
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
 object DataModelEnriched {
@@ -27,5 +33,131 @@ object DataModelEnriched {
     val numericAmount: BigDecimal = BigDecimal(amount)
 
     def purchaseDetailsInput: PurchaseDetailsInput = PurchaseDetailsInput(amount, currency.code)
+  }
+
+  implicit class AmountInPenceEnriched(amountInPence: AmountInPence) {
+    import amountInPence._
+    val formattedInPoundsUI: String = formattedInPounds.split("\\.00")(0) //TODO not sure if necessary different formats
+    lazy val isPaymentRequired: Boolean = inPounds.compareTo(BigDecimal(0.0)) > 0
+    def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
+  }
+
+  implicit class BigDecimalToAmountInPenceEnriched(bigDecimal: BigDecimal) {
+    def fromBigDecimal: AmountInPence = AmountInPence((bigDecimal * 100).toLong)
+  }
+
+  implicit class GoodsEnriched(goods: Goods) {
+    import goods._
+    val calculationRequest: CalculationRequest =
+      CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, countryOfPurchase, goodsVatRate)
+  }
+
+  implicit class CountryEnriched(country: Country) {
+    import country._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(countryName), "synonyms" -> countrySynonyms)
+  }
+
+  implicit class CurrencyEnriched(currency: Currency) {
+    import currency._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
+  }
+
+  implicit class PortEnriched(port: Port) {
+    import port._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+  }
+
+  implicit class ConversionRatePeriodEnriched(conversion: ConversionRatePeriod) {
+    import conversion._
+    def display: String = s"$rate ($currencyCode)"
+  }
+
+  implicit class PaymentCalculationsEnriched(calculations: PaymentCalculations) {
+    import calculations._
+    def totalGbpValue: AmountInPence = AmountInPence(
+      paymentCalculations.map(_.calculationResult.gbpAmount.value).sum
+    )
+
+    def totalTaxDue: AmountInPence = AmountInPence(
+      paymentCalculations.map(_.calculationResult.taxDue.value).sum
+    )
+
+    def totalDutyDue: AmountInPence = AmountInPence(
+      paymentCalculations.map(_.calculationResult.duty.value).sum
+    )
+
+    def totalVatDue: AmountInPence = AmountInPence(
+      paymentCalculations.map(_.calculationResult.vat.value).sum
+    )
+
+    def totalCalculationResult: TotalCalculationResult =
+      TotalCalculationResult(calculations, totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
+
+    def toTable(implicit messages: Messages): Table = {
+      val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
+        Seq(
+          TableRow(
+            Text(tc.goods.categoryQuantityOfGoods.category)
+          ),
+          TableRow(
+            Text(tc.calculationResult.gbpAmount.formattedInPoundsUI)
+          ),
+          TableRow(
+            Text(tc.calculationResult.duty.formattedInPoundsUI)
+          ),
+          TableRow(
+            Text(
+              messages(
+                "paymentCalculation.table.col3.row",
+                tc.calculationResult.vat.formattedInPoundsUI,
+                tc.goods.goodsVatRate.value
+              )
+            )
+          ),
+          TableRow(
+            Text(tc.calculationResult.taxDue.formattedInPoundsUI)
+          )
+        )
+      } :+ Seq(
+        TableRow(
+          content = Text(messages("paymentCalculation.table.total")),
+          classes = "govuk-table__header",
+          colspan = Some(4)
+        ),
+        TableRow(
+          content = Text(totalTaxDue.formattedInPoundsUI),
+          classes = "govuk-!-font-weight-bold"
+        )
+      )
+
+      Table(
+        rows = tableRows,
+        attributes = Map("style" -> "margin-bottom:60px"),
+        head = Some(
+          Seq(
+            HeadCell(
+              Text(messages("paymentCalculation.table.col1.head"))
+            ),
+            HeadCell(
+              Text(messages("paymentCalculation.table.col2.head"))
+            ),
+            HeadCell(
+              Text(messages("paymentCalculation.table.col3.head")),
+              attributes = Map("nowrap" -> "nowrap")
+            ),
+            HeadCell(
+              Text(messages("paymentCalculation.table.col4.head")),
+              attributes = Map("nowrap" -> "nowrap")
+            ),
+            HeadCell(
+              Text(messages("paymentCalculation.table.col5.head")),
+              attributes = Map("nowrap" -> "nowrap")
+            )
+          ))
+      )
+    }
   }
 }

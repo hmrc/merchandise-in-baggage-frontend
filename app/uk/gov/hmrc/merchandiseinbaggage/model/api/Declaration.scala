@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 import java.time.LocalDateTime
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.service.MibReferenceGenerator
 
 case class Declaration(
   declarationId: DeclarationId,
@@ -32,12 +31,12 @@ case class Declaration(
   maybeCustomsAgent: Option[CustomsAgent],
   eori: Eori,
   journeyDetails: JourneyDetails,
-  dateOfDeclaration: LocalDateTime = LocalDateTime.now,
-  mibReference: MibReference = Declaration.mibReference,
+  dateOfDeclaration: LocalDateTime,
+  mibReference: MibReference,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentSuccess: Option[Boolean] = None,
   lang: String = "en")
 
-object Declaration extends MibReferenceGenerator {
+object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
 }

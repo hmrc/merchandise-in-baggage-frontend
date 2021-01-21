@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api
+package uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup
 
-import play.api.libs.json._
+import play.api.libs.json.{Json, OFormat}
 
-case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String])
+case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String])
 
-object Port {
-  implicit val format: OFormat[Port] = Json.format[Port]
+object Country {
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

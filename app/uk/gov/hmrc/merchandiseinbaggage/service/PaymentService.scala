@@ -27,6 +27,7 @@ import javax.inject.Inject
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 @Singleton
 class PaymentService @Inject()(connector: PaymentConnector)(implicit ec: ExecutionContext, appConfig: AppConfig) {
