@@ -58,9 +58,10 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe 200
 
     import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType, createdAt = created, declarationId = id)
+    val resetJourney = DeclarationJourney(sessionId, declarationType)
 
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.copy(createdAt = created) mustBe resetJourney
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
