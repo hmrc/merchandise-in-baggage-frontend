@@ -22,7 +22,7 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
 object DataModelEnriched {
