@@ -64,7 +64,7 @@ trait BaseSpecWithApplication
 }
 
 trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
-  val wireMockServer = new WireMockServer(WireMockSupport.port)
+  implicit val wireMockServer = new WireMockServer(WireMockSupport.port)
 
   override def beforeEach(): Unit = {
     super.beforeEach()

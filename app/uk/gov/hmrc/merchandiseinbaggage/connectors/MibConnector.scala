@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,4 +52,7 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
     httpClient
       .POST[String, HttpResponse](s"$base$sendEmailsUrl/${declarationId.value}", "")
       .map(_ => ())
+
+  def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
+    httpClient.GET[CheckResponse](s"$base$checkEoriUrl$eori")
 }

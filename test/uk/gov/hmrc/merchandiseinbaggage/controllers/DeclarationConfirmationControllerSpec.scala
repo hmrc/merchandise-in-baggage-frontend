@@ -52,7 +52,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenADeclarationJourneyIsPersisted(exportJourney)
 
-    givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, id)
+    givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 200

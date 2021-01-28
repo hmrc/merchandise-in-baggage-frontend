@@ -41,7 +41,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Export)
         val declarationCompleted = declarationJourney.declarationIfRequiredAndComplete.get
         givenADeclarationJourney(declarationJourney.copy(declarationId = id))
-        givenPersistedDeclarationIsFound(wireMockServer, declarationCompleted, id)
+        givenPersistedDeclarationIsFound(declarationCompleted, id)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)
@@ -66,7 +66,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
               Some(TotalCalculationResult(aPaymentCalculations, AmountInPence(10L), AmountInPence(5), AmountInPence(2), AmountInPence(3)))
           )
         givenADeclarationJourney(declarationJourney.copy(declarationId = id))
-        givenPersistedDeclarationIsFound(wireMockServer, persistedDeclaration, id)
+        givenPersistedDeclarationIsFound(persistedDeclaration, id)
         open(path)
 
         page.mustRenderBasicContentWithoutHeader(path, title)

@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry}
@@ -116,4 +117,25 @@ trait CoreTestData {
 
   val aPaymentCalculationWithNoTax: PaymentCalculations = PaymentCalculations(
     Seq(aPaymentCalculation.copy(calculationResult = aCalculationResultWithNoTax)))
+
+  val aEoriNumber = "GB025115110987654"
+  val aCheckEoriAddress = CheckEoriAddress("999 High Street", "CityName", "SS99 1AA")
+  val aCompanyDetails = CompanyDetails("Firstname LastName", aCheckEoriAddress)
+
+  val aCheckResponse = CheckResponse(aEoriNumber, true, Some(aCompanyDetails))
+
+  val aSuccessCheckResponse =
+    s"""{
+       |  "eori": "$aEoriNumber",
+       |  "valid": true,
+       |  "companyDetails": {
+       |    "traderName": "Firstname LastName",
+       |    "address": {
+       |      "streetAndNumber": "999 High Street",
+       |      "cityName": "CityName",
+       |      "postcode": "SS99 1AA"
+       |    }
+       |  },
+       |  "processingDate": "2021-01-27T11:00:22.522Z[Europe/London]"
+       |}""".stripMargin
 }
