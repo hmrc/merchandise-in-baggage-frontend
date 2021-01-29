@@ -32,7 +32,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   val declarationWithId = declaration.copy(declarationId = stubbedDeclarationId)
 
   "send a declaration to backend to be persisted" in {
-    givenDeclarationIsPersistedInBackend(wireMockServer, declarationWithId)
+    givenDeclarationIsPersistedInBackend(declarationWithId)
 
     client.persistDeclaration(declarationWithId).futureValue mustBe stubbedDeclarationId
   }
@@ -41,20 +41,26 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
     val calculationRequest = aDeclarationGood.goods.head.calculationRequest
     val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None)
 
-    givenAPaymentCalculation(wireMockServer, calculationRequest, stubbedResult)
+    givenAPaymentCalculation(calculationRequest, stubbedResult)
 
     client.calculatePayment(calculationRequest).futureValue mustBe stubbedResult
   }
 
   "find a persisted declaration from backend by declarationId" in {
-    givenPersistedDeclarationIsFound(wireMockServer, declarationWithId, stubbedDeclarationId)
+    givenPersistedDeclarationIsFound(declarationWithId, stubbedDeclarationId)
 
     client.findDeclaration(stubbedDeclarationId).futureValue mustBe Some(declarationWithId)
   }
 
   "sendEmails should return as expected" in {
-    givenSendEmailsSuccess(wireMockServer, stubbedDeclarationId)
+    givenSendEmailsSuccess(stubbedDeclarationId)
 
     client.sendEmails(stubbedDeclarationId).futureValue mustBe (())
+  }
+
+  "check eori number" in {
+    givenEoriIsChecked(aEoriNumber)
+
+    client.checkEoriNumber(aEoriNumber).futureValue mustBe aCheckResponse
   }
 }

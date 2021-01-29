@@ -132,7 +132,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
     givenADeclarationJourneyIsPersisted(exportJourney)
-    givenAPaymentCalculation(wireMockServer, CalculationResult(AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
+    givenAPaymentCalculation(CalculationResult(AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
 
     val eventualResult = controller(
       aPaymentCalculations

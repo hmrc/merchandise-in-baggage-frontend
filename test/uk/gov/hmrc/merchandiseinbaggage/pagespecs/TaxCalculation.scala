@@ -45,7 +45,7 @@ trait TaxCalculation {
     }
 
     results.foreach { r: PaymentCalculation =>
-      givenAPaymentCalculation(wireMockServer, r.calculationResult)
+      givenAPaymentCalculation(r.calculationResult)
     }
 
     givenADeclarationJourney(declarationJourney)

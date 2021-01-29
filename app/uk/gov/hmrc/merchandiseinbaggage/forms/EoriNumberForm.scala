@@ -40,5 +40,4 @@ object EoriNumberForm extends Mappings {
       text(s"eoriNumber.${agentOrTrader(customsAgent)}.$declarationType.error.required")
         .verifying(isValidEori)
   )
-
 }

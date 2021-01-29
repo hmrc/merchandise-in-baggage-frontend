@@ -221,7 +221,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       givenDeclarationIsPersistedInBackend(wireMockServer)
       givenADeclarationWithTaxDue(exportJourney).futureValue
       givenTaxArePaid(wireMockServer)
-      givenPersistedDeclarationIsFound(wireMockServer, exportJourney.declarationIfRequiredAndComplete.get, exportJourney.declarationId)
+      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, exportJourney.declarationId)
 
       open(path)
 

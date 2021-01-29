@@ -21,52 +21,57 @@ import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
 
-object MibBackendStub extends MibConfiguration {
+object MibBackendStub extends MibConfiguration with CoreTestData {
 
   val stubbedDeclarationId = DeclarationId("test-mib-be-id")
 
-  def givenDeclarationIsPersistedInBackend(server: WireMockServer, declaration: Declaration): StubMapping =
+  def givenDeclarationIsPersistedInBackend(declaration: Declaration)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$declarationsUrl"))
           .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
           .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
-  def givenDeclarationIsPersistedInBackend(server: WireMockServer): StubMapping =
+  def givenDeclarationIsPersistedInBackend(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$declarationsUrl"))
           .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
-  def givenPersistedDeclarationIsFound(
-    server: WireMockServer,
-    declaration: Declaration,
-    declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
+  def givenPersistedDeclarationIsFound(declaration: Declaration, declarationId: DeclarationId = stubbedDeclarationId)(
+    implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
           .willReturn(okJson(Json.toJson(declaration).toString)))
 
-  def givenAPaymentCalculation(server: WireMockServer, request: CalculationRequest, result: CalculationResult): StubMapping =
+  def givenAPaymentCalculation(request: CalculationRequest, result: CalculationResult)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationUrl"))
           .withRequestBody(equalToJson(toJson(request).toString, true, false))
           .willReturn(okJson(Json.toJson(result).toString)))
 
-  def givenAPaymentCalculation(server: WireMockServer, result: CalculationResult): StubMapping =
+  def givenAPaymentCalculation(result: CalculationResult)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationUrl"))
           .willReturn(okJson(Json.toJson(result).toString)))
 
-  def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
+  def givenSendEmailsSuccess(declarationId: DeclarationId = stubbedDeclarationId)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlPathEqualTo(s"$sendEmailsUrl/${declarationId.value}"))
           .willReturn(aResponse().withStatus(202)))
+
+  def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
+    server
+      .stubFor(
+        get(urlPathEqualTo(s"$checkEoriUrl$eoriNumber"))
+          .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString)))
 }
