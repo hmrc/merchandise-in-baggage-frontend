@@ -5,3 +5,109 @@ $hmrc-assets-path: "/declare-commercial-goods/assets/lib/hmrc-frontend/hmrc/";
 @import "lib/hmrc-frontend/hmrc/all";
 @import "autocomplete";
 @import "language-selection";
+
+@media print {
+  /* styles go here */
+  .govuk-panel {
+    text-align: left;
+    padding:0;
+    margin: 0;
+  }
+  .govuk-panel--confirmation {
+    color: black;
+    background: transparent;
+    h1 {
+      font-weight: bold;
+    }
+  }
+  .govuk-panel__title {
+    font-size: 19px;
+    line-height: 1.09;
+  }
+  .furlough-heading {
+    clear: both;
+    display: block;
+    margin-top: 0.275em;
+    padding-top: 8px;
+    table-layout: fixed;
+    width: 100%;
+  }
+  .furlough-heading p {
+    color: black;
+    font-size: 19px;
+    font-size: 1.1875rem ;
+    line-height: 1.01em;
+    margin:0;
+    padding: 0 0 0.5em 0;
+  }
+  .furlough-heading .govuk-panel__title {
+    position: relative;
+    font-size: 24px ;
+    font-size: 1.5rem ;
+    line-height: 1em;
+    margin:0;
+    padding: 0;
+  }
+  .govuk-phase-banner, .lang{
+    display: none;
+  }
+}
+
+.govuk-header {
+  > .govuk-header__container.govuk-width-container.no-border {
+    border-bottom: none !important;
+    padding-bottom: 10px;
+  }
+}
+
+.global-bar {
+  position: relative;
+  width: 100%;
+  margin-top: -10px;
+  text-align: left;
+  height: 60px;
+  background-color: #2B358B;
+
+  font-family: "GDS Transport",Arial,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+  font-size: 1rem;
+
+  > .global-bar-message-container {
+
+    position: relative;
+
+    button.dismiss {
+      position: absolute;
+      top: 20px;
+      right: 5px;
+      width: 120px;
+      height: 20px;
+      line-height: 20px;
+      color: #FFF;
+      border: 0;
+      background: transparent;
+    }
+
+    button.dismiss:hover {
+      cursor: pointer;
+    }
+
+    a, a:hover, a:link, a:active {
+      color: #FFF;
+    }
+
+    a:hover, a:active {
+      text-decoration: underline;
+    }
+
+    p.global-bar-message {
+      padding: 10px 0 0 0;
+      margin: 0;
+      color: #FFF;
+      font-weight: bold;
+    }
+  }
+
+}

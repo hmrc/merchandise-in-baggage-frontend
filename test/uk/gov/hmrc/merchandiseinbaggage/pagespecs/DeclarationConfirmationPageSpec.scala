@@ -48,7 +48,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasConfirmationPanelWithContents
         hasDateOfDeclaration(declarationCompleted.dateOfDeclaration)
         hasEmailAddress(declarationCompleted)
-        hasPrintPageContentInPdf
         hasWhaToDoNextExport
         hasGoodDetails(declarationCompleted)
         hasPersonDetails(declarationCompleted)
@@ -73,7 +72,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         hasConfirmationPanelWithContents
         hasDateOfDeclaration(persistedDeclaration.dateOfDeclaration)
         hasEmailAddress(persistedDeclaration)
-        hasPrintPageContentInPdf
         hasWhaToDoNextImport
         hasGoodDetails(persistedDeclaration)
         hasPersonDetails(persistedDeclaration)
@@ -97,13 +95,6 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   def hasEmailAddress(declaration: Declaration): Assertion =
     textOfElementWithId("declarationEmailId") mustBe s"We have sent you a confirmation email to ${declaration.email.get.email}."
-
-  def hasPrintPageContentInPdf: Assertion = {
-    attrOfElementWithId("printDeclarationId", "href") mustBe "javascript:window.print();"
-    textOfElementWithId("printDeclarationId") mustBe "Print or save a copy of this page"
-    attrOfElementWithId("printDeclarationLinkId", "href") must include("/declare-commercial-goods/assets/stylesheets/application.css")
-    attrOfElementWithId("printDeclarationLinkId", "media") mustBe "all"
-  }
 
   def hasWhaToDoNextExport: Assertion = {
     textOfElementWithId("whatToDoNextId") mustBe "What you need to do next"
