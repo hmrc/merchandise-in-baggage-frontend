@@ -28,7 +28,8 @@
 
 @printLink = {
  <script>
-  document.getElementById("printLink").className = "govuk-body";
+  document.getElementById("printLink").classList.remove("govuk-!-display-none");
+  document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print")
   document.getElementById("printLink").setAttribute("aria-hidden", "false")
  </script>
 }
@@ -114,11 +115,11 @@
    </div>
   </dl>
 
-  <p class="govuk-body">
+  <p class="govuk-body govuk-!-display-none-print">
    <a id="makeAnotherDeclarationId" class='govuk-link' href="@GoodsDestinationController.onPageLoad().url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
   </p>
 
- <p class="govuk-body">
+ <p class="govuk-body govuk-!-display-none-print">
   @link(FeedbackSurveyController.startSurvey().url, "declarationConfirmation.feedbackSurvey", true, Some("feedbackSurvey"))
   @messages("declarationConfirmation.feedbackSurvey.info")
  </p>
