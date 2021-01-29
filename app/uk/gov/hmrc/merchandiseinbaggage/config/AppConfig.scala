@@ -74,7 +74,7 @@ trait MibConfiguration {
   lazy val declarationsUrl: String = s"$baseUrl/declarations"
   lazy val calculationUrl: String = s"$baseUrl/calculation"
   lazy val sendEmailsUrl: String = s"$declarationsUrl/sendEmails"
-  lazy val checkEoriUrl: String = s"$declarationsUrl/validate/eori/"
+  lazy val checkEoriUrl: String = s"$baseUrl/validate/eori/"
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
