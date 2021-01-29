@@ -26,7 +26,15 @@
 
 @(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("declarationConfirmation.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType)) {
+@printLink = {
+ <script>
+  document.getElementById("printLink").classList.remove("govuk-!-display-none");
+  document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print")
+  document.getElementById("printLink").setAttribute("aria-hidden", "false")
+ </script>
+}
+
+@layout(pageTitle = Some(titleNoForm("declarationConfirmation.title")), scriptsBlock = Some(printLink), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType)) {
 
  <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
   <h1 id="panelTitleId" class="govuk-panel__title">@messages("declarationConfirmation.banner.title")</h1>
@@ -36,10 +44,10 @@
  <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
  <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}.</p>
  <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
- <p class="govuk-body">
-  <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")
-   <link id="printDeclarationLinkId" class="govuk-link" href="/declare-commercial-goods/assets/stylesheets/application.css" media="all" rel="stylesheet" type="text/css">
-  </a>
+
+
+ <p id="printLink" class="govuk-!-display-none" aria-hidden="true">
+   <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")</a>
  </p>
 
  <h2 id="whatToDoNextId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
@@ -107,11 +115,11 @@
    </div>
   </dl>
 
-  <p class="govuk-body">
+  <p class="govuk-body govuk-!-display-none-print">
    <a id="makeAnotherDeclarationId" class='govuk-link' href="@GoodsDestinationController.onPageLoad().url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
   </p>
 
- <p class="govuk-body">
+ <p class="govuk-body govuk-!-display-none-print">
   @link(FeedbackSurveyController.startSurvey().url, "declarationConfirmation.feedbackSurvey", true, Some("feedbackSurvey"))
   @messages("declarationConfirmation.feedbackSurvey.info")
  </p>

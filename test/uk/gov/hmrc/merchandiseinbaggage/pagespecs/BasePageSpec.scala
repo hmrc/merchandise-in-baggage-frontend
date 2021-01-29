@@ -69,7 +69,7 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
   def givenACompleteDeclarationJourney(): Unit = givenADeclarationJourney(completedDeclarationJourney)
 
   def aPageWhichRenders(path: String, setUp: => Unit = Unit, expectedTitle: String): Unit =
-    s"render basic content with path $path title '$expectedTitle''" in {
+    s"render basic content with path $path title '$expectedTitle'" in {
       setUp
       open(path)
       readPath() mustBe path

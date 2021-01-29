@@ -25,12 +25,14 @@
 
 @for((list, idx) <- GoodsSummaryList.summaryList(declarationGoods, declarationType).zipWithIndex) {
     @summaryList(list)
-    <a id="remove_@idx" class="govuk-summary-list govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
-        @messages("site.remove")
-        <span class="govuk-visually-hidden">
-            @declarationGoods.goods(idx).categoryQuantityOfGoods.category
-            @messages(declarationGoods.goods(idx).countryOfPurchase.countryName)
-            @declarationGoods.goods(idx).purchaseDetails.formatted
-        </span>
-    </a>
+    <p class="govuk-body-m">
+      <a id="remove_@idx" class="govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
+          @messages("site.remove")
+          <span class="govuk-visually-hidden">
+              @declarationGoods.goods(idx).categoryQuantityOfGoods.category
+              @messages(declarationGoods.goods(idx).countryOfPurchase.countryName)
+              @declarationGoods.goods(idx).purchaseDetails.formatted
+          </span>
+      </a>
+    </p>
 }

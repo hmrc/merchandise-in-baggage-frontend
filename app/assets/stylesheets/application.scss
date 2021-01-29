@@ -5,3 +5,18 @@ $hmrc-assets-path: "/declare-commercial-goods/assets/lib/hmrc-frontend/hmrc/";
 @import "lib/hmrc-frontend/hmrc/all";
 @import "autocomplete";
 @import "language-selection";
+
+@media print {
+  /* styles go here */
+  .govuk-panel--confirmation {
+    color: black;
+    background: transparent;
+    h1 {
+      font-weight: bold;
+    }
+  }
+
+  .govuk-phase-banner, .lang, .govuk-footer{
+    display: none;
+  }
+}
