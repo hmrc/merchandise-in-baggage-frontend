@@ -63,6 +63,22 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def eoriFormatter(errorKey: String): Formatter[String] = new Formatter[String] {
+
+    private val baseFormatter = stringFormatter(errorKey)
+
+    override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], String] =
+      baseFormatter
+        .bind(key, data)
+        .right
+        .map(_.replace(" ", ""))
+        .right
+        .map(_.toUpperCase)
+
+    override def unbind(key: String, value: String): Map[String, String] =
+      baseFormatter.unbind(key, value)
+  }
+
   private[mappings] def bigDecimalFormatter(
     requiredKey: String,
     nonNumericKey: String,

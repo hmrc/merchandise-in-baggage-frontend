@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 
 class EoriNumberFormSpec extends FieldBehaviours {
-  ".value" must {
+  ".eori" must {
     val fieldName = "eori"
 
     behave like mandatoryField(
@@ -49,5 +49,13 @@ class EoriNumberFormSpec extends FieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, "eoriNumber.agent.Export.error.required")
     )
+  }
+
+  ".eori" must {
+    "handle whitespace and lowercase" in {
+      form(Yes, Import)
+        .bind(Map("eori" -> "gb 12 34 67 80 00 00"))
+        .errors mustBe Seq.empty
+    }
   }
 }

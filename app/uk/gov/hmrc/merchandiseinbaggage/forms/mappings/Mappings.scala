@@ -32,6 +32,9 @@ trait Mappings extends Formatters {
   protected def text(errorKey: String = requiredKey): FieldMapping[String] =
     of(stringFormatter(errorKey))
 
+  protected def eori(errorKey: String): FieldMapping[String] =
+    of(eoriFormatter(errorKey))
+
   protected def localDate(invalidKey: String): FieldMapping[LocalDate] = of(new LocalDateFormatter(invalidKey))
 
   protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.yesNo"): FieldMapping[YesNo] =
