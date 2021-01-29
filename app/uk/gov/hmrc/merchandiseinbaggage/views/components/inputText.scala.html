@@ -21,6 +21,7 @@
         id: String,
         name: String,
         label: String,
+        inputType: String = "text",
         isPageHeading: Boolean,
         headingMessageArgs: Seq[String] = Seq(),
         hint: Option[String] = None,
@@ -42,5 +43,6 @@
         content = HtmlContent(messages(hintKey))
     )),
     value = form(name).value,
+    inputType = inputType,
     errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
 ))
