@@ -21,6 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, DeclarationDataCapturePage}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -58,6 +59,19 @@ trait DeclarationDataCapturePageSpec[F, P <: DeclarationDataCapturePage[F]] exte
         submitAndEnsurePersistence(path, setUp, formData) mustBe expectedPath
       }
     }
+
+  def aDataCaptureAndCheckedPageWithSimpleRouting(path: String, setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
+    s"redirect to $expectedPath" when {
+      allFormData.foreach { formData =>
+        s"the form is filled with $formData" in {
+          MibBackendStub.givenEoriIsChecked(allFormData.head.toString)
+          submitAndEnsurePersistence(path, setUp, formData) mustBe expectedPath
+        }
+      }
+    }
+
+    aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, allFormData.head)
+  }
 
   def aDataCapturePageWithSimpleRouting(path: String, setUp: => Unit = Unit, allFormData: Seq[F], expectedPath: String): Unit = {
     s"redirect to $expectedPath" when {

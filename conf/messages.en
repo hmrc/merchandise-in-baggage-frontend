@@ -291,6 +291,7 @@ eoriNumber.trader.Export.error.required = Enter your EORI number
 eoriNumber.agent.Import.error.required = Enter the EORI number of the business bringing the goods into Great Britain
 eoriNumber.agent.Export.error.required = Enter the EORI number of the business taking the goods
 eoriNumber.error.invalid = EORI number must start with GB followed by 12 numbers
+eoriNumber.error.notFound = Invalid EORI number
 
 # GoodsInVehicle
 goodsInVehicle.Import.title = Are the goods arriving by vehicle?

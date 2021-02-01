@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import akka.stream.Materializer
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
@@ -24,6 +25,7 @@ import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with CoreTestData {
@@ -31,6 +33,8 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
 
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
+  implicit lazy val materializer = injector.instanceOf[Materializer]
+  lazy val repository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url)
