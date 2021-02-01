@@ -17,10 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.Logging
+import play.api.data.FormError
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.EoriNumberForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Eori
+import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Eori, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 
@@ -31,9 +35,10 @@ class EoriNumberController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: EoriNumberView
+  view: EoriNumberView,
+  mibConnector: MibConnector
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController with Logging {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad())
@@ -57,11 +62,27 @@ class EoriNumberController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
-          eori =>
-            persistAndRedirect(
-              request.declarationJourney.copy(maybeEori = Some(Eori(eori))),
-              routes.TravellerDetailsController.onPageLoad())
+          eori => checkEori(eori, isAgent, declarationType)
         )
     }
   }
+
+  private def checkEori(eori: String, isAgent: YesNo, declarationType: DeclarationType)(
+    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    for {
+      validated <- mibConnector.checkEoriNumber(eori)
+      result    <- validateEoriAndRedirect(eori, isAgent, declarationType, validated)
+    } yield result
+
+  private def validateEoriAndRedirect(eori: String, isAgent: YesNo, declarationType: DeclarationType, response: CheckResponse)(
+    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    if (response.valid)
+      persistAndRedirect(request, eori)
+    else {
+      val formWithError = form(isAgent, request.declarationType).withError(FormError("eori", "eoriNumber.error.notFound"))
+      Future.successful(BadRequest(view(formWithError, isAgent, backButtonUrl, declarationType)))
+    }
+
+  private def persistAndRedirect(request: DeclarationJourneyRequest[AnyContent], eori: String): Future[Result] =
+    persistAndRedirect(request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
 }

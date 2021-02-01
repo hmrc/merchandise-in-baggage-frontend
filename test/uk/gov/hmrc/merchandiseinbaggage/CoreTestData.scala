@@ -124,9 +124,9 @@ trait CoreTestData {
 
   val aCheckResponse = CheckResponse(aEoriNumber, true, Some(aCompanyDetails))
 
-  val aSuccessCheckResponse =
+  def aSuccessCheckResponse(eoriNumber: String = aEoriNumber): String =
     s"""{
-       |  "eori": "$aEoriNumber",
+       |  "eori": "$eoriNumber",
        |  "valid": true,
        |  "companyDetails": {
        |    "traderName": "Firstname LastName",

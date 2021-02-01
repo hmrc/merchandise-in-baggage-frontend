@@ -52,7 +52,7 @@ class EoriNumberPageSpec extends DeclarationDataCapturePageSpec[Eori, EoriNumber
     behave like
       aPageWithValidation(path, givenANonAgentJourney(), invalidEori, invalidEoriValidationMessage, validationErrorMessageField)
 
-    behave like aDataCapturePageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
+    behave like aDataCaptureAndCheckedPageWithSimpleRouting(path, givenAnAgentJourney(), Seq(eori), TravellerDetailsPage.path)
     behave like aPageWithABackButton(path, givenAnAgentJourney(), CustomsAgentPage.path)
   }
 
