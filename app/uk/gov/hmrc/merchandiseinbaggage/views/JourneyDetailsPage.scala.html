@@ -35,10 +35,6 @@ h1: components.h1)
 
 @(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@head = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
-}
-
 @scripts = {
     <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
@@ -97,7 +93,6 @@ h1: components.h1)
 
 @layout(
     pageTitle = Some(title(form, "journeyDetails.title")),
-    headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(declarationType)

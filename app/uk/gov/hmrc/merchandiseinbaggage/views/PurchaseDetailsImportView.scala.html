@@ -34,10 +34,6 @@ button: components.button
 
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@head = {
-    <link rel="stylesheet" href="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.css")" >
-}
-
 @scripts = {
     <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
     <script>
@@ -95,7 +91,6 @@ button: components.button
 
 @layout(
     pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
-    headBlock = Some(head),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import)
