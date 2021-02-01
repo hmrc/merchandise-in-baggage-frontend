@@ -1,6 +1,5 @@
 service.name = Declare commercial goods carried in accompanied baggage or small vehicles
 service.homePageUrl = /declare-commercial-goods
-service.text = This is your new service
 
 # Alpha/Beta Banner
 feedback.before = This is a new service - your
@@ -38,6 +37,11 @@ date.year = Year
 payment.button = Pay now
 next.button = Next
 
+language.cymraeg = Cymraeg
+language.change.cymraeg = Newid yr iaith i’r Gymraeg
+language.english = English
+language.change.english = Change the language to English
+language.switcher = Language switcher
 
 # Invalid request page
 invalidRequest.title = Invalid request

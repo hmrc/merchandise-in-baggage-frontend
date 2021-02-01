@@ -19,7 +19,6 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.language.{En, Cy}
 
 @this(
         govukTemplate: GovukTemplate,
@@ -27,6 +26,7 @@
         govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
         phaseBanner: components.phaseBanner,
+        languageSelection: components.languageSelection,
         hmrcReportTechnicalIssueHelper: hmrcReportTechnicalIssueHelper,
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
         appConfig: AppConfig,
@@ -76,13 +76,9 @@
 }
 
 @if(appConfig.languageTranslationEnabled) {
-    @views.html.language_selection(
-        appConfig.languageMap,
-        appConfig.routeToSwitchLanguage,
-        Some("lang"))
+    @languageSelection()
 }
 
-@bodyEndBlock.map(x => x)
 }
 
 @bodyEndDefault = {
