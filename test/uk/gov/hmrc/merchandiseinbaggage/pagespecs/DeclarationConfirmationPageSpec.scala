@@ -148,7 +148,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
 
   def hasMakeAnotherDeclarationLink: Assertion = {
     textOfElementWithId("makeAnotherDeclarationId") mustBe "Make another declaration"
-    element("makeAnotherDeclarationId").getAttribute("href") must include("/declare-commercial-goods/goods-destination")
+    element("makeAnotherDeclarationId").getAttribute("href") must include("/declare-commercial-goods/make-another-declaration")
   }
 
   def hasFeedbackSurveyLink: Assertion = {
