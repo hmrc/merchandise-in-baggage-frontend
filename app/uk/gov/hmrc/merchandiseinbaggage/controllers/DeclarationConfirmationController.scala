@@ -42,15 +42,22 @@ class DeclarationConfirmationController @Inject()(
     val declarationId = request.declarationJourney.declarationId
     connector.findDeclaration(declarationId).map {
       case Some(declaration) if showConfirmation(declaration) =>
-        resetJourney()
+        clearAnswers()
         Ok(view(declaration))
       case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
   }
 
-  private def resetJourney()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
+  val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType))
+    repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
+      Redirect(routes.GoodsDestinationController.onPageLoad())
+    }
+  }
+
+  private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
+    import request.declarationJourney._
+    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
   }
 
   private def showConfirmation(declaration: Declaration): Boolean = {
