@@ -17,27 +17,28 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.google.inject.Inject
-import play.api.Configuration
-import play.api.i18n.Lang
+import play.api.i18n.{I18nSupport, Lang, MessagesApi}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 class LanguageSwitchController @Inject()(
-  configuration: Configuration,
   appConfig: AppConfig,
-  languageUtils: LanguageUtils,
-  val cc: MessagesControllerComponents
-) extends LanguageController(configuration, languageUtils, cc) {
+  override implicit val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents
+) extends FrontendBaseController with I18nSupport {
 
-  override def fallbackURL: String = routes.GoodsDestinationController.onPageLoad().url
+  private def fallbackURL: String = routes.GoodsDestinationController.onPageLoad().url
 
-  override def languageMap: Map[String, Lang] = appConfig.languageMap
+  def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
+    val languageToUse =
+      if (appConfig.languageTranslationEnabled) {
+        Lang(language)
+      } else {
+        Lang("en")
+      }
 
-  override def switchToLanguage(language: String): Action[AnyContent] =
-    if (appConfig.languageTranslationEnabled) {
-      super.switchToLanguage(language)
-    } else {
-      super.switchToLanguage("en")
-    }
+    val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
+    Redirect(redirectURL).withLang(languageToUse)
+  }
 }

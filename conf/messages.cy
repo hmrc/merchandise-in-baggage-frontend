@@ -37,6 +37,11 @@ date.year = Blwyddyn
 payment.button = Pay now
 next.button = Next
 
+language.cymraeg = Cymraeg
+language.change.cymraeg = Newid yr iaith i’r Gymraeg
+language.english = English
+language.change.english = Newid yr iaith i Saesneg
+language.switcher = Newid yr iaith
 
 # Invalid request page
 invalidRequest.title = Invalid request
