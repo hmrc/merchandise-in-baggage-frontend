@@ -88,12 +88,12 @@ goodsRouteDestination.error.required = Dewiswch ‘Iawn’ os mai Gweriniaeth Iw
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.NorthernIreland.title = A yw cyfanswm gwerth y nwyddau’n fwy na £873 neu a ydynt yn pwyso dros 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau’n fwy na £1,500 neu a ydynt yn pwyso dros 1,000 cilogram?
-valueWeightOfGoods.NorthernIreland.heading = A yw cyfanswm gwerth y nwyddau’n fwy na £873 neu a ydynt yn pwyso dros 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau’n fwy na £1,500 neu a ydynt yn pwyso dros 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau dros £1,500 neu os ydynt yn pwyso mwy na 1,000 cilogram
-valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau dros £873 neu os ydynt yn pwyso mwy na 1,000 cilogram
+valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1500 and they weigh less than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # SearchGoods
 goodsTypeQuantity.Import.title = Pa fath o nwyddau ydych chi’n dod â nhw i mewn i Brydain Fawr?

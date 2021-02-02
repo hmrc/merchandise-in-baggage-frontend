@@ -93,7 +93,7 @@ object TestOnlyController {
       maybeExciseOrRestrictedGoods = Some(No),
       maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No),
       maybeGoodsDestination = Some(GreatBritain),
-      maybeValueWeightOfGoodsExceedsThreshold = Some(No),
+      maybeValueWeightOfGoodsBelowThreshold = Some(Yes),
       goodsEntries = GoodsEntries(
         Seq(
           completedGoodsEntry,

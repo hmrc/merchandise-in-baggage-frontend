@@ -43,7 +43,7 @@ class ValueWeightOfGoodsController @Inject()(
       .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
         Ok(
           view(
-            request.declarationJourney.maybeValueWeightOfGoodsExceedsThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
+            request.declarationJourney.maybeValueWeightOfGoodsBelowThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
             goodsDestination,
             request.declarationType,
             backButtonUrl
@@ -60,10 +60,10 @@ class ValueWeightOfGoodsController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, request.declarationType, backButtonUrl)),
-            exceedsThreshold => {
+            belowThreshold => {
               persistAndRedirect(
-                declarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(exceedsThreshold)),
-                if (exceedsThreshold == Yes) routes.CannotUseServiceController.onPageLoad()
+                declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold)),
+                if (belowThreshold == No) routes.CannotUseServiceController.onPageLoad()
                 else routes.GoodsTypeQuantityController.onPageLoad(declarationJourney.goodsEntries.entries.size)
               )
             }

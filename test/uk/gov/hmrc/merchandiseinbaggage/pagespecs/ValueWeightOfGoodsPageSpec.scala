@@ -27,10 +27,10 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, R
   override lazy val page: RadioButtonPage[YesNo] = wire[RadioButtonPage[YesNo]]
 
   private val answerRequiredValidationMessageNorthernIreland =
-    "Select yes if the total value of the goods is more than £873 or 1,000 kilograms"
+    "Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms"
 
   private val answerRequiredValidationMessageGreatBritain =
-    "Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms"
+    "Select yes if the total value of the goods is less than £1,500 and they weigh less than 1,000 kilograms"
 
   "the value and weight of goods page" should {
     behave like aPageWhichRenders(path, givenAnImportToNorthernIrelandJourneyIsStarted(), northernIrelandTitle)
@@ -47,16 +47,16 @@ class ValueWeightOfGoodsPageSpec extends DeclarationDataCapturePageSpec[YesNo, R
     behave like aDataCapturePageWithConditionalRouting(
       path,
       givenAnImportToGreatBritainJourneyIsStarted(),
-      No,
+      Yes,
       GoodsTypeQuantityPage.path(1))
-    behave like aDataCapturePageWithConditionalRouting(path, givenASecondGoodsEntryIsStarted(), No, GoodsTypeQuantityPage.path(2))
+    behave like aDataCapturePageWithConditionalRouting(path, givenASecondGoodsEntryIsStarted(), Yes, GoodsTypeQuantityPage.path(2))
 
-    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportToGreatBritainJourneyIsStarted(), Yes, CannotUseServicePage.path)
+    behave like aDataCapturePageWithConditionalRouting(path, givenAnImportToGreatBritainJourneyIsStarted(), No, CannotUseServicePage.path)
 
-    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, No)
+    behave like aPageWhichRedirectsToCheckYourAnswersIfTheDeclarationIsComplete(path, Yes)
     behave like aPageWithABackButton(path, givenAnImportToNorthernIrelandJourneyIsStarted(), ExciseAndRestrictedGoodsPage.path)
   }
 
   override def extractFormDataFrom(declarationJourney: DeclarationJourney): Option[YesNo] =
-    declarationJourney.maybeValueWeightOfGoodsExceedsThreshold
+    declarationJourney.maybeValueWeightOfGoodsBelowThreshold
 }
