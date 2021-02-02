@@ -69,20 +69,21 @@ class EoriNumberController @Inject()(
 
   private def checkEori(eori: String, isAgent: YesNo, declarationType: DeclarationType)(
     implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    for {
+    (for {
       validated <- mibConnector.checkEoriNumber(eori)
       result    <- validateEoriAndRedirect(eori, isAgent, declarationType, validated)
-    } yield result
+    } yield result).recover { case _ => badRequestResult(isAgent, declarationType) }
 
   private def validateEoriAndRedirect(eori: String, isAgent: YesNo, declarationType: DeclarationType, response: CheckResponse)(
     implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     if (response.valid)
-      persistAndRedirect(request, eori)
-    else {
-      val formWithError = form(isAgent, request.declarationType).withError(FormError("eori", "eoriNumber.error.notFound"))
-      Future.successful(BadRequest(view(formWithError, isAgent, backButtonUrl, declarationType)))
-    }
+      persistAndRedirect(request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
+    else
+      Future.successful(badRequestResult(isAgent, declarationType))
 
-  private def persistAndRedirect(request: DeclarationJourneyRequest[AnyContent], eori: String): Future[Result] =
-    persistAndRedirect(request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
+  private def badRequestResult(isAgent: YesNo, declarationType: DeclarationType)(
+    implicit request: DeclarationJourneyRequest[AnyContent]): Result = {
+    val formWithError = form(isAgent, request.declarationType).withError(FormError("eori", "eoriNumber.error.notFound"))
+    BadRequest(view(formWithError, isAgent, backButtonUrl, declarationType))
+  }
 }
