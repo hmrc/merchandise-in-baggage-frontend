@@ -46,4 +46,22 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
     status(result) mustBe 400
     contentAsString(result) must include(messages("eoriNumber.error.notFound"))
   }
+
+
+  "return an error if API return 404" in {
+    givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
+    val connector = new MibConnector(client, "some url") {
+      override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
+        Future.failed(new Exception("API returned 404"))
+    }
+    val controller = new EoriNumberController(controllerComponents, actionBuilder, repository, view, connector)
+
+    val result = controller.onSubmit()(
+      buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)
+        .withFormUrlEncodedBody(("eori", "GB123467800000"))
+    )
+
+    status(result) mustBe 400
+    contentAsString(result) must include(messages("eoriNumber.error.notFound"))
+  }
 }
