@@ -18,6 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 object ValueWeightOfGoodsPage {
   val path = "/declare-commercial-goods/value-weight-of-goods"
-  val northernIrelandTitle = "Is the total value of the goods over £873 or 1000 kilograms (kg)?"
-  val greatBritainTitle = "Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?"
+  val northernIrelandTitle = "Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?"
+  val greatBritainTitle = "Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?"
 }

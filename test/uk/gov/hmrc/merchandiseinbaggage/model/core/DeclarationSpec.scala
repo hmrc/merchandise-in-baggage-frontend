@@ -339,12 +339,12 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           .declarationRequiredAndComplete mustBe false
       }
 
-      "the user has not confirmed whether the goods exceed the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = None).declarationRequiredAndComplete mustBe false
+      "the user has not confirmed whether the goods are below the threshold" in {
+        completedDeclarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = None).declarationRequiredAndComplete mustBe false
       }
 
-      "the user has confirmed that the goods exceed the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsExceedsThreshold = Some(Yes)).declarationRequiredAndComplete mustBe false
+      "the user has confirmed that the goods are not below the threshold" in {
+        completedDeclarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(No)).declarationRequiredAndComplete mustBe false
       }
 
       "the user has not entered any goods" in {

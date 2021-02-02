@@ -88,12 +88,12 @@ goodsRouteDestination.error.required = Select yes if the final destination of th
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
-valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods over £873 or 1000 kilograms (kg)?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods more than £1,500 or do they weigh more than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is more than £1500 or they weigh more than 1,000 kilograms
-valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is more than £873 or 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1,500 and they weigh less than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # SearchGoods
 goodsTypeQuantity.Import.title = What type of goods are you bringing into Great Britain?

@@ -87,7 +87,7 @@ case class DeclarationJourney(
   maybeExciseOrRestrictedGoods: Option[YesNo] = None,
   maybeGoodsDestination: Option[GoodsDestination] = None,
   maybeImportOrExportGoodsFromTheEUViaNorthernIreland: Option[YesNo] = None,
-  maybeValueWeightOfGoodsExceedsThreshold: Option[YesNo] = None,
+  maybeValueWeightOfGoodsBelowThreshold: Option[YesNo] = None,
   goodsEntries: GoodsEntries = GoodsEntries.empty,
   maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
   maybeEmailAddress: Option[Email] = None,
@@ -132,7 +132,7 @@ case class DeclarationJourney(
     val discardedAnswersAreCompleteAndRequireADeclaration =
       ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland &&
         maybeExciseOrRestrictedGoods.contains(No) &&
-        maybeValueWeightOfGoodsExceedsThreshold.contains(No) &&
+        maybeValueWeightOfGoodsBelowThreshold.contains(Yes) &&
         (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
 
     for {
