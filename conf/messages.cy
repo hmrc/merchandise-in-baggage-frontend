@@ -44,8 +44,11 @@ language.change.english = Newid yr iaith i Saesneg
 language.switcher = Newid yr iaith
 
 # Invalid request page
-invalidRequest.title = Invalid request
-invalidRequest.heading = Invalid request
+invalidRequest.title = Ni allwch gael at y dudalen hon
+invalidRequest.li1 = Mae angen i chi roi rhagor o fanylion am y nwyddau cyn y gallwch fwrw golwg dros y dudalen hon.
+invalidRequest.li2 = Cyflwynwch ddatganiad os yw’r canlynol yn wir:
+invalidRequest.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
+invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 
 # ExciseAndRestrictedGoods
