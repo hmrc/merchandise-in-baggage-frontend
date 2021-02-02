@@ -40,8 +40,11 @@ next.button = Next
 
 
 # Invalid request page
-invalidRequest.title = Invalid request
-invalidRequest.heading = Invalid request
+invalidRequest.title = You cannot access this page
+invalidRequest.li1 = You need to provide more details about the goods before you can view this page.
+invalidRequest.li2 = Make a declaration if you are:
+invalidRequest.Import.restart = bringing commercial goods into Great Britain
+invalidRequest.Export.restart = taking commercial goods out of Great Britain
 
 
 # ExciseAndRestrictedGoods
