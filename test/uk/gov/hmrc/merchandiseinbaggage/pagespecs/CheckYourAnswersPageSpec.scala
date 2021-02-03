@@ -75,11 +75,11 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
       }
     }
 
-    s"redirect to ${InvalidRequestPage.path}" when {
+    s"redirect to ${CannotAccessPage.path}" when {
       "the declaration journey is not complete" in {
         givenADeclarationJourney(incompleteDeclarationJourney)
 
-        open(path) mustBe InvalidRequestPage.path
+        open(path) mustBe CannotAccessPage.path
       }
     }
 
@@ -239,7 +239,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
     payApiRequestCapture.header(xRequestId).values.size mustBe 1
   }
 
-  def mustRedirectToInvalidRequest(): Assertion =
+  def mustRedirectToCannotAccessPage(): Assertion =
     readPath() mustBe "/declare-commercial-goods/cannot-access-page"
 
   import WebBrowser._

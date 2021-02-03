@@ -18,9 +18,9 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class InvalidRequestPage(implicit webDriver: WebDriver) extends BasePage
+class CannotAccessPage(implicit webDriver: WebDriver) extends BasePage
 
-object InvalidRequestPage {
+object CannotAccessPage {
   val path: String = "/declare-commercial-goods/cannot-access-page"
 
   val title = "You cannot access this page"

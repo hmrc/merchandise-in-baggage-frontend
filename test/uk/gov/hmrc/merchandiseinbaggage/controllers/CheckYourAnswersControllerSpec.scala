@@ -152,6 +152,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     val eventualResult = controller().onSubmit()(request)
 
     status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.InvalidRequestController.onPageLoad().url)
+    redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
   }
 }

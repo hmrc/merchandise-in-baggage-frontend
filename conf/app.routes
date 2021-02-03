@@ -12,7 +12,7 @@ GET        /progress-deleted             uk.gov.hmrc.merchandiseinbaggage.contro
 GET        /service-timed-out            uk.gov.hmrc.merchandiseinbaggage.controllers.KeepAliveController.onServiceTimeout
 
 # Invalid journey state
-GET        /cannot-access-page           uk.gov.hmrc.merchandiseinbaggage.controllers.InvalidRequestController.onPageLoad
+GET        /cannot-access-page           uk.gov.hmrc.merchandiseinbaggage.controllers.CannotAccessPageController.onPageLoad
 
 
 # StartImport

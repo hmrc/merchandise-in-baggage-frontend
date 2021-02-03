@@ -64,8 +64,8 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
     goodsEntry.maybeCategoryQuantityOfGoods match {
       case Some(c) => f(c.category)
       case None =>
-        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.InvalidRequestController.onPageLoad()}")
-        Future successful Redirect(routes.InvalidRequestController.onPageLoad())
+        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad()}")
+        Future successful Redirect(routes.CannotAccessPageController.onPageLoad())
     }
 
   def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
