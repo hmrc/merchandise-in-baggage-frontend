@@ -46,5 +46,5 @@ class GoodsTypeQuantityPage(implicit webDriver: WebDriver) extends DeclarationDa
 object GoodsTypeQuantityPage {
   def path(idx: Int): String = s"/declare-commercial-goods/goods-type-quantity/$idx"
 
-  val title = "What type of goods are you bringing into Great Britain?"
+  def title(idx: Int) = s"Enter the ${if (idx == 1) "first" else "next"} type of goods"
 }
