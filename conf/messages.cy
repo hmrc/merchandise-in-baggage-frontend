@@ -294,7 +294,7 @@ eoriNumber.trader.Export.error.required = Nodwch eich rhif EORI
 eoriNumber.agent.Import.error.required = Nodwch rif EORI y busnes sy’n dod â’r nwyddau i mewn i Brydain Fawr
 eoriNumber.agent.Export.error.required = Nodwch rif EORI y busnes sy’n cymryd y nwyddau allan o Brydain Fawr
 eoriNumber.error.invalid = Mae’n rhaid i’r rhif EORI ddechrau gyda GB, wedi’i ddilyn gan 12 rhif
-eoriNumber.error.notFound = Invalid EORI number
+eoriNumber.error.notFound = Rhif EORI annilys
 
 # GoodsInVehicle
 goodsInVehicle.Import.title = A yw’r nwyddau’n cyrraedd mewn cerbyd?
