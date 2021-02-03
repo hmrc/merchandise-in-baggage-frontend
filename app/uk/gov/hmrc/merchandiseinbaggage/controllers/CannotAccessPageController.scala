@@ -20,19 +20,19 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
-import uk.gov.hmrc.merchandiseinbaggage.views.html.InvalidRequestView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotAccessPageView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class InvalidRequestController @Inject()(override val controllerComponents: MessagesControllerComponents, view: InvalidRequestView)(
+class CannotAccessPageController @Inject()(override val controllerComponents: MessagesControllerComponents, view: CannotAccessPageView)(
   implicit val ec: ExecutionContext,
   appConfig: AppConfig)
     extends FrontendBaseController {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>
-    DeclarationJourneyLogger.warn(s"User was directed to ${routes.InvalidRequestController.onPageLoad()}")
+    DeclarationJourneyLogger.warn(s"User was directed to ${routes.CannotAccessPageController.onPageLoad()}")
     Ok(view())
   }
 }
