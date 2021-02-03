@@ -240,7 +240,7 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
   }
 
   def mustRedirectToInvalidRequest(): Assertion =
-    readPath() mustBe "/declare-commercial-goods/invalid-request"
+    readPath() mustBe "/declare-commercial-goods/cannot-access-page"
 
   import WebBrowser._
   import page._

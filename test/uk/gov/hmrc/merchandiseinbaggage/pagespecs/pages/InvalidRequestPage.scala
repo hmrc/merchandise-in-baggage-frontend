@@ -21,7 +21,7 @@ import org.openqa.selenium.WebDriver
 class InvalidRequestPage(implicit webDriver: WebDriver) extends BasePage
 
 object InvalidRequestPage {
-  val path: String = "/declare-commercial-goods/invalid-request"
+  val path: String = "/declare-commercial-goods/cannot-access-page"
 
   val title = "You cannot access this page"
 
