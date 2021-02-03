@@ -39,11 +39,6 @@ button: components.button
 
         @h1(s"exciseAndRestrictedGoods.$declarationType.heading")
 
-        <ul class="govuk-list govuk-list--bullet">
-            <li>@messages("exciseAndRestrictedGoods.li1")</li>
-            <li>@messages("exciseAndRestrictedGoods.li2")</li>
-        </ul>
-
         @details(
             summaryText = messages("exciseAndRestrictedGoods.details")
         ) {
@@ -63,9 +58,7 @@ button: components.button
 
         @inputYesNo(
             form = form,
-            legend = s"${messages(s"exciseAndRestrictedGoods.$declarationType.heading")}" +
-                    s"${messages("exciseAndRestrictedGoods.li1")}" +
-                    s"${messages("exciseAndRestrictedGoods.li2")}",
+            legend = messages(s"exciseAndRestrictedGoods.$declarationType.heading"),
             legendAsHeading = false,
             classes = "govuk-visually-hidden"
         )

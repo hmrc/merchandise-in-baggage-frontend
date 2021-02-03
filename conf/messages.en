@@ -52,12 +52,10 @@ invalidRequest.Export.restart = taking commercial goods out of Great Britain
 
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.Import.title = Are you bringing any of the following goods to Great Britain?
-exciseAndRestrictedGoods.Import.heading = Are you bringing any of the following goods to Great Britain?
-exciseAndRestrictedGoods.Export.title = Are you taking any of the following goods out of Great Britain?
-exciseAndRestrictedGoods.Export.heading = Are you taking any of the following goods out of Great Britain?
-exciseAndRestrictedGoods.li1 = Alcohol, tobacco or fuel (excise goods).
-exciseAndRestrictedGoods.li2 = Controlled or restricted goods.
+exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
+exciseAndRestrictedGoods.Import.heading = Are you bringing excise, controlled or restricted goods to Great Britain?
+exciseAndRestrictedGoods.Export.title = Are you taking excise, controlled or restricted goods out of Great Britain?
+exciseAndRestrictedGoods.Export.heading = Are you taking excise, controlled or restricted goods out of Great Britain?
 exciseAndRestrictedGoods.details = What are excise, controlled and restricted goods
 exciseAndRestrictedGoods.details.excise = Excise goods:
 exciseAndRestrictedGoods.details.excise.p = products containing alcohol including beers, wines and spirits; tobacco products including cigarettes, cigars and loose tobacco; energy products including hydrocarbon oils and biofuels for use as motor or heating fuel.
@@ -66,8 +64,8 @@ exciseAndRestrictedGoods.details.restricted.p = Goods that need a licence, or ar
 exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Check if you are bringing controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Check if you are taking controlled or restricted goods (opens in new tab).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, restricted or controlled goods
-exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, restricted or controlled goods
+exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, controlled or restricted goods
+exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, controlled or restricted goods
 
 
 # GoodsDestination
