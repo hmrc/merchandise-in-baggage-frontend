@@ -104,6 +104,7 @@ goodsTypeQuantity.category = Goods type
 goodsTypeQuantity.category.hint = Er enghraifft, dillad
 goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
 goodsTypeQuantity.quantity = Nifer o eitemau
+goodsTypeQuantity.quantity.hint = For example, 2 boxes
 goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
 goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
 

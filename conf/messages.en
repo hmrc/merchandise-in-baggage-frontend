@@ -106,6 +106,7 @@ goodsTypeQuantity.category = Goods type
 goodsTypeQuantity.category.hint = For example, clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
+goodsTypeQuantity.quantity.hint = For example, 2 boxes
 goodsTypeQuantity.quantity.error.required = Enter the number of items
 goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
 
