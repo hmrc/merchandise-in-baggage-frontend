@@ -52,12 +52,10 @@ invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.Import.title = A ydych yn dod ag unrhyw un o’r nwyddau canlynol i mewn i Brydain Fawr?
-exciseAndRestrictedGoods.Import.heading = A ydych yn dod ag unrhyw un o’r nwyddau canlynol i mewn i Brydain Fawr?
-exciseAndRestrictedGoods.Export.title = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
-exciseAndRestrictedGoods.Export.heading = A ydych yn mynd ag unrhyw un o’r nwyddau canlynol allan o Brydain Fawr?
-exciseAndRestrictedGoods.li1 = Alcohol, tybaco neu danwydd (nwyddau ecséis).
-exciseAndRestrictedGoods.li2 = Nwyddau o dan reolaeth neu nwyddau cyfyngedig.
+exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
+exciseAndRestrictedGoods.Import.heading = Are you bringing excise, controlled or restricted goods to Great Britain?
+exciseAndRestrictedGoods.Export.title = Are you taking excise, controlled or restricted goods out of Great Britain?
+exciseAndRestrictedGoods.Export.heading = Are you taking excise, controlled or restricted goods out of Great Britain?
 exciseAndRestrictedGoods.details = Beth yw nwyddau ecséis, nwyddau o dan reolaeth a nwyddau cyfyngedig?
 exciseAndRestrictedGoods.details.excise = Nwyddau ecséis:
 exciseAndRestrictedGoods.details.excise.p = cynhyrchion sy’n cynnwys alcohol, gan gynnwys cwrw, gwinoedd a gwirodydd; cynhyrchion tybaco, gan gynnwys sigaréts, sigarau a thybaco rhydd; cynhyrchion ynni, gan gynnwys olewau hydrocarbon a biodanwyddau i’w defnyddio ar gyfer tanwydd cerbyd a gwresogi.
@@ -66,8 +64,8 @@ exciseAndRestrictedGoods.details.restricted.p = Nwyddau sydd angen trwydded, neu
 exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Gwirio a ydych yn dod â nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Gwirio a ydych yn cymryd nwyddau dan reolaeth neu nwyddau cyfyngedig (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.Import.required = Dewiswch ‘Iawn’ os ydych yn dod â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad
-exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn cymryd nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o’r wlad
+exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, controlled or restricted goods
+exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, controlled or restricted goods
 
 
 # GoodsDestination

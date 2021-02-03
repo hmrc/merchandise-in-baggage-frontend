@@ -20,10 +20,10 @@ import org.openqa.selenium.By
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.InvalidRequestPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage.path
 
-class InvalidRequestPageSpec extends BasePageSpec[InvalidRequestPage]   {
+class InvalidRequestPageSpec extends BasePageSpec[InvalidRequestPage] {
   override def page: InvalidRequestPage = new InvalidRequestPage
 
-  def findLink(elm:String ):String =
+  def findLink(elm: String): String =
     page.element(elm).findElement(By.tagName("a")).getAttribute("href")
 
   "the page should link to start-import" in {

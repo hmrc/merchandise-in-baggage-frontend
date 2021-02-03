@@ -28,7 +28,7 @@ class ExciseAndRestrictedGoodsPageSpec extends DeclarationDataCapturePageSpec[Ye
 
   private def setup(): Unit = givenAnImportToGreatBritainJourneyIsStarted()
 
-  private val answerRequiredValidationMessage = "Select yes if you are bringing in excise, restricted or controlled goods"
+  private val answerRequiredValidationMessage = "Select yes if you are bringing in excise, controlled or restricted goods"
 
   "the excise and restricted goods page" should {
     behave like aPageWhichRenders(path, givenAnImportJourneyIsStarted(), importTitle)
