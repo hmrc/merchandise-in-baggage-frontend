@@ -99,13 +99,11 @@ valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value o
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # SearchGoods
-goodsTypeQuantity.Import.title = What type of goods are you bringing into Great Britain?
-goodsTypeQuantity.Import.heading = What type of goods are you bringing into Great Britain?
-goodsTypeQuantity.Export.title = What goods are you taking out of Great Britain?
-goodsTypeQuantity.Export.heading = What goods are you taking out of Great Britain?
-goodsTypeQuantity.p = Add your goods by their type or category, for example, electronics. You can add more goods later if you have more than one type.
-goodsTypeQuantity.category = Type of goods
-goodsTypeQuantity.category.hint = For example clothes
+goodsTypeQuantity.title = Enter the first type of goods
+goodsTypeQuantity.heading = Enter the first type of goods
+goodsTypeQuantity.p = Enter only one type. You can add more later.
+goodsTypeQuantity.category = Goods type
+goodsTypeQuantity.category.hint = For example, clothes
 goodsTypeQuantity.category.error.required = Enter a type of goods
 goodsTypeQuantity.quantity = Number of items
 goodsTypeQuantity.quantity.error.required = Enter the number of items

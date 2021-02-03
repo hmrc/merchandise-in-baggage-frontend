@@ -47,7 +47,6 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
     contentAsString(result) must include(messages("eoriNumber.error.notFound"))
   }
 
-
   "return an error if API return 404" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
     val connector = new MibConnector(client, "some url") {
