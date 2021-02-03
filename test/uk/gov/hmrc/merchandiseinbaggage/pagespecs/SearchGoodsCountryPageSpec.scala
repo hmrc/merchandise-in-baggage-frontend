@@ -34,7 +34,7 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
   }
 
   "the search goods country page export" should {
-    behave like aGoodEntryExportPageTitle(path(1), exportTitle)
+    behave like aGoodEntryExportPageTitle(path(1), exportTitle(1))
   }
 
   "render hint if is an import" in {
