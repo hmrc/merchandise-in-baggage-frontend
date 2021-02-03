@@ -77,6 +77,6 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/invalid-request")
+    redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 }

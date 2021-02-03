@@ -17,11 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import org.openqa.selenium.By
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.InvalidRequestPage
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.CannotAccessPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage.path
 
-class InvalidRequestPageSpec extends BasePageSpec[InvalidRequestPage] {
-  override def page: InvalidRequestPage = new InvalidRequestPage
+class CannotAccessPageSpec extends BasePageSpec[CannotAccessPage] {
+  override def page: CannotAccessPage = new CannotAccessPage
 
   def findLink(elm: String): String =
     page.element(elm).findElement(By.tagName("a")).getAttribute("href")

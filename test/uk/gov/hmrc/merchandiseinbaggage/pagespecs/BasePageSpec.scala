@@ -82,30 +82,30 @@ trait BasePageSpec[P <: BasePage] extends BaseSpecWithApplication with WireMockS
     }
 
   def aPageWhichRequiresADeclarationJourney(path: String): Unit =
-    s"redirect from $path to ${InvalidRequestPage.path}" when {
+    s"redirect from $path to ${CannotAccessPage.path}" when {
       "the declaration has not been started" in {
-        open(path) mustBe InvalidRequestPage.path
+        open(path) mustBe CannotAccessPage.path
       }
     }
 
   def aPageWhichRequiresACustomsAgentDeclaration(path: String): Unit =
-    s"redirect to ${InvalidRequestPage.path}" when {
+    s"redirect to ${CannotAccessPage.path}" when {
       "the declaration has been started but the user has not declared whether or not they are a customs agent" in {
         givenADeclarationJourney(completedDeclarationJourney.copy(maybeIsACustomsAgent = None))
-        open(path) mustBe InvalidRequestPage.path
+        open(path) mustBe CannotAccessPage.path
       }
     }
 
   def aPageThatRequiresAtLeastOneCompletedGoodsEntry(path: String): Unit =
-    s"redirect to ${InvalidRequestPage.path}" when {
+    s"redirect to ${CannotAccessPage.path}" when {
       "there are no started goods entries" in {
         givenADeclarationJourney(startedImportJourney)
-        open(path) mustBe InvalidRequestPage.path
+        open(path) mustBe CannotAccessPage.path
       }
 
       "there is no complete goods entries" in {
         givenADeclarationJourney(importJourneyWithStartedGoodsEntry)
-        open(path) mustBe InvalidRequestPage.path
+        open(path) mustBe CannotAccessPage.path
       }
     }
 
