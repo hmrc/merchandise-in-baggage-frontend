@@ -100,7 +100,9 @@ valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total valu
 
 # SearchGoods
 goodsTypeQuantity.title = Enter the first type of goods
+goodsTypeQuantity.next.title = Enter the next type of goods
 goodsTypeQuantity.heading = Enter the first type of goods
+goodsTypeQuantity.next.heading = Enter the next type of goods
 goodsTypeQuantity.p = Enter only one type. You can add more later.
 goodsTypeQuantity.category = Goods type
 goodsTypeQuantity.category.hint = For example, clothes

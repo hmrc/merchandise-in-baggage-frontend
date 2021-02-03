@@ -30,13 +30,13 @@ p: components.p)
 
 @(form: Form[_], idx: Int, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"goodsTypeQuantity.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, if(idx == 1) s"goodsTypeQuantity.title" else s"goodsTypeQuantity.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
   @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 
-    @h1(messages(s"goodsTypeQuantity.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
+    @h1(messages(if(idx == 1) s"goodsTypeQuantity.heading" else s"goodsTypeQuantity.next.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
     @p(Html(messages("goodsTypeQuantity.p")))
 
