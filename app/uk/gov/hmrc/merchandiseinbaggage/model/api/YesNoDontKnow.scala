@@ -17,21 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import enumeratum.EnumEntry
+import play.api.libs.json.Format
 
 import scala.collection.immutable
 
-sealed trait YesNoDontKnow extends EnumEntry {
+sealed trait YesNoDontKnow extends EnumEntry with EnumEntryRadioItemSupport {
   val messageKey = s"${YesNoDontKnow.baseMessageKey}.${entryName.toLowerCase}"
 }
 
-object YesNoDontKnow extends Enum[YesNoDontKnow] {
+object YesNoDontKnow extends Enum[YesNoDontKnow] with RadioSupport[YesNoDontKnow] {
+  implicit val format: Format[YesNoDontKnow] = EnumFormat(YesNoDontKnow)
+
   override val baseMessageKey: String = "site"
   override val values: immutable.IndexedSeq[YesNoDontKnow] = findValues
 
   case object Yes extends YesNoDontKnow
-
   case object No extends YesNoDontKnow
-
   case object DontKnow extends YesNoDontKnow
 
 }

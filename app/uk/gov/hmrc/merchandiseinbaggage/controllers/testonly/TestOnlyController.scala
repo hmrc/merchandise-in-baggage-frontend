@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers.testonly
 
 import java.time.LocalDate.now
-
 import javax.inject.Inject
 import play.api.data.Form
 import play.api.libs.json.Json
@@ -31,9 +30,9 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormPro
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry, Country}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
@@ -79,10 +78,10 @@ class TestOnlyController @Inject()(
 
 object TestOnlyController {
   val completedGoodsEntry: GoodsEntry =
-    GoodsEntry(
+    ImportGoodsEntry(
       Some(CategoryQuantityOfGoods("wine", "1")),
       Some(GoodsVatRates.Twenty),
-      Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+      Some(YesNoDontKnow.Yes),
       Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
     )
 
@@ -96,10 +95,10 @@ object TestOnlyController {
       goodsEntries = GoodsEntries(
         Seq(
           completedGoodsEntry,
-          GoodsEntry(
+          ImportGoodsEntry(
             Some(CategoryQuantityOfGoods("cheese", "3")),
             Some(GoodsVatRates.Twenty),
-            Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+            Some(YesNoDontKnow.Yes),
             Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
           )
         )),

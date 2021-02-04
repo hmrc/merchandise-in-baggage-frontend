@@ -16,21 +16,19 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.GoodsSummaryList
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationGoods
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 @this(summaryList: GovukSummaryList)
 
-@(declarationGoods: DeclarationGoods, declarationType: DeclarationType)(implicit messages: Messages)
+@(declarationGoods: DeclarationGoods)(implicit messages: Messages)
 
-@for((list, idx) <- GoodsSummaryList.summaryList(declarationGoods, declarationType).zipWithIndex) {
+@for((list, idx) <- GoodsSummaryList.summaryList(declarationGoods).zipWithIndex) {
     @summaryList(list)
     <p class="govuk-body-m">
       <a id="remove_@idx" class="govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
           @messages("site.remove")
           <span class="govuk-visually-hidden">
               @declarationGoods.goods(idx).categoryQuantityOfGoods.category
-              @messages(declarationGoods.goods(idx).countryOfPurchase.countryName)
               @declarationGoods.goods(idx).purchaseDetails.formatted
           </span>
       </a>

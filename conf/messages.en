@@ -90,7 +90,7 @@ valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less t
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1,500 and they weigh less than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
-# SearchGoods
+# GoodsTypeQuantity
 goodsTypeQuantity.Import.title = What type of goods are you bringing into Great Britain?
 goodsTypeQuantity.Import.heading = What type of goods are you bringing into Great Britain?
 goodsTypeQuantity.Export.title = What goods are you taking out of Great Britain?
@@ -123,6 +123,15 @@ goodsVatRate.Zero = 0% VAT
 goodsVatRate.Five = 5% VAT
 goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
+
+# GoodsOrigin
+goodsOrigin.title = Were these goods produced in the EU?
+goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.inset = Type of goods:
+goodsOrigin.p = Check if your goods meet the
+goodsOrigin.p.link = rules of origin (opens in new tab)
+goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
+goodsOrigin.error.required = Select yes if the goods were produced in the EU
 
 # SearchGoodsCountry
 searchGoodsCountry.Export.title = What country are you taking the {0} to?

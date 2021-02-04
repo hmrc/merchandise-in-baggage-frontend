@@ -18,37 +18,15 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
-
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, Country}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
 
-case class GoodsEntry(
-  maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
-  maybeGoodsVatRate: Option[GoodsVatRate] = None,
-  maybeCountryOfPurchase: Option[Country] = None,
-  maybePurchaseDetails: Option[PurchaseDetails] = None) {
-  val goodsIfComplete: Option[Goods] =
-    for {
-      categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
-      goodsVatRate            <- maybeGoodsVatRate
-      countryOfPurchase       <- maybeCountryOfPurchase
-      priceOfGoods            <- maybePurchaseDetails
-    } yield Goods(categoryQuantityOfGoods, goodsVatRate, countryOfPurchase, priceOfGoods)
-
-  val isComplete: Boolean = goodsIfComplete.isDefined
-}
-
-object GoodsEntry {
-  implicit val format: OFormat[GoodsEntry] = Json.format[GoodsEntry]
-
-  val empty: GoodsEntry = GoodsEntry()
-}
-
-case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
+case class GoodsEntries(entries: Seq[GoodsEntry]) {
   if (entries.isEmpty) throw new RuntimeException("GoodsEntries cannot be empty: use apply()")
 
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
@@ -61,23 +39,25 @@ case class GoodsEntries(entries: Seq[GoodsEntry] = Seq(GoodsEntry.empty)) {
   val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
 
   def addEmptyIfNecessary(): GoodsEntries =
-    if (entries.lastOption.fold(true)(_.isComplete)) GoodsEntries(entries :+ GoodsEntry.empty)
-    else this
+    if (entries.lastOption.fold(true)(_.isComplete)) entries.head match {
+      case _: ImportGoodsEntry => GoodsEntries(entries :+ ImportGoodsEntry())
+      case _: ExportGoodsEntry => GoodsEntries(entries :+ ExportGoodsEntry())
+    } else this
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
 
   def remove(idx: Int): GoodsEntries =
-    if (entries.size == 1) GoodsEntries.empty
-    else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
+    if (entries.size == 1) entries.head match {
+      case _: ImportGoodsEntry => GoodsEntries(ImportGoodsEntry())
+      case _: ExportGoodsEntry => GoodsEntries(ExportGoodsEntry())
+    } else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
 }
 
 object GoodsEntries {
   implicit val format: OFormat[GoodsEntries] = Json.format[GoodsEntries]
 
   def apply(goodsEntry: GoodsEntry): GoodsEntries = GoodsEntries(Seq(goodsEntry))
-
-  val empty: GoodsEntries = GoodsEntries()
 }
 
 case class DeclarationJourney(
@@ -87,7 +67,7 @@ case class DeclarationJourney(
   maybeExciseOrRestrictedGoods: Option[YesNo] = None,
   maybeGoodsDestination: Option[GoodsDestination] = None,
   maybeValueWeightOfGoodsBelowThreshold: Option[YesNo] = None,
-  goodsEntries: GoodsEntries = GoodsEntries.empty,
+  goodsEntries: GoodsEntries,
   maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
   maybeEmailAddress: Option[Email] = None,
   maybeIsACustomsAgent: Option[YesNo] = None,
@@ -159,6 +139,21 @@ case class DeclarationJourney(
 
 object DeclarationJourney extends MongoDateTimeFormats {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
+
+  def apply(sessionId: SessionId, declarationType: DeclarationType): DeclarationJourney = declarationType match {
+    case Import =>
+      DeclarationJourney(
+        sessionId = sessionId,
+        declarationType = declarationType,
+        goodsEntries = GoodsEntries(ImportGoodsEntry())
+      )
+    case Export =>
+      DeclarationJourney(
+        sessionId = sessionId,
+        declarationType = declarationType,
+        goodsEntries = GoodsEntries(ExportGoodsEntry())
+      )
+  }
 
   val id = "sessionId"
 }

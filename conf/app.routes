@@ -43,6 +43,10 @@ POST       /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggage.contro
 GET        /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsVatRateController.onPageLoad(idx: Int)
 POST       /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsVatRateController.onSubmit(idx: Int)
 
+# GoodsOrigin
+GET        /goods-origin/:idx            uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsOriginController.onPageLoad(idx: Int)
+POST       /goods-origin/:idx            uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsOriginController.onSubmit(idx: Int)
+
 # SearchGoodsCountry
 GET        /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggage.controllers.SearchGoodsCountryController.onPageLoad(idx: Int)
 POST       /search-goods-country/:idx    uk.gov.hmrc.merchandiseinbaggage.controllers.SearchGoodsCountryController.onSubmit(idx: Int)

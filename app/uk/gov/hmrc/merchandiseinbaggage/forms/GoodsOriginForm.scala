@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup
+package uk.gov.hmrc.merchandiseinbaggage.forms
 
-import play.api.libs.json.{Json, OFormat}
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNoDontKnow
 
-case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String])
+object GoodsOriginForm extends Mappings {
 
-object Country {
-  implicit val formats: OFormat[Country] = Json.format[Country]
+  val form: Form[YesNoDontKnow] =
+    Form(
+      "value" -> yesNoDontKnow(s"goodsOrigin.error.required")
+    )
+
 }

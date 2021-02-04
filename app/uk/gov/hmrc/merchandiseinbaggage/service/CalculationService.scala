@@ -20,7 +20,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, PaymentCalculation, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, ImportGoods, PaymentCalculation, PaymentCalculations}
 
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -31,7 +31,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
     Future
-      .traverse(declarationGoods.goods) { goods =>
+      .traverse(declarationGoods.goods.asInstanceOf[Seq[ImportGoods]]) { goods =>
         mibConnector.calculatePayment(goods.calculationRequest).map { result =>
           logger.info(s"Payment calculation for good [$goods] gave result [$result]")
           PaymentCalculation(goods, result)

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, GoodsVatRate, YesNoDontKnow}
 
-case class CalculationRequest(amount: BigDecimal, currency: Currency, producedInEu: YesNoDontKnow, vatRate: GoodsVatRate)
+case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String])
 
-object CalculationRequest {
-  implicit val format: OFormat[CalculationRequest] = Json.format[CalculationRequest]
+object Country {
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

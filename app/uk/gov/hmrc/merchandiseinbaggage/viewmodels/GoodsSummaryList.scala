@@ -20,20 +20,18 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.Aliases._
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, SummaryListRow}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, Goods}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, ExportGoods, ImportGoods}
 
 object GoodsSummaryList {
 
-  def summaryList(declarationGoods: DeclarationGoods, declarationType: DeclarationType)(implicit messages: Messages): Seq[SummaryList] =
+  def summaryList(declarationGoods: DeclarationGoods)(implicit messages: Messages): Seq[SummaryList] =
     declarationGoods.goods.zipWithIndex.map { item =>
       val goods = item._1
       val idx = item._2 + 1
 
-      declarationType match {
-        case Import => importSummary(goods, idx)
-        case Export => exportSummary(goods, idx)
+      goods match {
+        case ig: ImportGoods => importSummary(ig, idx)
+        case eg: ExportGoods => exportSummary(eg, idx)
       }
     }
 
@@ -54,7 +52,7 @@ object GoodsSummaryList {
         ))
     )
 
-  private def importSummary(goods: Goods, idx: Int)(implicit messages: Messages): SummaryList =
+  private def importSummary(goods: ImportGoods, idx: Int)(implicit messages: Messages): SummaryList =
     SummaryList(
       rows = Seq(
         rowWithChange(
@@ -76,10 +74,10 @@ object GoodsSummaryList {
           s"vatRateChangeLink_$idx"
         ),
         rowWithChange(
-          "reviewGoods.list.country",
-          messages(goods.countryOfPurchase.countryName),
-          routes.SearchGoodsCountryController.onPageLoad(idx).url,
-          s"countryChangeLink_$idx"
+          "reviewGoods.list.producedInEu",
+          messages(goods.producedInEu.messageKey),
+          routes.GoodsOriginController.onPageLoad(idx).url,
+          s"goodsOriginChangeLink_$idx"
         ),
         rowWithChange(
           "reviewGoods.list.price",
@@ -91,7 +89,7 @@ object GoodsSummaryList {
       classes = "govuk-!-margin-bottom-1"
     )
 
-  private def exportSummary(goods: Goods, idx: Int)(implicit messages: Messages): SummaryList =
+  private def exportSummary(goods: ExportGoods, idx: Int)(implicit messages: Messages): SummaryList =
     SummaryList(
       rows = Seq(
         rowWithChange(
@@ -108,9 +106,9 @@ object GoodsSummaryList {
         ),
         rowWithChange(
           "reviewGoods.list.destination",
-          messages(goods.countryOfPurchase.countryName),
+          messages(goods.destination.countryName),
           routes.SearchGoodsCountryController.onPageLoad(idx).url,
-          s"countryChangeLink_$idx"
+          s"destinationChangeLink_$idx"
         ),
         rowWithChange(
           "reviewGoods.list.price",

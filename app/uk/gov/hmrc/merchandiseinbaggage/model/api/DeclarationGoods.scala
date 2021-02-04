@@ -16,17 +16,46 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
+import play.api.libs.json._
 
-case class Goods(
-  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+sealed trait Goods {
+  val categoryQuantityOfGoods: CategoryQuantityOfGoods
+  val purchaseDetails: PurchaseDetails
+}
+
+case class ImportGoods(
+  val categoryQuantityOfGoods: CategoryQuantityOfGoods,
   goodsVatRate: GoodsVatRate,
-  countryOfPurchase: Country,
-  purchaseDetails: PurchaseDetails)
+  producedInEu: YesNoDontKnow,
+  val purchaseDetails: PurchaseDetails
+) extends Goods
+
+object ImportGoods {
+  implicit val format: OFormat[ImportGoods] = Json.format[ImportGoods]
+}
+
+case class ExportGoods(
+  val categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  destination: Country,
+  val purchaseDetails: PurchaseDetails
+) extends Goods
+
+object ExportGoods {
+  implicit val format: OFormat[ExportGoods] = Json.format[ExportGoods]
+}
 
 object Goods {
-  implicit val format: OFormat[Goods] = Json.format[Goods]
+  implicit val writes = Writes[Goods] {
+    case ig: ImportGoods => ImportGoods.format.writes(ig)
+    case eg: ExportGoods => ExportGoods.format.writes(eg)
+  }
+
+  implicit val reads = Reads[Goods] {
+    case json: JsObject if json.keys.contains("producedInEu") =>
+      JsSuccess(json.as[ImportGoods])
+    case json: JsObject if json.keys.contains("destination") =>
+      JsSuccess(json.as[ExportGoods])
+  }
 }
 
 case class DeclarationGoods(goods: Seq[Goods])

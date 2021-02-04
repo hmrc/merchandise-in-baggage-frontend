@@ -123,6 +123,15 @@ goodsVatRate.Five = 5% TAW
 goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
+# GoodsOrigin
+goodsOrigin.title = Were these goods produced in the EU?
+goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.inset = Type of goods:
+goodsOrigin.p = Check if your goods meet the
+goodsOrigin.p.link = rules of origin (opens in new tab)
+goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
+goodsOrigin.error.required = Select yes if the goods were produced in the EU
+
 # SearchGoodsCountry
 searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
