@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
-import play.api.data.Form
+import play.api.data.{Form, FormError}
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -26,9 +26,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 object EoriNumberForm extends Mappings {
 
   private val eoriRegex: String = "^GB[0-9]{12}$"
+  val fieldName = "eori"
 
   private val isValidEori: Constraint[String] = Constraint { value: String =>
-    if (value matches (eoriRegex)) Valid
+    if (value matches eoriRegex) Valid
     else Invalid("eoriNumber.error.invalid")
   }
 
@@ -36,8 +37,13 @@ object EoriNumberForm extends Mappings {
     if (customsAgent == Yes) "agent" else "trader"
 
   def form(customsAgent: YesNo, declarationType: DeclarationType): Form[String] = Form(
-    "eori" ->
+    fieldName ->
       eori(s"eoriNumber.${agentOrTrader(customsAgent)}.$declarationType.error.required")
         .verifying(isValidEori)
   )
+
+  def formWithError(customsAgent: YesNo, declarationType: DeclarationType, eori: String): Form[String] =
+    form(customsAgent, declarationType)
+      .withError(FormError(fieldName, "eoriNumber.error.notFound"))
+      .bind(Map(fieldName -> eori))
 }

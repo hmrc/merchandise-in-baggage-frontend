@@ -17,8 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.generators
 
 import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.Gen
+import org.scalacheck.{Arbitrary, Gen}
 import org.scalacheck.Gen.{alphaStr, choose}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 
 trait Generators {
 

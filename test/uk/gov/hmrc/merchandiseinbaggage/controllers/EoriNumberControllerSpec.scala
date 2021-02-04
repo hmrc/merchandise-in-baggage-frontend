@@ -40,11 +40,12 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
     val result = controller.onSubmit()(
       buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody(("eori", "GB123467800000"))
+        .withFormUrlEncodedBody(("eori", "GB123467800022"))
     )
 
     status(result) mustBe 400
     contentAsString(result) must include(messages("eoriNumber.error.notFound"))
+    contentAsString(result) must include(messages("GB123467800022"))
   }
 
   "return an error if API return 404" in {
