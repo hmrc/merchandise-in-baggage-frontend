@@ -45,5 +45,5 @@ object EoriNumberForm extends Mappings {
   def formWithError(customsAgent: YesNo, declarationType: DeclarationType, eori: String): Form[String] =
     form(customsAgent, declarationType)
       .withError(FormError(fieldName, "eoriNumber.error.notFound"))
-      .bind(Map(fieldName -> eori))
+      .fill(eori)
 }
