@@ -83,7 +83,6 @@ class EoriNumberController @Inject()(
       Future.successful(badRequestResult(isAgent, declarationType, eori))
 
   private def badRequestResult(isAgent: YesNo, declarationType: DeclarationType, eori: String)(
-    implicit request: DeclarationJourneyRequest[AnyContent]): Result = {
+    implicit request: DeclarationJourneyRequest[AnyContent]): Result =
     BadRequest(view(formWithError(isAgent, request.declarationType, eori), isAgent, backButtonUrl, declarationType))
-  }
 }
