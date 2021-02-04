@@ -106,11 +106,11 @@ class CheckYourAnswersPageSpec extends BasePageSpec[CheckYourAnswersPage] with T
         }
       }
 
-      s"redirect to ${SearchGoodsCountryPage.path(index)}" when {
+      s"redirect to ${GoodsOriginPage.path(index)}" when {
         "the user clicks on the change link" in {
           givenADeclarationJourney(completedDeclarationJourney)
           open(path)
-          page.clickOnChangeGoodsCountryLink(index) mustBe SearchGoodsCountryPage.path(index)
+          page.clickOnChangeGoodsOriginLink(index) mustBe GoodsOriginPage.path(index)
         }
       }
 

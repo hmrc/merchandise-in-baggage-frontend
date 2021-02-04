@@ -17,10 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.ReviewGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 
@@ -35,7 +32,7 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
   private val importDeclarationBreakDown = declarationBreakDown
     .+("Price paid" -> "99.99, Euro (EUR)")
     .-("Destination")
-    .+("Country" -> "France")
+    .+("Produced in EU" -> "Yes")
 
   "the review goods page" should {
     behave like aPageWhichRequiresADeclarationJourney(path)
@@ -51,19 +48,6 @@ class ReviewGoodsPageSpec extends BasePageSpec[ReviewGoodsPage] {
 
         page.headerText() mustBe title
         page.goodsSummariesAsMap mustBe Seq(importDeclarationBreakDown)
-      }
-
-      "a single export goods entry is complete" in {
-        val goodsEntry = completedGoodsEntry
-          .copy(maybePurchaseDetails = Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil))))
-
-        givenADeclarationJourney(
-          startedImportToGreatBritainJourney
-            .copy(goodsEntries = GoodsEntries(Seq(goodsEntry)), declarationType = Export))
-        open(path)
-
-        page.headerText() mustBe title
-        page.goodsSummariesAsMap mustBe Seq(declarationBreakDown.filterNot(_._1 == "VAT rate"))
       }
 
       "multiple import goods entries are complete" in {

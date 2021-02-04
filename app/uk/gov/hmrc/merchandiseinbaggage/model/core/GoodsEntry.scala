@@ -44,6 +44,8 @@ case class ImportGoodsEntry(
 }
 
 object ImportGoodsEntry {
+  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+
   implicit val format: OFormat[ImportGoodsEntry] = Json.format[ImportGoodsEntry]
 
   val empty: ImportGoodsEntry = ImportGoodsEntry()
@@ -63,12 +65,16 @@ case class ExportGoodsEntry(
 }
 
 object ExportGoodsEntry {
+  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+
   implicit val format: OFormat[ExportGoodsEntry] = Json.format[ExportGoodsEntry]
 
   val empty: ExportGoodsEntry = ExportGoodsEntry()
 }
 
 object GoodsEntry {
+  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+
   implicit val writes: Writes[GoodsEntry] = Writes[GoodsEntry] {
     case ig: ImportGoodsEntry => ImportGoodsEntry.format.writes(ig)
     case eg: ExportGoodsEntry => ExportGoodsEntry.format.writes(eg)

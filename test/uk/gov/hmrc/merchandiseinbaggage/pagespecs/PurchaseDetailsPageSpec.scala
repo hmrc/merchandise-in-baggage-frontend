@@ -20,7 +20,7 @@ import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PurchaseDetailsPage._
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{PurchaseDetailsPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsOriginPage, PurchaseDetailsPage}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, PurchaseDetailsPage] with ScalaFutures {
@@ -32,7 +32,7 @@ class PurchaseDetailsPageSpec extends GoodsEntryPageSpec[PurchaseDetailsInput, P
   private val amountValidationErrorMessageElementId = "price-error"
 
   "the purchase details page" should {
-    behave like aGoodsEntryPage(path, title, PurchaseDetailsInput("100.000", "EUR"), None, SearchGoodsCountryPage.path, false)
+    behave like aGoodsEntryPage(path, title, PurchaseDetailsInput("100.000", "EUR"), None, GoodsOriginPage.path, false)
 
     behave like
       aPageWithARequiredQuestion(

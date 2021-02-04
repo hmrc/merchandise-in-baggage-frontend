@@ -19,17 +19,18 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRate
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.GoodsVatRatePage._
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsTypeQuantityPage, RadioButtonPage, SearchGoodsCountryPage}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsOriginPage, GoodsTypeQuantityPage, RadioButtonPage}
 
 class GoodsVatRatePageSpec extends GoodsEntryPageSpec[GoodsVatRate, RadioButtonPage[GoodsVatRate]] {
   override lazy val page: RadioButtonPage[GoodsVatRate] = wire[RadioButtonPage[GoodsVatRate]]
 
   "the goods vat rate page" should {
-    behave like aGoodsEntryPage(path, title, Twenty, Some(SearchGoodsCountryPage.path), GoodsTypeQuantityPage.path)
+    behave like aGoodsEntryPage(path, title, Twenty, Some(GoodsOriginPage.path), GoodsTypeQuantityPage.path)
     behave like aPageWithARequiredQuestion(path(1), "Select which VAT rate applies to the goods", givenAGoodsEntryIsStarted())
   }
 
-  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[GoodsVatRate] = goodsEntry.maybeGoodsVatRate
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[GoodsVatRate] =
+    goodsEntry.asInstanceOf[ImportGoodsEntry].maybeGoodsVatRate
 }

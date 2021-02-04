@@ -57,7 +57,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
     }
 
     s"redirect to ${routes.ReviewGoodsController.onPageLoad()} if goods contains more entries" in {
-      val journey = importJourneyWithStartedGoodsEntry.copy(goodsEntries = GoodsEntries(Seq(startedGoodsEntry, startedGoodsEntry)))
+      val journey = importJourneyWithStartedGoodsEntry.copy(goodsEntries = GoodsEntries(Seq(startedImportGoods, startedImportGoods)))
       val result = controller.removeGoodOrRedirect(1, journey, Yes)
 
       status(result) mustBe Status.SEE_OTHER
@@ -65,7 +65,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
     }
 
     s"redirect to ${routes.CheckYourAnswersController.onPageLoad()} if goods contains more entries and is completed" in {
-      val journey = completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedGoodsEntry, completedGoodsEntry)))
+      val journey = completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedImportGoods, completedImportGoods)))
       val result = controller.removeGoodOrRedirect(1, journey, Yes)
 
       status(result) mustBe Status.SEE_OTHER

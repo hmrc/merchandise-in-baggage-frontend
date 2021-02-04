@@ -17,19 +17,19 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport {
 
-  val client = app.injector.instanceOf[MibConnector]
-  implicit val hc = HeaderCarrier()
-  val declarationWithId = declaration.copy(declarationId = stubbedDeclarationId)
+  private val client = app.injector.instanceOf[MibConnector]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val declarationWithId = declaration.copy(declarationId = stubbedDeclarationId)
 
   "send a declaration to backend to be persisted" in {
     givenDeclarationIsPersistedInBackend(declarationWithId)
@@ -38,7 +38,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   }
 
   "send a calculation request to backend for payment" in {
-    val calculationRequest = aDeclarationGood.goods.head.calculationRequest
+    val calculationRequest = aDeclarationGood.goods.head.asInstanceOf[ImportGoods].calculationRequest
     val stubbedResult = CalculationResult(AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None)
 
     givenAPaymentCalculation(calculationRequest, stubbedResult)

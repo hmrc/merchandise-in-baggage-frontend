@@ -22,7 +22,6 @@ error.yesNoDontKnow = Please enter Yes, No or I do not know
 
 site.yes = Yes
 site.no = No
-site.dontknow = I do not know
 site.continue = Continue
 site.confirm = Confirm
 site.start = Start now
@@ -31,6 +30,10 @@ site.change = Change
 site.remove = Remove
 site.govuk = GOV.UK
 site.back = Back
+
+yndk.Yes = Yes
+yndk.No = No
+yndk.DontKnow = I do not know
 
 date.day = Day
 date.month = Month
@@ -163,7 +166,7 @@ reviewGoods.heading = Review your goods
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT rate
-reviewGoods.list.country = Country
+reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number

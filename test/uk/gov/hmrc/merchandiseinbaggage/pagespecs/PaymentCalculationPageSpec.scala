@@ -54,7 +54,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
       val taxCalculation = setUpTaxCalculationAndOpenPage(
         importJourneyWithOneCompleteGoodsEntry
           .modify(_.goodsEntries.entries)
-          .setTo(Seq(completedGoodsEntry, completedGoodsEntry))
+          .setTo(Seq(completedImportGoods, completedImportGoods))
       )
       val paymentCalculations = taxCalculation.paymentCalculations
 

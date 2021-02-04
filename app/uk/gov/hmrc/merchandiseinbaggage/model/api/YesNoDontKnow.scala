@@ -22,13 +22,13 @@ import play.api.libs.json.Format
 import scala.collection.immutable
 
 sealed trait YesNoDontKnow extends EnumEntry with EnumEntryRadioItemSupport {
-  val messageKey = s"${YesNoDontKnow.baseMessageKey}.${entryName.toLowerCase}"
+  val messageKey = s"${YesNoDontKnow.baseMessageKey}.$entryName"
 }
 
 object YesNoDontKnow extends Enum[YesNoDontKnow] with RadioSupport[YesNoDontKnow] {
   implicit val format: Format[YesNoDontKnow] = EnumFormat(YesNoDontKnow)
 
-  override val baseMessageKey: String = "site"
+  override val baseMessageKey: String = "yndk"
   override val values: immutable.IndexedSeq[YesNoDontKnow] = findValues
 
   case object Yes extends YesNoDontKnow

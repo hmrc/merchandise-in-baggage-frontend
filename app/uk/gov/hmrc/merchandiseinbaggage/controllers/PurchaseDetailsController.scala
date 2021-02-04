@@ -41,7 +41,12 @@ class PurchaseDetailsController @Inject()(
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
+    request.goodsEntry match {
+      case _: ImportGoodsEntry =>
+        checkYourAnswersOrReviewGoodsElse(routes.GoodsOriginController.onPageLoad(index), index)
+      case _: ExportGoodsEntry =>
+        checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
+    }
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>

@@ -21,7 +21,6 @@ error.yesNo = Please enter Yes or No
 
 site.yes = Iawn
 site.no = Na
-site.dontknow = I do not know
 site.continue = Yn eich blaen
 site.confirm = Confirm
 site.start = Start now
@@ -30,6 +29,10 @@ site.change = Newid
 site.remove = Dileu
 site.govuk = GOV.UK
 site.back = Yn ôl
+
+yndk.Yes = Iawn
+yndk.No = Na
+yndk.DontKnow = I do not know
 
 date.day = Diwrnod
 date.month = Mis
@@ -162,7 +165,7 @@ reviewGoods.heading = Adolygu’ch nwyddau
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
-reviewGoods.list.country = Gwlad
+reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number
