@@ -93,15 +93,14 @@ valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value o
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # SearchGoods
-goodsTypeQuantity.Import.title = Pa fath o nwyddau ydych chi’n dod â nhw i mewn i Brydain Fawr?
-goodsTypeQuantity.Import.heading = Pa fath o nwyddau ydych chi’n dod â nhw i mewn i Brydain Fawr?
-goodsTypeQuantity.Export.title = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
-goodsTypeQuantity.Export.heading = Pa nwyddau ydych yn mynd â nhw allan o Brydain Fawr?
-goodsTypeQuantity.p = Ychwanegwch eich nwyddau yn ôl eu math neu gategori, er enghraifft, electroneg. Gallwch ychwanegu rhagor o nwyddau’n nes ymlaen os oes gennych fwy nag un math.
-goodsTypeQuantity.category = Math o nwyddau
+goodsTypeQuantity.title = Enter the first type of goods
+goodsTypeQuantity.heading = Enter the first type of goods
+goodsTypeQuantity.p = Enter only one type. You can add more later.
+goodsTypeQuantity.category = Goods type
 goodsTypeQuantity.category.hint = Er enghraifft, dillad
 goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
 goodsTypeQuantity.quantity = Nifer o eitemau
+goodsTypeQuantity.quantity.hint = For example, 2 boxes
 goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
 goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
 

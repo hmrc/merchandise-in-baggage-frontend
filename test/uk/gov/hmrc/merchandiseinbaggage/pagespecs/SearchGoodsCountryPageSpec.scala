@@ -26,7 +26,7 @@ class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsC
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
 
   "the search goods country page export" should {
-    behave like aGoodEntryExportPageTitle(path(1), exportTitle)
+    behave like aGoodEntryExportPageTitle(path(1), exportTitle(1))
   }
 
   override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] =

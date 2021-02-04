@@ -34,15 +34,15 @@ trait GoodsEntryPageSpec[F, P <: DeclarationDataCapturePage[F]] extends BasePage
 
   def aGoodsEntryPage(
     path: Int => String,
-    title: String,
+    title: Int => String,
     formData: F,
     maybeExpectedRedirect: Option[Int => String],
     expectedBackPath: Int => String,
     cyaRouting: Boolean = true): Unit = {
     behave like aPageWhichRequiresADeclarationJourney(path(1))
     behave like aPageWhichRequiresADeclarationJourney(path(2))
-    behave like aPageWhichRenders(path(1), givenAGoodsEntryIsStarted(), title)
-    behave like aPageWhichRenders(path(2), givenASecondGoodsEntryIsStarted(), title)
+    behave like aPageWhichRenders(path(1), givenAGoodsEntryIsStarted(), title(1))
+    behave like aPageWhichRenders(path(2), givenASecondGoodsEntryIsStarted(), title(2))
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path(1), index = 1, givenAGoodsEntryIsComplete())
     behave like aPageWhichDisplaysPreviouslyEnteredAnswers(path(2), index = 2, givenTwoGoodsEntriesAreComplete())
 
