@@ -21,6 +21,7 @@ error.yesNo = Please enter Yes or No
 
 site.yes = Iawn
 site.no = Na
+site.dontknow = I do not know
 site.continue = Yn eich blaen
 site.confirm = Confirm
 site.start = Start now
@@ -78,14 +79,6 @@ goodsDestination.GreatBritain = Prydain Fawr
 goodsDestination.GreatBritain.hint = Cymru, Lloegr, yr Alban neu Ynys Manaw
 goodsDestination.error.Import.required = Dewiswch i ba wlad yn y DU y mae’r nwyddau’n mynd
 goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o Ogledd Iwerddon neu Brydain.
-
-
-# GoodsRouteDestination
-goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
-goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Dewiswch ‘Iawn’ os mai Gweriniaeth Iwerddon yw’r cyrchfan terfynol
 
 
 # ValueWeightOfGoods

@@ -18,9 +18,11 @@ error.date.month_invalid = Month must be between 1 and 12
 error.date.year_blank = Date must include a year
 error.date.year_invalid = Enter a valid year, for example, 2020
 error.yesNo = Please enter Yes or No
+error.yesNoDontKnow = Please enter Yes, No or I do not know
 
 site.yes = Yes
 site.no = No
+site.dontknow = I do not know
 site.continue = Continue
 site.confirm = Confirm
 site.start = Start now
@@ -78,14 +80,6 @@ goodsDestination.GreatBritain = Great Britain
 goodsDestination.GreatBritain.hint = England, Scotland, Wales, or Isle of Man
 goodsDestination.error.Import.required = Select which country in the UK the goods are going to
 goodsDestination.error.Export.required = Select if the goods are leaving from Northern Ireland or Great Britain
-
-
-# GoodsRouteDestination
-goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
-goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Select yes if the final destination of the goods is the Republic of Ireland
 
 
 # ValueWeightOfGoods

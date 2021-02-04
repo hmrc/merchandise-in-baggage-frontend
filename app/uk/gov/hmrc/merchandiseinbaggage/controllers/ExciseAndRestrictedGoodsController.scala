@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.ExciseAndRestrictedGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
@@ -36,11 +35,7 @@ class ExciseAndRestrictedGoodsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    backToCheckYourAnswersIfCompleteElse(
-      if (request.declarationJourney.maybeGoodsDestination.contains(NorthernIreland))
-        routes.GoodsRouteDestinationController.onPageLoad()
-      else routes.GoodsDestinationController.onPageLoad()
-    )
+    backToCheckYourAnswersIfCompleteElse(routes.GoodsDestinationController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(

@@ -17,12 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms.mappings
 
 import java.time.LocalDate
-
 import enumeratum.EnumEntry
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Enum
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Enum, YesNo, YesNoDontKnow}
 
 trait Mappings extends Formatters {
 
@@ -39,6 +37,9 @@ trait Mappings extends Formatters {
 
   protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.yesNo"): FieldMapping[YesNo] =
     of(enumFormatter[YesNo](YesNo, requiredKey, invalidKey))
+
+  protected def yesNoDontKnow(requiredKey: String = requiredKey, invalidKey: String = "error.yesNoDontKnow"): FieldMapping[YesNoDontKnow] =
+    of(enumFormatter[YesNoDontKnow](YesNoDontKnow, requiredKey, invalidKey))
 
   protected def bigDecimal(requiredKey: String = requiredKey, nonNumericKey: String = nonNumericKey): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))

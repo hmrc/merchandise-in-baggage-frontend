@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.forms
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import enumeratum.EnumEntry
 
-object GoodsRouteDestinationForm extends Mappings {
+import scala.collection.immutable
 
-  val form: Form[YesNo] = Form(
-    "value" -> yesNo("goodsRouteDestination.error.required")
-  )
+sealed trait YesNoDontKnow extends EnumEntry {
+  val messageKey = s"${YesNoDontKnow.baseMessageKey}.${entryName.toLowerCase}"
+}
+
+object YesNoDontKnow extends Enum[YesNoDontKnow] {
+  override val baseMessageKey: String = "site"
+  override val values: immutable.IndexedSeq[YesNoDontKnow] = findValues
+
+  case object Yes extends YesNoDontKnow
+
+  case object No extends YesNoDontKnow
+
+  case object DontKnow extends YesNoDontKnow
 
 }

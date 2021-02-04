@@ -91,7 +91,6 @@ object TestOnlyController {
       sessionId = sessionId,
       declarationType = DeclarationType.Import,
       maybeExciseOrRestrictedGoods = Some(No),
-      maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No),
       maybeGoodsDestination = Some(GreatBritain),
       maybeValueWeightOfGoodsBelowThreshold = Some(Yes),
       goodsEntries = GoodsEntries(

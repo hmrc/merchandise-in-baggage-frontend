@@ -20,7 +20,7 @@ import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, Country}
@@ -86,7 +86,6 @@ case class DeclarationJourney(
   createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
   maybeExciseOrRestrictedGoods: Option[YesNo] = None,
   maybeGoodsDestination: Option[GoodsDestination] = None,
-  maybeImportOrExportGoodsFromTheEUViaNorthernIreland: Option[YesNo] = None,
   maybeValueWeightOfGoodsBelowThreshold: Option[YesNo] = None,
   goodsEntries: GoodsEntries = GoodsEntries.empty,
   maybeNameOfPersonCarryingTheGoods: Option[Name] = None,
@@ -122,15 +121,9 @@ case class DeclarationJourney(
   }
 
   val declarationIfRequiredAndComplete: Option[Declaration] = {
-    val ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland: Boolean =
-      (maybeGoodsDestination, maybeImportOrExportGoodsFromTheEUViaNorthernIreland) match {
-        case (Some(GreatBritain), _)           => true
-        case (Some(NorthernIreland), Some(No)) => true
-        case _                                 => false
-      }
 
     val discardedAnswersAreCompleteAndRequireADeclaration =
-      ultimateSourceOrDestinationIsDefinedAndNotTheEUViaNorthernIreland &&
+      maybeGoodsDestination.contains(GreatBritain) &&
         maybeExciseOrRestrictedGoods.contains(No) &&
         maybeValueWeightOfGoodsBelowThreshold.contains(Yes) &&
         (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
