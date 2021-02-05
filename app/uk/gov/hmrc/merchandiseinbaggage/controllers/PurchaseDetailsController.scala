@@ -17,11 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.PurchaseDetailsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.PurchaseDetails
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, GoodsEntry, ImportGoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
@@ -40,7 +41,12 @@ class PurchaseDetailsController @Inject()(
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
+    request.goodsEntry match {
+      case _: ImportGoodsEntry =>
+        checkYourAnswersOrReviewGoodsElse(routes.GoodsOriginController.onPageLoad(index), index)
+      case _: ExportGoodsEntry =>
+        checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
+    }
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
@@ -66,39 +72,34 @@ class PurchaseDetailsController @Inject()(
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput =>
-                  CurrencyService
-                    .getCurrencyByCode(purchaseDetailsInput.currency)
-                    .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-                      val updatedGoodsEntry =
-                        request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency)))
-
-                      val updatedDeclarationJourney =
-                        request.declarationJourney.copy(
-                          goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
-
-                      repo.upsert(updatedDeclarationJourney).map { _ =>
-                        Redirect(routes.ReviewGoodsController.onPageLoad())
-                      }
-                  }
+                purchaseDetailsInput => handleSuccess(purchaseDetailsInput, idx)
               )
           case Export =>
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput =>
-                  CurrencyService
-                    .getCurrencyByCode(purchaseDetailsInput.currency)
-                    .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-                      persistAndRedirect(
-                        request.goodsEntry.copy(maybePurchaseDetails = Some(PurchaseDetails(purchaseDetailsInput.price, currency))),
-                        idx,
-                        routes.ReviewGoodsController.onPageLoad()
-                      )
-                  }
+                purchaseDetailsInput => handleSuccess(purchaseDetailsInput, idx)
               )
         }
       }
   }
+
+  private def handleSuccess(purchaseDetailsInput: PurchaseDetailsInput, idx: Int)(
+    implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
+    CurrencyService
+      .getCurrencyByCode(purchaseDetailsInput.currency)
+      .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
+        persistAndRedirect(
+          updateGoodsEntry(purchaseDetailsInput.price, currency),
+          idx,
+          routes.ReviewGoodsController.onPageLoad()
+        )
+      }
+
+  private def updateGoodsEntry(amount: String, currency: Currency)(implicit request: DeclarationGoodsRequest[AnyContent]): GoodsEntry =
+    request.goodsEntry match {
+      case entry: ImportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
+      case entry: ExportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
+    }
 }

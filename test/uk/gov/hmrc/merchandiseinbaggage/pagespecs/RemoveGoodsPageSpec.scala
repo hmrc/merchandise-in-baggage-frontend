@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.macwire.wire
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportGoodsEntry
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.RemoveGoodsPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CheckYourAnswersPage, GoodsRemovedPage, RadioButtonPage, ReviewGoodsPage}
 
@@ -63,7 +63,7 @@ class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
         page.fillOutForm(Yes)
         page.clickOnCTA() mustBe ReviewGoodsPage.path
 
-        declarationJourneyRepository.findAll().futureValue.head.goodsEntries.entries mustBe Seq(completedGoodsEntry)
+        declarationJourneyRepository.findAll().futureValue.head.goodsEntries.entries mustBe Seq(completedImportGoods)
       }
 
       s"the user elects to remove the only goods entry" in {
@@ -72,7 +72,7 @@ class RemoveGoodsPageSpec extends BasePageSpec[RadioButtonPage[YesNo]] {
         page.fillOutForm(Yes)
         page.clickOnCTA() mustBe GoodsRemovedPage.path
 
-        declarationJourneyRepository.findAll().futureValue.head.goodsEntries.entries mustBe Seq(GoodsEntry.empty)
+        declarationJourneyRepository.findAll().futureValue.head.goodsEntries.entries mustBe Seq(ImportGoodsEntry())
       }
     }
   }

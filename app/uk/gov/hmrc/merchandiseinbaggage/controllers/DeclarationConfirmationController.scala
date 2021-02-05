@@ -57,7 +57,7 @@ class DeclarationConfirmationController @Inject()(
 
   private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, declarationId = declarationId))
+    repo.upsert(DeclarationJourney(sessionId, declarationType).copy(declarationId = declarationId))
   }
 
   private def showConfirmation(declaration: Declaration): Boolean = {

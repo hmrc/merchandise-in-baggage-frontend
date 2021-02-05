@@ -39,7 +39,7 @@ trait TaxCalculation {
     val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
       List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(inPence => AmountInPence(inPence.value + over))))
 
-    val goods = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
+    val goods: Seq[ImportGoods] = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods.asInstanceOf[Seq[ImportGoods]]
     val results: Seq[PaymentCalculation] = goods.zipWithIndex.map {
       case (g, idx) => PaymentCalculation(g, calculations(idx))
     }

@@ -30,6 +30,10 @@ site.remove = Dileu
 site.govuk = GOV.UK
 site.back = Yn ôl
 
+yndk.Yes = Iawn
+yndk.No = Na
+yndk.DontKnow = I do not know
+
 date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
@@ -80,14 +84,6 @@ goodsDestination.error.Import.required = Dewiswch i ba wlad yn y DU y mae’r nw
 goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o Ogledd Iwerddon neu Brydain.
 
 
-# GoodsRouteDestination
-goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
-goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Dewiswch ‘Iawn’ os mai Gweriniaeth Iwerddon yw’r cyrchfan terfynol
-
-
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
 valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
@@ -129,6 +125,15 @@ goodsVatRate.Five = 5% TAW
 goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
+# GoodsOrigin
+goodsOrigin.title = Were these goods produced in the EU?
+goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.inset = Type of goods:
+goodsOrigin.p = Check if your goods meet the
+goodsOrigin.p.link = rules of origin (opens in new tab)
+goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
+goodsOrigin.error.required = Select yes if the goods were produced in the EU
+
 # SearchGoodsCountry
 searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
@@ -159,7 +164,7 @@ reviewGoods.heading = Adolygu’ch nwyddau
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
-reviewGoods.list.country = Gwlad
+reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number

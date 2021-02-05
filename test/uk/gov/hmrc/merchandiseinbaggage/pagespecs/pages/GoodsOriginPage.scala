@@ -14,16 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.forms
+package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-
-object GoodsRouteDestinationForm extends Mappings {
-
-  val form: Form[YesNo] = Form(
-    "value" -> yesNo("goodsRouteDestination.error.required")
-  )
-
+object GoodsOriginPage {
+  def path(idx: Int) = s"/declare-commercial-goods/goods-origin/$idx"
+  val title = "Were these goods produced in the EU?"
 }

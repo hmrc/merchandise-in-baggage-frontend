@@ -21,7 +21,7 @@ import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.RemoveGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
@@ -59,13 +59,16 @@ class RemoveGoodsController @Inject()(
   }
 
   def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
-    if (removeGoods == Yes)
-      repo
-        .upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
-        .flatMap { _ =>
-          redirectIfGoodRemoved(declarationJourney)
-        } else
-      backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+    removeGoods match {
+      case Yes =>
+        repo
+          .upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
+          .flatMap { _ =>
+            redirectIfGoodRemoved(declarationJourney)
+          }
+      case No =>
+        backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+    }
 
   private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Result] =
     if (declarationJourney.goodsEntries.entries.size == 1)

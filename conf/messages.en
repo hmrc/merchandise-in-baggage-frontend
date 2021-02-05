@@ -18,6 +18,7 @@ error.date.month_invalid = Month must be between 1 and 12
 error.date.year_blank = Date must include a year
 error.date.year_invalid = Enter a valid year, for example, 2020
 error.yesNo = Please enter Yes or No
+error.yesNoDontKnow = Please enter Yes, No or I do not know
 
 site.yes = Yes
 site.no = No
@@ -29,6 +30,10 @@ site.change = Change
 site.remove = Remove
 site.govuk = GOV.UK
 site.back = Back
+
+yndk.Yes = Yes
+yndk.No = No
+yndk.DontKnow = I do not know
 
 date.day = Day
 date.month = Month
@@ -80,14 +85,6 @@ goodsDestination.error.Import.required = Select which country in the UK the good
 goodsDestination.error.Export.required = Select if the goods are leaving from Northern Ireland or Great Britain
 
 
-# GoodsRouteDestination
-goodsRouteDestination.Import.title = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Import.heading = Is the final destination of the goods the Republic of Ireland?
-goodsRouteDestination.Export.title = Are you taking these goods to the European Union?
-goodsRouteDestination.Export.heading = Are you taking these goods to the European Union?
-goodsRouteDestination.error.required = Select yes if the final destination of the goods is the Republic of Ireland
-
-
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
 valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
@@ -96,7 +93,7 @@ valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less t
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1,500 and they weigh less than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
-# SearchGoods
+# GoodsTypeQuantity
 goodsTypeQuantity.title = Enter the first type of goods
 goodsTypeQuantity.next.title = Enter the next type of goods
 goodsTypeQuantity.heading = Enter the first type of goods
@@ -131,14 +128,19 @@ goodsVatRate.Five = 5% VAT
 goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
+# GoodsOrigin
+goodsOrigin.title = Were these goods produced in the EU?
+goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.inset = Type of goods:
+goodsOrigin.p = Check if your goods meet the
+goodsOrigin.p.link = rules of origin (opens in new tab)
+goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
+goodsOrigin.error.required = Select yes if the goods were produced in the EU
+
 # SearchGoodsCountry
-searchGoodsCountry.Export.title = What country are you taking the {0} to?
-searchGoodsCountry.Export.heading = What country are you taking the {0} to?
-searchGoodsCountry.Import.title = In what country did you buy the {0}?
-searchGoodsCountry.Import.heading = In what country did you buy the {0}?
-searchGoodsCountry.error.Import.required = Select the country where you bought the goods
-searchGoodsCountry.error.Export.required = Select the country the goods are going to
-searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
+searchGoodsCountry.title = What country are you taking the {0} to?
+searchGoodsCountry.heading = What country are you taking the {0} to?
+searchGoodsCountry.error.required = Select the country the goods are going to
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
@@ -161,7 +163,7 @@ reviewGoods.heading = Review your goods
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT rate
-reviewGoods.list.country = Country
+reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number

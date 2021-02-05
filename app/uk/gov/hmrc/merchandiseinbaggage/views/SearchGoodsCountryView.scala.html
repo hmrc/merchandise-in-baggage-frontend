@@ -31,7 +31,7 @@ inputSelect: components.inputSelect,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
@@ -89,10 +89,10 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(title(form, s"searchGoodsCountry.$declarationType.title", titleMessageArgs = Seq(goodsCategory))),
+    pageTitle = Some(title(form, s"searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
-    maybeDeclarationType = Some(declarationType)
+    maybeDeclarationType = Some(Import)
 ) {
     @formHelper(action = SearchGoodsCountryController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
@@ -107,9 +107,8 @@ button: components.button
                 text = messages(c.countryName),
                 selected = form("country").value.contains(c.code)
             )),
-            label = messages(s"searchGoodsCountry.$declarationType.heading", goodsCategory),
-            isPageHeading = true,
-            hint = if(declarationType == Import) Some("searchGoodsCountry.hint") else None
+            label = messages(s"searchGoodsCountry.heading", goodsCategory),
+            isPageHeading = true
         )
 
         @button("site.continue", name = Some("continue"))

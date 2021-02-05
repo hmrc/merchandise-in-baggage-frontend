@@ -21,7 +21,7 @@ import java.util.UUID
 
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
@@ -33,14 +33,14 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
 
   private val goods =
-    Goods(
-      completedGoodsEntry.maybeCategoryQuantityOfGoods.get,
-      completedGoodsEntry.maybeGoodsVatRate.get,
-      completedGoodsEntry.maybeCountryOfPurchase.get,
-      completedGoodsEntry.maybePurchaseDetails.get
+    ImportGoods(
+      completedImportGoods.maybeCategoryQuantityOfGoods.get,
+      completedImportGoods.maybeGoodsVatRate.get,
+      completedImportGoods.maybeProducedInEu.get,
+      completedImportGoods.maybePurchaseDetails.get
     )
 
-  private val incompleteGoodsEntry = completedGoodsEntry.copy(maybePurchaseDetails = None)
+  private val incompleteGoodsEntry = completedImportGoods.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
   private val vehicleRegistrationNumber = "reg"
 
@@ -80,7 +80,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   "GoodsEntry" should {
     "convert to a Goods" when {
       "the GoodsEntry is complete" in {
-        completedGoodsEntry.goodsIfComplete mustBe Some(goods)
+        completedImportGoods.goodsIfComplete mustBe Some(goods)
       }
     }
 
@@ -92,10 +92,6 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   }
 
   "GoodsEntries" should {
-    "have an empty GoodsEntry by default" in {
-      GoodsEntries().entries mustBe Seq(GoodsEntry.empty)
-    }
-
     "blow up if created with an empty sequence" in {
       intercept[RuntimeException] {
         GoodsEntries(Seq.empty)
@@ -104,13 +100,13 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be complete" when {
       "all goods entries are complete" in {
-        GoodsEntries(completedGoodsEntry).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(goods)))
+        GoodsEntries(completedImportGoods).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(goods)))
       }
     }
 
     "be incomplete" when {
       "it is empty" in {
-        GoodsEntries.empty.declarationGoodsIfComplete mustBe None
+        GoodsEntries(Seq(ImportGoodsEntry())).declarationGoodsIfComplete mustBe None
       }
 
       "a goods entry is incomplete" in {
@@ -212,24 +208,6 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         completedNonCustomsAgentJourney.declarationRequiredAndComplete mustBe true
       }
 
-      "the destination is Great Britain irrespective of any answer to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney
-          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None)
-          .declarationRequiredAndComplete mustBe true
-        completedNonCustomsAgentJourney
-          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes))
-          .declarationRequiredAndComplete mustBe true
-        completedNonCustomsAgentJourney
-          .copy(maybeGoodsDestination = Some(GreatBritain), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No))
-          .declarationRequiredAndComplete mustBe true
-      }
-
-      "the destination is Northern Ireland and the user has answered No to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney
-          .copy(maybeGoodsDestination = Some(NorthernIreland), maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(No))
-          .declarationRequiredAndComplete mustBe true
-      }
-
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
         completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)).declarationIfRequiredAndComplete.isDefined mustBe true
       }
@@ -321,24 +299,6 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         completedDeclarationJourney.copy(maybeGoodsDestination = None).declarationRequiredAndComplete mustBe false
       }
 
-      "the destination is Northern Ireland and the user has answered Yes to GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney
-          .copy(
-            maybeGoodsDestination = Some(NorthernIreland),
-            maybeImportOrExportGoodsFromTheEUViaNorthernIreland = Some(Yes)
-          )
-          .declarationRequiredAndComplete mustBe false
-      }
-
-      "the destination is Northern Ireland and the user has not answered GoodsRoutesDestination" in {
-        completedNonCustomsAgentJourney
-          .copy(
-            maybeGoodsDestination = Some(NorthernIreland),
-            maybeImportOrExportGoodsFromTheEUViaNorthernIreland = None
-          )
-          .declarationRequiredAndComplete mustBe false
-      }
-
       "the user has not confirmed whether the goods are below the threshold" in {
         completedDeclarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = None).declarationRequiredAndComplete mustBe false
       }
@@ -348,7 +308,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the user has not entered any goods" in {
-        completedDeclarationJourney.copy(goodsEntries = GoodsEntries.empty).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(ImportGoodsEntry()))).declarationRequiredAndComplete mustBe false
       }
 
       "the user has incomplete goods entries" in {

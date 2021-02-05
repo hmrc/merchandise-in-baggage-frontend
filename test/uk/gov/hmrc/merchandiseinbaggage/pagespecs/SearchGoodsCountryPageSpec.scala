@@ -18,30 +18,17 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, GoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.SearchGoodsCountryPage._
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{GoodsVatRatePage, PurchaseDetailsPage, SearchGoodsCountryPage}
-import uk.gov.hmrc.merchandiseinbaggage.service.CountryService.getAllCountries
 
 class SearchGoodsCountryPageSpec extends GoodsEntryPageSpec[String, SearchGoodsCountryPage] with ScalaFutures {
   override lazy val page: SearchGoodsCountryPage = wire[SearchGoodsCountryPage]
-
-  private val validationMessage = "Select the country where you bought the goods"
-
-  "the search goods country page import" should {
-    behave like aGoodsEntryPage(path, importTitle, getAllCountries.head.code, Some(PurchaseDetailsPage.path), GoodsVatRatePage.path)
-    behave like aPageWhichDisplaysValidationErrorMessagesInTheErrorSummary(path(1), Set(validationMessage), givenAGoodsEntryIsStarted())
-  }
 
   "the search goods country page export" should {
     behave like aGoodEntryExportPageTitle(path(1), exportTitle(1))
   }
 
-  "render hint if is an import" in {
-    givenAGoodsEntryIsStarted()
-    open(path(1))
-    page.element("country-hint").getText mustBe importHint
-  }
-
-  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] = goodsEntry.maybeCountryOfPurchase.map(_.code)
+  override def extractFormDataFrom(goodsEntry: GoodsEntry): Option[String] =
+    goodsEntry.asInstanceOf[ExportGoodsEntry].maybeDestination.map(_.code)
 }

@@ -18,36 +18,33 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsOriginForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
-import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SearchGoodsCountryController @Inject()(
+class GoodsOriginController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: SearchGoodsCountryView
-)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: GoodsOriginView)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
+    checkYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       request.goodsEntry match {
-        case _: ImportGoodsEntry => Future successful Redirect(routes.GoodsOriginController.onPageLoad(idx))
-        case entry: ExportGoodsEntry =>
-          val preparedForm = entry.maybeDestination
-            .fold(form)(c => form.fill(c.code))
-
+        case entry: ImportGoodsEntry =>
+          val preparedForm = entry.maybeProducedInEu.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
+        case _: ExportGoodsEntry =>
+          Future successful Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
       }
     }
   }
@@ -58,15 +55,11 @@ class SearchGoodsCountryController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
-          countryCode =>
-            CountryService
-              .getCountryByCode(countryCode)
-              .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
-                persistAndRedirect(
-                  request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
-                  idx,
-                  routes.PurchaseDetailsController.onPageLoad(idx))
-            }
+          producedInEu =>
+            persistAndRedirect(
+              request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
+              idx,
+              routes.PurchaseDetailsController.onPageLoad(idx))
         )
     }
   }

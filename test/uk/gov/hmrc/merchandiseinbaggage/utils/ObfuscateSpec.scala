@@ -57,7 +57,6 @@ class ObfuscateSpec extends BaseSpec with CoreTestData {
         createdAt,
         maybeExciseOrRestrictedGoods,
         maybeGoodsDestination,
-        maybeImportOrExportGoodsFromTheEUViaNorthernIreland,
         maybeValueWeightOfGoodsBelowThreshold,
         goodsEntries,
         Some(Name("*****", "****")),

@@ -20,8 +20,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
@@ -46,10 +45,10 @@ object DataModelEnriched {
     def fromBigDecimal: AmountInPence = AmountInPence((bigDecimal * 100).toLong)
   }
 
-  implicit class GoodsEnriched(goods: Goods) {
+  implicit class GoodsEnriched(goods: ImportGoods) {
     import goods._
     val calculationRequest: CalculationRequest =
-      CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, countryOfPurchase, goodsVatRate)
+      CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
   }
 
   implicit class CountryEnriched(country: Country) {
@@ -98,9 +97,11 @@ object DataModelEnriched {
 
     def toTable(implicit messages: Messages): Table = {
       val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
+        val goods = tc.goods.asInstanceOf[ImportGoods]
+
         Seq(
           TableRow(
-            Text(tc.goods.categoryQuantityOfGoods.category)
+            Text(goods.categoryQuantityOfGoods.category)
           ),
           TableRow(
             Text(tc.calculationResult.gbpAmount.formattedInPoundsUI)
@@ -113,7 +114,7 @@ object DataModelEnriched {
               messages(
                 "paymentCalculation.table.col3.row",
                 tc.calculationResult.vat.formattedInPoundsUI,
-                tc.goods.goodsVatRate.value
+                goods.goodsVatRate.value
               )
             )
           ),

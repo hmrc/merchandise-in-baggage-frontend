@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsVatRateForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Zero
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -40,16 +40,12 @@ class GoodsVatRateController @Inject()(
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      request.declarationJourney.declarationType match {
-        case Import =>
-          val preparedForm = request.goodsEntry.maybeGoodsVatRate.fold(form)(form.fill)
+      request.goodsEntry match {
+        case entry: ImportGoodsEntry =>
+          val preparedForm = entry.maybeGoodsVatRate.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, Import, backButtonUrl(idx)))
-        case Export =>
-          persistAndRedirect(
-            request.goodsEntry.copy(maybeGoodsVatRate = Some(Zero)),
-            idx,
-            routes.SearchGoodsCountryController.onPageLoad(idx)
-          )
+        case _: ExportGoodsEntry =>
+          Future successful Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
       }
     }
   }
@@ -62,7 +58,7 @@ class GoodsVatRateController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
             persistAndRedirect(
-              request.goodsEntry.copy(maybeGoodsVatRate = Some(goodsVatRate)),
+              request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
               idx,
               routes.SearchGoodsCountryController.onPageLoad(idx))
         )

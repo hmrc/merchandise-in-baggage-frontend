@@ -17,9 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
@@ -50,11 +52,19 @@ class GoodsTypeQuantityController @Inject()(
       .fold(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl(idx)))),
-        categoryQuantityOfGoods =>
-          persistAndRedirect(
-            request.goodsEntry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods)),
-            idx,
-            routes.GoodsVatRateController.onPageLoad(idx))
+        categoryQuantityOfGoods => {
+          val updatedGoodsEntry = request.goodsEntry match {
+            case entry: ImportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
+            case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
+          }
+
+          val next: Call = request.declarationType match {
+            case Import => routes.GoodsVatRateController.onPageLoad(idx)
+            case Export => routes.SearchGoodsCountryController.onPageLoad(idx)
+          }
+
+          persistAndRedirect(updatedGoodsEntry, idx, next)
+        }
       )
   }
 }

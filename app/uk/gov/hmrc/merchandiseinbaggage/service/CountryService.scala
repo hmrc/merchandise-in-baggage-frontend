@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Country
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Country
 
 object CountryService {
 

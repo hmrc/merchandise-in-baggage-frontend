@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-object GoodsRouteDestinationPage {
-  val path: String = "/declare-commercial-goods/goods-route-destination"
+import play.api.libs.json.{Json, OFormat}
 
-  val importTitle = "Is the final destination of the goods the Republic of Ireland?"
-  val exportTitle = "Are you taking these goods to the European Union?"
+case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String])
+
+object Country {
+  implicit val formats: OFormat[Country] = Json.format[Country]
 }

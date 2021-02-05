@@ -16,17 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import enumeratum.EnumEntry
+import play.api.libs.json.Format
 
-case class PaymentCalculation(goods: ImportGoods, calculationResult: CalculationResult)
+import scala.collection.immutable
 
-object PaymentCalculation {
-  implicit val format: OFormat[PaymentCalculation] = Json.format[PaymentCalculation]
+sealed trait YesNoDontKnow extends EnumEntry with EnumEntryRadioItemSupport {
+  val messageKey = s"${YesNoDontKnow.baseMessageKey}.$entryName"
 }
 
-case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation])
+object YesNoDontKnow extends Enum[YesNoDontKnow] with RadioSupport[YesNoDontKnow] {
+  implicit val format: Format[YesNoDontKnow] = EnumFormat(YesNoDontKnow)
 
-object PaymentCalculations {
-  implicit val format: OFormat[PaymentCalculations] = Json.format[PaymentCalculations]
+  override val baseMessageKey: String = "yndk"
+  override val values: immutable.IndexedSeq[YesNoDontKnow] = findValues
+
+  case object Yes extends YesNoDontKnow
+  case object No extends YesNoDontKnow
+  case object DontKnow extends YesNoDontKnow
+
 }
