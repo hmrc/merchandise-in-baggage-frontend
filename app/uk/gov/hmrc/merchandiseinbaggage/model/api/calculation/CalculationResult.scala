@@ -17,9 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, ConversionRatePeriod}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, ConversionRatePeriod, ImportGoods}
 
 case class CalculationResult(
+  goods: ImportGoods,
   gbpAmount: AmountInPence,
   duty: AmountInPence,
   vat: AmountInPence,

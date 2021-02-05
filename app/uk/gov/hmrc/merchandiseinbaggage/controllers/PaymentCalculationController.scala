@@ -52,7 +52,7 @@ class PaymentCalculationController @Inject()(
             request.declarationJourney.declarationType match {
               case Import =>
                 calculationService
-                  .paymentCalculation(goods)
+                  .paymentCalculation(goods.importGoods)
                   .map(calculations => redirectIfOverThreshold(destination, calculations))
               case Export =>
                 Future successful exportRedirectIfOverThreshold(goods, destination)

@@ -24,10 +24,10 @@ sealed trait Goods {
 }
 
 final case class ImportGoods(
-  val categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  categoryQuantityOfGoods: CategoryQuantityOfGoods,
   goodsVatRate: GoodsVatRate,
   producedInEu: YesNoDontKnow,
-  val purchaseDetails: PurchaseDetails
+  purchaseDetails: PurchaseDetails
 ) extends Goods
 
 object ImportGoods {
@@ -35,9 +35,9 @@ object ImportGoods {
 }
 
 final case class ExportGoods(
-  val categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  categoryQuantityOfGoods: CategoryQuantityOfGoods,
   destination: Country,
-  val purchaseDetails: PurchaseDetails
+  purchaseDetails: PurchaseDetails
 ) extends Goods
 
 object ExportGoods {

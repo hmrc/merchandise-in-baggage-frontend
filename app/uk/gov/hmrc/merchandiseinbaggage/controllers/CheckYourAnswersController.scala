@@ -48,7 +48,7 @@ class CheckYourAnswersController @Inject()(
       .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
         request.declarationJourney.declarationType match {
           case Import =>
-            calculationService.paymentCalculation(declaration.declarationGoods).map { paymentCalculations =>
+            calculationService.paymentCalculation(declaration.declarationGoods.importGoods).map { paymentCalculations =>
               if (paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
                 Redirect(routes.GoodsOverThresholdController.onPageLoad())
               } else Ok(importView(form, declaration, paymentCalculations.totalTaxDue))
@@ -93,7 +93,7 @@ class CheckYourAnswersController @Inject()(
 
   private def continueImportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     for {
-      taxDue      <- calculationService.paymentCalculation(declaration.declarationGoods)
+      taxDue      <- calculationService.paymentCalculation(declaration.declarationGoods.importGoods)
       _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
       redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, taxDue)
 

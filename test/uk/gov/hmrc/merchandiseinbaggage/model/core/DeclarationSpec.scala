@@ -31,15 +31,6 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
-
-  private val goods =
-    ImportGoods(
-      completedImportGoods.maybeCategoryQuantityOfGoods.get,
-      completedImportGoods.maybeGoodsVatRate.get,
-      completedImportGoods.maybeProducedInEu.get,
-      completedImportGoods.maybePurchaseDetails.get
-    )
-
   private val incompleteGoodsEntry = completedImportGoods.copy(maybePurchaseDetails = None)
   private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
   private val vehicleRegistrationNumber = "reg"
@@ -80,7 +71,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   "GoodsEntry" should {
     "convert to a Goods" when {
       "the GoodsEntry is complete" in {
-        completedImportGoods.goodsIfComplete mustBe Some(goods)
+        completedImportGoods.goodsIfComplete mustBe Some(aImportGoods)
       }
     }
 
@@ -100,7 +91,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be complete" when {
       "all goods entries are complete" in {
-        GoodsEntries(completedImportGoods).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(goods)))
+        GoodsEntries(completedImportGoods).declarationGoodsIfComplete mustBe Some(DeclarationGoods(Seq(aImportGoods)))
       }
     }
 
