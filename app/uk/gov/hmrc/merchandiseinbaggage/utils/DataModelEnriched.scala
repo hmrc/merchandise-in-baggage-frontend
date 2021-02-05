@@ -48,7 +48,7 @@ object DataModelEnriched {
   implicit class GoodsEnriched(goods: ImportGoods) {
     import goods._
     val calculationRequest: CalculationRequest =
-      CalculationRequest(purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
+      CalculationRequest(goods, purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
   }
 
   implicit class CountryEnriched(country: Country) {

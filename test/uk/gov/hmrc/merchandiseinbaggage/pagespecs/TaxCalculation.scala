@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -25,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait TaxCalculation {
+trait TaxCalculation extends CoreTestData {
   this: BasePageSpec[_] =>
 
   def givenADeclarationWithTaxDue(
@@ -34,8 +35,9 @@ trait TaxCalculation {
 
     givenADeclarationJourney(declarationJourney)
 
-    val calculationResult = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val resTwo = CalculationResult(AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val calculationResult =
+      CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val resTwo = CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
     val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
       List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(inPence => AmountInPence(inPence.value + over))))
 

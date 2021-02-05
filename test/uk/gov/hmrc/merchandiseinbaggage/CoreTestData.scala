@@ -62,6 +62,14 @@ trait CoreTestData {
     Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
   )
 
+  val aImportGoods =
+    ImportGoods(
+      completedImportGoods.maybeCategoryQuantityOfGoods.get,
+      completedImportGoods.maybeGoodsVatRate.get,
+      completedImportGoods.maybeProducedInEu.get,
+      completedImportGoods.maybePurchaseDetails.get
+    )
+
   val overThresholdGoods: GoodsEntries = GoodsEntries(
     completedImportGoods.copy(
       maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
@@ -120,10 +128,10 @@ trait CoreTestData {
 
   val aConversionRatePeriod: ConversionRatePeriod = ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
   val aCalculationResult: CalculationResult =
-    CalculationResult(AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+    CalculationResult(aImportGoods, AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
 
   val aCalculationResultWithNoTax: CalculationResult =
-    CalculationResult(AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
+    CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
   val aPaymentCalculation: PaymentCalculation = PaymentCalculation(aGoods, aCalculationResult)
   val aPaymentCalculations: PaymentCalculations = PaymentCalculations(Seq(aPaymentCalculation))

@@ -29,13 +29,15 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+  def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] = {
+    val imports: Seq[ImportGoods] = declarationGoods.goods.collect { case g: ImportGoods => g }
     Future
-      .traverse(declarationGoods.goods.asInstanceOf[Seq[ImportGoods]]) { goods =>
+      .traverse(imports) { goods =>
         mibConnector.calculatePayment(goods.calculationRequest).map { result =>
           logger.info(s"Payment calculation for good [$goods] gave result [$result]")
           PaymentCalculation(goods, result)
         }
       }
       .map(PaymentCalculations.apply)
+  }
 }
