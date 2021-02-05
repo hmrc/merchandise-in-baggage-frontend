@@ -138,13 +138,9 @@ goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules
 goodsOrigin.error.required = Select yes if the goods were produced in the EU
 
 # SearchGoodsCountry
-searchGoodsCountry.Export.title = What country are you taking the {0} to?
-searchGoodsCountry.Export.heading = What country are you taking the {0} to?
-searchGoodsCountry.Import.title = In what country did you buy the {0}?
-searchGoodsCountry.Import.heading = In what country did you buy the {0}?
-searchGoodsCountry.error.Import.required = Select the country where you bought the goods
-searchGoodsCountry.error.Export.required = Select the country the goods are going to
-searchGoodsCountry.hint = If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase.
+searchGoodsCountry.title = What country are you taking the {0} to?
+searchGoodsCountry.heading = What country are you taking the {0} to?
+searchGoodsCountry.error.required = Select the country the goods are going to
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails

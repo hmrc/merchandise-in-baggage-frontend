@@ -23,7 +23,7 @@ sealed trait Goods {
   val purchaseDetails: PurchaseDetails
 }
 
-case class ImportGoods(
+final case class ImportGoods(
   val categoryQuantityOfGoods: CategoryQuantityOfGoods,
   goodsVatRate: GoodsVatRate,
   producedInEu: YesNoDontKnow,
@@ -34,7 +34,7 @@ object ImportGoods {
   implicit val format: OFormat[ImportGoods] = Json.format[ImportGoods]
 }
 
-case class ExportGoods(
+final case class ExportGoods(
   val categoryQuantityOfGoods: CategoryQuantityOfGoods,
   destination: Country,
   val purchaseDetails: PurchaseDetails

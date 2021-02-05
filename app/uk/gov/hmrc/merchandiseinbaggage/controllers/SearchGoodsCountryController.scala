@@ -45,21 +45,19 @@ class SearchGoodsCountryController @Inject()(
         case _: ImportGoodsEntry => Future successful Redirect(routes.GoodsOriginController.onPageLoad(idx))
         case entry: ExportGoodsEntry =>
           val preparedForm = entry.maybeDestination
-            .fold(form(request.declarationType))(c => form(request.declarationType).fill(c.code))
+            .fold(form)(c => form.fill(c.code))
 
-          Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx), request.declarationType))
+          Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
       }
     }
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
-      form(request.declarationType)
+      form
         .bindFromRequest()
         .fold(
-          formWithErrors =>
-            Future.successful(
-              BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx), request.declarationJourney.declarationType))),
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           countryCode =>
             CountryService
               .getCountryByCode(countryCode)

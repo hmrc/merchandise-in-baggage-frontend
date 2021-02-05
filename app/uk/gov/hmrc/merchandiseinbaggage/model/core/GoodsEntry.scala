@@ -28,7 +28,7 @@ sealed trait GoodsEntry {
   def isComplete: Boolean = goodsIfComplete.isDefined
 }
 
-case class ImportGoodsEntry(
+final case class ImportGoodsEntry(
   override val maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
   maybeGoodsVatRate: Option[GoodsVatRate] = None,
   maybeProducedInEu: Option[YesNoDontKnow] = None,
@@ -51,7 +51,7 @@ object ImportGoodsEntry {
   val empty: ImportGoodsEntry = ImportGoodsEntry()
 }
 
-case class ExportGoodsEntry(
+final case class ExportGoodsEntry(
   override val maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
   maybeDestination: Option[Country] = None,
   override val maybePurchaseDetails: Option[PurchaseDetails] = None
