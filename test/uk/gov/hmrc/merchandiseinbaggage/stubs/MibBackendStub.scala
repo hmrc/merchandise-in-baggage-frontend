@@ -50,12 +50,21 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
           .willReturn(okJson(Json.toJson(declaration).toString)))
 
+  @deprecated("to be removed")
   def givenAPaymentCalculation(request: CalculationRequest, result: CalculationResult)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationUrl"))
           .withRequestBody(equalToJson(toJson(request).toString, true, false))
           .willReturn(okJson(Json.toJson(result).toString)))
+
+  def givenAPaymentCalculations(requests: Seq[CalculationRequest], results: Seq[CalculationResult])(
+    implicit server: WireMockServer): StubMapping =
+    server
+      .stubFor(
+        post(urlPathEqualTo(s"$calculationsUrl"))
+          .withRequestBody(equalToJson(toJson(requests).toString, true, false))
+          .willReturn(okJson(Json.toJson(results).toString)))
 
   def givenAPaymentCalculation(result: CalculationResult)(implicit server: WireMockServer): StubMapping =
     server
