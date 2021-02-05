@@ -73,6 +73,7 @@ trait MibConfiguration {
   lazy val baseUrl: String = "/declare-commercial-goods"
   lazy val declarationsUrl: String = s"$baseUrl/declarations"
   lazy val calculationUrl: String = s"$baseUrl/calculation"
+  lazy val calculationsUrl: String = s"$baseUrl/calculations"
   lazy val sendEmailsUrl: String = s"$declarationsUrl/sendEmails"
   lazy val checkEoriUrl: String = s"$baseUrl/validate/eori/"
 }

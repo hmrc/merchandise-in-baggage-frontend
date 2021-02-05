@@ -46,6 +46,16 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
     client.calculatePayment(calculationRequest).futureValue mustBe stubbedResult
   }
 
+  "send a calculation requests to backend for payment" in {
+    val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest)
+    val stubbedResults =
+      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
+
+    givenAPaymentCalculations(calculationRequests, stubbedResults)
+
+    client.calculatePayments(calculationRequests).futureValue mustBe stubbedResults
+  }
+
   "find a persisted declaration from backend by declarationId" in {
     givenPersistedDeclarationIsFound(declarationWithId, stubbedDeclarationId)
 
