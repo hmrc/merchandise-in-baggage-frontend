@@ -97,7 +97,7 @@ object DataModelEnriched {
 
     def toTable(implicit messages: Messages): Table = {
       val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
-        val goods = tc.goods.asInstanceOf[ImportGoods]
+        val goods = tc.goods
 
         Seq(
           TableRow(
