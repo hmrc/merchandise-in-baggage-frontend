@@ -45,10 +45,14 @@ object DataModelEnriched {
     def fromBigDecimal: AmountInPence = AmountInPence((bigDecimal * 100).toLong)
   }
 
-  implicit class GoodsEnriched(goods: ImportGoods) {
-    import goods._
+  implicit class GoodsEnriched(importGoods: ImportGoods) {
+    import importGoods._
     val calculationRequest: CalculationRequest =
-      CalculationRequest(goods, purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
+      CalculationRequest(importGoods, purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
+  }
+
+  implicit class DeclarationGoodsEnriched(goods: DeclarationGoods) {
+    val importGoods: Seq[ImportGoods] = goods.goods.collect { case goods: ImportGoods => goods }
   }
 
   implicit class CountryEnriched(country: Country) {

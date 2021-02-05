@@ -58,7 +58,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
   private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
     new CalculationService(mibConnector) {
-      override def paymentCalculation(declarationGoods: DeclarationGoods)(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+      override def paymentCalculation(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
         Future.successful(aPaymentCalculations)
   }
 

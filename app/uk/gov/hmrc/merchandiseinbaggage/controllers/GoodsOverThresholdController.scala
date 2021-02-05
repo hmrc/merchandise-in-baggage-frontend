@@ -42,7 +42,7 @@ class GoodsOverThresholdController @Inject()(
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
             request.declarationType match {
               case Import =>
-                calculationService.paymentCalculation(goods).map { calculations =>
+                calculationService.paymentCalculation(goods.importGoods).map { calculations =>
                   import calculations._
                   Ok(
                     view(

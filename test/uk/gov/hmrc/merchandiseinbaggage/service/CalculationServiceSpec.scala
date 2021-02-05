@@ -36,6 +36,6 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     givenAPaymentCalculation(aDeclarationGood.goods.head.asInstanceOf[ImportGoods].calculationRequest, stubbedResult)
 
-    service.paymentCalculation(aDeclarationGood).futureValue mustBe expected
+    service.paymentCalculation(aDeclarationGood.importGoods).futureValue mustBe expected
   }
 }
