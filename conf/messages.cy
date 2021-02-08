@@ -206,7 +206,9 @@ goodsOverThreshold.p8.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datgani
 
 # PaymentCalculation
 paymentCalculation.title = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
+paymentCalculation.heading = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
 paymentCalculation.zero.title = No payment due
+paymentCalculation.zero.heading = No payment due
 paymentCalculation.table.col1.head = Math o nwyddau
 paymentCalculation.table.col2.head = Gwerth y nwyddau
 paymentCalculation.table.col3.head = Tolldaliadau
@@ -215,7 +217,7 @@ paymentCalculation.table.col5.head = Cyfanswm
 paymentCalculation.table.col3.row = {0} yn {1}%
 paymentCalculation.table.total = Taliad sy’n ddyledus
 paymentCalculation.h3 = Sut rydym yn cyfrifo’ch taliad
-paymentCalculation.zero.p1 = You not need to pay for goods that are from the EU and have a 0% VAT rate. You must still declare these goods.
+paymentCalculation.zero.p1 = You do not need to pay for goods that are from the EU and have a 0% VAT rate. You must still declare these goods.
 paymentCalculation.dutyOnly.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU.
 paymentCalculation.vatOnly.p1 = Customs duty is not charged on EU goods. VAT is charged on the total value of the goods.
 paymentCalculation.dutyAndVat.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU. Duty is not charged on EU goods. We then charge VAT on the combined amount of Customs Duty and the value of the goods.

@@ -37,10 +37,16 @@ button: components.button
  else titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))
 }
 
+@heading = @{
+ if(paymentCalculations.isNothingToPay)
+   messages("paymentCalculation.zero.heading")
+ else messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds)
+}
+
 @rates = @{ paymentCalculations.paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct }
 
-@layout(pageTitle = title, maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
- @h1(messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds))
+@layout(pageTitle = Some(title), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
+ @h1(heading)
 
  @table(paymentCalculations.toTable)
 

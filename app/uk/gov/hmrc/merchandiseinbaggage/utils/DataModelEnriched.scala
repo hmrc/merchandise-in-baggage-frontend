@@ -107,7 +107,8 @@ object DataModelEnriched {
     def requiresProof: Boolean =
       paymentCalculations
         .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
-        .map(_.calculationResult.gbpAmount.value).sum > 100000L // £1000 in pence
+        .map(_.calculationResult.gbpAmount.value)
+        .sum > 100000L // £1000 in pence
 
     def totalCalculationResult: TotalCalculationResult =
       TotalCalculationResult(calculations, totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
