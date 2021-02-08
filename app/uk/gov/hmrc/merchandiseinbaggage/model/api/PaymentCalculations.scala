@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 
+@deprecated("CalculationResult now includes Goods so PaymentCalculations can take a Seq[CalculationResult]")
 case class PaymentCalculation(goods: ImportGoods, calculationResult: CalculationResult)
 
 object PaymentCalculation {

@@ -29,13 +29,13 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
   private val service = injector.instanceOf[CalculationService]
 
-  "retrieve payment calculation from mib backend" in {
+  "retrieve payment calculations from mib backend" in {
     val stubbedResult =
       CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = PaymentCalculations(List(PaymentCalculation(aDeclarationGood.goods.head.asInstanceOf[ImportGoods], stubbedResult)))
+    val expected = PaymentCalculations(List(PaymentCalculation(aImportGoods, stubbedResult)))
 
-    givenAPaymentCalculation(aDeclarationGood.goods.head.asInstanceOf[ImportGoods].calculationRequest, stubbedResult)
+    givenAPaymentCalculations(List(stubbedResult.goods).map(_.calculationRequest), List(stubbedResult))
 
-    service.paymentCalculation(aDeclarationGood.importGoods).futureValue mustBe expected
+    service.paymentCalculations(Seq(aImportGoods)).futureValue mustBe expected
   }
 }

@@ -29,13 +29,13 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentCalculation(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
-    Future
-      .traverse(importGoods) { goods =>
-        mibConnector.calculatePayment(goods.calculationRequest).map { result =>
-          logger.info(s"Payment calculation for good [$goods] gave result [$result]")
-          PaymentCalculation(goods, result)
-        }
-      }
+  def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+    mibConnector
+      .calculatePayments(importGoods.map(_.calculationRequest))
+      .map(calculationResults =>
+        calculationResults.map { result =>
+          logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]")
+          PaymentCalculation(result.goods, result)
+        }.toList)
       .map(PaymentCalculations.apply)
 }

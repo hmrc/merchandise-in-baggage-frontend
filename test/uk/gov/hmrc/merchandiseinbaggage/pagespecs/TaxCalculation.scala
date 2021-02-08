@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -33,24 +34,17 @@ trait TaxCalculation extends CoreTestData {
     declarationJourney: DeclarationJourney,
     overThreshold: Option[Int] = Some(0)): Future[PaymentCalculations] = {
 
-    givenADeclarationJourney(declarationJourney)
-
-    val calculationResult =
+    val resultOne =
       CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val resTwo = CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val calculations = overThreshold.fold(List(calculationResult, resTwo))(over =>
-      List(calculationResult, resTwo).map(_.modify(_.gbpAmount).using(inPence => AmountInPence(inPence.value + over))))
+    val resultTwo = CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val calculations: Seq[CalculationResult] = overThreshold.fold(List(resultOne, resultTwo))(over =>
+      List(resultOne, resultTwo).map(_.modify(_.gbpAmount).using(inPence => AmountInPence(inPence.value + over))))
 
-    val goods: Seq[ImportGoods] = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods.asInstanceOf[Seq[ImportGoods]]
-    val results: Seq[PaymentCalculation] = goods.zipWithIndex.map {
-      case (g, idx) => PaymentCalculation(g, calculations(idx))
-    }
-
-    results.foreach { r: PaymentCalculation =>
-      givenAPaymentCalculation(r.calculationResult)
-    }
+    val goods: Seq[ImportGoods] = declarationJourney.goodsEntries.declarationGoodsIfComplete.get.importGoods
 
     givenADeclarationJourney(declarationJourney)
-    Future(PaymentCalculations(results))
+    givenAPaymentCalculations(goods.map(_.calculationRequest), calculations)
+
+    Future(PaymentCalculations(calculations.map(res => PaymentCalculation(res.goods, res))))
   }
 }
