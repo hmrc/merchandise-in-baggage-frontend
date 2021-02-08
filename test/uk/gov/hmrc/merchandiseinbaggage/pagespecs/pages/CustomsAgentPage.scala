@@ -23,8 +23,8 @@ object CustomsAgentPage extends Page {
   val path = "/declare-commercial-goods/customs-agent"
   val title = "Are you a customs agent?"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("No"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }

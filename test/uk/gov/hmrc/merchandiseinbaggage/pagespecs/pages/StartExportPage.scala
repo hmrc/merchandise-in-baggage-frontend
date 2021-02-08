@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class StartExportPage(implicit webDriver: WebDriver) extends BasePage
+class StartExportPage(implicit webDriver: WebDriver)
 
 object StartExportPage {
   val path = "/declare-commercial-goods/start-export"

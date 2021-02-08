@@ -16,24 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatestplus.selenium.WebBrowser
-
-class GoodsRemovedPage(implicit webDriver: WebDriver) extends BasePage {
-
-  import WebBrowser._
-
-  def addMoreGoods(): String = {
-    click on find(IdQuery("addMoreGoods")).get
-    readPath()
-  }
-
-  def startAgain(): String = {
-    click on find(IdQuery("startAgain")).get
-    readPath()
-  }
-}
-
 object GoodsRemovedPage {
   val path: String = s"/declare-commercial-goods/goods-removed"
   val title: String = "You removed your goods"

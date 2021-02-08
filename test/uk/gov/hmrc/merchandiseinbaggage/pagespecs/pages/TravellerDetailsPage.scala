@@ -25,41 +25,15 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
 import org.scalatestplus.selenium.WebBrowser._
 
-class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Name] {
-
-  import WebBrowser._
-
-  def firstNameInput: Element = find(NameQuery(TravellerDetailsForm.firstName)).get
-  def lastNameInput: Element = find(NameQuery(TravellerDetailsForm.lastName)).get
-  def hint: Element = find(IdQuery("travellerDetailsHintId")).get
-
-  override def fillOutForm(formData: Name): Unit = {
-    def fill(input: Element, value: String): Unit = {
-      input.underlying.clear()
-      input.underlying.sendKeys(value)
-    }
-
-    fill(firstNameInput, formData.firstName)
-    fill(lastNameInput, formData.lastName)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(formData: Name): Assertion = {
-    def valueMustEqual(element: Element, value: String) =
-      element.underlying.getAttribute("value") mustBe value
-
-    valueMustEqual(firstNameInput, formData.firstName)
-    valueMustEqual(lastNameInput, formData.lastName)
-  }
-}
-
 object TravellerDetailsPage extends Page {
   val path: String = "/declare-commercial-goods/traveller-details"
   val title: String = "What is the name of the person carrying the goods?"
   val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    find(NameQuery(TravellerDetailsForm.firstName)).get.underlying.sendKeys("firstName")
-    find(NameQuery(TravellerDetailsForm.lastName)).get.underlying.sendKeys("lastName")
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    val name = formData.asInstanceOf[Name]
+    find(NameQuery(TravellerDetailsForm.firstName)).get.underlying.sendKeys(name.firstName)
+    find(NameQuery(TravellerDetailsForm.lastName)).get.underlying.sendKeys(name.lastName)
     click.on(NameQuery("continue"))
   }
 }

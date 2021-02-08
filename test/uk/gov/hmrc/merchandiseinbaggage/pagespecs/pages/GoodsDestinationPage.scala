@@ -24,8 +24,8 @@ object GoodsDestinationPage extends Page {
   val importTitle = "Where in the UK are the goods going to?"
   val exportTitle = "Where in the UK are the goods leaving from?"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("GreatBritain"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }

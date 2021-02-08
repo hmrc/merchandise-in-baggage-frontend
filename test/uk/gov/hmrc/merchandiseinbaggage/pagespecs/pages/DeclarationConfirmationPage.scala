@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
 
-class DeclarationConfirmationPage(implicit webDriver: WebDriver) extends BasePage
+class DeclarationConfirmationPage(implicit webDriver: WebDriver)
 
 object DeclarationConfirmationPage {
   val path = "/declare-commercial-goods/declaration-confirmation"

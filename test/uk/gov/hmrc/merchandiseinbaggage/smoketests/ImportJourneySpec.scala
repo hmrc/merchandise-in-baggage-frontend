@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email, Name}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
@@ -25,37 +28,43 @@ class ImportJourneySpec extends BaseUiSpec {
     "work as expected" in {
       goto(StartImportPage.path)
 
-      submitPage(GoodsDestinationPage)
+      submitPage(GoodsDestinationPage, "GreatBritain")
 
-      submitPage(ExciseAndRestrictedGoodsPage)
+      submitPage(ExciseAndRestrictedGoodsPage, No)
 
-      submitPage(ValueWeightOfGoodsPage)
+      submitPage(ValueWeightOfGoodsPage, Yes)
 
-      submitPage(GoodsTypeQuantityPage)
+      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("shoes", "one pair"))
 
-      submitPage(GoodsVatRatePage)
+      submitPage(GoodsVatRatePage, "Five")
 
-      submitPage(GoodsOriginPage)
+      submitPage(GoodsOriginPage, Yes)
 
-      submitPage(PurchaseDetailsPage)
+      submitPage(PurchaseDetailsPage, PurchaseDetailsInput("100", "EUR"))
 
       givenAPaymentCalculation(aCalculationResult)
-      submitPage(ReviewGoodsPage)
+      submitPage(ReviewGoodsPage, No)
 
-      submitPage(PaymentCalculationPage)
+      submitPage(PaymentCalculationPage, "")
 
-      submitPage(CustomsAgentPage)
+      submitPage(CustomsAgentPage, No)
 
       givenEoriIsChecked("GB123467800000")
-      submitPage(EoriNumberPage)
+      submitPage(EoriNumberPage, "GB123467800000")
 
-      submitPage(TravellerDetailsPage)
+      submitPage(TravellerDetailsPage, Name("firstName", "LastName"))
 
-      submitPage(EnterEmailPage)
+      submitPage(EnterEmailPage, Email("s@s.s"))
 
-      submitPage(JourneyDetailsPage)
+      submitPage(JourneyDetailsPage, "DVR")
 
-      submitPage(GoodsInVehiclePage)
+      submitPage(GoodsInVehiclePage, Yes)
+
+      submitPage(VehicleSizePage, Yes)
+
+      submitPage(VehicleRegistrationNumberPage, "abc 123")
+
+      webDriver.getCurrentUrl mustBe fullUrl(CheckYourAnswersPage.path)
 
     }
   }

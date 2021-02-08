@@ -16,38 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-import org.scalatestplus.selenium.WebBrowser.find
+import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
-import org.scalatestplus.selenium.WebBrowser._
-
-class PurchaseDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[PurchaseDetailsInput] {
-
-  import WebBrowser._
-
-  def priceInput: Element = find(NameQuery("price")).get
-
-  def selectCurrency: Select = new Select(find(IdQuery("currency")).get.underlying)
-
-  override def fillOutForm(formData: PurchaseDetailsInput): Unit = {
-    priceInput.underlying.clear()
-    priceInput.underlying.sendKeys(formData.price)
-
-    selectCurrency.selectByValue(formData.currency)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(formData: PurchaseDetailsInput): Assertion = {
-    priceInput.underlying.getAttribute("value") mustEqual formData.price
-
-    val selectedOptions = selectCurrency.getAllSelectedOptions
-    selectedOptions.size() mustBe 1
-    selectedOptions.listIterator().next().getAttribute("value") mustBe formData.currency
-  }
-}
 
 object PurchaseDetailsPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
@@ -55,9 +27,10 @@ object PurchaseDetailsPage extends Page {
 
   def selectCurrency(implicit webDriver: HtmlUnitDriver): Select = new Select(find(IdQuery("currency")).get.underlying)
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    find(NameQuery("price")).get.underlying.sendKeys("100.00")
-    selectCurrency.selectByValue("EUR")
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    val pd = formData.asInstanceOf[PurchaseDetailsInput]
+    find(NameQuery("price")).get.underlying.sendKeys(pd.price)
+    selectCurrency.selectByValue(pd.currency)
     click.on(NameQuery("continue"))
   }
 

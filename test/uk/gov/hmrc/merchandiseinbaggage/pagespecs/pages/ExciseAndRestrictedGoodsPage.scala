@@ -24,8 +24,8 @@ object ExciseAndRestrictedGoodsPage extends Page {
   val importTitle = "Are you bringing excise, controlled or restricted goods to Great Britain?"
   val exportTitle = "Are you taking excise, controlled or restricted goods out of Great Britain?"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("No"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }

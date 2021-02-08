@@ -22,8 +22,8 @@ object GoodsOriginPage extends Page {
   def path(idx: Int) = s"/declare-commercial-goods/goods-origin/$idx"
   val title = "Were these goods produced in the EU?"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("Yes"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }
