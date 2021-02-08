@@ -80,5 +80,5 @@ button: components.button
   </p>
  }
 
- @p(button("site.continue", href = Some(next.url)))
+ @p(button(if(paymentCalculations.isNothingToPay) "paymentCalculation.zero.button" else "site.continue", href = Some(next.url)))
 }
