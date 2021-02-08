@@ -38,12 +38,12 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   }
 
   "send a calculation request to backend for payment" in {
-    val calculationRequest = aDeclarationGood.goods.head.asInstanceOf[ImportGoods].calculationRequest
-    val stubbedResult = CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None)
+    val calculationRequest = List(aImportGoods).map(_.calculationRequest)
+    val stubbedResult = List(CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
 
-    givenAPaymentCalculation(calculationRequest, stubbedResult)
+    givenAPaymentCalculations(calculationRequest, stubbedResult)
 
-    client.calculatePayment(calculationRequest).futureValue mustBe stubbedResult
+    client.calculatePayments(calculationRequest).futureValue mustBe stubbedResult
   }
 
   "send a calculation requests to backend for payment" in {

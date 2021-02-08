@@ -24,8 +24,8 @@ import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 
 object MibBackendStub extends MibConfiguration with CoreTestData {
 
@@ -57,14 +57,6 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         get(urlMatching(s"$declarationsUrl/(.*)"))
           .willReturn(okJson(Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString)))
 
-  @deprecated("to be removed")
-  def givenAPaymentCalculation(request: CalculationRequest, result: CalculationResult)(implicit server: WireMockServer): StubMapping =
-    server
-      .stubFor(
-        post(urlPathEqualTo(s"$calculationUrl"))
-          .withRequestBody(equalToJson(toJson(request).toString, true, false))
-          .willReturn(okJson(Json.toJson(result).toString)))
-
   def givenAPaymentCalculations(requests: Seq[CalculationRequest], results: Seq[CalculationResult])(
     implicit server: WireMockServer): StubMapping =
     server
@@ -76,8 +68,8 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   def givenAPaymentCalculation(result: CalculationResult)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$calculationUrl"))
-          .willReturn(okJson(Json.toJson(result).toString)))
+        post(urlPathEqualTo(s"$calculationsUrl"))
+          .willReturn(okJson(Json.toJson(List(result)).toString)))
 
   def givenSendEmailsSuccess(declarationId: DeclarationId = stubbedDeclarationId)(implicit server: WireMockServer): StubMapping =
     server
