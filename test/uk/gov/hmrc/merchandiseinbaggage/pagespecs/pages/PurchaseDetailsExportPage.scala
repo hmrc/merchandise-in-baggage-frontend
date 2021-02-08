@@ -19,12 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser._
 
-object CustomsAgentPage extends Page {
-  val path = "/declare-commercial-goods/customs-agent"
-  val title = "Are you a customs agent?"
+object PurchaseDetailsExportPage extends Page {
+  def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
+  def title(idx: Int) = "How much did you pay for the test good?"
 
   def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("No"))
+    find(NameQuery("price")).get.underlying.sendKeys("100.00")
     click.on(NameQuery("continue"))
   }
+
 }

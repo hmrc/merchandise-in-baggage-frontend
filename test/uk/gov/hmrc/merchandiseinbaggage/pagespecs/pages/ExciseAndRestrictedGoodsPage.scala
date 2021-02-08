@@ -16,8 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object ExciseAndRestrictedGoodsPage {
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
+
+object ExciseAndRestrictedGoodsPage extends Page {
   val path = "/declare-commercial-goods/excise-and-restricted-goods"
   val importTitle = "Are you bringing excise, controlled or restricted goods to Great Britain?"
   val exportTitle = "Are you taking excise, controlled or restricted goods out of Great Britain?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("No"))
+    click.on(NameQuery("continue"))
+  }
 }

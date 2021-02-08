@@ -16,8 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object GoodsDestinationPage {
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
+
+object GoodsDestinationPage extends Page {
   val path = "/declare-commercial-goods/goods-destination"
   val importTitle = "Where in the UK are the goods going to?"
   val exportTitle = "Where in the UK are the goods leaving from?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("GreatBritain"))
+    click.on(NameQuery("continue"))
+  }
 }

@@ -17,10 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser.find
 import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
+import org.scalatestplus.selenium.WebBrowser._
 
 class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Name] {
 
@@ -49,8 +52,14 @@ class TravellerDetailsPage(implicit webDriver: WebDriver) extends DeclarationDat
   }
 }
 
-object TravellerDetailsPage {
+object TravellerDetailsPage extends Page {
   val path: String = "/declare-commercial-goods/traveller-details"
   val title: String = "What is the name of the person carrying the goods?"
   val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery(TravellerDetailsForm.firstName)).get.underlying.sendKeys("firstName")
+    find(NameQuery(TravellerDetailsForm.lastName)).get.underlying.sendKeys("lastName")
+    click.on(NameQuery("continue"))
+  }
 }

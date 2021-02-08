@@ -17,11 +17,17 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser.find
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
+import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
+import org.scalatestplus.selenium.WebBrowser._
+
+import java.time.LocalDate
 
 class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[JourneyDetailsEntry] {
 
@@ -69,8 +75,19 @@ class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataC
   }
 }
 
-object JourneyDetailsPage {
+object JourneyDetailsPage extends Page {
   val path = "/declare-commercial-goods/journey-details"
 
   val title = "Journey details"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    val now = LocalDate.now()
+
+    new Select(find(IdQuery(port)).get.underlying).selectByValue("DVR")
+
+    find(NameQuery(s"$dateOfTravel.day")).get.underlying.sendKeys(now.getDayOfMonth.toString)
+    find(NameQuery(s"$dateOfTravel.month")).get.underlying.sendKeys(now.getMonthValue.toString)
+    find(NameQuery(s"$dateOfTravel.year")).get.underlying.sendKeys(now.getYear.toString)
+    click.on(NameQuery("continue"))
+  }
 }

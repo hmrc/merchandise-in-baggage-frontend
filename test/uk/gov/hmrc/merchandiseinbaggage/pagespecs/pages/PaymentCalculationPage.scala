@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.{By, WebDriver}
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
-
+import org.scalatestplus.selenium.WebBrowser._
 import scala.collection.JavaConverters._
 
 class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
@@ -50,8 +51,13 @@ class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
       .size()
 }
 
-object PaymentCalculationPage {
+object PaymentCalculationPage extends Page {
   val path: String = "/declare-commercial-goods/payment-calculation"
 
   def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    val button = find(ClassNameQuery("govuk-button")).get
+    click on button
+  }
 }

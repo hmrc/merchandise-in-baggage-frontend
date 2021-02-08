@@ -17,9 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Eori
+import org.scalatestplus.selenium.WebBrowser._
 
 class EoriNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Eori] {
 
@@ -36,9 +38,14 @@ class EoriNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCaptu
   }
 }
 
-object EoriNumberPage {
+object EoriNumberPage extends Page {
   val path = "/declare-commercial-goods/enter-eori-number"
   val expectedAgentTitle = "What is the EORI number of the business bringing the goods into Great Britain?"
   val expectedAgentExportTitle = "What is the EORI number of the business taking the goods out of Great Britain?"
   val expectedNonAgentTitle = "What is your EORI number?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(IdQuery("eori")).get.underlying.sendKeys("GB123467800000")
+    click.on(NameQuery("continue"))
+  }
 }

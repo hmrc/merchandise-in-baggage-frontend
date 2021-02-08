@@ -15,8 +15,15 @@
  */
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
+import org.scalatestplus.selenium.WebBrowser._
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
-object GoodsOriginPage {
+object GoodsOriginPage extends Page {
   def path(idx: Int) = s"/declare-commercial-goods/goods-origin/$idx"
   val title = "Were these goods produced in the EU?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("Yes"))
+    click.on(NameQuery("continue"))
+  }
 }
