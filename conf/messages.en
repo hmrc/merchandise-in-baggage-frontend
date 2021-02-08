@@ -210,6 +210,8 @@ goodsOverThreshold.p8.2 = and the rates of the month in which you make your decl
 # PaymentCalculation
 paymentCalculation.title = Payment due on these goods {0}
 paymentCalculation.heading = Payment due on these goods {0}
+paymentCalculation.zero.title = No payment due
+paymentCalculation.zero.heading = No payment due
 paymentCalculation.table.col1.head = Type of goods
 paymentCalculation.table.col2.head = Value of goods
 paymentCalculation.table.col3.head = Customs
@@ -218,13 +220,17 @@ paymentCalculation.table.col5.head = Total
 paymentCalculation.table.col3.row = {0} at {1}%
 paymentCalculation.table.total = Payment due
 paymentCalculation.h3 = How we calculate your payment
-paymentCalculation.p1 = Customs Duty is charged at a flat rate of 3.3% on the total value of the goods from countries outside of the EU. We then charge VAT on the combined amount of Customs Duty and the value of the goods.
+paymentCalculation.zero.p1 = You do not need to pay for goods that are from the EU and have a 0% VAT rate. You must still declare these goods.
+paymentCalculation.dutyOnly.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU.
+paymentCalculation.vatOnly.p1 = Customs duty is not charged on EU goods. VAT is charged on the total value of the goods.
+paymentCalculation.dutyAndVat.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU. Duty is not charged on EU goods. We then charge VAT on the combined amount of Customs Duty and the value of the goods.
 paymentCalculation.p2 = We converted the total amount at a rate of:
 paymentCalculation.li = {0} to 1 (GBP).
 paymentCalculation.p3.1 = We use
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 paymentCalculation.p3.2 = We use the rate in the month in which you make your declaration.
+paymentCalculation.zero.button = Declare goods
 
 # CustomsAgent
 customsAgent.title = Are you a customs agent?
