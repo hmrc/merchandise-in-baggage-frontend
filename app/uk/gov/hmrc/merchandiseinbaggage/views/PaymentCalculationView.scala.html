@@ -31,34 +31,54 @@ button: components.button
 
 @(paymentCalculations: PaymentCalculations, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@title = @{
+ if(paymentCalculations.isNothingToPay)
+  titleNoForm("paymentCalculation.zero.title")
+ else titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))
+}
+
 @rates = @{ paymentCalculations.paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct }
 
-@layout(pageTitle = Some(titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
+@layout(pageTitle = title, maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
  @h1(messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds))
 
  @table(paymentCalculations.toTable)
 
- @h2(messages("paymentCalculation.h3"), classes = Some("govuk-heading-m"))
+ @if(paymentCalculations.isNothingToPay) {
+  @p(Html(messages("paymentCalculation.zero.p1")))
+ } else {
+  @h2(messages("paymentCalculation.h3"), classes = Some("govuk-heading-m"))
 
- @p(Html(messages("paymentCalculation.p1")))
-
- @if(rates.nonEmpty) {
-  @p(Html(messages("paymentCalculation.p2")))
-
-  <ul class="govuk-list govuk-list--bullet">
-  @for(rate <- rates) {
-   <li>@messages("paymentCalculation.li", rate.display)</li>
+  @if(paymentCalculations.isDutyOnly) {
+   @p(Html(messages("paymentCalculation.dutyOnly.p1")))
   }
-  </ul>
- }
 
- <p class="govuk-body">
-  @messages("paymentCalculation.p3.1")
-  <a href="@messages("paymentCalculation.p3.a.href")" class="govuk-link" target="_blank">
+  @if(paymentCalculations.isVatOnly) {
+   @p(Html(messages("paymentCalculation.vatOnly.p1")))
+  }
+
+  @if(paymentCalculations.isDutyAndVat) {
+   @p(Html(messages("paymentCalculation.dutyAndVat.p1")))
+  }
+
+  @if(rates.nonEmpty) {
+   @p(Html(messages("paymentCalculation.p2")))
+
+   <ul class="govuk-list govuk-list--bullet">
+   @for(rate <- rates) {
+    <li>@messages("paymentCalculation.li", rate.display)</li>
+   }
+   </ul>
+  }
+
+  <p class="govuk-body">
+   @messages("paymentCalculation.p3.1")
+   <a href="@messages("paymentCalculation.p3.a.href")" class="govuk-link" target="_blank">
    @messages("paymentCalculation.p3.a.text")
-  </a>
-  @messages("paymentCalculation.p3.2")
- </p>
+   </a>
+   @messages("paymentCalculation.p3.2")
+  </p>
+ }
 
  @p(button("site.continue", href = Some(next.url)))
 }

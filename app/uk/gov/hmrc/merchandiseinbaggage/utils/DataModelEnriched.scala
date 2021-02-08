@@ -96,6 +96,19 @@ object DataModelEnriched {
       paymentCalculations.map(_.calculationResult.vat.value).sum
     )
 
+    def isNothingToPay: Boolean = totalTaxDue.value == 0L
+
+    def isVatOnly: Boolean = totalDutyDue.value == 0L && totalVatDue.value != 0L
+
+    def isDutyOnly: Boolean = totalDutyDue.value != 0L && totalVatDue.value == 0L
+
+    def isDutyAndVat: Boolean = totalDutyDue.value != 0L && totalVatDue.value != 0L
+
+    def requiresProof: Boolean =
+      paymentCalculations
+        .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
+        .map(_.calculationResult.gbpAmount.value).sum > 100000L // £1000 in pence
+
     def totalCalculationResult: TotalCalculationResult =
       TotalCalculationResult(calculations, totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
 
