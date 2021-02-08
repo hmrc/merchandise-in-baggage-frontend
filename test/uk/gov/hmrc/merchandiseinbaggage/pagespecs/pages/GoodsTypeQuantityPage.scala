@@ -17,9 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
+import org.scalatestplus.selenium.WebBrowser._
 
 class GoodsTypeQuantityPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[CategoryQuantityOfGoods] {
 
@@ -43,8 +45,13 @@ class GoodsTypeQuantityPage(implicit webDriver: WebDriver) extends DeclarationDa
   }
 }
 
-object GoodsTypeQuantityPage {
+object GoodsTypeQuantityPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/goods-type-quantity/$idx"
-
   def title(idx: Int) = s"Enter the ${if (idx == 1) "first" else "next"} type of goods"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery("category")).get.underlying.sendKeys("shoes")
+    find(NameQuery("quantity")).get.underlying.sendKeys("1 pair")
+    click.on(NameQuery("continue"))
+  }
 }

@@ -16,7 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object GoodsInVehiclePage {
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser._
+
+object GoodsInVehiclePage extends Page {
   val path: String = "/declare-commercial-goods/goods-in-vehicle"
   val title: String = "Are the goods arriving by vehicle?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("No"))
+    click.on(NameQuery("continue"))
+  }
+
 }

@@ -23,6 +23,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
 
@@ -49,6 +50,12 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
       .stubFor(
         get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
           .willReturn(okJson(Json.toJson(declaration).toString)))
+
+  def givenPersistedDeclarationIsFound()(implicit server: WireMockServer): StubMapping =
+    server
+      .stubFor(
+        get(urlMatching(s"$declarationsUrl/(.*)"))
+          .willReturn(okJson(Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString)))
 
   @deprecated("to be removed")
   def givenAPaymentCalculation(request: CalculationRequest, result: CalculationResult)(implicit server: WireMockServer): StubMapping =

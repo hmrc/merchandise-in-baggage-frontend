@@ -16,8 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object ValueWeightOfGoodsPage {
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser._
+
+object ValueWeightOfGoodsPage extends Page {
   val path = "/declare-commercial-goods/value-weight-of-goods"
   val northernIrelandTitle = "Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?"
   val greatBritainTitle = "Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("Yes"))
+    click.on(NameQuery("continue"))
+  }
 }

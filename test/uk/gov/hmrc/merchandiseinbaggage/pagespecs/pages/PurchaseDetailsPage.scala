@@ -17,10 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser.find
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
+import org.scalatestplus.selenium.WebBrowser._
 
 class PurchaseDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[PurchaseDetailsInput] {
 
@@ -46,8 +49,16 @@ class PurchaseDetailsPage(implicit webDriver: WebDriver) extends DeclarationData
   }
 }
 
-object PurchaseDetailsPage {
+object PurchaseDetailsPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
-
   def title(idx: Int) = "How much did you pay for the test good?"
+
+  def selectCurrency(implicit webDriver: HtmlUnitDriver): Select = new Select(find(IdQuery("currency")).get.underlying)
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery("price")).get.underlying.sendKeys("100.00")
+    selectCurrency.selectByValue("EUR")
+    click.on(NameQuery("continue"))
+  }
+
 }

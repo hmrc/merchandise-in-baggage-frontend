@@ -17,7 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.WebDriver
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser
+import org.scalatestplus.selenium.WebBrowser._
 
 class CheckYourAnswersPage(implicit webDriver: WebDriver) extends BasePage {
 
@@ -76,10 +78,15 @@ class CheckYourAnswersPage(implicit webDriver: WebDriver) extends BasePage {
   }
 }
 
-object CheckYourAnswersPage {
+object CheckYourAnswersPage extends Page {
   val path = "/declare-commercial-goods/check-your-answers"
   val title = "Check your answers before making your declaration"
 
   val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    val button = find(NameQuery("makeDeclarationButton")).get
+    click on button
+  }
 }

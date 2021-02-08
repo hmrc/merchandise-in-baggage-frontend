@@ -16,7 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-object GoodsVatRatePage {
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser._
+
+object GoodsVatRatePage extends Page {
   def path(idx: Int) = s"/declare-commercial-goods/goods-vat-rate/$idx"
   def title(idx: Int) = "Check which VAT rate applies to the test good"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("Five"))
+    click.on(NameQuery("continue"))
+  }
 }

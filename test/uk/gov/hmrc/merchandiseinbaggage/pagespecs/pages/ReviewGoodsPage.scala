@@ -19,7 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.{By, WebDriver, WebElement}
 import org.scalatestplus.selenium.WebBrowser
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-
+import org.scalatestplus.selenium.WebBrowser._
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 
@@ -58,7 +59,12 @@ class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
   }
 }
 
-object ReviewGoodsPage {
+object ReviewGoodsPage extends Page {
   val path: String = "/declare-commercial-goods/review-goods"
   val title = "Review your goods"
+
+  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery("No"))
+    click.on(NameQuery("continue"))
+  }
 }
