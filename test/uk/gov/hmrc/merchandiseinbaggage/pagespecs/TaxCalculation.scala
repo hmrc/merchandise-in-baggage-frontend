@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 import com.softwaremill.quicklens._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -32,7 +32,7 @@ trait TaxCalculation extends CoreTestData {
 
   def givenADeclarationWithTaxDue(
     declarationJourney: DeclarationJourney,
-    overThreshold: Option[Int] = Some(0)): Future[PaymentCalculations] = {
+    overThreshold: Option[Int] = Some(0)): Future[CalculationResults] = {
 
     val resultOne =
       CalculationResult(aImportGoods, AmountInPence(7834), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
@@ -45,6 +45,6 @@ trait TaxCalculation extends CoreTestData {
     givenADeclarationJourney(declarationJourney)
     givenAPaymentCalculations(goods.map(_.calculationRequest), calculations)
 
-    Future(PaymentCalculations(calculations.map(res => PaymentCalculation(res.goods, res))))
+    Future(CalculationResults(calculations))
   }
 }

@@ -22,7 +22,8 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, PaymentCalculations}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -67,7 +68,7 @@ class PaymentCalculationController @Inject()(
     else
       Redirect(routes.CustomsAgentController.onPageLoad())
 
-  private def redirectIfOverThreshold(destination: GoodsDestination, paymentCalculations: PaymentCalculations)(
+  private def redirectIfOverThreshold(destination: GoodsDestination, paymentCalculations: CalculationResults)(
     implicit request: DeclarationJourneyRequest[_]): Result =
     if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
       Redirect(routes.GoodsOverThresholdController.onPageLoad())

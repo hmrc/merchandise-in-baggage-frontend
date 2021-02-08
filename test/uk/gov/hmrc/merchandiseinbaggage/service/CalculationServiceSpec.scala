@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
@@ -32,7 +32,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   "retrieve payment calculations from mib backend" in {
     val stubbedResult =
       CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = PaymentCalculations(List(PaymentCalculation(aImportGoods, stubbedResult)))
+    val expected = CalculationResults(List(stubbedResult))
 
     givenAPaymentCalculations(List(stubbedResult.goods).map(_.calculationRequest), List(stubbedResult))
 

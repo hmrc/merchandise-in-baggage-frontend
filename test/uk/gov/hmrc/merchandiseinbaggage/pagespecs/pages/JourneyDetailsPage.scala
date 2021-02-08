@@ -16,18 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
+import java.time.LocalDate
+
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertion
 import org.scalatestplus.selenium.WebBrowser
-import org.scalatestplus.selenium.WebBrowser.find
+import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
-import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
-import org.scalatestplus.selenium.WebBrowser._
-
-import java.time.LocalDate
 
 class JourneyDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[JourneyDetailsEntry] {
 

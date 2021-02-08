@@ -17,9 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 
 case class TotalCalculationResult(
-  paymentCalculations: PaymentCalculations,
+  paymentCalculations: CalculationResults,
   totalGbpValue: AmountInPence,
   totalTaxDue: AmountInPence,
   totalDutyDue: AmountInPence,

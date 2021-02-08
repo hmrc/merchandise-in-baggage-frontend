@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api
+package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 
-@deprecated("CalculationResult now includes Goods so PaymentCalculations can take a Seq[CalculationResult]")
-case class PaymentCalculation(goods: ImportGoods, calculationResult: CalculationResult)
+case class CalculationResults(calculationResults: Seq[CalculationResult])
 
-object PaymentCalculation {
-  implicit val format: OFormat[PaymentCalculation] = Json.format[PaymentCalculation]
-}
-
-case class PaymentCalculations(paymentCalculations: Seq[PaymentCalculation])
-
-object PaymentCalculations {
-  implicit val format: OFormat[PaymentCalculations] = Json.format[PaymentCalculations]
+object CalculationResults {
+  implicit val format: OFormat[CalculationResults] = Json.format[CalculationResults]
 }
