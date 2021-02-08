@@ -135,13 +135,9 @@ goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules
 goodsOrigin.error.required = Select yes if the goods were produced in the EU
 
 # SearchGoodsCountry
-searchGoodsCountry.Export.title = I ba wlad rydych yn cymryd y {0}?
-searchGoodsCountry.Export.heading = I ba wlad rydych yn cymryd y {0}?
-searchGoodsCountry.Import.title = Ym mha wlad y gwnaethoch brynu’r {0}?
-searchGoodsCountry.Import.heading = Ym mha wlad y gwnaethoch brynu’r {0}?
-searchGoodsCountry.error.Import.required = Dewiswch y wlad lle gwnaethoch brynu’r nwyddau
-searchGoodsCountry.error.Export.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
-searchGoodsCountry.hint = Os prynoch y nwyddau ar awyren neu gwch, nodwch y wlad yr oeddech yn teithio ohoni ar adeg y prynu.
+searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
+searchGoodsCountry.heading = I ba wlad rydych yn cymryd y {0}?
+searchGoodsCountry.error.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
