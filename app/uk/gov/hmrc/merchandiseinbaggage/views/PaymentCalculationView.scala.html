@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.PaymentCalculations
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ConversionRatePeriod
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -29,41 +29,41 @@ table: GovukTable,
 button: components.button
 )
 
-@(paymentCalculations: PaymentCalculations, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @title = @{
- if(paymentCalculations.isNothingToPay)
+ if(calculationResults.isNothingToPay)
   titleNoForm("paymentCalculation.zero.title")
- else titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(paymentCalculations.totalTaxDue.formattedInPounds))
+ else titleNoForm("paymentCalculation.title", titleMessageArgs = Seq(calculationResults.totalTaxDue.formattedInPounds))
 }
 
 @heading = @{
- if(paymentCalculations.isNothingToPay)
+ if(calculationResults.isNothingToPay)
    messages("paymentCalculation.zero.heading")
- else messages("paymentCalculation.heading", paymentCalculations.totalTaxDue.formattedInPounds)
+ else messages("paymentCalculation.heading", calculationResults.totalTaxDue.formattedInPounds)
 }
 
-@rates = @{ paymentCalculations.paymentCalculations.flatMap(_.calculationResult.conversionRatePeriod).distinct }
+@rates = @{ calculationResults.calculationResults.flatMap(_.conversionRatePeriod).distinct }
 
 @layout(pageTitle = Some(title), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
  @h1(heading)
 
- @table(paymentCalculations.toTable)
+ @table(calculationResults.toTable)
 
- @if(paymentCalculations.isNothingToPay) {
+ @if(calculationResults.isNothingToPay) {
   @p(Html(messages("paymentCalculation.zero.p1")))
  } else {
   @h2(messages("paymentCalculation.h3"), classes = Some("govuk-heading-m"))
 
-  @if(paymentCalculations.isDutyOnly) {
+  @if(calculationResults.isDutyOnly) {
    @p(Html(messages("paymentCalculation.dutyOnly.p1")))
   }
 
-  @if(paymentCalculations.isVatOnly) {
+  @if(calculationResults.isVatOnly) {
    @p(Html(messages("paymentCalculation.vatOnly.p1")))
   }
 
-  @if(paymentCalculations.isDutyAndVat) {
+  @if(calculationResults.isDutyAndVat) {
    @p(Html(messages("paymentCalculation.dutyAndVat.p1")))
   }
 
@@ -86,5 +86,5 @@ button: components.button
   </p>
  }
 
- @p(button(if(paymentCalculations.isNothingToPay) "paymentCalculation.zero.button" else "site.continue", href = Some(next.url)))
+ @p(button(if(calculationResults.isNothingToPay) "paymentCalculation.zero.button" else "site.continue", href = Some(next.url)))
 }

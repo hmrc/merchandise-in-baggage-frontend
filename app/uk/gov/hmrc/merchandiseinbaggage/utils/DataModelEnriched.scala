@@ -21,7 +21,7 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationRequest
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
 object DataModelEnriched {
@@ -46,9 +46,7 @@ object DataModelEnriched {
   }
 
   implicit class GoodsEnriched(importGoods: ImportGoods) {
-    import importGoods._
-    val calculationRequest: CalculationRequest =
-      CalculationRequest(importGoods, purchaseDetails.numericAmount, purchaseDetails.currency, producedInEu, goodsVatRate)
+    val calculationRequest: CalculationRequest = CalculationRequest(importGoods)
   }
 
   implicit class DeclarationGoodsEnriched(goods: DeclarationGoods) {
@@ -78,22 +76,22 @@ object DataModelEnriched {
     def display: String = s"$rate ($currencyCode)"
   }
 
-  implicit class PaymentCalculationsEnriched(calculations: PaymentCalculations) {
+  implicit class CalculationResultsEnriched(calculations: CalculationResults) {
     import calculations._
     def totalGbpValue: AmountInPence = AmountInPence(
-      paymentCalculations.map(_.calculationResult.gbpAmount.value).sum
+      calculationResults.map(_.gbpAmount.value).sum
     )
 
     def totalTaxDue: AmountInPence = AmountInPence(
-      paymentCalculations.map(_.calculationResult.taxDue.value).sum
+      calculationResults.map(_.taxDue.value).sum
     )
 
     def totalDutyDue: AmountInPence = AmountInPence(
-      paymentCalculations.map(_.calculationResult.duty.value).sum
+      calculationResults.map(_.duty.value).sum
     )
 
     def totalVatDue: AmountInPence = AmountInPence(
-      paymentCalculations.map(_.calculationResult.vat.value).sum
+      calculationResults.map(_.vat.value).sum
     )
 
     def isNothingToPay: Boolean = totalTaxDue.value == 0L
@@ -105,16 +103,16 @@ object DataModelEnriched {
     def isDutyAndVat: Boolean = totalDutyDue.value != 0L && totalVatDue.value != 0L
 
     def requiresProof: Boolean =
-      paymentCalculations
+      calculationResults
         .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
-        .map(_.calculationResult.gbpAmount.value)
+        .map(_.gbpAmount.value)
         .sum > 100000L // £1000 in pence
 
     def totalCalculationResult: TotalCalculationResult =
       TotalCalculationResult(calculations, totalGbpValue, totalTaxDue, totalDutyDue, totalVatDue)
 
     def toTable(implicit messages: Messages): Table = {
-      val tableRows: Seq[Seq[TableRow]] = paymentCalculations.map { tc =>
+      val tableRows: Seq[Seq[TableRow]] = calculationResults.map { tc =>
         val goods = tc.goods
 
         Seq(
@@ -122,22 +120,22 @@ object DataModelEnriched {
             Text(goods.categoryQuantityOfGoods.category)
           ),
           TableRow(
-            Text(tc.calculationResult.gbpAmount.formattedInPoundsUI)
+            Text(tc.gbpAmount.formattedInPoundsUI)
           ),
           TableRow(
-            Text(tc.calculationResult.duty.formattedInPoundsUI)
+            Text(tc.duty.formattedInPoundsUI)
           ),
           TableRow(
             Text(
               messages(
                 "paymentCalculation.table.col3.row",
-                tc.calculationResult.vat.formattedInPoundsUI,
+                tc.vat.formattedInPoundsUI,
                 goods.goodsVatRate.value
               )
             )
           ),
           TableRow(
-            Text(tc.calculationResult.taxDue.formattedInPoundsUI)
+            Text(tc.taxDue.formattedInPoundsUI)
           )
         )
       } :+ Seq(

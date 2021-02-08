@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import com.softwaremill.macwire.wire
 import com.softwaremill.quicklens._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.PaymentCalculations
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.PaymentCalculationPage._
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{CustomsAgentPage, PaymentCalculationPage, ReviewGoodsPage}
@@ -29,7 +29,7 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
 
   private def setUpTaxCalculationAndOpenPage(
     journey: DeclarationJourney = importJourneyWithTwoCompleteGoodsEntries,
-    overThreshold: Option[Int] = Some(0)): PaymentCalculations = {
+    overThreshold: Option[Int] = Some(0)): CalculationResults = {
     val taxCalculation = givenADeclarationWithTaxDue(journey, overThreshold).futureValue
 
     open(path)
@@ -56,14 +56,14 @@ class PaymentCalculationPageSpec extends BasePageSpec[PaymentCalculationPage] wi
           .modify(_.goodsEntries.entries)
           .setTo(Seq(completedImportGoods, completedImportGoods))
       )
-      val paymentCalculations = taxCalculation.paymentCalculations
+      val calculationResults = taxCalculation.calculationResults
 
       page.headerText() mustBe title(taxCalculation.totalTaxDue)
       page.summaryHeaders mustBe Seq("Type of goods", "Value of goods", "Customs", "VAT", "Total")
 
       Range(0, 1).foreach { index =>
-        val calculationResult = paymentCalculations(index).calculationResult
-        val goods = paymentCalculations(index).goods
+        val calculationResult = calculationResults(index)
+        val goods = calculationResults(index).goods
 
         page.summaryRow(index) mustBe
           Seq(

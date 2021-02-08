@@ -62,7 +62,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
           .copy(
             paymentSuccess = Some(true),
             maybeTotalCalculationResult =
-              Some(TotalCalculationResult(aPaymentCalculations, AmountInPence(10L), AmountInPence(5), AmountInPence(2), AmountInPence(3)))
+              Some(TotalCalculationResult(aCalculationResults, AmountInPence(10L), AmountInPence(5), AmountInPence(2), AmountInPence(3)))
           )
         givenADeclarationJourney(declarationJourney.copy(declarationId = id))
         givenPersistedDeclarationIsFound(persistedDeclaration, id)

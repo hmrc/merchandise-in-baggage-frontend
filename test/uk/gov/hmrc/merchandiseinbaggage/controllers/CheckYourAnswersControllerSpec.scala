@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
@@ -56,13 +56,13 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(())
   }
 
-  private lazy val stubbedCalculation: PaymentCalculations => CalculationService = aPaymentCalculations =>
+  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
     new CalculationService(mibConnector) {
-      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[PaymentCalculations] =
+      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
         Future.successful(aPaymentCalculations)
   }
 
-  private def controller(paymentCalcs: PaymentCalculations = aPaymentCalculations) = new CheckYourAnswersController(
+  private def controller(paymentCalcs: CalculationResults = aCalculationResults) = new CheckYourAnswersController(
     controllerComponents,
     actionBuilder,
     stubbedCalculation(paymentCalcs),
@@ -99,7 +99,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     givenADeclarationJourneyIsPersisted(importJourney)
 
     val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-    val eventualResult = controller(aPaymentCalculationWithNoTax).onSubmit()(request)
+    val eventualResult = controller(aCalculationResultsWithNoTax).onSubmit()(request)
 
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
@@ -135,8 +135,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     givenAPaymentCalculation(CalculationResult(aImportGoods, AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
 
     val eventualResult = controller(
-      aPaymentCalculations
-        .modify(_.paymentCalculations.each.calculationResult)
+      aCalculationResults
+        .modify(_.calculationResults.each)
         .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))).onPageLoad()(request)
 
     status(eventualResult) mustBe 303
