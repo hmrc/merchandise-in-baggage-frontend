@@ -143,10 +143,10 @@ searchGoodsCountry.error.invalid = Select a valid country
 # PurchaseDetails
 purchaseDetails.title = Faint y gwnaethoch ei dalu am y {0}?
 purchaseDetails.heading = Faint y gwnaethoch ei dalu am y {0}?
-purchaseDetails.price.label = Y pris a dalwyd
+purchaseDetails.price.label = Swm a dalwyd
 purchaseDetails.price.hint = Nodwch y swm o dan yr arian cyfred a ddefnyddir
 purchaseDetails.currency.label = Arian cyfred
-purchaseDetails.p.1 = Rydym yn defnyddio
+purchaseDetails.p.1 = To convert the amount paid we will use
 purchaseDetails.p.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.

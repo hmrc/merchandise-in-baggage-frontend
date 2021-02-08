@@ -146,10 +146,10 @@ searchGoodsCountry.error.invalid = Select a valid country
 # PurchaseDetails
 purchaseDetails.title = How much did you pay for the {0}?
 purchaseDetails.heading = How much did you pay for the {0}?
-purchaseDetails.price.label = Price paid
+purchaseDetails.price.label = Amount paid
 purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency
-purchaseDetails.p.1 = We use
+purchaseDetails.p.1 = To convert the amount paid we will use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
