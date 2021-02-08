@@ -167,7 +167,7 @@ reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more commercial goods?
+reviewGoods.h3 = Do you need to declare more types of commercial goods?
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods
