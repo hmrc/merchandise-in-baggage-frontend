@@ -1,4 +1,4 @@
-reviewGoods.h3service.name = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
+service.name = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 service.homePageUrl = /declare-commercial-goods
 
 # Alpha/Beta Banner
@@ -164,7 +164,7 @@ reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Y pris a dalwyd
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more types of goods?
+reviewGoods.h3 = Do you need to declare more types of commercial goods?
 reviewGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddatgan rhagor o eitemau
 
 # RemoveGoods
