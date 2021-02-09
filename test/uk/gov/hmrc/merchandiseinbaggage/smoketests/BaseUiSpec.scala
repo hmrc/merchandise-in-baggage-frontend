@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.Page
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.Page
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 import scala.util.{Failure, Success, Try}
