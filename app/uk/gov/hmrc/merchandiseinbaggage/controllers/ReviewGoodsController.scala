@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -62,7 +63,12 @@ class ReviewGoodsController @Inject()(
                 repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
                   Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
                 }
-              } else Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
+              } else {
+                declarationType match {
+                  case Export => Future.successful(Redirect(routes.CustomsAgentController.onPageLoad()))
+                  case Import => Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
+                }
+            }
           )
       }
   }

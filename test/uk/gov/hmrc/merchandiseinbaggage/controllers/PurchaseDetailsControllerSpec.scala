@@ -39,7 +39,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney = DeclarationJourney(
-      SessionId("123"),
+      aSessionId,
       importOrExport,
       goodsEntries = GoodsEntries(Seq(ImportGoodsEntry(maybeCategoryQuantityOfGoods = Some(CategoryQuantityOfGoods("clothes", "1")))))
     )
@@ -68,7 +68,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
-        val request = buildGet(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
+        val request = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
 
         val eventualResult = controller(journey).onSubmit(1)(request)
@@ -77,7 +77,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        val request = buildGet(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
+        val request = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("abcd" -> "in valid")
 
         val eventualResult = controller(journey).onSubmit(1)(request)
