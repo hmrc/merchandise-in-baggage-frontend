@@ -16,51 +16,48 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
+class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view = injector.instanceOf[GoodsDestinationView]
-
+  val view = app.injector.instanceOf[ExciseAndRestrictedGoodsView]
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsDestinationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new ExciseAndRestrictedGoodsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.GoodsDestinationController.onPageLoad.url, aSessionId)
+        val request = buildGet(routes.ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
         val result = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
-        result must include(messageApi(s"goodsDestination.$importOrExport.title"))
-        result must include(messageApi(s"goodsDestination.$importOrExport.heading"))
-        result must include(messageApi("goodsDestination.NorthernIreland"))
-        result must include(messageApi("goodsDestination.GreatBritain"))
+        result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
+        result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))
+        result must include(messageApi("exciseAndRestrictedGoods.details"))
       }
     }
 
     "onSubmit" should {
-      s"redirect to /excise-and-restricted-goods after successful form submit with GreatBritain for $importOrExport" in {
-        val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "GreatBritain")
+      s"redirect to /value-weight-of-goods after successful form submit with Yes for $importOrExport" in {
+        val request = buildGet(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
+          .withFormUrlEncodedBody("value" -> "No")
 
         val eventualResult = controller(journey).onSubmit(request)
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(routes.ValueWeightOfGoodsController.onPageLoad().url)
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+      val request = buildGet(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
@@ -68,6 +65,8 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))
+      result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
+      result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))
     }
   }
 }
