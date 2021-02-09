@@ -16,25 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-
-class AgentDetailsPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
-
-  import WebBrowser._
-
-  private def input = find(NameQuery("value")).get
-
-  override def fillOutForm(agentDetails: String): Unit = {
-    click on input
-    enter(agentDetails)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(agentDetails: String): Assertion =
-    input.attribute("value") mustBe Some(agentDetails)
-}
-
 object AgentDetailsPage {
   val path = "/declare-commercial-goods/agent-details"
   val title = "What is your registered business name?"

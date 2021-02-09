@@ -16,48 +16,64 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email, Name}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-
 class ExportJourneySpec extends BaseUiSpec {
 
-  "Export journey - happy path" should {
+  "Export journey" should {
     "work as expected" in {
       goto(StartExportPage.path)
 
-      submitPage(GoodsDestinationPage)
+      submitPage(GoodsDestinationPage, "GreatBritain")
 
-      submitPage(ExciseAndRestrictedGoodsPage)
+      submitPage(ExciseAndRestrictedGoodsPage, No)
 
-      submitPage(ValueWeightOfGoodsPage)
+      submitPage(ValueWeightOfGoodsPage, Yes)
 
-      submitPage(GoodsTypeQuantityPage)
+      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("shoes", "one pair"))
 
-      submitPage(SearchGoodsCountryPage)
+      submitPage(SearchGoodsCountryPage, "FR")
 
-      submitPage(PurchaseDetailsExportPage)
+      submitPage(PurchaseDetailsExportPage, "100.50")
 
-      submitPage(ReviewGoodsPage)
+      submitPage(ReviewGoodsPage, Yes)
 
-      submitPage(CustomsAgentPage)
+      addMoreGoods()
+
+      submitPage(ReviewGoodsPage, No)
+
+      submitPage(CustomsAgentPage, No)
 
       givenEoriIsChecked("GB123467800000")
-      submitPage(EoriNumberPage)
+      submitPage(EoriNumberPage, "GB123467800000")
 
-      submitPage(TravellerDetailsPage)
+      submitPage(TravellerDetailsPage, Name("firstName", "LastName"))
 
-      submitPage(EnterEmailPage)
+      submitPage(EnterEmailPage, Email("s@s.s"))
 
-      submitPage(JourneyDetailsPage)
+      submitPage(JourneyDetailsPage, "DVR")
 
-      submitPage(GoodsInVehiclePage)
+      submitPage(GoodsInVehiclePage, Yes)
+
+      submitPage(VehicleSizePage, Yes)
+
+      submitPage(VehicleRegistrationNumberPage, "abc 123")
 
       givenDeclarationIsPersistedInBackend
       givenPersistedDeclarationIsFound()
-      submitPage(CheckYourAnswersPage)
+      submitPage(CheckYourAnswersPage, Export)
 
       webDriver.getCurrentUrl mustBe fullUrl(DeclarationConfirmationPage.path)
 
     }
+  }
+
+  private def addMoreGoods(): Unit = {
+    submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("wine", "one bottle"))
+    submitPage(SearchGoodsCountryPage, "FR")
+    submitPage(PurchaseDetailsExportPage, "100.50")
   }
 }

@@ -16,33 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
 import org.scalatestplus.selenium.WebBrowser._
-
-class SearchGoodsCountryPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
-
-  import WebBrowser._
-
-  def selectCountry: Select = new Select(find(IdQuery("country")).get.underlying)
-
-  override def fillOutForm(formData: String): Unit =
-    selectCountry.selectByValue(formData)
-
-  override def previouslyEnteredValuesAreDisplayed(formData: String): Assertion = {
-    val selectedOptions = selectCountry.getAllSelectedOptions
-    selectedOptions.size() mustBe 1
-    selectedOptions.listIterator().next().getAttribute("value") mustBe formData
-  }
-
-  override def validationMessage(className: String): String = {
-    val errorListSummary = find(ClassNameQuery(className)).get
-    errorListSummary.underlying.getText
-  }
-}
 
 object SearchGoodsCountryPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/search-goods-country/$idx"
@@ -51,8 +27,8 @@ object SearchGoodsCountryPage extends Page {
   def exportTitle(idx: Int) = "What country are you taking the test good to?"
   val importHint = "If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase."
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    new Select(find(IdQuery("country")).get.underlying).selectByValue("FR")
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    new Select(find(IdQuery("country")).get.underlying).selectByValue(formData.toString)
     click.on(NameQuery("continue"))
   }
 }

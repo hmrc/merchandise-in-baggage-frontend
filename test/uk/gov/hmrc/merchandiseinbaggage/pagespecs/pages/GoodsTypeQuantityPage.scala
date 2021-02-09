@@ -16,42 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
 import org.scalatestplus.selenium.WebBrowser._
-
-class GoodsTypeQuantityPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[CategoryQuantityOfGoods] {
-
-  import WebBrowser._
-
-  def categoryInput: Element = find(NameQuery("category")).get
-
-  def quantityInput: Element = find(NameQuery("quantity")).get
-
-  override def fillOutForm(formData: CategoryQuantityOfGoods): Unit = {
-    categoryInput.underlying.clear()
-    categoryInput.underlying.sendKeys(formData.category)
-
-    quantityInput.underlying.clear()
-    quantityInput.underlying.sendKeys(formData.quantity)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(formData: CategoryQuantityOfGoods): Assertion = {
-    categoryInput.underlying.getAttribute("value") mustEqual formData.category
-    quantityInput.underlying.getAttribute("value") mustEqual formData.quantity
-  }
-}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
 
 object GoodsTypeQuantityPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/goods-type-quantity/$idx"
   def title(idx: Int) = s"Enter the ${if (idx == 1) "first" else "next"} type of goods"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    find(NameQuery("category")).get.underlying.sendKeys("shoes")
-    find(NameQuery("quantity")).get.underlying.sendKeys("1 pair")
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    val cqg = formData.asInstanceOf[CategoryQuantityOfGoods]
+    find(NameQuery("category")).get.underlying.sendKeys(cqg.category)
+    find(NameQuery("quantity")).get.underlying.sendKeys(cqg.quantity)
     click.on(NameQuery("continue"))
   }
 }

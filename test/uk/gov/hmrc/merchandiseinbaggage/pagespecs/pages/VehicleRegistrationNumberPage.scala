@@ -16,26 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser._
 
-class VehicleRegistrationNumberPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[String] {
-
-  import WebBrowser._
-
-  def input: Element = find(NameQuery("value")).get
-
-  override def fillOutForm(registrationNumber: String): Unit = {
-    click on input
-    enter(registrationNumber)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(registrationNumber: String): Assertion =
-    input.attribute("value") mustBe Some(registrationNumber)
-}
-
-object VehicleRegistrationNumberPage {
+object VehicleRegistrationNumberPage extends Page {
   val path = "/declare-commercial-goods/vehicle-registration-number"
   val title = "What is the registration number of the vehicle?"
+
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery("value")).get.underlying.sendKeys(formData.toString)
+    click.on(NameQuery("continue"))
+  }
 }

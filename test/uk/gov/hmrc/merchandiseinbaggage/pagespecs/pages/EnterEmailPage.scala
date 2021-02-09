@@ -16,43 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-import org.scalatestplus.selenium.WebBrowser.find
+import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
-import org.scalatestplus.selenium.WebBrowser._
-
-class EnterEmailPage(implicit webDriver: WebDriver) extends DeclarationDataCapturePage[Email] {
-
-  import WebBrowser._
-
-  def emailInput: Element = find(NameQuery("email")).get
-
-  override def fillOutForm(formData: Email): Unit = {
-    def fill(input: Element, value: String): Unit = {
-      input.underlying.clear()
-      input.underlying.sendKeys(value)
-    }
-
-    fill(emailInput, formData.email)
-  }
-
-  override def previouslyEnteredValuesAreDisplayed(formData: Email): Assertion = {
-    def valueMustEqual(element: Element, value: String) =
-      element.underlying.getAttribute("value") mustBe value
-
-    valueMustEqual(emailInput, formData.email)
-  }
-}
 
 object EnterEmailPage extends Page {
   val path: String = "/declare-commercial-goods/enter-email"
   val title: String = "Enter an email address"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    find(NameQuery("email")).get.underlying.sendKeys("email@email.com")
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    val email = formData.asInstanceOf[Email]
+    find(NameQuery("email")).get.underlying.sendKeys(email.email)
     click.on(NameQuery("continue"))
   }
 }

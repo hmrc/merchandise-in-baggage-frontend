@@ -23,8 +23,8 @@ object GoodsInVehiclePage extends Page {
   val path: String = "/declare-commercial-goods/goods-in-vehicle"
   val title: String = "Are the goods arriving by vehicle?"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("No"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 

@@ -16,55 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.{By, WebDriver, WebElement}
-import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import org.scalatestplus.selenium.WebBrowser._
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import scala.collection.JavaConverters._
-import scala.collection.mutable
-
-class ReviewGoodsPage(implicit webDriver: WebDriver) extends BasePage {
-
-  import WebBrowser._
-
-  def goodsSummaries: Seq[Element] = findAll(ClassNameQuery("govuk-summary-list")).toSeq
-
-  def rows(goodsSummary: Element): mutable.Seq[WebElement] =
-    goodsSummary.underlying.findElements(By.className("govuk-summary-list__row")).asScala
-
-  def goodsSummariesAsMap: Seq[Map[String, String]] = patiently {
-    goodsSummaries
-      .map { goodsSummary =>
-        rows(goodsSummary).map { row =>
-          row.findElement(By.className("govuk-summary-list__key")).getText ->
-            row.findElement(By.className("govuk-summary-list__value")).getText
-        }.toMap
-      }
-      .filterNot(_ == Map.empty)
-  }
-
-  def remove(index: Int): String = patiently {
-    val removeLink = find(IdQuery(s"remove_$index")).get
-
-    click on removeLink
-
-    readPath()
-  }
-
-  def completeAndSubmitForm(input: YesNo): String = {
-    click on find(IdQuery(input.entryName)).get
-    click on find(NameQuery("continue")).get
-    readPath()
-  }
-}
+import org.scalatestplus.selenium.WebBrowser._
 
 object ReviewGoodsPage extends Page {
   val path: String = "/declare-commercial-goods/review-goods"
   val title = "Review your goods"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("No"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }

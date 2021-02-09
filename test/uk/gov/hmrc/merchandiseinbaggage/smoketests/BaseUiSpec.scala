@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.{BaseUrl, Page}
+import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.Page
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
 
 import scala.util.{Failure, Success, Try}
@@ -27,21 +27,21 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
 
   webDriver.setJavascriptEnabled(false)
 
-  lazy val baseUrl: BaseUrl = BaseUrl(s"http://localhost:$port")
+  lazy val baseUrl = s"http://localhost:$port"
 
-  def goto(path: String): Unit = WebBrowser.goTo(s"${baseUrl.value}$path")
+  def goto(path: String): Unit = WebBrowser.goTo(s"$baseUrl$path")
 
   def getCurrentUrl: String = webDriver.getCurrentUrl
 
-  def fullUrl(path: String) = s"${baseUrl.value}$path"
+  def fullUrl(path: String) = s"$baseUrl$path"
 
-  def submitPage(page: Page): Unit =
+  def submitPage[T](page: Page, formData: T): Unit =
     Try {
-      page.submitPage()
+      page.submitPage(formData)
     } match {
       case Success(_) => ()
       case Failure(ex) =>
-        println(s"currentUrl: ${webDriver.getCurrentUrl}")
+        println(s"\ncurrentPage: ${webDriver.getCurrentUrl}\n")
         ex.printStackTrace()
         fail()
     }

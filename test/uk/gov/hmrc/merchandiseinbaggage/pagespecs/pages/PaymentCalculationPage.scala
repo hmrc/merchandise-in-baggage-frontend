@@ -17,46 +17,15 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.openqa.selenium.{By, WebDriver}
-import org.scalatestplus.selenium.WebBrowser
-import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 import org.scalatestplus.selenium.WebBrowser._
-import scala.collection.JavaConverters._
-
-class PaymentCalculationPage(implicit webDriver: WebDriver) extends BasePage {
-
-  import WebBrowser._
-
-  override def clickOnCTA(): String = {
-    val button = find(ClassNameQuery("govuk-button")).get
-    click on button
-
-    readPath()
-  }
-
-  def summaryHeaders: Seq[String] = {
-    val tableHead = find(ClassNameQuery("govuk-table__head")).head.underlying
-    tableHead.findElements(By.className("govuk-table__header")).asScala.map(_.getText)
-  }
-
-  def summaryRow(index: Int): Seq[String] = {
-    val tableBody = find(ClassNameQuery("govuk-table__body")).head.underlying
-    val tableRows = tableBody.findElements(By.className("govuk-table__row")).asScala
-    tableRows(index).findElements(By.className("govuk-table__cell")).asScala.map(_.getText)
-  }
-
-  def countRatesListItems =
-    find(ClassNameQuery("govuk-list--bullet")).head.underlying
-      .findElements(By.tagName("li"))
-      .size()
-}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 
 object PaymentCalculationPage extends Page {
   val path: String = "/declare-commercial-goods/payment-calculation"
 
   def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     val button = find(ClassNameQuery("govuk-button")).get
     click on button
   }

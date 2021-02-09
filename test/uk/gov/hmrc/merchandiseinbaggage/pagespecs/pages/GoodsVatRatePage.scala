@@ -23,8 +23,8 @@ object GoodsVatRatePage extends Page {
   def path(idx: Int) = s"/declare-commercial-goods/goods-vat-rate/$idx"
   def title(idx: Int) = "Check which VAT rate applies to the test good"
 
-  def submitPage()(implicit webDriver: HtmlUnitDriver): Unit = {
-    click.on(IdQuery("Five"))
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
 }
