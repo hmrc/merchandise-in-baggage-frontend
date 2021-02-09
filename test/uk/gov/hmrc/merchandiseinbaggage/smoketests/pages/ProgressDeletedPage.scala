@@ -16,10 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
-import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
-
-class ProgressDeletedPage(implicit webDriver: WebDriver)
 
 object ProgressDeletedPage extends BaseSpecWithApplication {
   val path = "/declare-commercial-goods/progress-deleted"

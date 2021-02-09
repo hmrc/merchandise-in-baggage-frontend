@@ -16,10 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
-import org.openqa.selenium.WebDriver
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
-
-class ServiceTimeoutPage(implicit webDriver: WebDriver)
 
 object ServiceTimeoutPage extends BaseSpecWithApplication {
   val path = "/declare-commercial-goods/service-timed-out"

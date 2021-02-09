@@ -16,10 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
-import org.openqa.selenium.WebDriver
-
-class DeclarationConfirmationPage(implicit webDriver: WebDriver)
-
 object DeclarationConfirmationPage {
   val path = "/declare-commercial-goods/declaration-confirmation"
   val title = "Declaration complete - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"

@@ -39,6 +39,8 @@ trait CoreTestData {
     "http://localhost:8281/declare-commercial-goods/check-your-answers"
   )
 
+  val declarationTypes = List(Import, Export)
+
   val aSessionId: SessionId = SessionId()
 
   val startedImportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import)
