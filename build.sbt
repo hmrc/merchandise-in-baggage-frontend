@@ -2,6 +2,7 @@ import play.sbt.PlayImport.PlayKeys.playDefaultPort
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.SbtArtifactory
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import scoverage.ScoverageKeys
 
 val appName = "merchandise-in-baggage-frontend"
 
@@ -44,4 +45,10 @@ lazy val microservice = Project(appName, file("."))
     retrieveManaged := true,
     scalafmtOnCompile in Compile := true,
     scalafmtOnCompile in Test := true
+  )
+  .settings(
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*BuildInfo.*;.*javascript.*;.*Routes.*;",
+    ScoverageKeys.coverageMinimum := 82,
+    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageHighlighting := true,
   )
