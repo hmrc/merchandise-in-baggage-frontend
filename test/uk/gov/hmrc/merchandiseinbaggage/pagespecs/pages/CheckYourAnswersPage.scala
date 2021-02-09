@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 
 object CheckYourAnswersPage extends Page {
@@ -29,11 +29,12 @@ object CheckYourAnswersPage extends Page {
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val dType = formData.asInstanceOf[DeclarationType]
-    val query = dType match {
+    val query = formData match {
       case Export => "makeDeclarationButton"
       case Import => "payButton"
+      case _      => fail("INVALID TYPE")
     }
+
     val button = find(NameQuery(query)).get
     click on button
   }

@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
+import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
@@ -28,7 +29,11 @@ object PurchaseDetailsPage extends Page {
   def selectCurrency(implicit webDriver: HtmlUnitDriver): Select = new Select(find(IdQuery("currency")).get.underlying)
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val pd = formData.asInstanceOf[PurchaseDetailsInput]
+    val pd = formData match {
+      case pdi: PurchaseDetailsInput => pdi
+      case _                         => fail("invalid_input")
+    }
+
     find(NameQuery("price")).get.underlying.sendKeys(pd.price)
     selectCurrency.selectByValue(pd.currency)
     click.on(NameQuery("continue"))

@@ -17,15 +17,20 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser.{find, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email}
 
 object EnterEmailPage extends Page {
   val path: String = "/declare-commercial-goods/enter-email"
   val title: String = "Enter an email address"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val email = formData.asInstanceOf[Email]
+    val email = formData match {
+      case e: Email => e
+      case _        => fail("invalid_input")
+    }
+
     find(NameQuery("email")).get.underlying.sendKeys(email.email)
     click.on(NameQuery("continue"))
   }

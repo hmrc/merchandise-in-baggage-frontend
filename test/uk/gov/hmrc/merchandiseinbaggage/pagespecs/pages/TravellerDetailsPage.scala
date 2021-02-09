@@ -16,14 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
-import org.openqa.selenium.WebDriver
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.Assertion
-import org.scalatestplus.selenium.WebBrowser
-import org.scalatestplus.selenium.WebBrowser.find
+import org.scalatest.Assertions.fail
+import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
-import org.scalatestplus.selenium.WebBrowser._
 
 object TravellerDetailsPage extends Page {
   val path: String = "/declare-commercial-goods/traveller-details"
@@ -31,7 +28,11 @@ object TravellerDetailsPage extends Page {
   val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val name = formData.asInstanceOf[Name]
+    val name = formData match {
+      case n: Name => n
+      case _       => fail("invalid_input")
+    }
+
     find(NameQuery(TravellerDetailsForm.firstName)).get.underlying.sendKeys(name.firstName)
     find(NameQuery(TravellerDetailsForm.lastName)).get.underlying.sendKeys(name.lastName)
     click.on(NameQuery("continue"))
