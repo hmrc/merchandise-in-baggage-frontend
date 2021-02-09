@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser.{find, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
 object EnterEmailPage extends Page {
   val path: String = "/declare-commercial-goods/enter-email"

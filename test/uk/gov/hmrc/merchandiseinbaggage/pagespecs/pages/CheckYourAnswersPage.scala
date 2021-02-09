@@ -32,7 +32,7 @@ object CheckYourAnswersPage extends Page {
     val query = formData match {
       case Export => "makeDeclarationButton"
       case Import => "payButton"
-      case _      => fail("INVALID TYPE")
+      case _      => fail("invalid_input")
     }
 
     val button = find(NameQuery(query)).get
