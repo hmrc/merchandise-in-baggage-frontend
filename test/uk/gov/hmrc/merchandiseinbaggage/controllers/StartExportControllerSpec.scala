@@ -42,7 +42,7 @@ class StartExportControllerSpec extends DeclarationJourneyControllerSpec with Co
   "process-request" should {
     "store the declaration type in mongo" in {
       val url = routes.StartExportController.processRequest().url
-      val request = buildGet(url, aSessionId)
+      val request = buildPost(url, aSessionId)
       val result = controller().processRequest()(request)
 
       status(result) mustBe Status.SEE_OTHER

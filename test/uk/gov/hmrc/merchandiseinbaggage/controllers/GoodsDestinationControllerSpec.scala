@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
@@ -50,7 +49,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to /excise-and-restricted-goods after successful form submit with GreatBritain for $importOrExport" in {
-        val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+        val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -60,7 +59,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+      val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

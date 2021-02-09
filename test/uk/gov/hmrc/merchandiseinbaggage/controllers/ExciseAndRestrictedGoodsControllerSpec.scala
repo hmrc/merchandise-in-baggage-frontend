@@ -47,7 +47,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
 
     "onSubmit" should {
       s"redirect to /value-weight-of-goods after successful form submit with Yes for $importOrExport" in {
-        val request = buildGet(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
+        val request = buildPost(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "No")
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -57,7 +57,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildGet(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
+      val request = buildPost(routes.ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

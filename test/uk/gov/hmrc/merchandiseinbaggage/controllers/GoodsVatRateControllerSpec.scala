@@ -39,7 +39,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
   "onPageLoad" should {
     "return 200 with radio buttons" in {
 
-      val request = buildGet(routes.GoodsVatRateController.onPageLoad(1).url, aSessionId)
+      val request = buildPost(routes.GoodsVatRateController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result = contentAsString(eventualResult)
 
@@ -55,7 +55,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     "redirect to next page after successful form submit" in {
-      val request = buildGet(routes.GoodsVatRateController.onSubmit(1).url, aSessionId)
+      val request = buildPost(routes.GoodsVatRateController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Zero")
 
       val eventualResult = controller(journey).onSubmit(1)(request)

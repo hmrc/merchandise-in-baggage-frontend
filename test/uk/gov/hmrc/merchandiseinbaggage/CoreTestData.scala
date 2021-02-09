@@ -58,12 +58,6 @@ trait CoreTestData {
 
   val completedImportGoods: ImportGoodsEntry = TestOnlyController.completedGoodsEntry
 
-  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
-    Some(aCategoryQuantityOfGoods),
-    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
-    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
-  )
-
   val aImportGoods =
     ImportGoods(
       completedImportGoods.maybeCategoryQuantityOfGoods.get,
@@ -159,4 +153,16 @@ trait CoreTestData {
        |  },
        |  "processingDate": "2021-01-27T11:00:22.522Z[Europe/London]"
        |}""".stripMargin
+
+  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
+    Some(aCategoryQuantityOfGoods),
+    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
+  )
+
+  def completedGoodsEntries(declarationType: DeclarationType): GoodsEntries =
+    declarationType match {
+      case Import => GoodsEntries(completedImportGoods)
+      case Export => GoodsEntries(completedExportGoods)
+    }
 }
