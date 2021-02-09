@@ -16,11 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
-import javax.inject.{Inject, Named}
 import play.api.libs.json.Json.{JsValueWrapper, _}
 import play.api.libs.json._
 import reactivemongo.api.DB
-import reactivemongo.api.commands.UpdateWriteResult
 import reactivemongo.api.indexes.Index
 import reactivemongo.api.indexes.IndexType.Ascending
 import reactivemongo.bson.BSONDocument
@@ -29,6 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney.{format, id}
 import uk.gov.hmrc.mongo.ReactiveRepository
 
+import javax.inject.{Inject, Named}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -70,6 +69,9 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
   /**
     * Update or Insert (UpSert)
     */
-  def upsert(declarationJourney: DeclarationJourney): Future[UpdateWriteResult] =
-    collection.update(ordered = false).one(Json.obj(id -> declarationJourney.sessionId.value), declarationJourney, upsert = true)
+  def upsert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
+    collection
+      .update(ordered = false)
+      .one(Json.obj(id -> declarationJourney.sessionId.value), declarationJourney, upsert = true)
+      .map(_ => declarationJourney)
 }

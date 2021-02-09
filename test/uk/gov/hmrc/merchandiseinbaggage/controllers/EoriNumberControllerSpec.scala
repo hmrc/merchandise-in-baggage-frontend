@@ -33,7 +33,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
     override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
       Future.successful(CheckResponse("123", false, None))
   }
-  val controller = new EoriNumberController(controllerComponents, actionBuilder, repository, view, connector)
+  val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)
 
   "return an error if API EROI validation fails" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
@@ -54,7 +54,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
         Future.failed(new Exception("API returned 404"))
     }
-    val controller = new EoriNumberController(controllerComponents, actionBuilder, repository, view, connector)
+    val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)
 
     val result = controller.onSubmit()(
       buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)

@@ -36,7 +36,7 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       val update = completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None)
 
       declarationJourneyRepository.insert(completedDeclarationJourney).futureValue
-      declarationJourneyRepository.upsert(update).futureValue.n mustBe 1
+      declarationJourneyRepository.upsert(update).futureValue mustBe update
       declarationJourneyRepository.findBySessionId(update.sessionId).futureValue mustBe Some(update)
     }
 

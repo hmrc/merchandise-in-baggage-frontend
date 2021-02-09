@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
@@ -55,7 +54,7 @@ class DeclarationConfirmationController @Inject()(
     }
   }
 
-  private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[UpdateWriteResult] = {
+  private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[DeclarationJourney] = {
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType).copy(declarationId = declarationId))
   }

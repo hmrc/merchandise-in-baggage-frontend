@@ -34,7 +34,6 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
   implicit lazy val materializer = injector.instanceOf[Materializer]
-  lazy val repository: DeclarationJourneyRepository = injector.instanceOf[DeclarationJourneyRepository]
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url)

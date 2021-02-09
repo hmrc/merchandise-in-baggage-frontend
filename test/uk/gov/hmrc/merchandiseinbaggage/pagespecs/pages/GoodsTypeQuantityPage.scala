@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
 
@@ -25,7 +26,11 @@ object GoodsTypeQuantityPage extends Page {
   def title(idx: Int) = s"Enter the ${if (idx == 1) "first" else "next"} type of goods"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val cqg = formData.asInstanceOf[CategoryQuantityOfGoods]
+    val cqg = formData match {
+      case c: CategoryQuantityOfGoods => c
+      case _                          => fail("invalid_input")
+    }
+
     find(NameQuery("category")).get.underlying.sendKeys(cqg.category)
     find(NameQuery("quantity")).get.underlying.sendKeys(cqg.quantity)
     click.on(NameQuery("continue"))
