@@ -49,7 +49,7 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
-        val request = buildGet(routes.GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
+        val request = buildPost(routes.GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("category" -> "clothes", "quantity" -> "1")
 
         val eventualResult = controller(journey).onSubmit(1)(request)
@@ -62,7 +62,7 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        val request = buildGet(routes.GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
+        val request = buildPost(routes.GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("xyz" -> "clothes", "abc" -> "1")
 
         val eventualResult = controller(journey).onSubmit(1)(request)

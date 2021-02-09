@@ -93,7 +93,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
     s"return 400 with any form errors for $importOrExport" in {
 
-      val request = buildGet(routes.ReviewGoodsController.onSubmit().url, aSessionId)
+      val request = buildPost(routes.ReviewGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

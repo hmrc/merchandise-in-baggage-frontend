@@ -49,7 +49,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to /excise-and-restricted-goods after successful form submit with GreatBritain for $importOrExport" in {
-        val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+        val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -59,7 +59,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildGet(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+      val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

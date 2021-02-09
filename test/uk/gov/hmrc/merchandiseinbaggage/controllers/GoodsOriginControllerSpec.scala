@@ -45,7 +45,7 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to /purchase-details/1 after successful form submit with Yes" in {
-      val request = buildGet(routes.GoodsOriginController.onSubmit(1).url, aSessionId)
+      val request = buildPost(routes.GoodsOriginController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
       val eventualResult = controller(journey).onSubmit(1)(request)
@@ -56,7 +56,7 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   s"return 400 with any form errors" in {
-    val request = buildGet(routes.GoodsOriginController.onSubmit(1).url, aSessionId)
+    val request = buildPost(routes.GoodsOriginController.onSubmit(1).url, aSessionId)
       .withFormUrlEncodedBody("value" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit(1)(request)
