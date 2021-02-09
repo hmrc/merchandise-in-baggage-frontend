@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email, Name}
-import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 class ExportJourneySpec extends BaseUiSpec {
 
