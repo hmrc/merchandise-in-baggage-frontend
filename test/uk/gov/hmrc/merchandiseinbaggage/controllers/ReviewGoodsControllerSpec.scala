@@ -82,12 +82,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
         status(eventualResult) mustBe 303
 
-        val redirectTo = importOrExport match {
-          case Import => routes.PaymentCalculationController.onPageLoad().url
-          case Export => routes.CustomsAgentController.onPageLoad().url
-        }
-
-        redirectLocation(eventualResult) mustBe Some(redirectTo)
+        redirectLocation(eventualResult) mustBe Some(routes.PaymentCalculationController.onPageLoad().url)
       }
     }
 

@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
-
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{ProgressDeletedView, ServiceTimeoutView}
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
@@ -53,5 +52,21 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
     val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete().url, id))
 
     status(result) mustBe 200
+  }
+
+  "onServiceTimeout" should {
+    "return 200" in {
+      val request = buildGet(routes.KeepAliveController.onServiceTimeout().url, aSessionId)
+
+      val eventualResult = controller.onServiceTimeout()(request)
+      val result = contentAsString(eventualResult)
+
+      status(eventualResult) mustBe 200
+
+      result must include(messageApi(s"timeOut.title"))
+      result must include(messageApi(s"timeOut.title"))
+      result must include(messageApi(s"timeOut.guidance"))
+      result must include(messageApi(s"timeOut.restart.p"))
+    }
   }
 }

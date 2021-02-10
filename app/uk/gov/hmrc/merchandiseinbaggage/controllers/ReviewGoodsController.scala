@@ -64,10 +64,7 @@ class ReviewGoodsController @Inject()(
                   Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
                 }
               } else {
-                declarationType match {
-                  case Export => Future.successful(Redirect(routes.CustomsAgentController.onPageLoad()))
-                  case Import => Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
-                }
+                Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
             }
           )
       }
