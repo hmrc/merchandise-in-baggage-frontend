@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatestplus.selenium.WebBrowser._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
-object PaymentCalculationPage extends Page {
-  val path: String = "/declare-commercial-goods/payment-calculation"
+class AmountInPenceSpec extends BaseSpec with CoreTestData {
 
-  def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
-
-  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val button = find(ClassNameQuery("govuk-button")).get
-    click on button
+  "format correctly" in {
+    AmountInPence(0).formattedInPounds mustBe "£0.00"
+    AmountInPence(123).formattedInPounds mustBe "£1.23"
+    AmountInPence(1230).formattedInPounds mustBe "£12.30"
+    AmountInPence(1200).formattedInPounds mustBe "£12"
+    AmountInPence(12000).formattedInPounds mustBe "£120"
+    AmountInPence(120000).formattedInPounds mustBe "£1,200"
+    AmountInPence(1230000).formattedInPounds mustBe "£12,300"
   }
 }
