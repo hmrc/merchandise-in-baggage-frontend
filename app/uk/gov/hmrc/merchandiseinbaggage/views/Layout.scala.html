@@ -22,14 +22,12 @@
 
 @this(
     govukLayout: layouts.govukLayout,
-    govukFullWidthLayout: layouts.govukFullWidthLayout,
     head: Head,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
 @(pageTitle: Option[String] = None,
   headBlock: Option[Html] = None,
   scriptsBlock: Option[Html] = None,
-  fullWidth: Boolean = false,
   maybeBackButtonUrl: Option[play.api.mvc.Call],
   maybeDeclarationType: Option[DeclarationType],
   timeOut: Boolean = true
@@ -67,20 +65,10 @@
     @scriptsBlock
 }
 
-@if(fullWidth) {
-    @govukFullWidthLayout(
-        pageTitle = pageTitle,
-        headBlock = Some(head(Some(defaultHead))),
-        scriptsBlock = Some(defaultScripts),
-        beforeContentBlock = None,
-        maybeBackButtonUrl = maybeBackButtonUrl
-    )(contentBlock)
-} else {
-    @govukLayout(
-        pageTitle = pageTitle,
-        headBlock = Some(head(Some(defaultHead))),
-        scriptsBlock = Some(defaultScripts),
-        beforeContentBlock = None,
-        maybeBackButtonUrl = maybeBackButtonUrl
-    )(contentBlock)
-}
+@govukLayout(
+    pageTitle = pageTitle,
+    headBlock = Some(head(Some(defaultHead))),
+    scriptsBlock = Some(defaultScripts),
+    beforeContentBlock = None,
+    maybeBackButtonUrl = maybeBackButtonUrl
+)(contentBlock)
