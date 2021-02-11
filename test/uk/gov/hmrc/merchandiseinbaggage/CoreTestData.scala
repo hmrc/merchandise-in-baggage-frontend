@@ -66,9 +66,16 @@ trait CoreTestData {
       completedImportGoods.maybePurchaseDetails.get
     )
 
-  val overThresholdGoods: GoodsEntries = GoodsEntries(
-    completedImportGoods.copy(
-      maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+  def overThresholdGoods(declarationType: DeclarationType = Import): GoodsEntries =
+    declarationType match {
+      case Import =>
+        GoodsEntries(completedImportGoods.copy(
+          maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+
+      case Export =>
+        GoodsEntries(completedExportGoods.copy(
+          maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+    }
 
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(aSessionId)
 
@@ -104,10 +111,10 @@ trait CoreTestData {
     completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedImportGoods, completedImportGoods, startedImportGoods)))
 
   val importJourneyWithGoodsOverThreshold: DeclarationJourney =
-    startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods)
+    startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods(Import))
 
   val completedImportJourneyWithGoodsOverThreshold: DeclarationJourney =
-    completedDeclarationJourney.copy(goodsEntries = overThresholdGoods)
+    completedDeclarationJourney.copy(goodsEntries = overThresholdGoods(Import))
 
   val journeyDate: LocalDate = LocalDate.now
 
