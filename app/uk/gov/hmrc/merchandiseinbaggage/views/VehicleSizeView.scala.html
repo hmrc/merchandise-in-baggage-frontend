@@ -37,7 +37,7 @@ button: components.button
         @inputYesNo(
             form = form,
             legend = messages(s"vehicleSize.$declarationType.heading"),
-            hintKey = Some("vehicleSize.hint"),
+            hint = Some(Text(messages("vehicleSize.hint"))),
             legendAsHeading = true
         )
 
