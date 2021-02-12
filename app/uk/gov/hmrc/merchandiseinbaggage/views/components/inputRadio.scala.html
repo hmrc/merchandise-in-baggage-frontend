@@ -14,13 +14,16 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
+
 @this(govukRadios: GovukRadios)
 
 @(      form: Form[_],
         legend: String,
         items: Seq[RadioItem],
         legendAsHeading: Boolean = true,
-        hintKey: Option[String] = None,
+        hint: Option[Content] = None,
+        hintClasses: String = "",
         classes: String = "govuk-fieldset__legend--xl",
         inline: Boolean = false
 )(implicit messages: Messages)
@@ -35,8 +38,9 @@
             classes = classes
         ))
     )),
-    hint = hintKey.map { hint => Hint(
-        content = Text(messages(hint))
+    hint = hint.map { hint => Hint(
+        content = hint,
+        classes = hintClasses
     )},
     items = items,
     errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))

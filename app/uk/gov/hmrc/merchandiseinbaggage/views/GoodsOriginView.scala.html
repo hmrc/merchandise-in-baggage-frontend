@@ -31,23 +31,21 @@ button: components.button
 
 @(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@inset = @{
+  HtmlContent(s"""${messages("goodsOrigin.inset")} <span class="govuk-!-font-weight-bold">$goodsCategory</span>""")
+}
+
 @layout(pageTitle = Some(title(form, "goodsOrigin.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
     @formHelper(action = GoodsOriginController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors, YesNoDontKnow.values.headOption.map(_.entryName))
 
-        @h1(messages("goodsOrigin.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
-
-        <div class="govuk-inset-text">
-            @messages("goodsOrigin.inset")
-            <span class="govuk-!-font-weight-bold">@goodsCategory</span>
-        </div>
-
         @inputRadio(
             form = form,
             legend = messages("goodsOrigin.heading"),
-            legendAsHeading = false,
-            classes = "govuk-visually-hidden",
+            legendAsHeading = true,
+            hint = Some(inset),
+            hintClasses = "govuk-inset-text",
             items = YesNoDontKnow.options(form)
         )
 

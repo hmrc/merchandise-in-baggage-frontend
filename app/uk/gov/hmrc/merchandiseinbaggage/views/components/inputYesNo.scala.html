@@ -16,13 +16,14 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components.inputRadio
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
 
 @this(inputRadio: inputRadio)
 
 @(      form: Form[_],
         legend: String,
         legendAsHeading: Boolean = true,
-        hintKey: Option[String] = None,
+        hint: Option[Content] = None,
         classes: String = "govuk-fieldset__legend--xl",
         inline: Boolean = false
 )(implicit messages: Messages)
@@ -31,7 +32,7 @@
     form = form,
     legend = legend,
     legendAsHeading = legendAsHeading,
-    hintKey = hintKey,
+    hint = hint,
     classes = classes,
     inline = inline,
     items = YesNo.values map { value =>
