@@ -16,11 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.Page
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData, WireMockSupport}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{Page, StartImportPage}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
 class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlUnit with Eventually with CoreTestData {
@@ -35,6 +39,14 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
 
   def fullUrl(path: String) = s"$baseUrl$path"
 
+  private val findElement: By => WebElement = webDriver.findElement
+
+  def findByXPath(xPath: String): WebElement = findElement(By.xpath(xPath))
+
+  def findByTagName(name: String): WebElement = findElement(By.tagName(name))
+
+  def elementText(element: WebElement): String = element.getText
+
   def submitPage[T](page: Page, formData: T): Unit =
     Try {
       page.submitPage(formData)
@@ -45,4 +57,14 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
         ex.printStackTrace()
         fail()
     }
+
+  //TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
+  def givenAJourneyWithSession: DeclarationJourney = {
+    goto(StartImportPage.path)
+
+    (for {
+      persisted <- declarationJourneyRepository.findAllDeclarations()
+      updated   <- declarationJourneyRepository.upsert(completedDeclarationJourney.copy(sessionId = persisted.head.sessionId))
+    } yield updated).futureValue
+  }
 }

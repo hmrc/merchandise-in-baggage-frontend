@@ -14,9 +14,23 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+package uk.gov.hmrc.merchandiseinbaggage.wiremock
 
-object StartImportPage {
-  val path = "/declare-commercial-goods/start-import"
-  val title = "Where in the UK are the goods going to? - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+import com.github.tomakehurst.wiremock.WireMockServer
+import org.scalatest.{BeforeAndAfterEach, Suite}
+
+trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
+  implicit val wireMockServer = new WireMockServer(WireMockSupport.port)
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    wireMockServer.start()
+  }
+
+  override def afterEach(): Unit =
+    wireMockServer.stop()
+}
+
+object WireMockSupport {
+  val port: Int = 17777
 }

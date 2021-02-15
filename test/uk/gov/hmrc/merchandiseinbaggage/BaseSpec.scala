@@ -16,12 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage
 
-import com.github.tomakehurst.wiremock.WireMockServer
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -37,6 +36,8 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyActionProv
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -83,22 +84,6 @@ trait BaseSpecWithApplication
   lazy val stubProvider: DeclarationJourney => DeclarationJourneyActionProvider = declarationJourney =>
     new DeclarationJourneyActionProvider(defaultBuilder, stubRepo(declarationJourney))
 
-  def givenADeclarationJourneyIsPersistedTemp(declarationJourney: DeclarationJourney): DeclarationJourney =
-    stubRepo(declarationJourney).findBySessionId(declarationJourney.sessionId).futureValue.get
-}
-
-trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
-  implicit val wireMockServer = new WireMockServer(WireMockSupport.port)
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    wireMockServer.start()
-  }
-
-  override def afterEach(): Unit =
-    wireMockServer.stop()
-}
-
-object WireMockSupport {
-  val port: Int = 17777
+  def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
+    declarationJourneyRepository.insert(declarationJourney).futureValue
 }

@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
+import com.softwaremill.quicklens._
 
 class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
@@ -31,5 +32,26 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
     calculations.totalTaxDue mustBe AmountInPence(10 + 30)
     calculations.totalDutyDue mustBe AmountInPence(10)
     calculations.totalVatDue mustBe AmountInPence(30)
+  }
+
+  "Check if proof of origin needed" in {
+    val calculationResultEU: CalculationResult =
+      CalculationResult(aImportGoods, AmountInPence(100001), AmountInPence(10), AmountInPence(30), None)
+
+    val calculationResultUSA: CalculationResult =
+      CalculationResult(
+        aImportGoods.modify(_.producedInEu).setTo(YesNoDontKnow.No),
+        AmountInPence(20L),
+        AmountInPence(10),
+        AmountInPence(30),
+        None)
+
+    val calculations = CalculationResults(Seq(calculationResultEU, calculationResultUSA))
+
+    calculations.proofOfOriginNeeded mustBe true
+    calculations
+      .modify(_.calculationResults.index(0).gbpAmount.value)
+      .setTo(100000)
+      .proofOfOriginNeeded mustBe false
   }
 }

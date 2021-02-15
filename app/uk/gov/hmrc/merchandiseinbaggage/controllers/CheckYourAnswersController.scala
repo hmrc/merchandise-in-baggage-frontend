@@ -48,10 +48,10 @@ class CheckYourAnswersController @Inject()(
       .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
         request.declarationJourney.declarationType match {
           case Import =>
-            calculationService.paymentCalculations(declaration.declarationGoods.importGoods).map { paymentCalculations =>
-              if (paymentCalculations.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
+            calculationService.paymentCalculations(declaration.declarationGoods.importGoods).map { calculationResults =>
+              if (calculationResults.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
                 Redirect(routes.GoodsOverThresholdController.onPageLoad())
-              } else Ok(importView(form, declaration, paymentCalculations.totalTaxDue))
+              } else Ok(importView(form, declaration, calculationResults))
             }
           case Export =>
             if (declaration.declarationGoods.goods

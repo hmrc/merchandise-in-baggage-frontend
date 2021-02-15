@@ -18,12 +18,16 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertions.fail
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage._
 
 object CheckYourAnswersPage extends Page {
   val path = "/declare-commercial-goods/check-your-answers"
-  val title = "Check your answers before making your declaration"
+  val title =
+    "Check your answers before making your declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 
   val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
@@ -37,5 +41,13 @@ object CheckYourAnswersPage extends Page {
 
     val button = find(NameQuery(query)).get
     click on button
+  }
+}
+
+trait CheckYourAnswersPage extends BaseUiSpec { this: Suite =>
+
+  def goToCYAPage: Assertion = {
+    goto(path)
+    pageTitle mustBe title
   }
 }

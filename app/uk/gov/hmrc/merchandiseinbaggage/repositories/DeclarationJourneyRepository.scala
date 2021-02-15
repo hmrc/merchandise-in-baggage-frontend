@@ -56,6 +56,8 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
     find(query).map(_.headOption)
   }
 
+  def findAllDeclarations(): Future[List[DeclarationJourney]] = findAll()
+
   def deleteAll(): Future[Unit] = {
     logger.warn("DeclarationJourneyRepository.deleteAll() called")
 

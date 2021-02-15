@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, C
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry}
+import com.softwaremill.quicklens._
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = payapi.PayApiRequest(
@@ -132,6 +133,26 @@ trait CoreTestData {
   val aConversionRatePeriod: ConversionRatePeriod = ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
   val aCalculationResult: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+
+  val aCalculationResultOverThousand: CalculationResult = aCalculationResult
+    .modify(_.goods.producedInEu)
+    .setTo(YesNoDontKnow.Yes)
+    .modify(_.duty.value)
+    .setTo(140000)
+    .modify(_.vat.value)
+    .setTo(140000)
+    .modify(_.gbpAmount.value)
+    .setTo(140000)
+
+  val aCalculationResultWithNothingToPay: CalculationResult = aCalculationResult
+    .modify(_.goods.producedInEu)
+    .setTo(YesNoDontKnow.Yes)
+    .modify(_.duty.value)
+    .setTo(0)
+    .modify(_.vat.value)
+    .setTo(0)
+    .modify(_.gbpAmount.value)
+    .setTo(0)
 
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))

@@ -65,7 +65,6 @@ class ImportJourneySpec extends BaseUiSpec {
       submitPage(VehicleRegistrationNumberPage, "abc 123")
 
       webDriver.getCurrentUrl mustBe fullUrl(CheckYourAnswersPage.path)
-
     }
   }
 }

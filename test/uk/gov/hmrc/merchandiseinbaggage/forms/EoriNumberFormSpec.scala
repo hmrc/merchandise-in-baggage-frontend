@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 
 class EoriNumberFormSpec extends FieldBehaviours with PropertyBaseTables {
 
-  forAll(declarationTypes) { declarationType =>
+  forAll(declarationTypesTable) { declarationType =>
     forAll(traderYesOrNoAnswer) { (yesOrNo, traderOrAgent) =>
       s".eori for $yesOrNo $traderOrAgent and $declarationType" must {
         behave like mandatoryField(

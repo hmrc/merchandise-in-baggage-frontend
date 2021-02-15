@@ -20,7 +20,8 @@ import org.scalatest.concurrent.Eventually
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.stubs.AddressLookupFrontendStub._
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, WireMockSupport}
+import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
