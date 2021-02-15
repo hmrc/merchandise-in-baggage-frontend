@@ -54,12 +54,8 @@
 @headerDefault = {
 @headerBlock.getOrElse {
     @govukHeader(Header(
-        homepageUrl = Some(messages("service.name.none.a.href")),
-        serviceUrl = declarationType match {
-            case Some(Import) => Some(messages("service.name.import.a.href"))
-            case Some(Export) => Some(messages("service.name.export.a.href"))
-            case _ => Some(messages("service.name.none.a.href"))
-        },
+        homepageUrl = Some(messages("service.name.govuk.a.href")),
+        serviceUrl =  Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href")),
         serviceName = Some(messages("service.name")),
         attributes = Map(),
         containerClasses = None))
