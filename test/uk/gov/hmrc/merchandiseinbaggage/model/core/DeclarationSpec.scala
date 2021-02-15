@@ -336,7 +336,9 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "declaration" should {
     "serialise and de-serialise" in {
-      parse(toJson(declaration).toString()).validate[Declaration].get mustBe declaration
+      val json = toJson(declaration)
+      parse(json.toString()).validate[Declaration].get mustBe declaration
+      (json \ "source").as[String] mustBe "Digital"
     }
 
     "provide current date and time formatted" in {
