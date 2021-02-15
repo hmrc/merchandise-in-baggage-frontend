@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 
 @this(
         govukTemplate: GovukTemplate,
@@ -40,7 +42,8 @@
         beforeContentBlock: Option[Html] = None,
         bodyEndBlock: Option[Html] = None,
         scriptsBlock: Option[Html] = None,
-        maybeBackButtonUrl: Option[play.api.mvc.Call]
+        maybeBackButtonUrl: Option[play.api.mvc.Call],
+        declarationType: Option[DeclarationType]
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
 @headDefault = {
@@ -51,9 +54,14 @@
 @headerDefault = {
 @headerBlock.getOrElse {
     @govukHeader(Header(
-        homepageUrl = Some("https://www.gov.uk/"),
+        homepageUrl = Some(messages("service.name.none.a.href")),
+        serviceUrl = declarationType match {
+            case Some(Import) => Some(messages("service.name.import.a.href"))
+            case Some(Export) => Some(messages("service.name.export.a.href"))
+            case _ => Some(messages("service.name.none.a.href"))
+        },
         serviceName = Some(messages("service.name")),
-        attributes = Map(("style", "pointer-events: none; cursor: default;")),
+        attributes = Map(),
         containerClasses = None))
 }
 }
