@@ -44,6 +44,8 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
         result must include(messageApi(s"goodsDestination.$importOrExport.heading"))
         result must include(messageApi("goodsDestination.NorthernIreland"))
         result must include(messageApi("goodsDestination.GreatBritain"))
+
+        result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
       }
     }
 

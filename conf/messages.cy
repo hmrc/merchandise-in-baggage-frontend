@@ -1,5 +1,8 @@
 service.name = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
 service.homePageUrl = /declare-commercial-goods
+service.name.Import.a.href = https://www.gov.uk/guidance/declare-commercial-goods-youre-bringing-into-great-britain-in-your-accompanied-baggage-or-small-vehicles
+service.name.Export.a.href = https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles
+service.name.govuk.a.href = https://www.gov.uk/
 
 # Alpha/Beta Banner
 feedback.before = Gwasanaeth newydd yn hwn – bydd eich
