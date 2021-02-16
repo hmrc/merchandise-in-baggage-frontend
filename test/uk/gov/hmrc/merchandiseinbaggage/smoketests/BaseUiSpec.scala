@@ -63,7 +63,7 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
     goto(StartImportPage.path)
 
     (for {
-      persisted <- declarationJourneyRepository.findAllDeclarations()
+      persisted <- declarationJourneyRepository.findAll()
       updated   <- declarationJourneyRepository.upsert(completedDeclarationJourney.copy(sessionId = persisted.head.sessionId))
     } yield updated).futureValue
   }
