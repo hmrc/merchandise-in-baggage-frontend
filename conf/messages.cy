@@ -413,6 +413,7 @@ checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall:
 checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu Toll Dramor a TAW ar nwyddau rwy’n dod â nhw i mewn i Brydain Fawr at ddefnydd masnach neu fusnes
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
+checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = I need to bring proof my goods were produced in the EU
 checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
 checkYourAnswers.sendDeclaration.warning = Rhybudd
