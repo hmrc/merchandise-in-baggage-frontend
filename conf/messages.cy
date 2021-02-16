@@ -413,13 +413,14 @@ checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall:
 checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu Toll Dramor a TAW ar nwyddau rwy’n dod â nhw i mewn i Brydain Fawr at ddefnydd masnach neu fusnes
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
+checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = Mae’n rhaid i mi ddod â thystiolaeth bod fy nwyddau wedi’u cynhyrchu yn yr UE
 checkYourAnswers.sendDeclaration.Export.acknowledgement.1 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.confirm = Drwy gyflwyno’r datganiad hwn, rydych yn cadarnhau, hyd eithaf eich gwybodaeth, fod y manylion rydych yn eu rhoi’n gywir.
 checkYourAnswers.sendDeclaration.warning = Rhybudd
 checkYourAnswers.sendDeclaration.warning.Import.message = Os nad ydych yn datgan eich nwyddau i gyd cyn dod i mewn i Brydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
 checkYourAnswers.sendDeclaration.warning.Export.message = Os nad ydych yn datgan eich nwyddau i gyd cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch a bydd eich nwyddau’n cael eu hatafaelu gan Lu’r Ffiniau.
 checkYourAnswers.payButton = Derbyn a thalu
-checkYourAnswers.makeDeclarationButton = Cyflwyno datganiad
+checkYourAnswers.makeDeclarationButton = Derbyn ac anfon y datganiad
 
 # DeclarationConfirmation
 declarationConfirmation.title = Datganiad wedi’i gwblhau

@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.generators
 
-import org.scalatest.prop.TableFor1
+import org.scalatest.prop.{TableFor1, TableFor2}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, YesNo}
 
 trait PropertyBaseTables extends ScalaCheckPropertyChecks {
 
-  val declarationTypes: TableFor1[DeclarationType] = Table("declarationType", Import, Export)
+  val declarationTypesTable: TableFor1[DeclarationType] = Table("declarationType", Import, Export)
 
-  val traderYesOrNoAnswer = Table(
+  val traderYesOrNoAnswer: TableFor2[YesNo, String] = Table(
     ("answer", "trader or agent"),
     (Yes, "agent"),
     (No, "trader")

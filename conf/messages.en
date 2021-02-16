@@ -413,6 +413,7 @@ checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration number
 checkYourAnswers.sendDeclaration = Now send your declaration
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = I need to bring proof my goods were produced in the EU
 checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Customs agent
@@ -422,7 +423,7 @@ checkYourAnswers.sendDeclaration.warning = Warning
 checkYourAnswers.sendDeclaration.warning.Import.message = If you do not declare all your goods before entering Great Britain you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.sendDeclaration.warning.Export.message = If you do not declare all your goods before leaving Great Britain you may be fined a penalty and have your goods detained by Border Force.
 checkYourAnswers.payButton = Accept and pay
-checkYourAnswers.makeDeclarationButton = Make declaration
+checkYourAnswers.makeDeclarationButton = Accept and send declaration
 
 # DeclarationConfirmation
 declarationConfirmation.title = Declaration complete

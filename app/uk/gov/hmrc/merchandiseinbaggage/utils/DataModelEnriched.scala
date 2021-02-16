@@ -108,7 +108,7 @@ object DataModelEnriched {
 
     def isDutyAndVat: Boolean = totalDutyDue.value != 0L && totalVatDue.value != 0L
 
-    def requiresProof: Boolean =
+    def proofOfOriginNeeded: Boolean =
       calculationResults
         .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
         .map(_.gbpAmount.value)

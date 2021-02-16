@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 import com.softwaremill.quicklens._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -32,6 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -73,85 +73,87 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     exportView
   )
 
-  "on submit will calculate tax and send payment request to pay api" in {
-    val sessionId = SessionId()
-    val id = DeclarationId("xxx")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val importJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
+  "on submit" should {
+    "will calculate tax and send payment request to pay api" in {
+      val sessionId = SessionId()
+      val id = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
 
-    givenADeclarationJourneyIsPersisted(importJourney)
+      givenADeclarationJourneyIsPersisted(importJourney)
 
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-    val eventualResult = controller().onSubmit()(request)
+      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+      val eventualResult = controller().onSubmit()(request)
 
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some("http://host")
-  }
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some("http://host")
+    }
 
-  "on submit will redirect to confirmation if totalTax is £0 and should not call pay api" in {
-    val sessionId = SessionId()
-    val id = DeclarationId("xxx")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val importJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
+    "will redirect to confirmation if totalTax is £0 and should not call pay api" in {
+      val sessionId = SessionId()
+      val id = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
 
-    givenADeclarationJourneyIsPersisted(importJourney)
+      givenADeclarationJourneyIsPersisted(importJourney)
 
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-    val eventualResult = controller(aCalculationResultsWithNoTax).onSubmit()(request)
+      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+      val eventualResult = controller(aCalculationResultsWithNoTax).onSubmit()(request)
 
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
-  }
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+    }
 
-  "on submit will redirect to declaration-confirmation if exporting" in {
-    val sessionId = SessionId()
-    val stubbedId = DeclarationId("xxx")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val exportJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
+    "will redirect to declaration-confirmation if exporting" in {
+      val sessionId = SessionId()
+      val stubbedId = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
+      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
 
-    givenADeclarationJourneyIsPersisted(exportJourney)
+      givenADeclarationJourneyIsPersisted(exportJourney)
 
-    val eventualResult = controller().onSubmit()(request)
+      val eventualResult = controller().onSubmit()(request)
 
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
-  }
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+    }
 
-  s"on submit will redirect to ${routes.GoodsOverThresholdController.onPageLoad().url} if over threshold" in {
-    val sessionId = SessionId()
-    val stubbedId = DeclarationId("xxx")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val exportJourney: DeclarationJourney = completedDeclarationJourney
-      .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = stubbedId)
+    s"will redirect to ${routes.GoodsOverThresholdController.onPageLoad().url} if over threshold" in {
+      val sessionId = SessionId()
+      val stubbedId = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = stubbedId)
 
-    val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
-    givenADeclarationJourneyIsPersisted(exportJourney)
-    givenAPaymentCalculation(CalculationResult(aImportGoods, AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
+      givenADeclarationJourneyIsPersisted(exportJourney)
+      givenAPaymentCalculation(CalculationResult(aImportGoods, AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
 
-    val eventualResult = controller(
-      aCalculationResults
-        .modify(_.calculationResults.each)
-        .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))).onPageLoad()(request)
+      val eventualResult = controller(
+        aCalculationResults
+          .modify(_.calculationResults.each)
+          .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))).onPageLoad()(request)
 
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
-  }
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
+    }
 
-  "on submit will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
-    val declarationJourney = startedExportJourney
-    val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, aSessionId)
+    "will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
+      val declarationJourney = startedExportJourney
+      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, aSessionId)
 
-    givenADeclarationJourneyIsPersisted(declarationJourney)
+      givenADeclarationJourneyIsPersisted(declarationJourney)
 
-    val eventualResult = controller().onSubmit()(request)
+      val eventualResult = controller().onSubmit()(request)
 
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+    }
   }
 }
