@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 @import play.api.libs.json.Json
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils
 
 @this(
 layout: Layout,
@@ -38,7 +39,7 @@ button: components.button
     <script>
         var selectElementId = 'country'
         var submitOnConfirm = false
-        var dataSource = @Html( Json.toJson(CountryService.getAllCountries.map(_.toAutoCompleteJson)).toString )
+        var dataSource = @Html(exportCountriesJson)
 
         enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm)
 
@@ -62,7 +63,7 @@ button: components.button
             form = form,
             id = "country",
             name = "country",
-            items = CountryService.getAllCountries.map(c => SelectItem(
+            items = exportCountries.map(c => SelectItem(
                 value = Some(c.code),
                 text = messages(c.countryName),
                 selected = form("country").value.contains(c.code)

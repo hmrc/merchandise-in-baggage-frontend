@@ -45,6 +45,8 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       status(eventualResult) mustBe 200
       result must include(messages(s"searchGoodsCountry.title", "test good"))
       result must include(messages(s"searchGoodsCountry.heading", "test good"))
+
+      result must not(include("United Kingdom"))
     }
   }
 

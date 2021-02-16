@@ -18,6 +18,10 @@ package uk.gov.hmrc.merchandiseinbaggage.views
 
 import play.api.data.Form
 import play.api.i18n.Messages
+import play.api.libs.json.Json
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Country
+import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.CountryEnriched
 
 object ViewUtils {
 
@@ -32,4 +36,9 @@ object ViewUtils {
   def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
 
+  def exportCountriesJson(implicit messages: Messages): String =
+    Json.toJson(exportCountries.map(_.toAutoCompleteJson)).toString
+
+  lazy val exportCountries: List[Country] =
+    CountryService.getAllCountries.filterNot(_.code == "GB")
 }
