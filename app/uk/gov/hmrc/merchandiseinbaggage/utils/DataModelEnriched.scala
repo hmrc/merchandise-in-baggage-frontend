@@ -102,11 +102,17 @@ object DataModelEnriched {
 
     def isNothingToPay: Boolean = totalTaxDue.value == 0L
 
-    def isVatOnly: Boolean = totalDutyDue.value == 0L && totalVatDue.value != 0L
+    def isVatOnly: Boolean =
+      totalDutyDue.value == 0L &&
+        totalVatDue.value != 0L &&
+        calculationResults.forall(_.goods.producedInEu == YesNoDontKnow.Yes)
 
-    def isDutyOnly: Boolean = totalDutyDue.value != 0L && totalVatDue.value == 0L
+    def isDutyOnly: Boolean =
+      totalDutyDue.value != 0L &&
+        totalVatDue.value == 0L &&
+        calculationResults.forall(_.goods.goodsVatRate == Zero)
 
-    def isDutyAndVat: Boolean = totalDutyDue.value != 0L && totalVatDue.value != 0L
+    def isDutyAndVat: Boolean = !isVatOnly && !isDutyOnly
 
     def proofOfOriginNeeded: Boolean =
       calculationResults
