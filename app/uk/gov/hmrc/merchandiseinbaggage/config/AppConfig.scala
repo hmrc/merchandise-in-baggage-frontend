@@ -73,7 +73,6 @@ trait MibConfiguration {
   lazy val baseUrl: String = "/declare-commercial-goods"
   lazy val declarationsUrl: String = s"$baseUrl/declarations"
   lazy val calculationUrl: String = s"$baseUrl/calculation"
-  lazy val sendEmailsUrl: String = "/declare-commercial-goods/declarations/sendEmails"
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)

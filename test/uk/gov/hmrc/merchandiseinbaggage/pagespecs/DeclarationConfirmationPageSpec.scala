@@ -17,11 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.pagespecs
 
 import java.time.LocalDateTime
-
 import com.softwaremill.macwire.wire
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.WireMockSupport
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, Declaration, DeclarationId, DeclarationType, Goods, TotalCalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, Declaration, DeclarationId, DeclarationType, Goods, Paid, TotalCalculationResult}
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.pagespecs.pages.DeclarationConfirmationPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
@@ -61,7 +60,7 @@ class DeclarationConfirmationPageSpec extends BasePageSpec[DeclarationConfirmati
         val declarationJourney = completedDeclarationJourney.copy(declarationType = DeclarationType.Import)
         val persistedDeclaration = declarationJourney.declarationIfRequiredAndComplete.get
           .copy(
-            paymentSuccess = Some(true),
+            paymentStatus = Some(Paid),
             maybeTotalCalculationResult =
               Some(TotalCalculationResult(aPaymentCalculations, AmountInPence(10L), AmountInPence(5), AmountInPence(2), AmountInPence(3)))
           )

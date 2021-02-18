@@ -34,7 +34,7 @@ case class Declaration(
   dateOfDeclaration: LocalDateTime,
   mibReference: MibReference,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
-  paymentSuccess: Option[Boolean] = None,
+  paymentStatus: Option[PaymentStatus] = None,
   lang: String = "en")
 
 object Declaration {

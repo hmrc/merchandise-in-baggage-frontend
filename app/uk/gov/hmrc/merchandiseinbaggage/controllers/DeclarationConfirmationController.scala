@@ -20,7 +20,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import reactivemongo.api.commands.UpdateWriteResult
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -54,12 +54,7 @@ class DeclarationConfirmationController @Inject()(
   }
 
   private def showConfirmation(declaration: Declaration): Boolean = {
-
-    def paymentNotRequired =
-      declaration.maybeTotalCalculationResult.map(_.totalTaxDue.value).getOrElse(0L) == 0L
-
-    def paymentSuccess = declaration.paymentSuccess.contains(true)
-
-    declaration.declarationType == Export || (declaration.declarationType == Import && (paymentNotRequired || paymentSuccess))
+    def paymentSuccess = declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
+    declaration.declarationType == Export || (declaration.declarationType == Import && paymentSuccess)
   }
 }

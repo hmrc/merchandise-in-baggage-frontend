@@ -46,9 +46,4 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
   def calculatePayment(
     calculationRequest: CalculationRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CalculationResult] =
     httpClient.POST[CalculationRequest, CalculationResult](s"$base$calculationUrl", calculationRequest)
-
-  def sendEmails(declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] =
-    httpClient
-      .POST[String, HttpResponse](s"$base$sendEmailsUrl/${declarationId.value}", "")
-      .map(_ => ())
 }

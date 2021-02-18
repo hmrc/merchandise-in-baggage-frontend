@@ -63,10 +63,4 @@ object MibBackendStub extends MibConfiguration {
       .stubFor(
         post(urlPathEqualTo(s"$calculationUrl"))
           .willReturn(okJson(Json.toJson(result).toString)))
-
-  def givenSendEmailsSuccess(server: WireMockServer, declarationId: DeclarationId = stubbedDeclarationId): StubMapping =
-    server
-      .stubFor(
-        get(urlPathEqualTo(s"$sendEmailsUrl/${declarationId.value}"))
-          .willReturn(aResponse().withStatus(202)))
 }
