@@ -71,12 +71,6 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         post(urlPathEqualTo(s"$calculationsUrl"))
           .willReturn(okJson(Json.toJson(List(result)).toString)))
 
-  def givenSendEmailsSuccess(declarationId: DeclarationId = stubbedDeclarationId)(implicit server: WireMockServer): StubMapping =
-    server
-      .stubFor(
-        get(urlPathEqualTo(s"$sendEmailsUrl/${declarationId.value}"))
-          .willReturn(aResponse().withStatus(202)))
-
   def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
