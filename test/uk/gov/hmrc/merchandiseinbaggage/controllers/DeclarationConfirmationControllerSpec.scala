@@ -86,13 +86,19 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     def totalCalculationResult: TotalCalculationResult =
       TotalCalculationResult(
-        CalculationResults(Seq(CalculationResult(
-          ImportGoods(CategoryQuantityOfGoods("sock", "1"),
-            GoodsVatRates.Twenty,
-            YesNoDontKnow.Yes,
-            PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
-          ),
-          AmountInPence(purchaseAmount), dummyAmount, dummyAmount, None))),
+        CalculationResults(
+          Seq(CalculationResult(
+            ImportGoods(
+              CategoryQuantityOfGoods("sock", "1"),
+              GoodsVatRates.Twenty,
+              YesNoDontKnow.Yes,
+              PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
+            ),
+            AmountInPence(purchaseAmount),
+            dummyAmount,
+            dummyAmount,
+            None
+          ))),
         AmountInPence(purchaseAmount),
         dummyAmount,
         dummyAmount,
@@ -100,7 +106,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
       )
 
     val sessionId = SessionId()
-    val id = DeclarationId("456")
+    val id = DeclarationId(java.util.UUID.randomUUID().toString)
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
@@ -109,8 +115,9 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenADeclarationJourneyIsPersisted(journey)
 
-    val persistedDeclaration = journey.declarationIfRequiredAndComplete.map{ x =>
-      if(decType==DeclarationType.Import ) x.copy(maybeTotalCalculationResult = Some(totalCalculationResult)) else x}
+    val persistedDeclaration = journey.declarationIfRequiredAndComplete.map { x =>
+      if (decType == DeclarationType.Import) x.copy(maybeTotalCalculationResult = Some(totalCalculationResult)) else x
+    }
 
     givenPersistedDeclarationIsFound(persistedDeclaration.get, id)
 
