@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
-
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
@@ -79,4 +78,23 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
+
+  "Import with value over 1000gbp, add an 'take proof' line" in {
+    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
+
+    result must include(messageApi("declarationConfirmation.ul.3"))
+  }
+
+  "Import with value under 1000gbp, DONOT add an 'take proof' line" in {
+    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
+
+    result mustNot include(messageApi("declarationConfirmation.ul.3"))
+  }
+
+  "Export with value over 1000gbp, DONOT add an 'take proof' line" in {
+    val result = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
+
+    result mustNot include(messageApi("declarationConfirmation.ul.3"))
+  }
+
 }
