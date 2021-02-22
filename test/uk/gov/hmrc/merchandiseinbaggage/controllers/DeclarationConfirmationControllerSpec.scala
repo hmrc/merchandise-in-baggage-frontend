@@ -81,7 +81,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 
-  private def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long): Future[Result] = {
+  private def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long): (DeclarationJourney, Future[Result]) = {
     val dummyAmount = AmountInPence(0)
 
     def totalCalculationResult: TotalCalculationResult =
@@ -121,31 +121,48 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenPersistedDeclarationIsFound(persistedDeclaration.get, id)
 
-    controller.onPageLoad()(request)
+    (journey, controller.onPageLoad()(request))
   }
 
   "Import with value over 1000gbp, add an 'take proof' line" in {
-    val eventualResult = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
+    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
     status(eventualResult) mustBe 200
 
     val bodyResult = contentAsString(eventualResult)
     bodyResult must include(messageApi("declarationConfirmation.ul.3"))
+
+    import exportJourney._
+    val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+
   }
 
   "Import with value under 1000gbp, DONOT add an 'take proof' line" in {
-    val eventualResult = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
+    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
     status(eventualResult) mustBe 200
 
     val bodyResult = contentAsString(eventualResult)
     bodyResult mustNot include(messageApi("declarationConfirmation.ul.3"))
+    import exportJourney._
+    val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
   "Export with value over 1000gbp, DONOT add an 'take proof' line" in {
-    val eventualResult = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
+    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
     status(eventualResult) mustBe 200
 
     val bodyResult = contentAsString(eventualResult)
     bodyResult mustNot include(messageApi("declarationConfirmation.ul.3"))
+    import exportJourney._
+    val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
 }
