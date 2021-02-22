@@ -92,18 +92,19 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val sessionId = SessionId()
     val id = DeclarationId(java.util.UUID.randomUUID().toString)
     val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     val journey: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = decType, createdAt = created, declarationId = id)
-
-    givenADeclarationJourneyIsPersisted(journey)
 
     val persistedDeclaration = journey.declarationIfRequiredAndComplete.map { x =>
       if (decType == DeclarationType.Import) x.copy(maybeTotalCalculationResult = Some(totalCalculationResult)) else x
     }
 
+    givenADeclarationJourneyIsPersisted(journey)
+
     givenPersistedDeclarationIsFound(persistedDeclaration.get, id)
+
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
 
     (journey, controller.onPageLoad()(request))
   }
