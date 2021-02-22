@@ -60,7 +60,14 @@
    @Html("")
   }
   <li>@messages("declarationConfirmation.ul.2")</li>
-  <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.3")</li>
+
+  @for(calcResult <- declaration.maybeTotalCalculationResult) {
+    @if(calcResult.calculationResults.proofOfOriginNeeded && declaration.declarationType == Import) {
+      <li>@messages("declarationConfirmation.ul.3")</li>
+    }
+  }
+
+  <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.4")</li>
  </ul>
 
  <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
