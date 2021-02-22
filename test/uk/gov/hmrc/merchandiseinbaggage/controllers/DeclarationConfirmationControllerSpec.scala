@@ -65,22 +65,6 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
-  "on page load return an invalid request if journey is invalidated by resetting" in {
-    val connector = new MibConnector(client, "") {
-      override def findDeclaration(
-        declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
-        Future.failed(new Exception("not found"))
-    }
-
-    val controller =
-      new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, aSessionId)
-
-    val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
-  }
-
   private def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long): (DeclarationJourney, Future[Result]) = {
     val dummyAmount = AmountInPence(0)
 
@@ -163,6 +147,22 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+  }
+
+  "on page load return an invalid request if journey is invalidated by resetting" in {
+    val connector = new MibConnector(client, "") {
+      override def findDeclaration(
+        declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
+        Future.failed(new Exception("not found"))
+    }
+
+    val controller =
+      new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, aSessionId)
+
+    val eventualResult = controller.onPageLoad()(request)
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 
 }
