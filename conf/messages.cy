@@ -37,6 +37,9 @@ yndk.Yes = Iawn
 yndk.No = Na
 yndk.DontKnow = I do not know
 
+journeyType.New = Make a new declaration
+journeyType.Amend = Add goods to an existing declaration
+
 date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
@@ -57,6 +60,10 @@ invalidRequest.li2 = Cyflwynwch ddatganiad os yw’r canlynol yn wir:
 invalidRequest.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
+# NewOrExisting
+newOrExisting.title = What do you want to do?
+newOrExisting.heading = What do you want to do?
+newOrExisting.error.required = Select an option
 
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
