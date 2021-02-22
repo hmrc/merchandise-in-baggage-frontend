@@ -19,6 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import java.time.LocalDateTime
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.govukfrontend.views.html.components.{GovukHeader, GovukTemplate}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -27,7 +29,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.layouts.govukLayout
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Head, Layout}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -65,7 +68,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
-  private def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long): (DeclarationJourney, Future[Result]) = {
+  private def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long): String = {
     val dummyAmount = AmountInPence(0)
 
     def totalCalculationResult: TotalCalculationResult =
@@ -100,55 +103,33 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
       if (decType == DeclarationType.Import) x.copy(maybeTotalCalculationResult = Some(totalCalculationResult)) else x
     }
 
-    givenADeclarationJourneyIsPersisted(journey)
+    val layout = app.injector.instanceOf[Layout]
+    val link = app.injector.instanceOf[uk.gov.hmrc.merchandiseinbaggage.views.html.components.link]
 
-    givenPersistedDeclarationIsFound(persistedDeclaration.get, id)
+    val d = new DeclarationConfirmationView(layout, null, link)
 
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+    implicit val r: play.api.mvc.Request[_] = fakeRequest
+    val x: HtmlFormat.Appendable = d.apply(persistedDeclaration.get)
 
-    (journey, controller.onPageLoad()(request))
+    x.body
   }
 
   "Import with value over 1000gbp, add an 'take proof' line" in {
-    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
-    eventualResult.map(r => println(s">>>>>$r"))
-    status(eventualResult) mustBe 200
+    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
 
-    val bodyResult = contentAsString(eventualResult)
-    bodyResult must include(messageApi("declarationConfirmation.ul.3"))
-
-    import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType)
-
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
-
+    result must include(messageApi("declarationConfirmation.ul.3"))
   }
 
   "Import with value under 1000gbp, DONOT add an 'take proof' line" in {
-    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
-    status(eventualResult) mustBe 200
+    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
 
-    val bodyResult = contentAsString(eventualResult)
-    bodyResult mustNot include(messageApi("declarationConfirmation.ul.3"))
-    import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType)
-
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+    result mustNot include(messageApi("declarationConfirmation.ul.3"))
   }
 
   "Export with value over 1000gbp, DONOT add an 'take proof' line" in {
-    val (exportJourney, eventualResult) = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
-    status(eventualResult) mustBe 200
+    val result = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
 
-    val bodyResult = contentAsString(eventualResult)
-    bodyResult mustNot include(messageApi("declarationConfirmation.ul.3"))
-    import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType)
-
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+    result mustNot include(messageApi("declarationConfirmation.ul.3"))
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
