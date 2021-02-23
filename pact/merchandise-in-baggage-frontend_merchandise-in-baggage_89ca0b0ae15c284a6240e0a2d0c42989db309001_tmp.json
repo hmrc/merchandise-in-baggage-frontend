@@ -1,0 +1,123 @@
+{
+  "provider" : {
+    "name" : "merchandise-in-baggage"
+  },
+  "consumer" : {
+    "name" : "merchandise-in-baggage-frontend"
+  },
+  "interactions" : [
+    {
+      "providerState" : "persistDeclarationTest",
+      "description" : "Persisting a declaration",
+      "request" : {
+        "method" : "POST",
+        "path" : "/declare-commercial-goods/declarations",
+        "headers" : {
+          "Content-Type" : "application/json"
+        },
+        "body" : {
+          "declarationId" : "97d5ea4c-b8d6-4e16-969c-dbd0ee33e785",
+          "sessionId" : "815bb562-9d18-46d3-aaa5-1cfb48dbedfc",
+          "declarationType" : "Import",
+          "goodsDestination" : "GreatBritain",
+          "declarationGoods" : {
+            "goods" : [
+              {
+                "categoryQuantityOfGoods" : {
+                  "category" : "wine",
+                  "quantity" : "1"
+                },
+                "goodsVatRate" : "Twenty",
+                "producedInEu" : "Yes",
+                "purchaseDetails" : {
+                  "amount" : "99.99",
+                  "currency" : {
+                    "code" : "EUR",
+                    "displayName" : "title.euro_eur",
+                    "valueForConversion" : "EUR",
+                    "currencySynonyms" : [
+                      "Europe",
+                      "European"
+                    ]
+                  }
+                }
+              },
+              {
+                "categoryQuantityOfGoods" : {
+                  "category" : "cheese",
+                  "quantity" : "3"
+                },
+                "goodsVatRate" : "Twenty",
+                "producedInEu" : "Yes",
+                "purchaseDetails" : {
+                  "amount" : "199.99",
+                  "currency" : {
+                    "code" : "EUR",
+                    "displayName" : "title.euro_eur",
+                    "valueForConversion" : "EUR",
+                    "currencySynonyms" : [
+                      "Europe",
+                      "European"
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          "nameOfPersonCarryingTheGoods" : {
+            "firstName" : "Terry",
+            "lastName" : "Test"
+          },
+          "email" : {
+            "email" : "aa@test.com"
+          },
+          "maybeCustomsAgent" : {
+            "name" : "Andy Agent",
+            "address" : {
+              "lines" : [
+                "1 Agent Drive",
+                "Agent Town"
+              ],
+              "postcode" : "AG1 5NT",
+              "country" : {
+                "code" : "GB",
+                "name" : "United Kingdom"
+              }
+            }
+          },
+          "eori" : {
+            "value" : "GB123467800000"
+          },
+          "journeyDetails" : {
+            "port" : {
+              "code" : "DVR",
+              "displayName" : "title.dover",
+              "isGB" : true,
+              "portSynonyms" : [
+                "Port of Dover"
+              ]
+            },
+            "dateOfTravel" : "2021-02-22",
+            "registrationNumber" : "T5 RRY"
+          },
+          "dateOfDeclaration" : "2021-02-22T14:34:57.429516",
+          "mibReference" : "XFMB7563104220",
+          "lang" : "en",
+          "source" : "Digital"
+        }
+      },
+      "response" : {
+        "status" : 201,
+        "body" : "97d5ea4c-b8d6-4e16-969c-dbd0ee33e785"
+      }
+    }
+  ],
+  "metadata" : {
+    "pactSpecification" : {
+      "version" : "2.0.0"
+    },
+    "scala-pact" : {
+      "version" : "3.2.0"
+    }
+  }
+}
