@@ -23,6 +23,10 @@ GET        /process-start-import         uk.gov.hmrc.merchandiseinbaggage.contro
 GET        /start-export                 uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.onPageLoad
 GET        /process-start-export         uk.gov.hmrc.merchandiseinbaggage.controllers.StartExportController.processRequest
 
+# NewOrExisting
+GET        /new-or-existing              uk.gov.hmrc.merchandiseinbaggage.controllers.NewOrExistingController.onPageLoad
+POST       /new-or-existing              uk.gov.hmrc.merchandiseinbaggage.controllers.NewOrExistingController.onSubmit
+
 # ExciseAndRestrictedGoods
 GET        /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggage.controllers.ExciseAndRestrictedGoodsController.onPageLoad
 POST       /excise-and-restricted-goods  uk.gov.hmrc.merchandiseinbaggage.controllers.ExciseAndRestrictedGoodsController.onSubmit
