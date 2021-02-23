@@ -60,6 +60,17 @@ invalidRequest.li2 = Cyflwynwch ddatganiad os yw’r canlynol yn wir:
 invalidRequest.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
+# DeclarationNotFound
+declarationNotFound.title = Are you bringing in goods from EU countries, non-EU countries or both?
+declarationNotFound.heading = Declaration not found
+declarationNotFound.li1 = We cannot find this declaration.
+declarationNotFound.li2 = If you typed the reference, check it is correct.
+declarationNotFound.li3 = If you pasted the reference, check you copied the entire reference.
+declarationNotFound.li4.a.text = You can
+declarationNotFound.li4.b.text = try again
+declarationNotFound.li4.c.text = or
+declarationNotFound.li4.d.text = make a new declaration.
+
 # NewOrExisting
 newOrExisting.title = What do you want to do?
 newOrExisting.heading = What do you want to do?

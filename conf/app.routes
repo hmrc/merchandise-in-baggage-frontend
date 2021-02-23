@@ -133,5 +133,7 @@ GET        /check-your-answers/add-goods uk.gov.hmrc.merchandiseinbaggage.contro
 GET        /declaration-confirmation     uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationConfirmationController.onPageLoad
 GET        /make-another-declaration     uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationConfirmationController.makeAnotherDeclaration
 
+# DeclarationNotFound
+GET        /declaration-not-found        uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationNotFoundController.onPageLoad
 
 GET         /start-survey                uk.gov.hmrc.merchandiseinbaggage.controllers.FeedbackSurveyController.startSurvey()
