@@ -16,8 +16,8 @@
           "Content-Type" : "application/json"
         },
         "body" : {
-          "declarationId" : "97d5ea4c-b8d6-4e16-969c-dbd0ee33e785",
-          "sessionId" : "815bb562-9d18-46d3-aaa5-1cfb48dbedfc",
+          "declarationId" : "1d4650b1-bca7-47dc-8df0-a6321f0bd4c2",
+          "sessionId" : "11ef9f47-8841-4139-808e-6c2dfe55a5d4",
           "declarationType" : "Import",
           "goodsDestination" : "GreatBritain",
           "declarationGoods" : {
@@ -97,18 +97,18 @@
                 "Port of Dover"
               ]
             },
-            "dateOfTravel" : "2021-02-22",
+            "dateOfTravel" : "2021-02-24",
             "registrationNumber" : "T5 RRY"
           },
-          "dateOfDeclaration" : "2021-02-22T14:34:57.429516",
-          "mibReference" : "XFMB7563104220",
+          "dateOfDeclaration" : "2021-02-24T09:19:29.18",
+          "mibReference" : "XSMB3385371677",
           "lang" : "en",
           "source" : "Digital"
         }
       },
       "response" : {
         "status" : 201,
-        "body" : "97d5ea4c-b8d6-4e16-969c-dbd0ee33e785"
+        "body" : "1d4650b1-bca7-47dc-8df0-a6321f0bd4c2"
       }
     }
   ],
