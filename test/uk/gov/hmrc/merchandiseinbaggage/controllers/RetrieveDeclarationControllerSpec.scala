@@ -60,35 +60,15 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
       redirectLocation(eventualResult) mustBe Some(routes.RetrieveDeclarationController.onPageLoad().url)
     }
 
-    "return 400 for invalid MibReference" in {
+    "return 400 for invalid form data" in {
       val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> "XAMB00000100", "eori" -> "GB123456780000")
+        .withFormUrlEncodedBody("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
       val eventualResult = controller(journey).onSubmit(request)
       val result = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi(s"retrieveDeclaration.mibReference.error.invalid"))
-    }
-
-    "return 400 for invalid Eori" in {
-      val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> "XAMB0000010000", "eori" -> "GB1234567")
-      val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
-
-      status(eventualResult) mustBe 400
       result must include(messageApi(s"retrieveDeclaration.eori.error.invalid"))
-    }
-
-    "return 400 for invalid form data" in {
-      val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody("mibReferzzz" -> "XAMB0000010000", "eorizszsz" -> "GB1234567")
-      val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
-
-      status(eventualResult) mustBe 400
-      result must include(messageApi(s"retrieveDeclaration.mibReference.error.required"))
-      result must include(messageApi(s"retrieveDeclaration.eori.error.required"))
     }
   }
 }

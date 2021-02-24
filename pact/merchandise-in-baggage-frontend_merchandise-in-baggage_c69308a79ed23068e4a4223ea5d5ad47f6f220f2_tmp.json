@@ -16,8 +16,8 @@
           "Content-Type" : "application/json"
         },
         "body" : {
-          "declarationId" : "1d4650b1-bca7-47dc-8df0-a6321f0bd4c2",
-          "sessionId" : "11ef9f47-8841-4139-808e-6c2dfe55a5d4",
+          "declarationId" : "fa9c729a-1549-46bd-87b9-b1e876513fd2",
+          "sessionId" : "2fed240c-300e-4f45-8eb2-e800207d8336",
           "declarationType" : "Import",
           "goodsDestination" : "GreatBritain",
           "declarationGoods" : {
@@ -100,15 +100,15 @@
             "dateOfTravel" : "2021-02-24",
             "registrationNumber" : "T5 RRY"
           },
-          "dateOfDeclaration" : "2021-02-24T09:19:29.18",
-          "mibReference" : "XSMB3385371677",
+          "dateOfDeclaration" : "2021-02-24T10:13:32.915",
+          "mibReference" : "XDMB3572461013",
           "lang" : "en",
           "source" : "Digital"
         }
       },
       "response" : {
         "status" : 201,
-        "body" : "1d4650b1-bca7-47dc-8df0-a6321f0bd4c2"
+        "body" : "fa9c729a-1549-46bd-87b9-b1e876513fd2"
       }
     }
   ],
