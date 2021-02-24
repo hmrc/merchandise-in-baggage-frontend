@@ -464,6 +464,18 @@ declarationConfirmation.amountPaid.customsDuty = Toll Dramor
 declarationConfirmation.amountPaid.vat = TAW
 declarationConfirmation.amountPaid.totalTax = Cyfanswm
 
+retrieveDeclaration.title = What are the details of your existing declaration?
+retrieveDeclaration.heading = What are the details of your existing declaration?
+retrieveDeclaration.p = You can only add goods to a journey you are making in the next 5 days.
+retrieveDeclaration.mibReference.label = Declaration reference
+retrieveDeclaration.mibReference.hint = For example, XAMB0000010000
+retrieveDeclaration.mibReference.error.required = Enter declaration reference
+retrieveDeclaration.mibReference.error.invalid = Enter a valid declaration reference
+retrieveDeclaration.eori.label = EORI number
+retrieveDeclaration.eori.hint = For example, GB123456780000
+retrieveDeclaration.eori.error.required = Enter EORI number
+retrieveDeclaration.eori.error.invalid = Enter a valid EORI number
+
 # Countries
 title.afghanistan=Afghanistan
 title.aland_islands=Ynysoedd Åland

@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
@@ -35,8 +35,6 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport 
 
   "send a payment request to payment service adding a generated session id to the header" in new TestPaymentConnector {
     val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
-
-    implicit val hc: HeaderCarrier = HeaderCarrier()
 
     wireMockServer
       .stubFor(

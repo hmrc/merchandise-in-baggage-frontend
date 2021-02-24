@@ -136,4 +136,7 @@ GET        /make-another-declaration     uk.gov.hmrc.merchandiseinbaggage.contro
 # DeclarationNotFound
 GET        /declaration-not-found        uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationNotFoundController.onPageLoad
 
+GET        /retrieve-declaration         uk.gov.hmrc.merchandiseinbaggage.controllers.RetrieveDeclarationController.onPageLoad
+POST       /retrieve-declaration         uk.gov.hmrc.merchandiseinbaggage.controllers.RetrieveDeclarationController.onSubmit
+
 GET         /start-survey                uk.gov.hmrc.merchandiseinbaggage.controllers.FeedbackSurveyController.startSurvey()
