@@ -21,7 +21,7 @@
 @()(implicit messages: Messages)
 
 <nav class="lang" aria-label="@messages("language.switcher")">
-    <ul>
+    <ul class="language-toggle govuk-list">
         <li>
         @if(messages.lang.code == "en"){
             <span aria-current="true">@messages("language.english")</span>

@@ -29,15 +29,16 @@ button: components.button
 
 @(form: Form[_], declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"newOrExisting.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, "newOrExisting.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = NewOrExistingController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors, JourneyTypes.values.headOption.map(_.entryName))
 
         @inputRadio(
             form = form,
-            legend = messages(s"newOrExisting.heading"),
+            legend = messages("newOrExisting.heading"),
             legendAsHeading = true,
+            classes = "govuk-fieldset__legend--xl govuk-!-padding-top-5",
             items = JourneyTypes.options(form)
         )
 
