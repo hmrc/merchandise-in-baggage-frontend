@@ -16,36 +16,52 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class RetrieveDeclarationController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  mibConnector: MibConnector,
   view: RetrieveDeclarationView
-)(implicit appConfig: AppConfig)
+)(implicit appConfig: AppConfig, val ec: ExecutionContext)
     extends DeclarationJourneyUpdateController {
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
   }
 
-  override val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)),
-        _ => {
-          Redirect(routes.RetrieveDeclarationController.onPageLoad())
-        }
+            BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)).asFuture,
+        validData => processRequest(validData)
       )
   }
+
+  private def processRequest(validData: RetrieveDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+    mibConnector
+      .findBy(validData.mibReference, validData.eori)
+      .fold(
+        error => InternalServerError(error),
+        {
+          case Some(id) => Redirect(routes.RetrieveDeclarationController.onPageLoad()) //TODO redirect to /next page after implemented
+          case None     => Redirect(routes.DeclarationNotFoundController.onPageLoad())
+        }
+      )
 }
