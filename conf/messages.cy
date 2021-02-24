@@ -61,7 +61,7 @@ invalidRequest.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 # DeclarationNotFound
-declarationNotFound.title = Are you bringing in goods from EU countries, non-EU countries or both?
+declarationNotFound.title = Declaration not found
 declarationNotFound.heading = Declaration not found
 declarationNotFound.li1 = We cannot find this declaration.
 declarationNotFound.li2 = If you typed the reference, check it is correct.
