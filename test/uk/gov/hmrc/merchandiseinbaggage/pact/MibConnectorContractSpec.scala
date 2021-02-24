@@ -25,10 +25,12 @@ import org.json4s.DefaultFormats
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -57,6 +59,25 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .given(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
         .uponReceiving(GET, s"$declarationsUrl/56789")
         .willRespondWith(200, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
+    )
+    .addInteraction(
+      interaction
+        .description("calculate payments")
+        .given(s"calculatePaymentsTest")
+        .uponReceiving(
+          POST,
+          s"$calculationsUrl",
+          None,
+          Map("Content-Type" -> "application/json"),
+          Json.toJson(List(aImportGoods).map(_.calculationRequest)).toString)
+        .willRespondWith(200, Json.toJson(List(aImportGoods).map(_.calculationRequest)).toString)
+    )
+    .addInteraction(
+      interaction
+        .description("check EoriNumber")
+        .given(s"checkEoriNumberTest")
+        .uponReceiving(GET, s"${checkEoriUrl}GB123")
+        .willRespondWith(200, Json.toJson(CheckResponse("GB123", true, None)).toString)
     )
 
   implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
