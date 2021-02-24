@@ -61,6 +61,17 @@ invalidRequest.li2 = Make a declaration if you are:
 invalidRequest.Import.restart = bringing commercial goods into Great Britain
 invalidRequest.Export.restart = taking commercial goods out of Great Britain
 
+# DeclarationNotFound
+declarationNotFound.title = Declaration not found
+declarationNotFound.heading = Declaration not found
+declarationNotFound.li1 = We cannot find this declaration.
+declarationNotFound.li2 = If you typed the reference, check it is correct.
+declarationNotFound.li3 = If you pasted the reference, check you copied the entire reference.
+declarationNotFound.li4.a.text = You can
+declarationNotFound.li4.b.text = try again
+declarationNotFound.li4.c.text = or
+declarationNotFound.li4.d.text = make a new declaration.
+
 # NewOrExisting
 newOrExisting.title = What do you want to do?
 newOrExisting.heading = What do you want to do?
