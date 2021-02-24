@@ -25,8 +25,8 @@ import org.json4s.DefaultFormats
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationId
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
@@ -51,6 +51,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .uponReceiving(POST, s"$declarationsUrl", None, Map("Content-Type" -> "application/json"), Json.toJson(declaration).toString)
         .willRespondWith(201, s"${declaration.declarationId.value}")
     )
+    .addInteraction(
+      interaction
+        .description("find a declaration")
+        .given(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
+        .uponReceiving(GET, s"$declarationsUrl/56789")
+        .willRespondWith(200, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
+    )
 
   implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
 
@@ -61,11 +68,17 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     pact.writePactsToFile
   }
 
-  "Connecting to the Provider service" must {
-    "be able to fetch results" in {
-      MibBackendStub.givenDeclarationIsPersistedInBackend(declaration)
+  "Connecting to the merchandise-in-baggage BE Provider service" must {
+    "be able to persist a declaration" in {
+      givenDeclarationIsPersistedInBackend(declaration)
       val results: Future[DeclarationId] = mibConnector.persistDeclaration(declaration)
       results.futureValue mustBe declaration.declarationId
+    }
+
+    "be able to fetch a declaration" in {
+      givenPersistedDeclarationIsFound(declaration)
+      val results: Future[Option[Declaration]] = mibConnector.findDeclaration(stubbedDeclarationId)
+      results.futureValue mustBe Some(declaration)
     }
   }
 }
