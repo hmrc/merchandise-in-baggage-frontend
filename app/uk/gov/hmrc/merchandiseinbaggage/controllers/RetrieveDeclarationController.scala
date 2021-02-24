@@ -18,37 +18,33 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.forms.NewOrExistingForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NewOrExistingController @Inject()(
+class RetrieveDeclarationController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: NewOrExistingView
+  view: RetrieveDeclarationView
 )(implicit appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(
-      view(
-        form,
-        request.declarationJourney.declarationType
-      ))
+  override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  override val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case New   => Redirect(routes.GoodsDestinationController.onPageLoad())
-          case Amend => Redirect(routes.RetrieveDeclarationController.onPageLoad())
+        formWithErrors =>
+          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)),
+        _ => {
+          Redirect(routes.RetrieveDeclarationController.onPageLoad())
         }
       )
   }

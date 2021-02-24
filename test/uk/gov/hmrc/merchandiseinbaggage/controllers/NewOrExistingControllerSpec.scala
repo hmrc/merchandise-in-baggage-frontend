@@ -55,7 +55,14 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
         redirectLocation(eventualResult) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
       }
 
-      //TODO add another test to verify redirect to /retrieve-declaration when Amend is selected
+      s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
+        val request = buildPost(routes.NewOrExistingController.onSubmit().url, aSessionId)
+          .withFormUrlEncodedBody("value" -> "Amend")
+
+        val eventualResult = controller(journey).onSubmit(request)
+        status(eventualResult) mustBe 303
+        redirectLocation(eventualResult) mustBe Some(routes.RetrieveDeclarationController.onPageLoad().url)
+      }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
