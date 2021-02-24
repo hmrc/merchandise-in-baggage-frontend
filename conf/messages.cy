@@ -37,8 +37,8 @@ yndk.Yes = Iawn
 yndk.No = Na
 yndk.DontKnow = I do not know
 
-journeyType.New = Make a new declaration
-journeyType.Amend = Add goods to an existing declaration
+journeyType.New = Gwneud datganiad newydd
+journeyType.Amend = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
 
 date.day = Diwrnod
 date.month = Mis
@@ -72,9 +72,9 @@ declarationNotFound.li4.c.text = or
 declarationNotFound.li4.d.text = make a new declaration.
 
 # NewOrExisting
-newOrExisting.title = What do you want to do?
-newOrExisting.heading = What do you want to do?
-newOrExisting.error.required = Select an option
+newOrExisting.title = Beth hoffech ei wneud?
+newOrExisting.heading = Beth hoffech ei wneud?
+newOrExisting.error.required = Dewiswch os ydych am wneud datganiad newydd neu ychwanegu nwyddau at ddatganiad sy’n bodoli eisoes
 
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?

@@ -75,7 +75,7 @@ declarationNotFound.li4.d.text = make a new declaration.
 # NewOrExisting
 newOrExisting.title = What do you want to do?
 newOrExisting.heading = What do you want to do?
-newOrExisting.error.required = Select an option
+newOrExisting.error.required = Select if you want to make a new declaration or add goods to an exisiting declaration
 
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
