@@ -17,7 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenFindByDeclarationReturnStatus, givenFindByDeclarationReturnSuccess}
@@ -31,28 +33,41 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
   val view = injector.instanceOf[RetrieveDeclarationView]
   val connector = injector.instanceOf[MibConnector]
 
-  def controller(declarationJourney: DeclarationJourney) =
-    new RetrieveDeclarationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), connector, view)
+  def controller(declarationJourney: DeclarationJourney, amendFlag: Boolean = true) =
+    new RetrieveDeclarationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), connector, view) {
+      override lazy val amendFlagConf: AmendFlagConf = AmendFlagConf(amendFlag)
+    }
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
-  "onPageLoad" should {
-    s"return 200 with expected content" in {
+  declarationTypes.foreach { importOrExport: DeclarationType =>
+    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
+    "onPageLoad" should {
+      s"return 200 with expected content for $importOrExport" in {
 
-      val request = buildGet(routes.RetrieveDeclarationController.onPageLoad.url, aSessionId)
-      val eventualResult = controller(journey).onPageLoad(request)
-      val result = contentAsString(eventualResult)
+        val request = buildGet(routes.RetrieveDeclarationController.onPageLoad.url, aSessionId)
+        val eventualResult = controller(journey).onPageLoad(request)
+        val result = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
-      result must include(messageApi(s"retrieveDeclaration.title"))
-      result must include(messageApi(s"retrieveDeclaration.heading"))
-      result must include(messageApi(s"retrieveDeclaration.p"))
+        status(eventualResult) mustBe 200
+        result must include(messageApi(s"retrieveDeclaration.title"))
+        result must include(messageApi(s"retrieveDeclaration.heading"))
+        result must include(messageApi(s"retrieveDeclaration.p"))
 
-      result must include(messageApi(s"retrieveDeclaration.mibReference.label"))
-      result must include(messageApi(s"retrieveDeclaration.mibReference.hint"))
+        result must include(messageApi(s"retrieveDeclaration.mibReference.label"))
+        result must include(messageApi(s"retrieveDeclaration.mibReference.hint"))
 
-      result must include(messageApi(s"retrieveDeclaration.eori.label"))
-      result must include(messageApi(s"retrieveDeclaration.eori.hint"))
+        result must include(messageApi(s"retrieveDeclaration.eori.label"))
+        result must include(messageApi(s"retrieveDeclaration.eori.hint"))
+      }
+
+      s"redirect to ${routes.CannotAccessPageController.onPageLoad().url} if flag is false for $importOrExport" in {
+        val request = buildGet(routes.NewOrExistingController.onPageLoad.url, aSessionId)
+        val eventualResult = controller(journey, false).onPageLoad(request)
+
+        status(eventualResult) mustBe 303
+        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+      }
     }
   }
 
