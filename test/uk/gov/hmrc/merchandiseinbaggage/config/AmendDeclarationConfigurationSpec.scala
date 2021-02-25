@@ -20,8 +20,8 @@ import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 
 class AmendDeclarationConfigurationSpec extends BaseSpec {
 
-  "return false unless is set to true" in new AmendDeclarationConfiguration {
+  "return true unless is set to false" in new AmendDeclarationConfiguration {
 
-    amendFlagConf.canBeAmended mustBe false
+    amendFlagConf.canBeAmended mustBe true
   }
 }
