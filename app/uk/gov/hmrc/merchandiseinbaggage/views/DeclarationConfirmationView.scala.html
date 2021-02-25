@@ -22,6 +22,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components.link
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
@@ -81,6 +82,16 @@
      <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
      <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
     </div>
+
+    @goods match {
+     case good:ImportGoods => {
+      <div class="govuk-summary-list__row">
+       <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
+       <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
+      </div>
+     }
+    }
+
     <div class="govuk-summary-list__row">
      <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
      <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails.formatted</dd>

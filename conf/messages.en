@@ -412,6 +412,7 @@ checkYourAnswers.detailsOfTheGoods.category = Type of goods
 checkYourAnswers.detailsOfTheGoods.quantity = Number of items
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
 checkYourAnswers.detailsOfTheGoods.country = Country
+checkYourAnswers.detailsOfTheGoods.producedInEu = Produced in EU
 checkYourAnswers.detailsOfTheGoods.destination = Destination
 checkYourAnswers.detailsOfTheGoods.price = Price paid
 checkYourAnswers.detailsOfTheGoods.paymentDue = Payment due
