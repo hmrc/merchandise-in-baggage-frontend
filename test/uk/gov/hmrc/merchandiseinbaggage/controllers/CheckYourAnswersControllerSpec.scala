@@ -49,7 +49,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   }
 
   private lazy val testMibConnector = new MibConnector(httpClient, "") {
-    override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[DeclarationId] =
+    override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
       Future.successful(DeclarationId("xxx"))
   }
 

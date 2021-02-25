@@ -31,7 +31,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl") base: String)(implicit ec: ExecutionContext) extends MibConfiguration with Logging {
+class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl") base: String)(implicit ec: ExecutionContext)
+    extends MibConfiguration with Logging {
 
   def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
     httpClient.POST[Declaration, DeclarationId](s"$base$declarationsUrl", declaration)
@@ -59,8 +60,7 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
       }
     )
 
-  def calculatePayments(
-    calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[Seq[CalculationResult]] =
+  def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[Seq[CalculationResult]] =
     httpClient.POST[Seq[CalculationRequest], Seq[CalculationResult]](s"$base$calculationsUrl", calculationRequests)
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =

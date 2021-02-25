@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.utils
+package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
-import scala.concurrent.Future
+import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
 
-object Utils {
-  implicit class FutureOps[T](obj: T) {
-    def asFuture: Future[T] = Future.successful(obj)
+object NeworExistingDeclarationPage extends Page {
+  val path = "/declare-commercial-goods/new-or-existing"
+  val title = "What do you want to do?"
+
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    click.on(IdQuery(formData.toString))
+    click.on(NameQuery("continue"))
   }
 }

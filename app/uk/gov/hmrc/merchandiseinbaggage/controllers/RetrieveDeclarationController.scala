@@ -49,7 +49,7 @@ class RetrieveDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors =>
-            BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)).asFuture,
+          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)).asFuture,
         validData => processRequest(validData)
       )
   }
@@ -58,8 +58,7 @@ class RetrieveDeclarationController @Inject()(
     mibConnector
       .findBy(validData.mibReference, validData.eori)
       .fold(
-        error => InternalServerError(error),
-        {
+        error => InternalServerError(error), {
           case Some(id) => Redirect(routes.RetrieveDeclarationController.onPageLoad()) //TODO redirect to /next page after implemented
           case None     => Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }

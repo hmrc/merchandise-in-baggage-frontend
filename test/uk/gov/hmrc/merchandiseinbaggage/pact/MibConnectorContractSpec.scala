@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pact
 
-import java.io.File
-
 import com.itv.scalapact.ScalaPactForger._
 import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
@@ -30,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import java.io.File
 import scala.concurrent.Future
 
 class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration with WireMockSupport {
