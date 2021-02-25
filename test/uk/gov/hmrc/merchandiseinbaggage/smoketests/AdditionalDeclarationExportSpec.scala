@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, RetrieveDeclarationPage, StartImportPage}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class AdditionalDeclarationExportSpec extends BaseUiSpec {
@@ -25,7 +25,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
   "Additional Declaration Export journey - happy path" should {
     "work as expected" in {
       //TODO
-      goto(StartImportPage.path)
+      goto(StartExportPage.path)
       goto(NeworExistingDeclarationPage.path)
 
       givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
