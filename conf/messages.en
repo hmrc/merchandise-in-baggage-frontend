@@ -473,11 +473,11 @@ retrieveDeclaration.p = You can only add goods to a journey you are making in th
 retrieveDeclaration.mibReference.label = Declaration reference
 retrieveDeclaration.mibReference.hint = For example, XAMB0000010000
 retrieveDeclaration.mibReference.error.required = Enter declaration reference
-retrieveDeclaration.mibReference.error.invalid = Enter a valid declaration reference
+retrieveDeclaration.mibReference.error.invalid = Declaration reference must start with X followed by 13 characters
 retrieveDeclaration.eori.label = EORI number
 retrieveDeclaration.eori.hint = For example, GB123456780000
-retrieveDeclaration.eori.error.required = Enter EORI number
-retrieveDeclaration.eori.error.invalid = Enter a valid EORI number
+retrieveDeclaration.eori.error.required = Enter your EORI number
+retrieveDeclaration.eori.error.invalid = EORI number must start with GB followed by 12 numbers
 
 # Countries
 title.afghanistan=Afghanistan

@@ -18,31 +18,19 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
 import play.api.data.Forms.mapping
-import play.api.data.validation.{Constraint, Invalid, Valid}
-import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Eori, MibReference}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 
-object RetrieveDeclarationForm extends Mappings {
-
-  protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
-  private val eoriRegex: String = "^GB[0-9]{12}$"
-
-  private val isValidEori: Constraint[String] = Constraint { value: String =>
-    if (value matches eoriRegex) Valid
-    else Invalid("retrieveDeclaration.eori.error.invalid")
-  }
-
-  private def isValidMibRef(value: String) = value.matches(referenceFormat)
+object RetrieveDeclarationForm extends Validators {
 
   val form: Form[RetrieveDeclaration] = Form(
     mapping(
       "mibReference" ->
         text("retrieveDeclaration.mibReference.error.required")
-          .verifying("retrieveDeclaration.mibReference.error.invalid", v => isValidMibRef(v)),
+          .verifying(isValidMibRef),
       "eori" ->
         eori("retrieveDeclaration.eori.error.required")
-          .verifying(isValidEori),
+          .verifying(isValidEori("retrieveDeclaration.eori.error.invalid")),
     )((mibRef, eori) => RetrieveDeclaration(MibReference(mibRef), Eori(eori)))(rd => Some((rd.mibReference.value, rd.eori.value)))
   )
 }

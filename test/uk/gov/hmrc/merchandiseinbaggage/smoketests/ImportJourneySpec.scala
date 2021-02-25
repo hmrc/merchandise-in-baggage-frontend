@@ -28,6 +28,8 @@ class ImportJourneySpec extends BaseUiSpec {
     "work as expected" in {
       goto(StartImportPage.path)
 
+      submitPage(NeworExistingDeclarationPage, "New")
+
       submitPage(GoodsDestinationPage, "GreatBritain")
 
       submitPage(ExciseAndRestrictedGoodsPage, No)
