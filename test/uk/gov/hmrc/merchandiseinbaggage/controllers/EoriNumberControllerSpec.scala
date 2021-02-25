@@ -23,14 +23,14 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
   val view = injector.instanceOf[EoriNumberView]
   val client = injector.instanceOf[HttpClient]
   val connector = new MibConnector(client, "some url") {
-    override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
+    override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
       Future.successful(CheckResponse("123", false, None))
   }
   val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)
@@ -51,7 +51,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
   "return an error if API return 404" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
     val connector = new MibConnector(client, "some url") {
-      override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CheckResponse] =
+      override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
         Future.failed(new Exception("API returned 404"))
     }
     val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)

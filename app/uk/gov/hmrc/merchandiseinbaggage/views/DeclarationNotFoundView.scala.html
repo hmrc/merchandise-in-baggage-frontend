@@ -29,19 +29,22 @@
 
 @(declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@*TODO Back and retry links need correcting *@
+@layout(pageTitle = Some(messages("declarationNotFound.title")), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = None) {
 
-@layout(pageTitle = Some(messages("declarationNotFound.title")), maybeBackButtonUrl = Some(ExciseAndRestrictedGoodsController.onSubmit), maybeDeclarationType = None) {
     @h1(("declarationNotFound.heading"))
+
     @p(Html(messages("declarationNotFound.li1")))
+
     @p(Html(messages("declarationNotFound.li2")))
+
     @p(Html(messages("declarationNotFound.li3")))
+
     <p class="govuk-body">
         @messages("declarationNotFound.li4.a.text")
-        @link("TODO /retrieve-declaration", "declarationNotFound.li4.b.text")
+        @link(RetrieveDeclarationController.onPageLoad.url, "declarationNotFound.li4.b.text")
         @messages("declarationNotFound.li4.c.text")
-        @link( GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text")
+        @link(GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text")
     </p>
-    <br>
 
+    <br>
 }

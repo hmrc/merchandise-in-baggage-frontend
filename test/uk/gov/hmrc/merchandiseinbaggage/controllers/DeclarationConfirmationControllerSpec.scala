@@ -16,20 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport with MibConfiguration {
 
@@ -65,8 +64,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val connector = new MibConnector(client, "") {
-      override def findDeclaration(
-        declarationId: DeclarationId)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Option[Declaration]] =
+      override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
         Future.failed(new Exception("not found"))
     }
 

@@ -24,8 +24,6 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport {
 
   private val client = app.injector.instanceOf[MibConnector]
@@ -67,5 +65,22 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
     givenEoriIsChecked(aEoriNumber)
 
     client.checkEoriNumber(aEoriNumber).futureValue mustBe aCheckResponse
+  }
+
+  "findBy query" should {
+    "return declarationId as expected" in {
+      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
+      client.findBy(mibReference, eori).value.futureValue mustBe Right(Some(aDeclarationId))
+    }
+
+    "handle 404 from BE" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, 404)
+      client.findBy(mibReference, eori).value.futureValue mustBe Right(None)
+    }
+
+    "handle unexpected error from BE" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, 500)
+      client.findBy(mibReference, eori).value.futureValue.isLeft mustBe true
+    }
   }
 }

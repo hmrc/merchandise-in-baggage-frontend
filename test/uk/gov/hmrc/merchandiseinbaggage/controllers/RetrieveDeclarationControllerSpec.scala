@@ -17,16 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenFindByDeclarationReturnStatus, givenFindByDeclarationReturnSuccess}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
 
   val view = injector.instanceOf[RetrieveDeclarationView]
+  val connector = injector.instanceOf[MibConnector]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new RetrieveDeclarationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new RetrieveDeclarationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), connector, view)
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
@@ -52,12 +58,32 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   "onSubmit" should {
     s"redirect to /previous-declaration-details after successful form submit" in {
+      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
       val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> "XAMB0000010000", "eori" -> "GB123456780000")
+        .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
       val eventualResult = controller(journey).onSubmit(request)
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe Some(routes.RetrieveDeclarationController.onPageLoad().url)
+    }
+
+    s"redirect to /declaration-not-found after successful form submit but no declaration found in the BE" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, 404)
+      val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
+        .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
+
+      val eventualResult = controller(journey).onSubmit(request)
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.DeclarationNotFoundController.onPageLoad().url)
+    }
+
+    s"redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, 500)
+      val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
+        .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
+
+      val eventualResult = controller(journey).onSubmit(request)
+      status(eventualResult) mustBe 500
     }
 
     "return 400 for invalid form data" in {
