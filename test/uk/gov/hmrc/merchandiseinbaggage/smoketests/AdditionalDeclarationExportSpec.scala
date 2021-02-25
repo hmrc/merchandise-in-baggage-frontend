@@ -24,13 +24,11 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
   "Additional Declaration Export journey - happy path" should {
     "work as expected" in {
-      //TODO
       goto(StartExportPage.path)
-      goto(NeworExistingDeclarationPage.path)
 
-      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
       submitPage(NeworExistingDeclarationPage, "Amend")
 
+      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
       webDriver.getCurrentUrl mustBe fullUrl(RetrieveDeclarationPage.path)

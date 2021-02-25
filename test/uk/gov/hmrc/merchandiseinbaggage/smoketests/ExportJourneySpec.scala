@@ -27,6 +27,8 @@ class ExportJourneySpec extends BaseUiSpec {
     "work as expected" in {
       goto(StartExportPage.path)
 
+      submitPage(NeworExistingDeclarationPage, "New")
+
       submitPage(GoodsDestinationPage, "GreatBritain")
 
       submitPage(ExciseAndRestrictedGoodsPage, No)

@@ -464,17 +464,17 @@ declarationConfirmation.amountPaid.customsDuty = Toll Dramor
 declarationConfirmation.amountPaid.vat = TAW
 declarationConfirmation.amountPaid.totalTax = Cyfanswm
 
-retrieveDeclaration.title = What are the details of your existing declaration?
-retrieveDeclaration.heading = What are the details of your existing declaration?
-retrieveDeclaration.p = You can only add goods to a journey you are making in the next 5 days.
-retrieveDeclaration.mibReference.label = Declaration reference
-retrieveDeclaration.mibReference.hint = For example, XAMB0000010000
-retrieveDeclaration.mibReference.error.required = Enter declaration reference
-retrieveDeclaration.mibReference.error.invalid = Enter a valid declaration reference
-retrieveDeclaration.eori.label = EORI number
-retrieveDeclaration.eori.hint = For example, GB123456780000
-retrieveDeclaration.eori.error.required = Enter EORI number
-retrieveDeclaration.eori.error.invalid = Enter a valid EORI number
+retrieveDeclaration.title = Beth yw manylion eich datganiad presennol?
+retrieveDeclaration.heading = Beth yw manylion eich datganiad presennol?
+retrieveDeclaration.p = Gallwch ond ychwanegu nwyddau i daith rydych yn ei wneud yn ystod y 5 diwrnod nesaf.
+retrieveDeclaration.mibReference.label = Cyfeirnod y datganiad
+retrieveDeclaration.mibReference.hint = Er enghraifft, XAMB0000010000
+retrieveDeclaration.mibReference.error.required = Nodwch gyfeirnod eich datganiad
+retrieveDeclaration.mibReference.error.invalid = Mae’n rhaid i gyfeirnod datganiad ddechrau gydag X wedi’i ddilyn gan 13 o gymeriadau.
+retrieveDeclaration.eori.label = Rhif EORI
+retrieveDeclaration.eori.hint = Er enghraifft, GB123456780000
+retrieveDeclaration.eori.error.required = Nodwch eich rhif EORI
+retrieveDeclaration.eori.error.invalid = Mae’n rhaid i’r rhif EORI ddechrau gyda GB, wedi’i ddilyn gan 12 rhif
 
 # Countries
 title.afghanistan=Afghanistan

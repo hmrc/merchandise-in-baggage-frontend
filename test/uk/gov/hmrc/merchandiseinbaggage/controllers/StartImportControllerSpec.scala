@@ -46,7 +46,7 @@ class StartImportControllerSpec extends DeclarationJourneyControllerSpec with Co
       val result = controller().processRequest()(request)
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NewOrExistingController.onPageLoad().url)
     }
   }
 }
