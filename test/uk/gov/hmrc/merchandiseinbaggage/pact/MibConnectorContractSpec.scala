@@ -51,7 +51,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .description("Persisting a declaration")
         .given("persistDeclarationTest")
         .uponReceiving(POST, s"$declarationsUrl", None, Map("Content-Type" -> "application/json"), Json.toJson(declaration).toString)
-        .willRespondWith(201, s"${declaration.declarationId.value}")
+        .willRespondWith(201, Json.toJson(declaration.declarationId).toString)
     )
     .addInteraction(
       interaction
