@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
@@ -27,8 +28,10 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view = injector.instanceOf[NewOrExistingView]
 
-  def controller(declarationJourney: DeclarationJourney) =
-    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+  def controller(declarationJourney: DeclarationJourney, amendFlag: Boolean = true) =
+    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view) {
+      override lazy val amendFlagConf: AmendFlagConf = AmendFlagConf(amendFlag)
+    }
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
@@ -44,6 +47,14 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
         result must include(messageApi(s"newOrExisting.heading"))
 
         result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
+      }
+
+      s"redirect to ${routes.GoodsDestinationController.onPageLoad().url} if flag is false for $importOrExport" in {
+        val request = buildGet(routes.NewOrExistingController.onPageLoad.url, aSessionId)
+        val eventualResult = controller(journey, false).onPageLoad(request)
+
+        status(eventualResult) mustBe 303
+        redirectLocation(eventualResult) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
       }
     }
 

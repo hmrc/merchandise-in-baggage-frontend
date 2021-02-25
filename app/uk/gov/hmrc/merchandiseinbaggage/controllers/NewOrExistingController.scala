@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.forms.NewOrExistingForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -33,14 +33,16 @@ class NewOrExistingController @Inject()(
   override val repo: DeclarationJourneyRepository,
   view: NewOrExistingView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    if(amendFlagConf.canBeAmended)
     Ok(
       view(
         form,
         request.declarationJourney.declarationType
       ))
+    else Redirect(routes.GoodsDestinationController.onPageLoad())
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
