@@ -77,6 +77,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .uponReceiving(GET, s"${checkEoriUrl}GB123")
         .willRespondWith(200, Json.toJson(CheckResponse("GB123", true, None)).toString)
     )
+    .addInteraction(
+      interaction
+        .description("findBy mib ref and eori")
+        .given(s"findByTestXXX${mibReference.value}XXX${eori.value}")
+        .uponReceiving(GET, s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}")
+        .willRespondWith(200)
+    )
 
   implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
 
