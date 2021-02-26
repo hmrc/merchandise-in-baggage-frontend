@@ -61,15 +61,15 @@ invalidRequest.Import.restart = dod â nwyddau masnachol i mewn i Brydain Fawr
 invalidRequest.Export.restart = cymryd nwyddau masnachol allan o Brydain Fawr
 
 # DeclarationNotFound
-declarationNotFound.title = Declaration not found
-declarationNotFound.heading = Declaration not found
-declarationNotFound.li1 = We cannot find this declaration.
-declarationNotFound.li2 = If you typed the reference, check it is correct.
-declarationNotFound.li3 = If you pasted the reference, check you copied the entire reference.
-declarationNotFound.li4.a.text = You can
-declarationNotFound.li4.b.text = try again
-declarationNotFound.li4.c.text = or
-declarationNotFound.li4.d.text = make a new declaration.
+declarationNotFound.title = Heb ddod o hyd i’r datganiad
+declarationNotFound.heading = Heb ddod o hyd i’r datganiad
+declarationNotFound.li1 = Ni allwn ddod o hyd i’r datganiad hwn.
+declarationNotFound.li2 = Os gwnaethoch deipio’r cyfeirnod, gwiriwch ei fod yn gywir.
+declarationNotFound.li3 = Os gwnaethoch ludo’r cyfeirnod, gwiriwch eich bod wedi copïo’r cyfeirnod yn llawn.
+declarationNotFound.li4.a.text = Gallwch
+declarationNotFound.li4.b.text = roi cynnig arall arni
+declarationNotFound.li4.c.text = neu
+declarationNotFound.li4.d.text = wneud datganiad newydd.
 
 # NewOrExisting
 newOrExisting.title = Beth hoffech ei wneud?
