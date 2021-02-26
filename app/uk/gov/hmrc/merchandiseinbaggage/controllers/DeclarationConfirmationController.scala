@@ -19,9 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
@@ -43,6 +43,12 @@ class DeclarationConfirmationController @Inject()(
       case Some(declaration) if showConfirmation(declaration) =>
         clearAnswers()
         Ok(view(declaration))
+      case Some(declaration) =>
+        clearAnswers()
+        val message =
+          s"can't show confirmation page due to declarationType: ${declaration.declarationType}, paymentStatus: ${declaration.paymentStatus} and totalTaxDue: ${declaration.maybeTotalCalculationResult
+            .map(_.totalTaxDue)}"
+        actionProvider.invalidRequest(message)
       case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
   }
