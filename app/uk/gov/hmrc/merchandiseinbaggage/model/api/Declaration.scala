@@ -36,7 +36,8 @@ case class Declaration(
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentStatus: Option[PaymentStatus] = None,
   lang: String = "en",
-  source: Option[String] = Some("Digital"))
+  source: Option[String] = Some("Digital"),
+  amendments: Seq[Amendment] = Seq.empty)
 
 object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]

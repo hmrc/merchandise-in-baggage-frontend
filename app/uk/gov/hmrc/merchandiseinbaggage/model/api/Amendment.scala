@@ -20,14 +20,14 @@ import play.api.libs.json.{Json, OFormat}
 
 import java.time.LocalDateTime
 
-case class DeclarationAmendment(
+case class Amendment(
   dateOfAmendment: LocalDateTime,
   goods: DeclarationGoods,
-  maybeTotalCalculationResult: Option[TotalCalculationResult],
-  paymentStatus: PaymentStatus,
+  maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
+  paymentStatus: Option[PaymentStatus] = None,
   source: Option[String] = Some("Digital")
 )
 
-object DeclarationAmendment {
-  implicit val format: OFormat[DeclarationAmendment] = Json.format[DeclarationAmendment]
+object Amendment {
+  implicit val format: OFormat[Amendment] = Json.format[Amendment]
 }
