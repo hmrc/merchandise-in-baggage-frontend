@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Eori, Name}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -54,6 +55,7 @@ class ObfuscateSpec extends BaseSpec with CoreTestData {
       DeclarationJourney(
         aSessionId,
         Import,
+        New,
         createdAt,
         maybeExciseOrRestrictedGoods,
         maybeGoodsDestination,

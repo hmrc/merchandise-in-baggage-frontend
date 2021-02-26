@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class NewOrExistingController @Inject()(
@@ -31,7 +32,7 @@ class NewOrExistingController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: NewOrExistingView
-)(implicit appConfig: AppConfig)
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
@@ -42,13 +43,16 @@ class NewOrExistingController @Inject()(
       ))
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case New   => Redirect(routes.GoodsDestinationController.onPageLoad())
-          case Amend => Redirect(routes.RetrieveDeclarationController.onPageLoad())
+        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
+          case New => Future successful Redirect(routes.GoodsDestinationController.onPageLoad())
+          case Amend =>
+            repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
+              Redirect(routes.RetrieveDeclarationController.onPageLoad())
+            }
         }
       )
   }

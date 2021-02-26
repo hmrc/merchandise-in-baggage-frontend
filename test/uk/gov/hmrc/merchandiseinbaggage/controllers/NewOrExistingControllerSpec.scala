@@ -21,9 +21,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
 
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view = injector.instanceOf[NewOrExistingView]
+  private val view = injector.instanceOf[NewOrExistingView]
 
   def controller(declarationJourney: DeclarationJourney) =
     new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
@@ -33,7 +35,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.NewOrExistingController.onPageLoad.url, aSessionId)
+        val request = buildGet(routes.NewOrExistingController.onPageLoad().url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
         val result = contentAsString(eventualResult)
 
