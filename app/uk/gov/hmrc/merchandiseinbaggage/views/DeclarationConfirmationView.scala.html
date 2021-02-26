@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
@@ -88,6 +89,12 @@
       <div class="govuk-summary-list__row">
        <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
        <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
+      </div>
+     }
+     case good:ExportGoods => {
+      <div class="govuk-summary-list__row">
+       <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.country")</dt>
+       <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.destination.countryName)</dd>
       </div>
      }
     }
