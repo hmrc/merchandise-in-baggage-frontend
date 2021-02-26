@@ -31,6 +31,7 @@ import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
 
@@ -135,6 +136,18 @@ trait CoreTestData {
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney
       .copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
+
+  val startedAmendImportJourney: DeclarationJourney =
+    DeclarationJourney(aSessionId, Import).copy(journeyType = Amend)
+
+  val startedAmendExportJourney: DeclarationJourney =
+    DeclarationJourney(aSessionId, Export).copy(journeyType = Amend)
+
+  val completeAmendImportJourney: DeclarationJourney =
+    startedAmendImportJourney.copy(goodsEntries = GoodsEntries(completedImportGoods))
+
+  val completeAmendExportJourney: DeclarationJourney =
+    startedAmendExportJourney.copy(goodsEntries = GoodsEntries(completedExportGoods))
 
   val aPurchaseDetails: PurchaseDetails =
     PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))

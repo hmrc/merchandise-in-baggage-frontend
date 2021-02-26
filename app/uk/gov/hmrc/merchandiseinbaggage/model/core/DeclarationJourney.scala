@@ -21,7 +21,7 @@ import java.util.UUID
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
@@ -102,41 +102,49 @@ case class DeclarationJourney(
     }
   }
 
-  val declarationIfRequiredAndComplete: Option[Declaration] = {
+  val declarationIfRequiredAndComplete: Option[Declaration] = journeyType match {
+    case Amend => None
+    case New =>
+      val discardedAnswersAreCompleteAndRequireADeclaration =
+        maybeGoodsDestination.contains(GreatBritain) &&
+          maybeExciseOrRestrictedGoods.contains(No) &&
+          maybeValueWeightOfGoodsBelowThreshold.contains(Yes) &&
+          (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
 
-    val discardedAnswersAreCompleteAndRequireADeclaration =
-      maybeGoodsDestination.contains(GreatBritain) &&
-        maybeExciseOrRestrictedGoods.contains(No) &&
-        maybeValueWeightOfGoodsBelowThreshold.contains(Yes) &&
-        (maybeCustomsAgent.isDefined || maybeIsACustomsAgent.contains(No))
-
-    for {
-      goodsDestination             <- maybeGoodsDestination
-      goods                        <- goodsEntries.declarationGoodsIfComplete
-      nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
-      email                        <- maybeEmailAddress
-      eori                         <- maybeEori
-      journeyDetails               <- maybeCompleteJourneyDetails
-      if discardedAnswersAreCompleteAndRequireADeclaration
-    } yield {
-      Declaration(
-        declarationId,
-        sessionId,
-        declarationType,
-        goodsDestination,
-        goods,
-        nameOfPersonCarryingTheGoods,
-        Some(email),
-        maybeCustomsAgent,
-        eori,
-        journeyDetails,
-        LocalDateTime.now(),
-        mibReference
-      )
-    }
+      for {
+        goodsDestination             <- maybeGoodsDestination
+        goods                        <- goodsEntries.declarationGoodsIfComplete
+        nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
+        email                        <- maybeEmailAddress
+        eori                         <- maybeEori
+        journeyDetails               <- maybeCompleteJourneyDetails
+        if discardedAnswersAreCompleteAndRequireADeclaration
+      } yield {
+        Declaration(
+          declarationId,
+          sessionId,
+          declarationType,
+          goodsDestination,
+          goods,
+          nameOfPersonCarryingTheGoods,
+          Some(email),
+          maybeCustomsAgent,
+          eori,
+          journeyDetails,
+          LocalDateTime.now(),
+          mibReference
+        )
+      }
   }
 
   val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
+
+  val amendmentIfRequiredAndComplete: Option[Amendment] = journeyType match {
+    case New   => None
+    case Amend => goodsEntries.declarationGoodsIfComplete.map(goods => Amendment(LocalDateTime.now, goods))
+  }
+
+  val amendmentRequiredAndComplete: Boolean = amendmentIfRequiredAndComplete.isDefined
 }
 
 object DeclarationJourney extends MongoDateTimeFormats {
