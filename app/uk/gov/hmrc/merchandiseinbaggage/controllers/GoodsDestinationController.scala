@@ -18,9 +18,10 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
 
@@ -33,14 +34,17 @@ class GoodsDestinationController @Inject()(
   override val repo: DeclarationJourneyRepository,
   view: GoodsDestinationView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
+
+  private val backLink = if (amendFlagConf.canBeAmended) Some(routes.NewOrExistingController.onPageLoad()) else None
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(
       view(
         request.declarationJourney.maybeGoodsDestination
           .fold(form(request.declarationType))(form(request.declarationType).fill),
-        request.declarationJourney.declarationType
+        request.declarationJourney.declarationType,
+        backLink
       ))
   }
 
@@ -48,7 +52,7 @@ class GoodsDestinationController @Inject()(
     form(request.declarationType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
         value => {
           val redirectIfNotComplete =
             if (value == NorthernIreland)
