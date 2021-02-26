@@ -36,12 +36,12 @@ class NewOrExistingController @Inject()(
     extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    if(amendFlagConf.canBeAmended)
-    Ok(
-      view(
-        form,
-        request.declarationJourney.declarationType
-      ))
+    if (amendFlagConf.canBeAmended)
+      Ok(
+        view(
+          form,
+          request.declarationJourney.declarationType
+        ))
     else Redirect(routes.GoodsDestinationController.onPageLoad())
   }
 

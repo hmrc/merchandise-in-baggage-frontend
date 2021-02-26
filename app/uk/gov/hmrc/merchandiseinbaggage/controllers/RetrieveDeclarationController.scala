@@ -41,8 +41,8 @@ class RetrieveDeclarationController @Inject()(
     extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    if(amendFlagConf.canBeAmended)
-    Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
+    if (amendFlagConf.canBeAmended)
+      Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
     else Redirect(routes.CannotAccessPageController.onPageLoad().url)
   }
 
