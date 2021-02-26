@@ -16,29 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import java.time.LocalDateTime
-
 import play.api.libs.json.{Json, OFormat}
 
-case class Declaration(
-  declarationId: DeclarationId,
-  sessionId: SessionId,
-  declarationType: DeclarationType,
-  goodsDestination: GoodsDestination,
-  declarationGoods: DeclarationGoods,
-  nameOfPersonCarryingTheGoods: Name,
-  email: Option[Email],
-  maybeCustomsAgent: Option[CustomsAgent],
-  eori: Eori,
-  journeyDetails: JourneyDetails,
-  dateOfDeclaration: LocalDateTime,
-  mibReference: MibReference,
+import java.time.LocalDateTime
+
+case class Amendment(
+  dateOfAmendment: LocalDateTime,
+  goods: DeclarationGoods,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentStatus: Option[PaymentStatus] = None,
-  lang: String = "en",
-  source: Option[String] = Some("Digital"),
-  amendments: Seq[Amendment] = Seq.empty)
+  source: Option[String] = Some("Digital")
+)
 
-object Declaration {
-  implicit val format: OFormat[Declaration] = Json.format[Declaration]
+object Amendment {
+  implicit val format: OFormat[Amendment] = Json.format[Amendment]
 }

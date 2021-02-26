@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
