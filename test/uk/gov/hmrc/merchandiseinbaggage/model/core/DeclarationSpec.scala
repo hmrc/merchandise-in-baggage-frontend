@@ -347,4 +347,24 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       aDeclaration.dateOfDeclaration.formattedDate mustBe "10 November 2020, 12:55pm"
     }
   }
+
+  "amendment journey complete" when {
+    "amending an import and all questions have been answered" in {
+      completeAmendImportJourney.amendmentRequiredAndComplete mustBe true
+    }
+
+    "amending an export and all questions have been answered" in {
+      completeAmendExportJourney.amendmentRequiredAndComplete mustBe true
+    }
+  }
+
+  "amendment journey incomplete" when {
+    "amending an import and not all questions have been answered" in {
+      startedAmendImportJourney.amendmentRequiredAndComplete mustBe false
+    }
+
+    "amending an export and not all questions have been answered" in {
+      startedAmendExportJourney.amendmentRequiredAndComplete mustBe false
+    }
+  }
 }

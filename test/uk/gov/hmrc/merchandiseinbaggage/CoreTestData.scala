@@ -31,6 +31,7 @@ import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
 
@@ -69,6 +70,14 @@ trait CoreTestData {
 
   val completedImportGoods: ImportGoodsEntry = TestOnlyController.completedGoodsEntry
 
+  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
+
+  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
+    Some(aCategoryQuantityOfGoods),
+    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
+  )
+
   val aImportGoods =
     ImportGoods(
       completedImportGoods.maybeCategoryQuantityOfGoods.get,
@@ -93,8 +102,6 @@ trait CoreTestData {
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
   val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
-
-  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
 
   val startedImportGoods: ImportGoodsEntry = ImportGoodsEntry(Some(aCategoryQuantityOfGoods))
 
@@ -135,6 +142,18 @@ trait CoreTestData {
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney
       .copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
+
+  val startedAmendImportJourney: DeclarationJourney =
+    DeclarationJourney(aSessionId, Import).copy(journeyType = Amend)
+
+  val startedAmendExportJourney: DeclarationJourney =
+    DeclarationJourney(aSessionId, Export).copy(journeyType = Amend)
+
+  val completeAmendImportJourney: DeclarationJourney =
+    startedAmendImportJourney.copy(goodsEntries = GoodsEntries(completedImportGoods))
+
+  val completeAmendExportJourney: DeclarationJourney =
+    startedAmendExportJourney.copy(goodsEntries = GoodsEntries(completedExportGoods))
 
   val aPurchaseDetails: PurchaseDetails =
     PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
@@ -191,12 +210,6 @@ trait CoreTestData {
        |  },
        |  "processingDate": "2021-01-27T11:00:22.522Z[Europe/London]"
        |}""".stripMargin
-
-  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
-    Some(aCategoryQuantityOfGoods),
-    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
-    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
-  )
 
   def completedGoodsEntries(declarationType: DeclarationType): GoodsEntries =
     declarationType match {
