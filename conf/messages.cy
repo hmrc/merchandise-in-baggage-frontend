@@ -408,7 +408,6 @@ checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
 checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = Cyfradd TAW
-checkYourAnswers.detailsOfTheGoods.country = Gwlad
 checkYourAnswers.detailsOfTheGoods.producedInEu = Cynhyrchwyd yn yr UE
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
 checkYourAnswers.detailsOfTheGoods.price = Y pris a dalwyd
