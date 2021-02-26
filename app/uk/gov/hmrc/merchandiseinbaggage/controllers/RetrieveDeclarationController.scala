@@ -19,15 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
-
 import javax.inject.{Inject, Singleton}
+
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -38,10 +38,12 @@ class RetrieveDeclarationController @Inject()(
   mibConnector: MibConnector,
   view: RetrieveDeclarationView
 )(implicit appConfig: AppConfig, val ec: ExecutionContext)
-    extends DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    if(amendFlagConf.canBeAmended)
     Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
+    else Redirect(routes.CannotAccessPageController.onPageLoad().url)
   }
 
   override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
