@@ -70,6 +70,14 @@ trait CoreTestData {
 
   val completedImportGoods: ImportGoodsEntry = TestOnlyController.completedGoodsEntry
 
+  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
+
+  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
+    Some(aCategoryQuantityOfGoods),
+    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
+    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
+  )
+
   val aImportGoods =
     ImportGoods(
       completedImportGoods.maybeCategoryQuantityOfGoods.get,
@@ -94,8 +102,6 @@ trait CoreTestData {
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
   val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
-
-  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
 
   val startedImportGoods: ImportGoodsEntry = ImportGoodsEntry(Some(aCategoryQuantityOfGoods))
 
@@ -204,12 +210,6 @@ trait CoreTestData {
        |  },
        |  "processingDate": "2021-01-27T11:00:22.522Z[Europe/London]"
        |}""".stripMargin
-
-  val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
-    Some(aCategoryQuantityOfGoods),
-    Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
-    Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
-  )
 
   def completedGoodsEntries(declarationType: DeclarationType): GoodsEntries =
     declarationType match {
