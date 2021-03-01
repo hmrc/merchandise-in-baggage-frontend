@@ -108,9 +108,7 @@ class CheckYourAnswersController @Inject()(
             handleNewDeclaration(declaration.copy(lang = messages.lang.code)))
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
-        .fold(actionProvider.invalidRequestF(incompleteMessage))(amendment =>
-        handleAmendDeclaration(amendment)
-        )
+          .fold(actionProvider.invalidRequestF(incompleteMessage))(amendment => handleAmendDeclaration(amendment))
     }
   }
 
@@ -135,20 +133,23 @@ class CheckYourAnswersController @Inject()(
       maybeOriginalDeclaration.fold(actionProvider.invalidRequestF(declarationNotFoundMessage)) { originalDeclaration =>
         originalDeclaration.declarationType match {
           case Import =>
-            calculationService.paymentCalculations(amendment.goods.importGoods).map { taxDue =>
-              val updatedAmendment = amendment.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult))
-              val updatedAmendments = originalDeclaration.amendments :+ updatedAmendment
-              val updatedDeclaration = originalDeclaration.copy(
-                amendments = updatedAmendments,
-                lang = messages.lang.code
-              )
+            calculationService
+              .paymentCalculations(amendment.goods.importGoods)
+              .map { taxDue =>
+                val updatedAmendment = amendment.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult))
+                val updatedAmendments = originalDeclaration.amendments :+ updatedAmendment
+                val updatedDeclaration = originalDeclaration.copy(
+                  amendments = updatedAmendments,
+                  lang = messages.lang.code
+                )
 
-              mibConnector.persistDeclaration(updatedDeclaration).map { _ =>
-                paymentService.sendPaymentRequest(originalDeclaration.mibReference, taxDue).map { redirectUrl =>
-                  Redirect(redirectUrl)
+                mibConnector.persistDeclaration(updatedDeclaration).flatMap { _ =>
+                  paymentService.sendPaymentRequest(originalDeclaration.mibReference, taxDue).map { redirectUrl =>
+                    Redirect(redirectUrl)
+                  }
                 }
               }
-            }
+              .flatten
           case Export =>
             val updatedAmendments = originalDeclaration.amendments :+ amendment
             val updatedDeclaration = originalDeclaration.copy(
