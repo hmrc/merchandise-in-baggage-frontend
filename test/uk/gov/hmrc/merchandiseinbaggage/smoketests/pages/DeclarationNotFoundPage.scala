@@ -17,24 +17,26 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.Assertions.fail
-import org.scalatestplus.selenium.WebBrowser._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
+import org.scalatest.{Assertion, Suite}
+import org.scalatestplus.selenium.WebBrowser.{find, _}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage._
 
-object RetrieveDeclarationPage extends Page {
-  val path = "/declare-commercial-goods/retrieve-declaration"
+object DeclarationNotFoundPage extends Page {
+  val path = "/declare-commercial-goods/declaration-not-found"
   val title =
-    "What are the details of your existing declaration? - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+    "Declaration not found - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    val button = find(IdQuery(formData.toString)).get
+    click on button
+  }
+}
 
-    val rd = formData match {
-      case rd: RetrieveDeclaration => rd
-      case _                       => fail("invalid_input")
-    }
+trait DeclarationNotFoundPage extends BaseUiSpec { this: Suite =>
 
-    find(NameQuery("mibReference")).get.underlying.sendKeys(rd.mibReference.value)
-    find(NameQuery("eori")).get.underlying.sendKeys(rd.eori.value)
-    click.on(NameQuery("continue"))
+  def goToDeclarationNotFoundPage: Assertion = {
+    goto(path)
+    pageTitle mustBe title
   }
 }

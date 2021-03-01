@@ -43,6 +43,8 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
 
   def findByXPath(xPath: String): WebElement = findElement(By.xpath(xPath))
 
+  def findById(id: String): WebElement = findElement(By.id(id))
+
   def findByTagName(name: String): WebElement = findElement(By.tagName(name))
 
   def elementText(element: WebElement): String = element.getText

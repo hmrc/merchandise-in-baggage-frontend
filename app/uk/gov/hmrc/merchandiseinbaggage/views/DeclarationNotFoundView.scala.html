@@ -33,17 +33,17 @@
 
     @h1(("declarationNotFound.heading"))
 
-    @p(Html(messages("declarationNotFound.li1")))
+    @p(Html(messages("declarationNotFound.li1")), Some("p.l1"))
 
-    @p(Html(messages("declarationNotFound.li2")))
+    @p(Html(messages("declarationNotFound.li2")), Some("p.l2"))
 
-    @p(Html(messages("declarationNotFound.li3")))
+    @p(Html(messages("declarationNotFound.li3")), Some("p.l3"))
 
-    <p class="govuk-body">
+    <p class="govuk-body" id="p.l4">
         @messages("declarationNotFound.li4.a.text")
-        @link(RetrieveDeclarationController.onPageLoad.url, "declarationNotFound.li4.b.text")
+        @link(RetrieveDeclarationController.onPageLoad.url, "declarationNotFound.li4.b.text", id = Some("tryAgain"))
         @messages("declarationNotFound.li4.c.text")
-        @link(GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text")
+        @link(GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text", id = Some("makeNewDeclaration"))
     </p>
 
     <br>
