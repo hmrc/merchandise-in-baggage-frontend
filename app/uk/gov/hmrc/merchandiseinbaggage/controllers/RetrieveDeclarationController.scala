@@ -56,15 +56,17 @@ class RetrieveDeclarationController @Inject()(
       )
   }
 
-  private def processRequest(validData: RetrieveDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+  private def processRequest(
+    validData: RetrieveDeclaration)(implicit request: DeclarationJourneyRequest[AnyContent], hc: HeaderCarrier, ec: ExecutionContext) =
     mibConnector
       .findBy(validData.mibReference, validData.eori)
       .fold(
         error => InternalServerError(error), {
           case Some(id) =>
-            //TODO: Save id in the session and redirect to next page when implemented
-            Redirect(routes.RetrieveDeclarationController.onPageLoad())
-
+            repo.upsert(request.declarationJourney.copy(declarationId = id)) map { _ =>
+              //TODO: redirect to next page when implemented
+              Redirect(routes.RetrieveDeclarationController.onPageLoad())
+            }
           case None => Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }
       )

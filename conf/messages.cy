@@ -405,6 +405,7 @@ noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do 
 
 # CheckYourAnswers
 checkYourAnswers.title = Gwirio’ch atebion cyn cyflwyno’ch datganiad
+checkYourAnswers.amend.title = Gwiriwch eich atebion cyn ychwanegu’r nwyddau hyn at eich datganiad
 checkYourAnswers.change = Newid
 checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
@@ -431,6 +432,9 @@ checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Rhif cofrestru’r c
 checkYourAnswers.sendDeclaration = Nawr anfonwch eich datganiad
 checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall y canlynol:
 checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu am nwyddau rwy’n dod â nhw i Brydain Fawr at ddefnydd masnach neu fusnes
+checkYourAnswers.amend.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi ddod â’r datganiad hwn sydd wedi’i ddiweddaru gyda mi.
+checkYourAnswers.amend.sendDeclaration.acknowledgement.2 = Mae’n rhaid i mi dalu am nwyddau rwy’n dod â nhw i Brydain Fawr at ddefnydd masnach neu fusnes
+checkYourAnswers.amend.sendDeclaration.acknowledgement.3 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
 checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = Mae’n rhaid i mi ddod â thystiolaeth bod fy nwyddau wedi’u cynhyrchu yn yr UE

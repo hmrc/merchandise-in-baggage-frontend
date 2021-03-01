@@ -39,6 +39,7 @@ object DeclarationJourneyController {
   val incompleteMessage = "declaration journey is not required and complete"
   val goodsDestinationUnansweredMessage = "goods destination is unanswered"
   val goodsDeclarationIncompleteMessage = "goods declaration is incomplete"
+  val declarationNotFoundMessage = "original declaration was not found"
 }
 
 trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
