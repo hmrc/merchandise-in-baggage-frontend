@@ -16,13 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, incompleteMessage}
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
@@ -31,6 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentServ
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -101,15 +101,9 @@ class CheckYourAnswersController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.journeyType match {
-      case New =>
-        request.declarationJourney.declarationIfRequiredAndComplete
-          .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
-            handleNewDeclaration(declaration.copy(lang = messages.lang.code)))
-      case Amend =>
-        request.declarationJourney.amendmentIfRequiredAndComplete
-          .fold(actionProvider.invalidRequestF(incompleteMessage))(amendment => handleAmendDeclaration(amendment))
-    }
+    request.declarationJourney.declarationIfRequiredAndComplete
+      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
+        handleNewDeclaration(declaration.copy(lang = messages.lang.code)))
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -126,40 +120,6 @@ class CheckYourAnswersController @Inject()(
         continueExportDeclaration(declaration)
       case Import =>
         continueImportDeclaration(declaration)
-    }
-
-  private def handleAmendDeclaration(amendment: Amendment)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    mibConnector.findDeclaration(request.declarationJourney.declarationId).flatMap { maybeOriginalDeclaration =>
-      maybeOriginalDeclaration.fold(actionProvider.invalidRequestF(declarationNotFoundMessage)) { originalDeclaration =>
-        originalDeclaration.declarationType match {
-          case Import =>
-            calculationService
-              .paymentCalculations(amendment.goods.importGoods)
-              .map { taxDue =>
-                val updatedAmendment = amendment.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult))
-                val updatedAmendments = originalDeclaration.amendments :+ updatedAmendment
-                val updatedDeclaration = originalDeclaration.copy(
-                  amendments = updatedAmendments,
-                  lang = messages.lang.code
-                )
-
-                mibConnector.persistDeclaration(updatedDeclaration).flatMap { _ =>
-                  paymentService.sendPaymentRequest(originalDeclaration.mibReference, taxDue).map { redirectUrl =>
-                    Redirect(redirectUrl)
-                  }
-                }
-              }
-              .flatten
-          case Export =>
-            val updatedAmendments = originalDeclaration.amendments :+ amendment
-            val updatedDeclaration = originalDeclaration.copy(
-              amendments = updatedAmendments,
-              lang = messages.lang.code
-            )
-
-            mibConnector.persistDeclaration(updatedDeclaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
-        }
-      }
     }
 
   private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =

@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
-
 import com.softwaremill.quicklens._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -30,7 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, p
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,6 +40,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
+  private lazy val amendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
+  private lazy val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
@@ -67,7 +68,9 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     testMibConnector,
     declarationJourneyRepository,
     importView,
-    exportView
+    exportView,
+    amendImportView,
+    amendExportView
   )
 
   "on submit" should {
