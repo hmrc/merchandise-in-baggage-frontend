@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, incompleteMessage}
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
@@ -101,9 +101,17 @@ class CheckYourAnswersController @Inject()(
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
-        declarationConfirmation(declaration.copy(lang = messages.lang.code)))
+    request.declarationJourney.journeyType match {
+      case New =>
+        request.declarationJourney.declarationIfRequiredAndComplete
+          .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
+            handleNewDeclaration(declaration.copy(lang = messages.lang.code)))
+      case Amend =>
+        request.declarationJourney.amendmentIfRequiredAndComplete
+        .fold(actionProvider.invalidRequestF(incompleteMessage))(amendment =>
+        handleAmendDeclaration(amendment)
+        )
+    }
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -114,12 +122,43 @@ class CheckYourAnswersController @Inject()(
     }
   }
 
-  private def declarationConfirmation(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def handleNewDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     declaration.declarationType match {
       case Export =>
         continueExportDeclaration(declaration)
       case Import =>
         continueImportDeclaration(declaration)
+    }
+
+  private def handleAmendDeclaration(amendment: Amendment)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    mibConnector.findDeclaration(request.declarationJourney.declarationId).flatMap { maybeOriginalDeclaration =>
+      maybeOriginalDeclaration.fold(actionProvider.invalidRequestF(declarationNotFoundMessage)) { originalDeclaration =>
+        originalDeclaration.declarationType match {
+          case Import =>
+            calculationService.paymentCalculations(amendment.goods.importGoods).map { taxDue =>
+              val updatedAmendment = amendment.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult))
+              val updatedAmendments = originalDeclaration.amendments :+ updatedAmendment
+              val updatedDeclaration = originalDeclaration.copy(
+                amendments = updatedAmendments,
+                lang = messages.lang.code
+              )
+
+              mibConnector.persistDeclaration(updatedDeclaration).map { _ =>
+                paymentService.sendPaymentRequest(originalDeclaration.mibReference, taxDue).map { redirectUrl =>
+                  Redirect(redirectUrl)
+                }
+              }
+            }
+          case Export =>
+            val updatedAmendments = originalDeclaration.amendments :+ amendment
+            val updatedDeclaration = originalDeclaration.copy(
+              amendments = updatedAmendments,
+              lang = messages.lang.code
+            )
+
+            mibConnector.persistDeclaration(updatedDeclaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+        }
+      }
     }
 
   private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =

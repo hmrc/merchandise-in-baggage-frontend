@@ -26,9 +26,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
-import javax.inject.{Inject, Singleton}
 
-import scala.concurrent.ExecutionContext
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class RetrieveDeclarationController @Inject()(
@@ -61,13 +61,14 @@ class RetrieveDeclarationController @Inject()(
     mibConnector
       .findBy(validData.mibReference, validData.eori)
       .fold(
-        error => InternalServerError(error), {
+        error => Future successful InternalServerError(error), {
           case Some(id) =>
             repo.upsert(request.declarationJourney.copy(declarationId = id)) map { _ =>
               //TODO: redirect to next page when implemented
               Redirect(routes.RetrieveDeclarationController.onPageLoad())
             }
-          case None => Redirect(routes.DeclarationNotFoundController.onPageLoad())
+          case None => Future successful Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }
       )
+      .flatten
 }
