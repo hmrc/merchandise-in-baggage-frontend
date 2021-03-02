@@ -77,10 +77,10 @@ newOrExisting.heading = Beth hoffech ei wneud?
 newOrExisting.error.required = Dewiswch os ydych am wneud datganiad newydd neu ychwanegu nwyddau at ddatganiad sy’n bodoli eisoes
 
 # ExciseAndRestrictedGoods
-exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
-exciseAndRestrictedGoods.Import.heading = Are you bringing excise, controlled or restricted goods to Great Britain?
-exciseAndRestrictedGoods.Export.title = Are you taking excise, controlled or restricted goods out of Great Britain?
-exciseAndRestrictedGoods.Export.heading = Are you taking excise, controlled or restricted goods out of Great Britain?
+exciseAndRestrictedGoods.Import.title = A ydych yn dod â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig i Brydain Fawr?
+exciseAndRestrictedGoods.Import.heading = A ydych yn dod â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig i Brydain Fawr?
+exciseAndRestrictedGoods.Export.title = A ydych yn mynd â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o Brydain Fawr?
+exciseAndRestrictedGoods.Export.heading = A ydych yn mynd â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o Brydain Fawr?
 exciseAndRestrictedGoods.details = Beth yw nwyddau ecséis, nwyddau o dan reolaeth a nwyddau cyfyngedig?
 exciseAndRestrictedGoods.details.excise = Nwyddau ecséis:
 exciseAndRestrictedGoods.details.excise.p = cynhyrchion sy’n cynnwys alcohol, gan gynnwys cwrw, gwinoedd a gwirodydd; cynhyrchion tybaco, gan gynnwys sigaréts, sigarau a thybaco rhydd; cynhyrchion ynni, gan gynnwys olewau hydrocarbon a biodanwyddau i’w defnyddio ar gyfer tanwydd cerbyd a gwresogi.
@@ -89,8 +89,8 @@ exciseAndRestrictedGoods.details.restricted.p = Nwyddau sydd angen trwydded, neu
 exciseAndRestrictedGoods.details.restricted.Import.p.a.text = Gwirio a ydych yn dod â nwyddau o dan reolaeth neu nwyddau cyfyngedig i mewn i’r wlad (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.Export.p.a.text = Gwirio a ydych yn cymryd nwyddau dan reolaeth neu nwyddau cyfyngedig (yn agor tab newydd).
 exciseAndRestrictedGoods.details.restricted.p.a.href = https://www.gov.uk/government/publications/restricted-goods-for-merchandise-in-baggage
-exciseAndRestrictedGoods.error.Import.required = Select yes if you are bringing in excise, controlled or restricted goods
-exciseAndRestrictedGoods.error.Export.required = Select yes if you are taking out excise, controlled or restricted goods
+exciseAndRestrictedGoods.error.Import.required = Dewiswch ‘Iawn’ os ydych yn dod â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig i Brydain Fawr
+exciseAndRestrictedGoods.error.Export.required = Dewiswch ‘Iawn’ os ydych yn mynd â nwyddau ecséis, nwyddau o dan reolaeth neu nwyddau cyfyngedig allan o Brydain Fawr
 
 
 # GoodsDestination
@@ -107,21 +107,23 @@ goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o 
 
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less than £1,500 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1500 and they weigh less than 1,000 kilograms
+valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £1,500 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # SearchGoods
-goodsTypeQuantity.title = Enter the first type of goods
-goodsTypeQuantity.heading = Enter the first type of goods
-goodsTypeQuantity.p = Enter only one type. You can add more later.
-goodsTypeQuantity.category = Goods type
+goodsTypeQuantity.title = Nodwch y math cyntaf o nwyddau
+goodsTypeQuantity.next.title = Nodwch y math nesaf o nwyddau
+goodsTypeQuantity.heading = Nodwch y math cyntaf o nwyddau
+goodsTypeQuantity.next.heading = Nodwch y math nesaf o nwyddau
+goodsTypeQuantity.p = Nodwch un math yn unig. Gallwch ychwanegu rhagor yn nes ymlaen.
+goodsTypeQuantity.category = Math o nwyddau
 goodsTypeQuantity.category.hint = Er enghraifft, dillad
 goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
 goodsTypeQuantity.quantity = Nifer o eitemau
-goodsTypeQuantity.quantity.hint = For example, 2 boxes
+goodsTypeQuantity.quantity.hint = Er enghraifft, 2 flwch
 goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
 goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
 
@@ -147,13 +149,13 @@ goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
 # GoodsOrigin
-goodsOrigin.title = Were these goods produced in the EU?
-goodsOrigin.heading = Were these goods produced in the EU?
-goodsOrigin.inset = Type of goods:
-goodsOrigin.p = Check if your goods meet the
-goodsOrigin.p.link = rules of origin (opens in new tab)
+goodsOrigin.title = A gynhyrchwyd y nwyddau hyn yn yr UE?
+goodsOrigin.heading = A gynhyrchwyd y nwyddau hyn yn yr UE?
+goodsOrigin.inset = Math o nwyddau:
+goodsOrigin.p = Gwiriwch a yw’ch nwyddau’n bodloni’r
+goodsOrigin.p.link = rheolau o ran tarddiad (yn agor tab newydd)
 goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
-goodsOrigin.error.required = Select yes if the goods were produced in the EU
+goodsOrigin.error.required = Dewiswch ‘Iawn’ os cafodd y nwyddau hyn eu cynhyrchu yn yr UE
 
 # SearchGoodsCountry
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
@@ -167,12 +169,12 @@ purchaseDetails.heading = Faint y gwnaethoch ei dalu am y {0}?
 purchaseDetails.price.label = Swm a dalwyd
 purchaseDetails.price.hint = Nodwch y swm o dan yr arian cyfred a ddefnyddir
 purchaseDetails.currency.label = Arian cyfred
-purchaseDetails.p.1 = To convert the amount paid we will use
+purchaseDetails.p.1 = I drosi’r swm a dalwyd byddwn yn defnyddio
 purchaseDetails.p.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
 purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
-purchaseDetails.price.error.invalid = Mae’n rhaid i’r pris a dalwyd fod yn rhif
+purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rhif
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
 
 # ReviewGoods
@@ -181,12 +183,12 @@ reviewGoods.heading = Adolygu’ch nwyddau
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
-reviewGoods.list.producedInEu = Produced in EU
+reviewGoods.list.producedInEu = Cynhyrchwyd yn yr UE
 reviewGoods.list.destination = Cyrchfan
-reviewGoods.list.price = Y pris a dalwyd
+reviewGoods.list.price = Swm a dalwyd
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more types of commercial goods?
-reviewGoods.error.required = Dewiswch ‘Iawn’ os ydych am ddatgan rhagor o eitemau
+reviewGoods.h3 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
+reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
 
 # RemoveGoods
 removeGoods.title = A ydych yn siŵr eich bod am ddileu’r {0}?
@@ -228,8 +230,8 @@ goodsOverThreshold.p8.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datgani
 # PaymentCalculation
 paymentCalculation.title = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
 paymentCalculation.heading = Y taliad sy’n ddyledus ar y nwyddau hyn {0}
-paymentCalculation.zero.title = No payment due
-paymentCalculation.zero.heading = No payment due
+paymentCalculation.zero.title = Dim taliad yn ddyledus
+paymentCalculation.zero.heading = Dim taliad yn ddyledus
 paymentCalculation.table.col1.head = Math o nwyddau
 paymentCalculation.table.col2.head = Gwerth y nwyddau
 paymentCalculation.table.col3.head = Tolldaliadau
@@ -238,17 +240,17 @@ paymentCalculation.table.col5.head = Cyfanswm
 paymentCalculation.table.col3.row = {0} yn {1}%
 paymentCalculation.table.total = Taliad sy’n ddyledus
 paymentCalculation.h3 = Sut rydym yn cyfrifo’ch taliad
-paymentCalculation.zero.p1 = You do not need to pay for goods that are from the EU and have a 0% VAT rate. You must still declare these goods.
-paymentCalculation.dutyOnly.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU.
-paymentCalculation.vatOnly.p1 = Customs duty is not charged on EU goods. VAT is charged on the total value of the goods.
-paymentCalculation.dutyAndVat.p1 = Customs duty is charged at a flat rate of 3.3% on the total value of goods produced outside of the EU. Duty is not charged on EU goods. We then charge VAT on the combined amount of Customs Duty and the value of the goods.
+paymentCalculation.zero.p1 = Nid oes angen i chi dalu am nwyddau sy’n dod o’r UE ac sydd â chyfradd TAW o 0%. Fodd bynnag, mae’n rhaid i chi ddatgan y nwyddau hyn o hyd.
+paymentCalculation.dutyOnly.p1 = Codir Toll Dramor ar gyfradd unffurf o 3.3% ar gyfanswm gwerth y nwyddau a gynhyrchir y tu allan i’r UE.
+paymentCalculation.vatOnly.p1 = Ni chodir Toll Dramor ar nwyddau’r UE. Codir TAW ar gyfanswm gwerth y nwyddau.
+paymentCalculation.dutyAndVat.p1 = Codir Toll Dramor ar gyfradd unffurf o 3.3% ar gyfanswm gwerth y nwyddau a gynhyrchir y tu allan i’r UE. Ni chodir toll ar nwyddau’r UE. Rydym wedyn yn codi TAW ar swm cyfunol y Doll Dramor a gwerth y nwyddau.
 paymentCalculation.p2 = Gwnaethom gyfnewid y cyfanswm ar gyfradd o:
 paymentCalculation.li = {0} i 1 (GBP).
-paymentCalculation.p3.1 = Rydym yn defnyddio
+paymentCalculation.p3.1 = Gwnaethom ddefnyddio
 paymentCalculation.p3.a.text =  cyfraddau cyfnewid misol CThEM (yn agor tab newydd).
 paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 paymentCalculation.p3.2 = a’r cyfraddau yn y mis pan fyddwch yn cyflwyno’ch datganiad.
-paymentCalculation.zero.button = Declare goods
+paymentCalculation.zero.button = Datgan nwyddau
 
 # CustomsAgent
 customsAgent.title = A ydych yn asiant tollau?
@@ -410,7 +412,7 @@ checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = Cyfradd TAW
 checkYourAnswers.detailsOfTheGoods.producedInEu = Cynhyrchwyd yn yr UE
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
-checkYourAnswers.detailsOfTheGoods.price = Y pris a dalwyd
+checkYourAnswers.detailsOfTheGoods.price = Swm a dalwyd
 checkYourAnswers.detailsOfTheGoods.paymentDue = Taliad sy’n ddyledus
 checkYourAnswers.addMoreGoods = Ychwanegu rhagor o nwyddau
 checkYourAnswers.personalDetails = Manylion personol
@@ -427,8 +429,8 @@ checkYourAnswers.journeyDetails.dateOfDeparture = Dyddiad ymadael
 checkYourAnswers.journeyDetails.travellingByVehicle = Teithio mewn cerbyd
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Rhif cofrestru’r cerbyd
 checkYourAnswers.sendDeclaration = Nawr anfonwch eich datganiad
-checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall:
-checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu Toll Dramor a TAW ar nwyddau rwy’n dod â nhw i mewn i Brydain Fawr at ddefnydd masnach neu fusnes
+checkYourAnswers.sendDeclaration.acknowledgement = Rwy’n deall y canlynol:
+checkYourAnswers.sendDeclaration.acknowledgement.1 = Mae’n rhaid i mi dalu am nwyddau rwy’n dod â nhw i Brydain Fawr at ddefnydd masnach neu fusnes
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
 checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = Mae’n rhaid i mi ddod â thystiolaeth bod fy nwyddau wedi’u cynhyrchu yn yr UE
