@@ -19,8 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{Page, StartImportPage}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -67,13 +68,14 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
     }
 
   //TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
-  def givenAJourneyWithSession(declarationType: DeclarationType = Import): DeclarationJourney = {
+  def givenAJourneyWithSession(journeyType: JourneyType = New, declarationType: DeclarationType = Import): DeclarationJourney = {
     goto(StartImportPage.path)
 
     (for {
       persisted <- declarationJourneyRepository.findAll()
-      updated   <- declarationJourneyRepository.upsert(completedDeclarationJourney
-        .copy(sessionId = persisted.head.sessionId, declarationType = declarationType))
+      updated <- declarationJourneyRepository.upsert(
+                  completedDeclarationJourney
+                    .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType))
     } yield updated).futureValue
   }
 }
