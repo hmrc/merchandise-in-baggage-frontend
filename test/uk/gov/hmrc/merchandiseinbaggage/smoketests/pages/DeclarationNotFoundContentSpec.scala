@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage
 class DeclarationNotFoundContentSpec extends DeclarationNotFoundPage with CoreTestData {
 
   "render content" in {
-    givenAJourneyWithSession
+    givenAJourneyWithSession()
     goToDeclarationNotFoundPage
 
     pageTitle mustBe title
@@ -34,7 +34,7 @@ class DeclarationNotFoundContentSpec extends DeclarationNotFoundPage with CoreTe
   }
 
   "redirects to correct pages when clicking link" in {
-    givenAJourneyWithSession
+    givenAJourneyWithSession()
     goToDeclarationNotFoundPage
 
     submitPage(DeclarationNotFoundPage, "tryAgain")

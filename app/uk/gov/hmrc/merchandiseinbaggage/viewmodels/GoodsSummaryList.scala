@@ -86,7 +86,8 @@ object GoodsSummaryList {
           s"priceChangeLink_$idx"
         )
       ),
-      classes = "govuk-!-margin-bottom-1"
+      classes = "govuk-!-margin-bottom-1",
+      attributes = Map("id" -> "summaryListId")
     )
 
   private def exportSummary(goods: ExportGoods, idx: Int)(implicit messages: Messages): SummaryList =

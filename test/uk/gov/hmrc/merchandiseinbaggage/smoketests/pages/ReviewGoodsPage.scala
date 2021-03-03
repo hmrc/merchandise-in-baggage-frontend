@@ -17,14 +17,25 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage._
 
 object ReviewGoodsPage extends Page {
   val path: String = "/declare-commercial-goods/review-goods"
-  val title = "Review your goods"
+  val title = "Review your goods - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
+  }
+}
+
+trait ReviewGoodsPage extends BaseUiSpec { this: Suite =>
+
+  def goToReviewGoodsPagePage: Assertion = {
+    goto(path)
+    pageTitle mustBe title
   }
 }
