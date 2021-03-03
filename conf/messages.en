@@ -406,6 +406,7 @@ noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do 
 
 # CheckYourAnswers
 checkYourAnswers.title = Check your answers before making your declaration
+checkYourAnswers.amend.title = Check your answers before adding these goods to your declaration
 checkYourAnswers.change = Change
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
@@ -431,6 +432,9 @@ checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration number
 checkYourAnswers.sendDeclaration = Now send your declaration
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.amend.sendDeclaration.acknowledgement.1 = I must bring this updated declaration with me
+checkYourAnswers.amend.sendDeclaration.acknowledgement.2 = I must pay for goods I bring into Great Britain for trade or business use
+checkYourAnswers.amend.sendDeclaration.acknowledgement.3 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
 checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = I need to bring proof my goods were produced in the EU
 checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
