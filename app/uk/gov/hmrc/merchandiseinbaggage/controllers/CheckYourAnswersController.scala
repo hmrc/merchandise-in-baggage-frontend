@@ -16,19 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, incompleteMessage}
-import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -37,14 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  calculationService: CalculationService,
-  paymentService: PaymentService,
-  mibConnector: MibConnector,
-  override val repo: DeclarationJourneyRepository,
-  importView: CheckYourAnswersImportView,
-  exportView: CheckYourAnswersExportView,
-  amendImportView: CheckYourAnswersAmendImportView,
-  amendExportView: CheckYourAnswersAmendExportView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  newHandler: CheckYourAnswersNewHandler,
+  amendHandler: CheckYourAnswersAmendHandler,
+  override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -52,58 +39,30 @@ class CheckYourAnswersController @Inject()(
       case New =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            request.declarationType match {
-              case Import =>
-                calculationService.paymentCalculations(declaration.declarationGoods.importGoods).map { calculationResults =>
-                  if (calculationResults.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
-                    Redirect(routes.GoodsOverThresholdController.onPageLoad())
-                  } else Ok(importView(form, declaration, calculationResults))
-                }
-              case Export =>
-                if (declaration.declarationGoods.goods
-                      .map(_.purchaseDetails.numericAmount)
-                      .sum > declaration.goodsDestination.threshold.inPounds)
-                  Future successful Redirect(routes.GoodsOverThresholdController.onPageLoad())
-                else Future successful Ok(exportView(form, declaration))
-            }
+            newHandler.onPageLoad(declaration)
           }
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            request.declarationType match {
-              case Import =>
-                for {
-                  calculationResults       <- calculationService.paymentCalculations(amendment.goods.importGoods)
-                  maybeOriginalDeclaration <- mibConnector.findDeclaration(request.declarationJourney.declarationId)
-                } yield {
-                  maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { originalDeclaration =>
-                    originalDeclaration.maybeTotalCalculationResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) {
-                      originalCalculationResults =>
-                        if ((calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value) > originalDeclaration.goodsDestination.threshold.value) {
-                          Redirect(routes.GoodsOverThresholdController.onPageLoad())
-                        } else Ok(amendImportView(form, amendment, calculationResults))
-                    }
-                  }
-                }
-              case Export =>
-                mibConnector.findDeclaration(request.declarationJourney.declarationId).map { maybeOriginalDeclaration =>
-                  maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { originalDeclaration =>
-                    val originalGbpValue = originalDeclaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum
-                    val amendGbpValue = amendment.goods.goods.map(_.purchaseDetails.numericAmount).sum
-                    if ((originalGbpValue + amendGbpValue) > originalDeclaration.goodsDestination.threshold.inPounds) {
-                      Redirect(routes.GoodsOverThresholdController.onPageLoad())
-                    } else Ok(amendExportView(form, amendment))
-                  }
-                }
-            }
+            amendHandler.onPageLoad(request.declarationType, amendment, request.declarationJourney.declarationId)
           }
     }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(actionProvider.invalidRequestF(incompleteMessage))(declaration =>
-        handleNewDeclaration(declaration.copy(lang = messages.lang.code)))
+    request.declarationJourney.journeyType match {
+      case New =>
+        request.declarationJourney.declarationIfRequiredAndComplete
+          .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
+            newHandler.onSubmit(declaration)
+          }
+      case Amend =>
+        request.declarationJourney.amendmentIfRequiredAndComplete
+          .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
+            //TODO: Implement
+            Future.successful(Redirect(routes.CheckYourAnswersController.onPageLoad().url))
+          }
+    }
   }
 
   val addMoreGoods: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -113,23 +72,4 @@ class CheckYourAnswersController @Inject()(
       Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
     }
   }
-
-  private def handleNewDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    declaration.declarationType match {
-      case Export =>
-        continueExportDeclaration(declaration)
-      case Import =>
-        continueImportDeclaration(declaration)
-    }
-
-  private def continueExportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]) =
-    mibConnector.persistDeclaration(declaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
-
-  private def continueImportDeclaration(declaration: Declaration)(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    for {
-      taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.importGoods)
-      _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, taxDue)
-
-    } yield Redirect(redirectUrl)
 }
