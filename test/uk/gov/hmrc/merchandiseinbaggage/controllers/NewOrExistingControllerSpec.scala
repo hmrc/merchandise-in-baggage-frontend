@@ -66,6 +66,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
         val eventualResult = controller(journey).onSubmit(request)
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
+        session(eventualResult).get("journeyType") mustBe Some("new")
       }
 
       s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
@@ -75,6 +76,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
         val eventualResult = controller(journey).onSubmit(request)
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.RetrieveDeclarationController.onPageLoad().url)
+        session(eventualResult).get("journeyType") mustBe Some("amend")
       }
     }
 
