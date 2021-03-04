@@ -85,8 +85,8 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))
-      result must include(messageApi("reviewGoods.title"))
-      result must include(messageApi("reviewGoods.heading"))
+      result must include(messageApi("reviewGoods.New.title"))
+      result must include(messageApi("reviewGoods.New.heading"))
     }
   }
 }

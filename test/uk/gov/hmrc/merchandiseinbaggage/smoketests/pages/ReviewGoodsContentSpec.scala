@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
-import org.openqa.selenium.By
+import org.openqa.selenium.{By, WebElement}
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
@@ -37,6 +37,8 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
     rowTest(4, "reviewGoods.list.price", "99.99, Euro (EUR)", "/purchase-details/1")
 
     findByTagName("a").getAttribute("href") must include("review-goods#main-content")
+    radioButtonTest
+    elementText(findByTagName("button")) mustBe "Continue"
   }
 
   s"render different title&header for amending an existing declaration" in {
@@ -45,14 +47,20 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
   }
 
   private def rowTest(rowNumber: Int, key: String, value: String, changeLink: String): Assertion = {
-    val rows = findById("summaryListId").findElements(By.className("govuk-summary-list__row"))
+    val row = findById("summaryListId").findElements(By.className("govuk-summary-list__row")).get(rowNumber)
+    val rowElement: String => WebElement = className => row.findElement(By.className(className))
 
-    rows.get(rowNumber).findElement(By.className("govuk-summary-list__key")).getText mustBe messages(key)
-    rows.get(rowNumber).findElement(By.className("govuk-summary-list__value")).getText mustBe value
-    rows
-      .get(rowNumber)
-      .findElement(By.className("govuk-summary-list__actions"))
+    rowElement("govuk-summary-list__key").getText mustBe messages(key)
+    rowElement("govuk-summary-list__value").getText mustBe value
+    rowElement("govuk-summary-list__actions")
       .findElement(By.className("govuk-link"))
       .getAttribute("href") must include(changeLink)
+  }
+
+  private def radioButtonTest = {
+    findByXPath("//div[@class='govuk-radios__item'][1]/input").getAttribute("type") mustBe "radio"
+    findByXPath("//div[@class='govuk-radios__item'][2]/input").getAttribute("type") mustBe "radio"
+    findByXPath("//div[@class='govuk-radios__item'][1]/label").getText mustBe "Yes"
+    findByXPath("//div[@class='govuk-radios__item'][2]/label").getText mustBe "No"
   }
 }
