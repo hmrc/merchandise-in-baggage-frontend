@@ -25,6 +25,7 @@
     head: Head,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
+
 @(pageTitle: Option[String] = None,
   headBlock: Option[Html] = None,
   scriptsBlock: Option[Html] = None,
@@ -50,7 +51,8 @@
     @maybeDeclarationType.map { declarationType =>
         <script>
                 dataLayer = [{
-                    'MIB_URL': '@declarationType.toString.toLowerCase' + window.location.pathname
+                    'MIB_URL': '@declarationType.toString.toLowerCase' + window.location.pathname,
+                    'MIB_JOURNEY_TYPE': '@request.session.get("journeyType").getOrElse("")'
                 }];
         </script>
     }

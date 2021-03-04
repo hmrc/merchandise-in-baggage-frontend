@@ -50,10 +50,10 @@ class NewOrExistingController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case New => Future successful Redirect(routes.GoodsDestinationController.onPageLoad())
+          case New => Future successful Redirect(routes.GoodsDestinationController.onPageLoad()).addingToSession("journeyType" -> "new")
           case Amend =>
             repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
-              Redirect(routes.RetrieveDeclarationController.onPageLoad())
+              Redirect(routes.RetrieveDeclarationController.onPageLoad()).addingToSession("journeyType" -> "amend")
             }
         }
       )
