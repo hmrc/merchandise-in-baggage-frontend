@@ -139,4 +139,8 @@ GET        /declaration-not-found        uk.gov.hmrc.merchandiseinbaggage.contro
 GET        /retrieve-declaration         uk.gov.hmrc.merchandiseinbaggage.controllers.RetrieveDeclarationController.onPageLoad
 POST       /retrieve-declaration         uk.gov.hmrc.merchandiseinbaggage.controllers.RetrieveDeclarationController.onSubmit
 
+#PreviousDeclarationDetails
+GET        /previous-declaration-details        uk.gov.hmrc.merchandiseinbaggage.controllers.PreviousDeclarationDetailsController.onPageLoad
+POST       /previous-declaration-details        uk.gov.hmrc.merchandiseinbaggage.controllers.PreviousDeclarationDetailsController.onSubmit
+
 GET         /start-survey                uk.gov.hmrc.merchandiseinbaggage.controllers.FeedbackSurveyController.startSurvey()

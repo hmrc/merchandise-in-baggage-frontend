@@ -76,6 +76,18 @@ newOrExisting.title = Beth hoffech ei wneud?
 newOrExisting.heading = Beth hoffech ei wneud?
 newOrExisting.error.required = Dewiswch os ydych am wneud datganiad newydd neu ychwanegu nwyddau at ddatganiad sy’n bodoli eisoes
 
+# PreviousDeclarationDetails
+previousDeclarationDetails.title = Manylion o’ch datganiad sy’n bodoli eisoes
+previousDeclarationDetails.heading = Manylion o’ch datganiad sy’n bodoli eisoes
+previousDeclarationDetails.details = Details of the goods
+previousDeclarationDetails.journey = Manylion y nwyddau
+previousDeclarationDetails.journey.arrival = Man cyrraedd
+previousDeclarationDetails.journey.date = Dyddiad cyrraedd
+previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
+previousDeclarationDetails.expired = You cannot add to an old declaration.
+previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £1,500.
+previousDeclarationDetails.add.button.text = Ychwanegu rhagor o nwyddau
+
 # ExciseAndRestrictedGoods
 exciseAndRestrictedGoods.Import.title = Are you bringing excise, controlled or restricted goods to Great Britain?
 exciseAndRestrictedGoods.Import.heading = Are you bringing excise, controlled or restricted goods to Great Britain?
