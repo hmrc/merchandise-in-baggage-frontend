@@ -42,22 +42,11 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
         val result = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
-        result must include(messageApi("reviewGoods.title"))
-        result must include(messageApi("reviewGoods.heading"))
-        result must include(messageApi("reviewGoods.list.item"))
-        result must include(messageApi("reviewGoods.list.quantity"))
-
         if (importOrExport == Import) {
           result must include(messageApi("reviewGoods.list.vatRate"))
           result must include(messageApi("reviewGoods.list.producedInEu"))
         }
-
         if (importOrExport == Export) { result must include(messageApi("reviewGoods.list.destination")) }
-
-        result must include(messageApi("reviewGoods.list.price"))
-        result must include(messageApi("site.change"))
-        result must include(messageApi("site.remove"))
-        result must include(messageApi("reviewGoods.h3"))
       }
     }
 
@@ -96,8 +85,8 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))
-      result must include(messageApi("reviewGoods.title"))
-      result must include(messageApi("reviewGoods.heading"))
+      result must include(messageApi("reviewGoods.New.title"))
+      result must include(messageApi("reviewGoods.New.heading"))
     }
   }
 }

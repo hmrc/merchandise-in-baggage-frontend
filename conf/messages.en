@@ -179,8 +179,10 @@ purchaseDetails.price.error.invalid = Price paid must be a number
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
 
 # ReviewGoods
-reviewGoods.title = Review your goods
-reviewGoods.heading = Review your goods
+reviewGoods.New.title = Review your goods
+reviewGoods.Amend.title = Review the goods you are adding
+reviewGoods.New.heading = Review your goods
+reviewGoods.Amend.heading = Review the goods you are adding
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT rate
@@ -188,7 +190,7 @@ reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more types of commercial goods?
+reviewGoods.h2 = Do you need to declare more types of commercial goods?
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods

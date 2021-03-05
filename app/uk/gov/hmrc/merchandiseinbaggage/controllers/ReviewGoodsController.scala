@@ -43,7 +43,7 @@ class ReviewGoodsController @Inject()(
     import request.declarationJourney._
     goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequest(goodsDeclarationIncompleteMessage)) { goods =>
-        Ok(view(form, goods, backButtonUrl, declarationType))
+        Ok(view(form, goods, backButtonUrl, declarationType, journeyType))
       }
   }
 
@@ -54,7 +54,7 @@ class ReviewGoodsController @Inject()(
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType, journeyType))),
             declareMoreGoods =>
               if (declareMoreGoods == Yes) {
                 val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
