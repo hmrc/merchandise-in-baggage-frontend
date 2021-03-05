@@ -16,36 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import uk.gov.hmrc.merchandiseinbaggage.controllers.PreviousDeclarationDetailsController
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, CategoryQuantityOfGoods, Country, Currency, DeclarationGoods, ExportGoods, GoodsVatRates, ImportGoods, JourneyDetails, JourneyInSmallVehicle, NotRequired, Paid, PaymentStatus, Port, PurchaseDetails, YesNoDontKnow}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, CategoryQuantityOfGoods, DeclarationGoods, Paid, PaymentStatus}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import java.time.{LocalDate, LocalDateTime}
 
 class PreviousDeclarationDetailsServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
-  val journeyDetails: JourneyDetails = JourneyInSmallVehicle(
-    Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
-    LocalDate.now(),
-    "T5 RRY"
-  )
-
-  def createImport(desc: String, price: String): ImportGoods = ImportGoods(
-    CategoryQuantityOfGoods(desc, "1"),
-    GoodsVatRates.Twenty,
-    YesNoDontKnow.Yes,
-    PurchaseDetails(price, Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  )
-
-  def createExport(desc: String, price: String): ExportGoods = ExportGoods(
-    CategoryQuantityOfGoods(desc, "1"),
-    Country("FR", "title.france", "FR", isEu = true, Nil),
-    PurchaseDetails(price, Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  )
 
   def createAmendment(desc: String, paymentStatus: Option[PaymentStatus]): Amendment = Amendment(
     LocalDateTime.now,
-    DeclarationGoods(createImport(desc, "99.99") :: Nil),
+    DeclarationGoods(aGoods.copy(categoryQuantityOfGoods = CategoryQuantityOfGoods(desc, "123")) :: Nil),
     None,
     paymentStatus,
     Some("Digital")
@@ -87,28 +68,28 @@ class PreviousDeclarationDetailsServiceSpec extends BaseSpecWithApplication with
 
   "list of goods" should {
     "only contain goods when no amendments" in {
-      val goods = List.fill(10)(createImport("wine", "99.99"))
+      val goods = List.fill(10)(aGoods)
       val result = PreviousDeclarationDetailsService.listGoods(goods, List.empty[Amendment])
 
       result.length mustBe 10
     }
 
     "only contain amendment that have been Paid/NotRequired" in {
-      val goods = List.tabulate(10)(idx => createImport(s"item-$idx", "99.99"))
+      val goods = List.fill(10)(aGoods)
 
-      val amendments = List(createAmendment("amend", Some(Paid)))
+      val amendments: Seq[Amendment] = List(createAmendment("amend", Some(Paid)))
       val result = PreviousDeclarationDetailsService.listGoods(goods, amendments)
 
       result.length mustBe 11
     }
 
     "only contain amendments that have been Paid or NotRequired and not unpaid" in {
-      val goods = List.tabulate(10)(idx => createImport(s"item-$idx", "99.99"))
+      val goods = List.fill(10)(aGoods)
 
       val amendments = List(
-        createAmendment("amend", Some(Paid)),
-        createAmendment("amend", None),
-        createAmendment("amend", Some(NotRequired))
+        aAmendmentPaid,
+        aAmendment,
+        aAmendmentNotRequired
       )
       val result = PreviousDeclarationDetailsService.listGoods(goods, amendments)
 
@@ -117,7 +98,7 @@ class PreviousDeclarationDetailsServiceSpec extends BaseSpecWithApplication with
 
     "contain all the goods with amendments at the end" in {
       val itemCount = 10
-      val goods = List.tabulate(itemCount)(idx => createImport(s"item-$idx", "99.99"))
+      val goods = List.fill(itemCount)(aGoods)
       val amendments = List(createAmendment("amend", Some(Paid)))
       val result = PreviousDeclarationDetailsService.listGoods(goods, amendments)
 

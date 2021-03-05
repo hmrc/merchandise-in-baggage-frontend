@@ -196,6 +196,22 @@ trait CoreTestData {
 
   val aCheckResponse: CheckResponse = CheckResponse(aEoriNumber, valid = true, Some(aCompanyDetails))
 
+  val aAmendment = Amendment(
+    LocalDateTime.now,
+    DeclarationGoods(aGoods.copy(categoryQuantityOfGoods = CategoryQuantityOfGoods("Amendment", "123")) :: Nil),
+    None,
+    None,
+    Some("Digital")
+  )
+
+  val aAmendmentPaid = aAmendment
+    .modify(_.paymentStatus)
+    .setTo(Some(Paid))
+
+  val aAmendmentNotRequired = aAmendment
+    .modify(_.paymentStatus)
+    .setTo(Some(NotRequired))
+
   def aSuccessCheckResponse(eoriNumber: String = aEoriNumber): String =
     s"""{
        |  "eori": "$eoriNumber",

@@ -17,8 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, CategoryQuantityOfGoods, Country, Currency, DeclarationGoods, DeclarationId, DeclarationType, ExportGoods, GoodsVatRates, ImportGoods, JourneyDetails, JourneyInSmallVehicle, PaymentStatus, Port, PurchaseDetails, SessionId, YesNoDontKnow}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
@@ -30,66 +29,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.{LocalDate, LocalDateTime}
 
 class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport with MibConfiguration {
-
-  val journeyDetails: JourneyDetails = JourneyInSmallVehicle(
-    Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
-    LocalDate.now(),
-    "T5 RRY"
-  )
-
-  def createImport(desc: String, price: String): ImportGoods = ImportGoods(
-    CategoryQuantityOfGoods(desc, "1"),
-    GoodsVatRates.Twenty,
-    YesNoDontKnow.Yes,
-    PurchaseDetails(price, Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  )
-
-  def createExport(desc: String, price: String): ExportGoods = ExportGoods(
-    CategoryQuantityOfGoods(desc, "1"),
-    Country("FR", "title.france", "FR", isEu = true, Nil),
-    PurchaseDetails(price, Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  )
-
-  def createAmendment(desc: String, paymentStatus: Option[PaymentStatus]): Amendment = Amendment(
-    LocalDateTime.now,
-    DeclarationGoods(createImport(desc, "99.99") :: Nil),
-    None,
-    paymentStatus,
-    Some("Digital")
-  )
-
-  "check the view can" should {
-    "display 'continue' button when within date range" in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val goods = createImport("wine", "99.99") :: createImport("cheese", "199.99") :: Nil
-      val result = view.render(goods, journeyDetails, DeclarationType.Import, withinTimerange = true, fakeRequest, messages, appConfig)
-      val html = contentAsString(result)
-
-      html must include(messageApi("previousDeclarationDetails.add_goods"))
-      html must include("govuk-button")
-    }
-
-    "be 'to late' message" in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val goods = createImport("wine", "99.99") :: createImport("cheese", "199.99") :: Nil
-      val result = view.render(goods, journeyDetails, DeclarationType.Import, withinTimerange = false, fakeRequest, messages, appConfig)
-      val html = contentAsString(result)
-
-      html must include(messageApi("previousDeclarationDetails.expired"))
-      html mustNot include("govuk-button")
-    }
-
-    "list all the goods given" in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val itemCount = 5
-      val desc = "wine"
-      val goods = List.fill(itemCount)(createImport(desc, "99.99"))
-      val result = view.render(goods, journeyDetails, DeclarationType.Import, withinTimerange = true, fakeRequest, messages, appConfig)
-      val html = contentAsString(result)
-
-      html.sliding(desc.length).count(_ == desc) mustBe (5)
-    }
-  }
 
   "creating a page" should {
     "return 200 if declaration exists and resets the journey" in {
@@ -152,6 +91,5 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
       declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
       declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
     }
-
   }
 }
