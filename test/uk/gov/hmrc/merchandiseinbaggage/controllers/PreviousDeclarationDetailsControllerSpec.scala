@@ -193,7 +193,7 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
 
       givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, id).withSession("declarationId" -> "456")
+      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, sessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 

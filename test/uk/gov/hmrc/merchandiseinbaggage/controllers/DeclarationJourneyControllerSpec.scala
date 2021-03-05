@@ -24,7 +24,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with CoreTestData {
@@ -46,11 +46,4 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       .withSession((SessionKeys.sessionId, sessionId.value))
       .withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
-  def buildGet(url: String, declarationId: DeclarationId): FakeRequest[AnyContentAsEmpty.type] =
-    FakeRequest(GET, url)
-      .withSession((SessionKeys.sessionId, declarationId.value))
-      .withCSRFToken
-      .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-
 }

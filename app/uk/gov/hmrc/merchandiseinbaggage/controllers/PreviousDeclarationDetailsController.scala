@@ -36,17 +36,16 @@ class PreviousDeclarationDetailsController @Inject()(
 
   val declarationNotFoundMessage = "original declaration was not found"
 
-  val onPageLoad: Action[AnyContent] = actionProvider.amendAction.async { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     // TODO: fix to match what is being provided
-    val declarationId = DeclarationId(request.session.get("declarationId").getOrElse("ERROR")) //request.declarationJourney.declarationId
-    mibConnector.findDeclaration(declarationId).map {
+    mibConnector.findDeclaration(request.declarationJourney.declarationId).map {
       case Some(declaration) =>
         val now = LocalDate.now
         val travelDate = declaration.journeyDetails.dateOfTravel
         val goods = listGoods(declaration.declarationGoods.goods, declaration.amendments)
         Ok(view(goods, declaration.journeyDetails, declaration.declarationType, withinTimerange(travelDate, now)))
       case _ =>
-        actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
+        actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}")
     }
   }
 
