@@ -33,6 +33,7 @@
         h2: components.h2,
         p: components.p,
         link: components.link,
+        goodsItemList: includes.goodsItemList,
         button: components.button,
 )
 
@@ -43,41 +44,9 @@
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
 
-    @for((good, index) <- goods.zipWithIndex) {
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row">
-                <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
-                <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@good.categoryQuantityOfGoods.category</dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
-                <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@good.categoryQuantityOfGoods.quantity</dd>
-            </div>
+    @goodsItemList(goods)
 
-            @good match {
-                case g:ImportGoods => {
-                    <div class="govuk-summary-list__row">
-                        <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
-                        <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(g.producedInEu.messageKey)</dd>
-                    </div>
-                }
-                case g:ExportGoods => {
-                    <div class="govuk-summary-list__row">
-                        <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.destination")</dt>
-                        <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(g.destination.countryName)</dd>
-                    </div>
-                }
-            }
-
-            <div class="govuk-summary-list__row">
-                <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
-                <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@good.purchaseDetails.formatted</dd>
-            </div>
-        </dl>
-    }
-
-
-    @h2(("previousDeclarationDetails.journey"), Some("govuk-heading-m"))
+    @h2("previousDeclarationDetails.journey", Some("govuk-heading-m"))
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt  class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.arrival")</dt>
