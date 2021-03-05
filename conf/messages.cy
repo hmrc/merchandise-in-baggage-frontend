@@ -178,8 +178,10 @@ purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rh
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
 
 # ReviewGoods
-reviewGoods.title = Adolygu’ch nwyddau
-reviewGoods.heading = Adolygu’ch nwyddau
+reviewGoods.New.title = Adolygu’ch nwyddau
+reviewGoods.Amend.title = Adolygu’r nwyddau rydych wedi’u hychwanegu
+reviewGoods.New.heading = Adolygu’ch nwyddau
+reviewGoods.Amend.heading = Adolygu’r nwyddau rydych wedi’u hychwanegu
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
