@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.implicits._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -27,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 import javax.inject.{Inject, Singleton}
-
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -56,14 +55,14 @@ class RetrieveDeclarationController @Inject()(
       )
   }
 
-  private def processRequest(validData: RetrieveDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext) =
+  private def processRequest(validData: RetrieveDeclaration)(implicit hc: HeaderCarrier, ec: ExecutionContext, rh: RequestHeader) =
     mibConnector
       .findBy(validData.mibReference, validData.eori)
       .fold(
         error => InternalServerError(error), {
           case Some(id) =>
             //TODO: Save id in the session and redirect to next page when implemented
-            Redirect(routes.RetrieveDeclarationController.onPageLoad())
+            Redirect(routes.PreviousDeclarationDetailsController.onPageLoad()).addingToSession("declarationId" -> id.value)
 
           case None => Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }

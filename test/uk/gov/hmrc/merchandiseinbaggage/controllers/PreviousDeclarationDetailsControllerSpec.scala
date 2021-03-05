@@ -16,17 +16,20 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, CategoryQuantityOfGoods, Country, Currency, DeclarationGoods, DeclarationType, Email, Eori, ExportGoods, GoodsVatRates, ImportGoods, JourneyDetails, JourneyDetailsEntry, JourneyInSmallVehicle, Name, NotRequired, Paid, PaymentStatus, Port, PurchaseDetails, YesNo, YesNoDontKnow}
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, CategoryQuantityOfGoods, Country, Currency, DeclarationGoods, DeclarationId, DeclarationType, ExportGoods, GoodsVatRates, ImportGoods, JourneyDetails, JourneyInSmallVehicle, NotRequired, Paid, PaymentStatus, Port, PurchaseDetails, SessionId, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{PreviousDeclarationDetailsView}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import java.time.{LocalDate, LocalDateTime}
 
-class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec {
+class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport with MibConfiguration {
 
   val journeyDetails: JourneyDetails = JourneyInSmallVehicle(
     Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
@@ -171,33 +174,70 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
   }
 
   "creating a page" should {
-    "return 200" in {
+    "return 200 if declaration exists and resets the journey" in {
+      import mibConf._
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val message = app.injector.instanceOf[MessagesControllerComponents]
+      val client = app.injector.instanceOf[HttpClient]
+      val connector = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
+      val controller =
+        new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, connector, view)
 
-      def controller(declarationJourney: DeclarationJourney) =
-        new PreviousDeclarationDetailsController(message, stubProvider(declarationJourney), view)
+      val sessionId = SessionId()
+      val id = DeclarationId("456")
+      val created: LocalDateTime = LocalDate.now.atStartOfDay
 
-      val journey: DeclarationJourney =
-        DeclarationJourney(
-          aSessionId,
-          Export,
-          goodsEntries = completedGoodsEntries(Export),
-          maybeGoodsDestination = Some(GreatBritain),
-          maybeNameOfPersonCarryingTheGoods = Some(Name("Darth", "Vader")),
-          maybeEmailAddress = Some(Email("a@example.com")),
-          maybeEori = Some(Eori("123")),
-          maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("ABZ", LocalDate.now())),
-          maybeTravellingByVehicle = Some(YesNo.No),
-          maybeExciseOrRestrictedGoods = Some(YesNo.No),
-          maybeValueWeightOfGoodsBelowThreshold = Some(YesNo.Yes),
-          maybeIsACustomsAgent = Some(YesNo.No),
-        )
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
-      val eventualResult = controller(journey).onPageLoad()(request)
+      givenADeclarationJourneyIsPersisted(exportJourney)
 
-      status(eventualResult) mustBe (200)
+      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+
+      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, id).withSession("declarationId" -> "456")
+      val eventualResult = controller.onPageLoad()(request)
+      status(eventualResult) mustBe 200
+
+      contentAsString(eventualResult) must include("cheese")
+
+      import exportJourney._
+      val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
     }
+
+    "return 303 if declaration does NOT exist and resets the journey" in {
+      import mibConf._
+      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
+      val client = app.injector.instanceOf[HttpClient]
+      val connector = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
+      val controller =
+        new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, connector, view)
+
+      val sessionId = SessionId()
+      val id = DeclarationId("456")
+      val created = LocalDate.now.atStartOfDay
+
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
+
+      givenADeclarationJourneyIsPersisted(exportJourney)
+
+      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+
+      val request =
+        buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, SessionId()).withSession("declarationId" -> "987")
+      val eventualResult = controller.onPageLoad()(request)
+      status(eventualResult) mustBe 303
+
+      contentAsString(eventualResult) mustNot include("cheese")
+
+      import exportJourney._
+      val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+    }
+
   }
 }

@@ -28,6 +28,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultActionBuilder, repo: DeclarationJourneyRepository)(
   implicit ec: ExecutionContext) {
+  val amendAction: DefaultActionBuilder =
+    defaultActionBuilder
+
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner
 

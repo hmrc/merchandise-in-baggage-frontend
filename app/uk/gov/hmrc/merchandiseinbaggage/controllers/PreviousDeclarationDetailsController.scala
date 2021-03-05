@@ -18,10 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Goods}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, Goods}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import java.time.LocalDate
 
@@ -29,22 +30,24 @@ import java.time.LocalDate
 class PreviousDeclarationDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  view: PreviousDeclarationDetailsView)(implicit appConfig: AppConfig)
+  mibConnector: MibConnector,
+  view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyController {
 
   val declarationNotFoundMessage = "original declaration was not found"
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.amendAction.async { implicit request =>
     // TODO: fix to match what is being provided
-    request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(
-        actionProvider.invalidRequest(declarationNotFoundMessage)
-      ) { declaration =>
+    val declarationId = DeclarationId(request.session.get("declarationId").getOrElse("ERROR")) //request.declarationJourney.declarationId
+    mibConnector.findDeclaration(declarationId).map {
+      case Some(declaration) =>
         val now = LocalDate.now
         val travelDate = declaration.journeyDetails.dateOfTravel
         val goods = listGoods(declaration.declarationGoods.goods, declaration.amendments)
         Ok(view(goods, declaration.journeyDetails, declaration.declarationType, withinTimerange(travelDate, now)))
-      }
+      case _ =>
+        actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
+    }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
