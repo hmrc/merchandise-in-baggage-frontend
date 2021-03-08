@@ -65,7 +65,7 @@ class RetrieveDeclarationController @Inject()(
           case Some(id) =>
             repo.upsert(request.declarationJourney.copy(declarationId = id)) map { _ =>
               //TODO: redirect to next page when implemented
-              Redirect(routes.RetrieveDeclarationController.onPageLoad())
+              Redirect(routes.PreviousDeclarationDetailsController.onPageLoad())
             }
           case None => Future successful Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }

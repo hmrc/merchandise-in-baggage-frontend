@@ -16,9 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, RetrieveDeclarationPage, StartExportPage}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+
+import java.time.LocalDateTime
 
 class AdditionalDeclarationImportSpec extends BaseUiSpec {
 
@@ -29,9 +32,24 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
       submitPage(NeworExistingDeclarationPage, "Amend")
 
       givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
+
+      val sessionId = SessionId()
+      val created = LocalDateTime.now
+      val id = aDeclarationId
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(
+          sessionId = sessionId,
+          declarationType = DeclarationType.Export,
+          maybeEori = Some(eori),
+          createdAt = created,
+          declarationId = id)
+
+      givenADeclarationJourneyIsPersisted(exportJourney)
+      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
-      webDriver.getCurrentUrl mustBe fullUrl(RetrieveDeclarationPage.path)
+      webDriver.getCurrentUrl mustBe fullUrl(PreviousDeclarationDetailsPage.path)
     }
   }
 }
