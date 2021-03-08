@@ -23,13 +23,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsVie
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.service.PreviousDeclarationDetailsService
+import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 
 @Singleton
 class PreviousDeclarationDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  previousDeclarationDetailsService: PreviousDeclarationDetailsService,
+  previousDeclarationDetailsService: DeclarationService,
   view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyController {
 
