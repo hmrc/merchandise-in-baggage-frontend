@@ -28,7 +28,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
     setUp(aCalculationResultOverThousand) { bulletPoints =>
       bulletPoints.size mustBe 3
       elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")}"
-      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.1")}"
+      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")}"
       elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
     }
@@ -37,7 +37,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
   "do not render proof of origin needed if good EU origin goods amount is < 1000" in {
     setUp(aCalculationResult) { bulletPoints =>
       bulletPoints.size mustBe 2
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.1")}"
+      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
     }
