@@ -16,19 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationNotFoundView
-import javax.inject.{Inject, Singleton}
 
-@Singleton
-class DeclarationNotFoundController @Inject()(
-  override val controllerComponents: MessagesControllerComponents,
-  actionProvider: DeclarationJourneyActionProvider,
-  view: DeclarationNotFoundView)(implicit appConfig: AppConfig)
-    extends DeclarationJourneyController {
+class DeclarationNotFoundControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationType))
+  val view = injector.instanceOf[DeclarationNotFoundView]
+  val controller = new DeclarationNotFoundController(controllerComponents, stubProvider(startedImportJourney), view)
+
+  "return 200 on pageLoad" in {
+    val request = buildGet(routes.DeclarationNotFoundController.onPageLoad().url, aSessionId)
+
+    status(controller.onPageLoad(request)) mustBe 200
   }
 }

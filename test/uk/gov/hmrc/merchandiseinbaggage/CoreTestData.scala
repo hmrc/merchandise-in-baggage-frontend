@@ -279,4 +279,17 @@ trait CoreTestData {
     result.body
   }
 
+  def completedAmendedJourney(declarationType: DeclarationType): DeclarationJourney = declarationType match {
+    case Import => completeAmendImportJourney
+    case Export => completeAmendExportJourney
+  }
+
+  def completedAmendment(declarationType: DeclarationType) = declarationType match {
+    case Import => completeAmendImportJourney.amendmentIfRequiredAndComplete.get
+    case Export => completeAmendExportJourney.amendmentIfRequiredAndComplete.get
+  }
+
+  val aTotalCalculationResult =
+    TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))
+
 }

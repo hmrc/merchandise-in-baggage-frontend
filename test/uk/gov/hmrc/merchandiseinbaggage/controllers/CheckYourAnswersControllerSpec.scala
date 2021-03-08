@@ -16,21 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
-
-import com.softwaremill.quicklens._
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -41,16 +39,13 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
+  private lazy val amendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
+  private lazy val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
-  }
-
-  private lazy val testMibConnector = new MibConnector(httpClient, "") {
-    override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
-      Future.successful(DeclarationId("xxx"))
   }
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
@@ -59,98 +54,111 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         Future.successful(aPaymentCalculations)
   }
 
-  private def controller(paymentCalcs: CalculationResults = aCalculationResults) = new CheckYourAnswersController(
-    controllerComponents,
-    actionBuilder,
-    stubbedCalculation(paymentCalcs),
-    new PaymentService(testPaymentConnector),
-    testMibConnector,
-    declarationJourneyRepository,
-    importView,
-    exportView
-  )
+  private def newHandler(paymentCalcs: CalculationResults) =
+    new CheckYourAnswersNewHandler(
+      stubbedCalculation(paymentCalcs),
+      new PaymentService(testPaymentConnector),
+      mibConnector,
+      importView,
+      exportView,
+    )
 
-  "on submit" should {
-    "will calculate tax and send payment request to pay api" in {
-      val sessionId = SessionId()
-      val id = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
-      val importJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
+  private def amendHandler(paymentCalcs: CalculationResults) =
+    new CheckYourAnswersAmendHandler(
+      actionBuilder,
+      new PaymentService(testPaymentConnector),
+      stubbedCalculation(paymentCalcs),
+      mibConnector,
+      amendImportView,
+      amendExportView,
+    )
 
-      givenADeclarationJourneyIsPersisted(importJourney)
+  private def controller(paymentCalcs: CalculationResults = aCalculationResults, declarationJourney: DeclarationJourney) =
+    new CheckYourAnswersController(
+      controllerComponents,
+      actionBuilder,
+      newHandler(paymentCalcs),
+      amendHandler(paymentCalcs),
+      stubRepo(declarationJourney)
+    )
 
-      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-      val eventualResult = controller().onSubmit()(request)
+  val journeyTypes = List(New, Amend)
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some("http://host")
+  "onPageLoad" should {
+    journeyTypes.foreach { journeyType =>
+      s"redirect to /cannot-access-service for in-completed journies for $journeyType" in {
+        val sessionId = SessionId()
+        val inCompletedJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(journeyType = journeyType)
+
+        val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val eventualResult = controller(declarationJourney = inCompletedJourney).onPageLoad()(request)
+
+        status(eventualResult) mustBe 303
+        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+      }
     }
 
-    "will redirect to confirmation if totalTax is £0 and should not call pay api" in {
+    s"return 200 for completed New journies" in {
       val sessionId = SessionId()
-      val id = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
-      val importJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = id)
+      val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
+      givenADeclarationJourneyIsPersisted(journey)
+      val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
-      givenADeclarationJourneyIsPersisted(importJourney)
-
-      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-      val eventualResult = controller(aCalculationResultsWithNoTax).onSubmit()(request)
-
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+      status(eventualResult) mustBe 200
     }
 
-    "will redirect to declaration-confirmation if exporting" in {
+    s"return 200 for completed Amend journies" in {
       val sessionId = SessionId()
-      val stubbedId = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
-      val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
-
-      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, sessionId)
-
-      givenADeclarationJourneyIsPersisted(exportJourney)
-
-      val eventualResult = controller().onSubmit()(request)
-
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
-    }
-
-    s"will redirect to ${routes.GoodsOverThresholdController.onPageLoad().url} if over threshold" in {
-      val sessionId = SessionId()
-      val stubbedId = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
-      val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = Import, createdAt = created, declarationId = stubbedId)
+      val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
+      givenADeclarationJourneyIsPersisted(journey)
+      givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
 
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
-      givenADeclarationJourneyIsPersisted(exportJourney)
-      givenAPaymentCalculation(CalculationResult(aImportGoods, AmountInPence(0), AmountInPence(0), AmountInPence(0), None))
+      status(eventualResult) mustBe 200
+    }
+  }
 
-      val eventualResult = controller(
-        aCalculationResults
-          .modify(_.calculationResults.each)
-          .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))).onPageLoad()(request)
+  "onSubmit" should {
+    journeyTypes.foreach { journeyType =>
+      s"redirect to /cannot-access-service for in-completed journies for $journeyType" in {
+        val sessionId = SessionId()
+        val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(journeyType = journeyType)
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
+        val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
+
+        status(eventualResult) mustBe 303
+        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+      }
     }
 
-    "will redirect to invalid request when redirected from declaration confirmation with journey reset" in {
-      val declarationJourney = startedExportJourney
-      val request = buildPost(routes.CheckYourAnswersController.onSubmit().url, aSessionId)
+    s"redirect to next page after successful form submit for New journies" in {
+      val sessionId = SessionId()
+      val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
+      givenADeclarationJourneyIsPersisted(journey)
+      givenDeclarationIsPersistedInBackend
 
-      givenADeclarationJourneyIsPersisted(declarationJourney)
-
-      val eventualResult = controller().onSubmit()(request)
+      val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+    }
+
+    s"redirect to next page after successful form submit for Amend journies" in {
+      val sessionId = SessionId()
+      val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
+
+      givenADeclarationJourneyIsPersisted(journey)
+      givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
+
+      val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
+
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
     }
   }
 }

@@ -19,6 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{Page, StartImportPage}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -43,7 +46,13 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
 
   def findByXPath(xPath: String): WebElement = findElement(By.xpath(xPath))
 
+  def findById(id: String): WebElement = findElement(By.id(id))
+
   def findByTagName(name: String): WebElement = findElement(By.tagName(name))
+
+  def findByClassName(name: String): WebElement = findElement(By.className(name))
+
+  def findByLinkText(name: String): WebElement = findElement(By.linkText(name))
 
   def elementText(element: WebElement): String = element.getText
 
@@ -59,12 +68,14 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
     }
 
   //TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
-  def givenAJourneyWithSession: DeclarationJourney = {
+  def givenAJourneyWithSession(journeyType: JourneyType = New, declarationType: DeclarationType = Import): DeclarationJourney = {
     goto(StartImportPage.path)
 
     (for {
       persisted <- declarationJourneyRepository.findAll()
-      updated   <- declarationJourneyRepository.upsert(completedDeclarationJourney.copy(sessionId = persisted.head.sessionId))
+      updated <- declarationJourneyRepository.upsert(
+                  completedDeclarationJourney
+                    .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType))
     } yield updated).futureValue
   }
 }

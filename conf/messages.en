@@ -191,8 +191,10 @@ purchaseDetails.price.error.invalid = Price paid must be a number
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
 
 # ReviewGoods
-reviewGoods.title = Review your goods
-reviewGoods.heading = Review your goods
+reviewGoods.New.title = Review your goods
+reviewGoods.Amend.title = Review the goods you are adding
+reviewGoods.New.heading = Review your goods
+reviewGoods.Amend.heading = Review the goods you are adding
 reviewGoods.list.item = Type of goods
 reviewGoods.list.quantity = Number of items
 reviewGoods.list.vatRate = VAT rate
@@ -200,7 +202,7 @@ reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
-reviewGoods.h3 = Do you need to declare more types of commercial goods?
+reviewGoods.h2 = Do you need to declare more types of commercial goods?
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods
@@ -418,6 +420,7 @@ noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do 
 
 # CheckYourAnswers
 checkYourAnswers.title = Check your answers before making your declaration
+checkYourAnswers.amend.title = Check your answers before adding these goods to your declaration
 checkYourAnswers.change = Change
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
@@ -443,6 +446,9 @@ checkYourAnswers.journeyDetails.travellingByVehicle = Travelling by vehicle
 checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration number
 checkYourAnswers.sendDeclaration = Now send your declaration
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.amend.sendDeclaration.acknowledgement.1 = I must bring this updated declaration with me
+checkYourAnswers.amend.sendDeclaration.acknowledgement.2 = I must pay for goods I bring into Great Britain for trade or business use
+checkYourAnswers.amend.sendDeclaration.acknowledgement.3 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
 checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand = I need to bring proof my goods were produced in the EU
 checkYourAnswers.sendDeclaration.acknowledgement.1 = I must pay Customs Duty and VAT on goods I bring into Great Britain for trade or business use
 checkYourAnswers.sendDeclaration.Import.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
@@ -484,7 +490,7 @@ retrieveDeclaration.heading = What are the details of your existing declaration?
 retrieveDeclaration.p = You can only add goods to a journey you are making in the next 5 days.
 retrieveDeclaration.mibReference.label = Declaration reference
 retrieveDeclaration.mibReference.hint = For example, XAMB0000010000
-retrieveDeclaration.mibReference.error.required = Enter declaration reference
+retrieveDeclaration.mibReference.error.required = Enter your declaration reference
 retrieveDeclaration.mibReference.error.invalid = Declaration reference must start with X followed by 13 characters
 retrieveDeclaration.eori.label = EORI number
 retrieveDeclaration.eori.hint = For example, GB123456780000
