@@ -22,5 +22,7 @@
 @(declarationGoods: Seq[Goods])(implicit messages: Messages)
 
 @for((list, idx) <- GoodsItemList.summaryList(declarationGoods).zipWithIndex) {
-  @summaryList(list)
+ <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    @summaryList(list)
+ </dl>
 }
