@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ExciseAndRestrictedGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
@@ -31,11 +31,12 @@ class ExciseAndRestrictedGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: ExciseAndRestrictedGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: ExciseAndRestrictedGoodsView,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    backToCheckYourAnswersIfCompleteElse(routes.GoodsDestinationController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(GoodsDestinationController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(
@@ -53,10 +54,10 @@ class ExciseAndRestrictedGoodsController @Inject()(
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         value => {
+          import request.declarationJourney._
           persistAndRedirect(
             request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value)),
-            if (value == Yes) routes.CannotUseServiceController.onPageLoad()
-            else routes.ValueWeightOfGoodsController.onPageLoad()
+            navigator.nextPage(request.uri, value, request.declarationJourney, Some(goodsEntries.entries.size))
           )
         }
       )
