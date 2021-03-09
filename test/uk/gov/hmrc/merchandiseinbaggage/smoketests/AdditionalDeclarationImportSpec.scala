@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._

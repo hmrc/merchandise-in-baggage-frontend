@@ -22,7 +22,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
