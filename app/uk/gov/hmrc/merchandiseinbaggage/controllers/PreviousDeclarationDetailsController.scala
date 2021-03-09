@@ -18,20 +18,23 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PreviousDeclarationDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
+  override val repo: DeclarationJourneyRepository,
   previousDeclarationDetailsService: DeclarationService,
+  mibConnector: MibConnector,
   view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
-    extends DeclarationJourneyController {
+    extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     previousDeclarationDetailsService.findDeclaration(request.declarationJourney.declarationId).map {
@@ -42,7 +45,15 @@ class PreviousDeclarationDetailsController @Inject()(
     }
   }
 
-  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { _ =>
-    Future.successful(Redirect(ExciseAndRestrictedGoodsController.onPageLoad))
+  val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    mibConnector.findDeclaration(request.declarationJourney.declarationId).flatMap { maybeOriginalDeclaration =>
+      maybeOriginalDeclaration
+        .fold(actionProvider.invalidRequestF(s"declaration not found for id:${request.declarationJourney.declarationId.value}")) {
+          originalDeclaration =>
+            repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(originalDeclaration.goodsDestination))).map { _ =>
+              Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
+            }
+        }
+    }
   }
 }

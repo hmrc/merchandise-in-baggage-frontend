@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDecla
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -34,8 +35,15 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
     "return 200 if declaration exists and resets the journey" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
       val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
+      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
-        new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, previousDeclarationDetailsService, view)
+        new PreviousDeclarationDetailsController(
+          controllerComponents,
+          actionBuilder,
+          declarationJourneyRepository,
+          previousDeclarationDetailsService,
+          mibConnector,
+          view)
 
       val sessionId = SessionId()
       val id = DeclarationId("456")
@@ -64,8 +72,15 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
     "return 303 if declaration does NOT exist and resets the journey" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
       val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
+      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
-        new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, previousDeclarationDetailsService, view)
+        new PreviousDeclarationDetailsController(
+          controllerComponents,
+          actionBuilder,
+          declarationJourneyRepository,
+          previousDeclarationDetailsService,
+          mibConnector,
+          view)
 
       val sessionId = SessionId()
       val id = DeclarationId("456")
