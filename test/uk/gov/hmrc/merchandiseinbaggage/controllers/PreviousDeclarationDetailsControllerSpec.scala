@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDecla
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.service.PreviousDeclarationDetailsService
+import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.{LocalDate, LocalDateTime}
@@ -33,7 +33,7 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
   "creating a page" should {
     "return 200 if declaration exists and resets the journey" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[PreviousDeclarationDetailsService]
+      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
       val controller =
         new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, previousDeclarationDetailsService, view)
 
@@ -63,7 +63,7 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
 
     "return 303 if declaration does NOT exist and resets the journey" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[PreviousDeclarationDetailsService]
+      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
       val controller =
         new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, previousDeclarationDetailsService, view)
 

@@ -19,13 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, DeclarationType, Goods, JourneyDetails}
-import uk.gov.hmrc.merchandiseinbaggage.service.PreviousDeclarationDetailsService._
+import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService._
 
 import java.time.LocalDate
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PreviousDeclarationDetailsService @Inject()(mibConnector: MibConnector) {
+class DeclarationService @Inject()(mibConnector: MibConnector) {
 
   def findDeclaration(declarationId: DeclarationId)(
     implicit hc: HeaderCarrier,
@@ -44,9 +44,9 @@ class PreviousDeclarationDetailsService @Inject()(mibConnector: MibConnector) {
 
 }
 
-object PreviousDeclarationDetailsService {
+object DeclarationService {
   def listGoods(goods: Seq[Goods], amendments: Seq[Amendment]): Seq[Goods] = {
-    def paidAmendment: Seq[Goods] = amendments.filterNot(_.paymentStatus.isEmpty) flatMap (a => a.goods.goods)
+    def paidAmendment: Seq[Goods] = amendments.filterNot(_.paymentStatus.isEmpty) flatMap (_.goods.goods)
 
     goods ++ paidAmendment
   }
