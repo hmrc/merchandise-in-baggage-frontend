@@ -66,7 +66,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private def amendHandler(paymentCalcs: CalculationResults) =
     new CheckYourAnswersAmendHandler(
       actionBuilder,
-      new PaymentService(testPaymentConnector),
       stubbedCalculation(paymentCalcs),
       mibConnector,
       amendImportView,

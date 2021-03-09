@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.NewOrExistingForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,7 +43,7 @@ class NewOrExistingController @Inject()(
           form,
           request.declarationJourney.declarationType
         ))
-    else Redirect(routes.GoodsDestinationController.onPageLoad())
+    else Redirect(GoodsDestinationController.onPageLoad())
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -50,10 +51,10 @@ class NewOrExistingController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case New => Future successful Redirect(routes.GoodsDestinationController.onPageLoad()).addingToSession("journeyType" -> "new")
+          case New => Future successful Redirect(GoodsDestinationController.onPageLoad()).addingToSession("journeyType" -> "new")
           case Amend =>
             repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
-              Redirect(routes.RetrieveDeclarationController.onPageLoad()).addingToSession("journeyType" -> "amend")
+              Redirect(RetrieveDeclarationController.onPageLoad()).addingToSession("journeyType" -> "amend")
             }
         }
       )

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.AgentDetailsController
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -24,12 +26,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
+class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[AgentDetailsView]
+  private val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new AgentDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new AgentDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   val journey: DeclarationJourney =
     DeclarationJourney(aSessionId, Import).copy(maybeGoodsDestination = Some(GreatBritain))
@@ -52,10 +55,13 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val request = buildPost(routes.AgentDetailsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "business name")
 
-      val eventualResult = controller(journey).onSubmit(request)
+      (mockNavigator
+        .nextPage(_: String))
+        .expects(AgentDetailsController.onPageLoad().url)
+        .returning(routes.EnterAgentAddressController.onPageLoad())
+        .once()
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.EnterAgentAddressController.onPageLoad().url)
+      controller(journey).onSubmit(request).futureValue
     }
   }
 

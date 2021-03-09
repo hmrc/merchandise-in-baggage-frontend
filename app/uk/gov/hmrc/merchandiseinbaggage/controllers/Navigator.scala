@@ -19,25 +19,32 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 
 class Navigator {
-  def nextPage(currentUrl: String, value: YesNo, declarationJourney: DeclarationJourney, idx: Option[Int] = None): Call = {
-    import declarationJourney._
+  def nextPage(value: YesNo, journeyType: JourneyType, idx: Option[Int])(currentUrl: String): Call =
+    Navigator.pages(currentUrl)(idx, journeyType)(value)
 
-    //TODO maybe use ADTs to remove String condition and get compiler help
-    currentUrl match {
-      case url: String if ExciseAndRestrictedGoodsController.onPageLoad().url == url =>
-        exciseAndRestrictedGoods(value, idx, journeyType)
-    }
-  }
+  def nextPage(currentUrl: String): Call = Navigator.pages(currentUrl)(None, New)(Yes)
+}
 
-  private def exciseAndRestrictedGoods(value: YesNo, idx: Option[Int], journeyType: JourneyType): Call =
+object Navigator {
+
+  def pages[T]: Map[String, (Option[Int], JourneyType) => YesNo => Call] = Map(
+    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods,
+    AgentDetailsController.onPageLoad().url             -> ((_, _) => _ => EnterAgentAddressController.onPageLoad()),
+    CustomsAgentController.onPageLoad().url             -> ((_, _) => customsAgent)
+  )
+
+  private def exciseAndRestrictedGoods(idx: Option[Int], journeyType: JourneyType)(value: YesNo): Call =
     (value, journeyType) match {
       case (Yes, _)   => CannotUseServiceController.onPageLoad()
       case (_, New)   => ValueWeightOfGoodsController.onPageLoad()
       case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx.getOrElse(1))
     }
+
+  private def customsAgent(value: YesNo): Call =
+    if (value == Yes) AgentDetailsController.onPageLoad()
+    else EoriNumberController.onPageLoad()
 }

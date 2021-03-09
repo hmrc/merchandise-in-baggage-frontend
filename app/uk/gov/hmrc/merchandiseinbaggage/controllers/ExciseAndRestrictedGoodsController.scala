@@ -57,7 +57,7 @@ class ExciseAndRestrictedGoodsController @Inject()(
           import request.declarationJourney._
           persistAndRedirect(
             request.declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value)),
-            navigator.nextPage(request.uri, value, request.declarationJourney, Some(goodsEntries.entries.size))
+            navigator.nextPage(value, journeyType, Some(goodsEntries.entries.size))(ExciseAndRestrictedGoodsController.onPageLoad().url)
           )
         }
       )

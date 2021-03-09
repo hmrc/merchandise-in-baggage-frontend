@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.AgentDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,8 @@ class AgentDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: AgentDetailsView
+  view: AgentDetailsView,
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
@@ -54,7 +56,7 @@ class AgentDetailsController @Inject()(
               request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
             )
             .map { _ =>
-              Redirect(routes.EnterAgentAddressController.onPageLoad())
+              Redirect(navigator.nextPage(AgentDetailsController.onPageLoad().url))
             }
         }
       )

@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, DeclarationType}
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 
@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersAmendHandler @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
-  paymentService: PaymentService,
   calculationService: CalculationService,
   mibConnector: MibConnector,
   amendImportView: CheckYourAnswersAmendImportView,

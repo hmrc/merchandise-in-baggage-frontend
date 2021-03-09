@@ -19,9 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CustomsAgentForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
@@ -32,6 +32,7 @@ class CustomsAgentController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: CustomsAgentView,
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
@@ -54,8 +55,8 @@ class CustomsAgentController @Inject()(
         isCustomsAgent =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
-            if (isCustomsAgent == Yes) routes.AgentDetailsController.onPageLoad()
-            else routes.EoriNumberController.onPageLoad()
+            navigator
+              .nextPage(isCustomsAgent, request.declarationJourney.journeyType, None)(CustomsAgentController.onPageLoad().url)
         )
       )
   }
