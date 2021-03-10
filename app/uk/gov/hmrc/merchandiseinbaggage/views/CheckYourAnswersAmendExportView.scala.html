@@ -23,7 +23,7 @@
 
 @(form: Form[_], amendment: Amendment)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export)) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export)) {
 
  @helper.form(action = CheckYourAnswersController.onSubmit()) {
 

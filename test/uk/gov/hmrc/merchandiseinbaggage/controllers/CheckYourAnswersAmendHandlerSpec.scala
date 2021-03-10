@@ -83,7 +83,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
         val eventualResult = amendHandler().onPageLoad(importOrExport, amendment, journey.declarationId)
 
         status(eventualResult) mustBe OK
-        contentAsString(eventualResult) must include(messageApi("checkYourAnswers.title"))
+        contentAsString(eventualResult) must include(messageApi("checkYourAnswers.amend.title"))
       }
 
       s"return 303 for goods over threshold for $importOrExport" in {
