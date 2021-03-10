@@ -16,26 +16,30 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{AgentDetailsController, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
+class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   val view = app.injector.instanceOf[CustomsAgentView]
+  val mockNavigator = mock[Navigator]
   val controller: DeclarationJourney => CustomsAgentController =
     declarationJourney =>
-      new CustomsAgentController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+      new CustomsAgentController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   private val journey: DeclarationJourney = DeclarationJourney(aSessionId, DeclarationType.Import)
 
   "onPageLoad" should {
     s"return 200 with radio buttons" in {
 
-      val request = buildGet(routes.CustomsAgentController.onPageLoad.url, aSessionId)
+      val request = buildGet(CustomsAgentController.onPageLoad().url, aSessionId)
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onPageLoad(request)
       val result = contentAsString(eventualResult)
 
@@ -48,25 +52,36 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to /agent-details on submit if answer is Yes" in {
-      val request = buildGet(routes.CustomsAgentController.onSubmit().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
+      (mockNavigator
+        .nextPage(_: RequestWithYesNo))
+        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, Yes))
+        .returning(AgentDetailsController.onPageLoad())
+        .once()
+
       val eventualResult = controller(journey).onSubmit(request)
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.AgentDetailsController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(AgentDetailsController.onPageLoad().url)
     }
 
+    //TODO move this test to NavigatorSpec
     s"redirect to /eori-number on submit if answer is No" in {
-      val request = buildGet(routes.CustomsAgentController.onSubmit().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "No")
 
-      val eventualResult = controller(journey).onSubmit(request)
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.EoriNumberController.onPageLoad().url)
+      (mockNavigator
+        .nextPage(_: RequestWithYesNo))
+        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, No))
+        .returning(EoriNumberController.onPageLoad())
+        .once()
+
+      controller(journey).onSubmit(request).futureValue
     }
 
     s"return 400 with any form errors" in {
-      val request = buildGet(routes.CustomsAgentController.onSubmit().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

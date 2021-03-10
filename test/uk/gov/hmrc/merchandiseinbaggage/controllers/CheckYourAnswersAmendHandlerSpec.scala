@@ -16,24 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import java.time.LocalDateTime
+
 import com.softwaremill.quicklens._
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
-import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
 
@@ -42,11 +42,6 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
   private lazy val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
-  private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
-    override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
-      Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
-  }
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
     new CalculationService(mibConnector) {
@@ -57,7 +52,6 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
   private def amendHandler(paymentCalcs: CalculationResults = aCalculationResults) =
     new CheckYourAnswersAmendHandler(
       actionBuilder,
-      new PaymentService(testPaymentConnector),
       stubbedCalculation(paymentCalcs),
       mibConnector,
       importView,

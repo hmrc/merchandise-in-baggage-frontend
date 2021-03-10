@@ -19,25 +19,46 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
+
+sealed trait NavigationRequests
+final case class RequestByPass(currentUrl: String) extends NavigationRequests
+final case class RequestWithYesNo(currentUrl: String, value: YesNo) extends NavigationRequests
+final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 
 class Navigator {
-  def nextPage(currentUrl: String, value: YesNo, declarationJourney: DeclarationJourney, idx: Option[Int] = None): Call = {
-    import declarationJourney._
 
-    //TODO maybe use ADTs to remove String condition and get compiler help
-    currentUrl match {
-      case url: String if ExciseAndRestrictedGoodsController.onPageLoad().url == url =>
-        exciseAndRestrictedGoods(value, idx, journeyType)
-    }
+  def nextPage(request: NavigationRequests): Call = request match {
+    case RequestByPass(url)                             => Navigator.nextPage(url)
+    case RequestWithYesNo(url, value)                   => Navigator.nextPageWithAnswer(url)(value)
+    case RequestWithIndex(url, value, journeyType, idx) => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
   }
+}
 
-  private def exciseAndRestrictedGoods(value: YesNo, idx: Option[Int], journeyType: JourneyType): Call =
+object Navigator {
+
+  def nextPage: Map[String, Call] = Map(
+    AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad(),
+    EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad()
+  )
+
+  def nextPageWithAnswer: Map[String, YesNo => Call] = Map(
+    CustomsAgentController.onPageLoad().url -> customsAgent
+  )
+
+  def nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
+    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
+  )
+
+  private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     (value, journeyType) match {
       case (Yes, _)   => CannotUseServiceController.onPageLoad()
       case (_, New)   => ValueWeightOfGoodsController.onPageLoad()
-      case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx.getOrElse(1))
+      case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx)
     }
+
+  private def customsAgent(value: YesNo): Call =
+    if (value == Yes) AgentDetailsController.onPageLoad()
+    else EoriNumberController.onPageLoad()
 }

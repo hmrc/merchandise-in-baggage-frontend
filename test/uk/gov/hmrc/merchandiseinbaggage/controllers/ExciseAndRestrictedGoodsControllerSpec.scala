@@ -60,8 +60,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val request = buildPost(ExciseAndRestrictedGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "No")
 
-        (mockNavigator.nextPage _)
-          .expects(ExciseAndRestrictedGoodsController.onPageLoad().url, No, journey, Some(1))
+        (mockNavigator
+          .nextPage(_: RequestWithIndex))
+          .expects(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, journey.journeyType, 1))
           .returning(ValueWeightOfGoodsController.onPageLoad())
           .once()
 

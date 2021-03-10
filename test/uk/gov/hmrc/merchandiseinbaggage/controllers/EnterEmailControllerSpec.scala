@@ -16,26 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
+class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[EnterEmailView]
+  val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new EnterEmailController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new EnterEmailController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
   "onPageLoad" should {
     s"return 200 with correct content" in {
 
-      val request = buildGet(routes.EnterEmailController.onPageLoad().url, aSessionId)
+      val request = buildGet(EnterEmailController.onPageLoad().url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result = contentAsString(eventualResult)
 
@@ -49,19 +52,22 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to /journey-details after successful form submit" in {
-
-      val request = buildPost(routes.EnterEmailController.onSubmit().url, aSessionId)
+      val request = buildPost(EnterEmailController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("email" -> "test@email.com")
-      val eventualResult = controller(journey).onSubmit()(request)
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.JourneyDetailsController.onPageLoad().url)
+      (mockNavigator
+        .nextPage(_: RequestByPass))
+        .expects(RequestByPass(EnterEmailController.onPageLoad().url))
+        .returning(JourneyDetailsController.onPageLoad())
+        .once()
+
+      controller(journey).onSubmit()(request).futureValue
     }
   }
 
   s"return 400 with any form errors" in {
 
-    val request = buildPost(routes.EnterEmailController.onSubmit().url, aSessionId)
+    val request = buildPost(EnterEmailController.onSubmit().url, aSessionId)
       .withFormUrlEncodedBody("email" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit()(request)

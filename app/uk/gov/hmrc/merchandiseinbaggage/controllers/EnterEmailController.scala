@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +31,8 @@ class EnterEmailController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: EnterEmailView
+  view: EnterEmailView,
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
@@ -49,7 +51,9 @@ class EnterEmailController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         email =>
-          persistAndRedirect(request.declarationJourney.copy(maybeEmailAddress = Some(email)), routes.JourneyDetailsController.onPageLoad())
+          persistAndRedirect(
+            request.declarationJourney.copy(maybeEmailAddress = Some(email)),
+            navigator.nextPage(RequestByPass(EnterEmailController.onPageLoad().url)))
       )
   }
 }
