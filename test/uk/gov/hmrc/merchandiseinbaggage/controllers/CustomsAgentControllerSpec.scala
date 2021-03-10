@@ -18,12 +18,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.AgentDetailsController
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{AgentDetailsController, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -57,8 +56,8 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPage(_: YesNo, _: JourneyType, _: Option[Int])(_: String))
-        .expects(Yes, journey.journeyType, None, CustomsAgentController.onPageLoad().url)
+        .nextPage(_: RequestWithYesNo))
+        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, Yes))
         .returning(AgentDetailsController.onPageLoad())
         .once()
 
@@ -73,8 +72,8 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "No")
 
       (mockNavigator
-        .nextPage(_: YesNo, _: JourneyType, _: Option[Int])(_: String))
-        .expects(No, journey.journeyType, None, CustomsAgentController.onPageLoad().url)
+        .nextPage(_: RequestWithYesNo))
+        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, No))
         .returning(EoriNumberController.onPageLoad())
         .once()
 

@@ -56,7 +56,7 @@ class CustomsAgentController @Inject()(
           persistAndRedirect(
             request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
             navigator
-              .nextPage(isCustomsAgent, request.declarationJourney.journeyType, None)(CustomsAgentController.onPageLoad().url)
+              .nextPage(RequestWithYesNo(CustomsAgentController.onPageLoad().url, isCustomsAgent))
         )
       )
   }

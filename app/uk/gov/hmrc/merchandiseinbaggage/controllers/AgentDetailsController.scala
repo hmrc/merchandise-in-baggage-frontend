@@ -56,7 +56,7 @@ class AgentDetailsController @Inject()(
               request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
             )
             .map { _ =>
-              Redirect(navigator.nextPage(AgentDetailsController.onPageLoad().url))
+              Redirect(navigator.nextPage(RequestByPass(AgentDetailsController.onPageLoad().url)))
             }
         }
       )

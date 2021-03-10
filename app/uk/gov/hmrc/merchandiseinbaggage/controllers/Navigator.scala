@@ -22,26 +22,39 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 
-class Navigator {
-  def nextPage(value: YesNo, journeyType: JourneyType, idx: Option[Int])(currentUrl: String): Call =
-    Navigator.pages(currentUrl)(idx, journeyType)(value)
+sealed trait NavigationRequests
+final case class RequestByPass(currentUrl: String) extends NavigationRequests
+final case class RequestWithYesNo(currentUrl: String, value: YesNo) extends NavigationRequests
+final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 
-  def nextPage(currentUrl: String): Call = Navigator.pages(currentUrl)(None, New)(Yes)
+class Navigator {
+
+  def nextPage(request: NavigationRequests): Call = request match {
+    case RequestByPass(url)                             => Navigator.pages0(url)
+    case RequestWithYesNo(url, value)                   => Navigator.pages1(url)(value)
+    case RequestWithIndex(url, value, journeyType, idx) => Navigator.pages3(url)(idx, journeyType, value)
+  }
 }
 
 object Navigator {
 
-  def pages[T]: Map[String, (Option[Int], JourneyType) => YesNo => Call] = Map(
-    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods,
-    AgentDetailsController.onPageLoad().url             -> ((_, _) => _ => EnterAgentAddressController.onPageLoad()),
-    CustomsAgentController.onPageLoad().url             -> ((_, _) => customsAgent)
+  def pages0: Map[String, Call] = Map(
+    AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad()
   )
 
-  private def exciseAndRestrictedGoods(idx: Option[Int], journeyType: JourneyType)(value: YesNo): Call =
+  def pages1: Map[String, YesNo => Call] = Map(
+    CustomsAgentController.onPageLoad().url -> customsAgent
+  )
+
+  def pages3: Map[String, (Int, JourneyType, YesNo) => Call] = Map(
+    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
+  )
+
+  private def exciseAndRestrictedGoods(idx: Int, journeyType: JourneyType, value: YesNo): Call =
     (value, journeyType) match {
       case (Yes, _)   => CannotUseServiceController.onPageLoad()
       case (_, New)   => ValueWeightOfGoodsController.onPageLoad()
-      case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx.getOrElse(1))
+      case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx)
     }
 
   private def customsAgent(value: YesNo): Call =

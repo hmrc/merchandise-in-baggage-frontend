@@ -20,7 +20,7 @@ import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
@@ -61,8 +61,8 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
           .withFormUrlEncodedBody("value" -> "No")
 
         (mockNavigator
-          .nextPage(_: YesNo, _: JourneyType, _: Option[Int])(_: String))
-          .expects(No, journey.journeyType, Some(1), ExciseAndRestrictedGoodsController.onPageLoad().url)
+          .nextPage(_: RequestWithIndex))
+          .expects(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, journey.journeyType, 1))
           .returning(ValueWeightOfGoodsController.onPageLoad())
           .once()
 

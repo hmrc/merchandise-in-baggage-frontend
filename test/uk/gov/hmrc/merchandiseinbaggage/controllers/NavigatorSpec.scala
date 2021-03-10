@@ -29,14 +29,14 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
     forAll(journeyTypesTable) { newOrAmend: JourneyType =>
       s"On ${ExciseAndRestrictedGoodsController.onPageLoad().url}" must {
         s"redirect to ${CannotUseServiceController.onPageLoad().url} if submit with Yes for $importOrExport and $newOrAmend" in new Navigator {
-          val result: Call = nextPage(Yes, newOrAmend, Some(1))(ExciseAndRestrictedGoodsController.onPageLoad().url)
+          val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, Yes, newOrAmend, 1))
 
           result.url mustBe CannotUseServiceController.onPageLoad().url
         }
 
         if (newOrAmend == Amend) {
           s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
-            val result: Call = nextPage(No, newOrAmend, Some(1))(ExciseAndRestrictedGoodsController.onPageLoad().url)
+            val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
             result.url mustBe GoodsTypeQuantityController.onPageLoad(1).url
           }
@@ -44,7 +44,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
         if (newOrAmend == New) {
           s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
-            val result: Call = nextPage(No, newOrAmend, Some(1))(ExciseAndRestrictedGoodsController.onPageLoad().url)
+            val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
             result.url mustBe ValueWeightOfGoodsController.onPageLoad().url
           }

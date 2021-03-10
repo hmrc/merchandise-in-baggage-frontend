@@ -56,8 +56,8 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "business name")
 
       (mockNavigator
-        .nextPage(_: String))
-        .expects(AgentDetailsController.onPageLoad().url)
+        .nextPage(_: RequestByPass))
+        .expects(RequestByPass(AgentDetailsController.onPageLoad().url))
         .returning(routes.EnterAgentAddressController.onPageLoad())
         .once()
 
