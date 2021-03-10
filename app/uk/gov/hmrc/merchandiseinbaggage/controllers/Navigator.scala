@@ -30,27 +30,28 @@ final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType:
 class Navigator {
 
   def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPass(url)                             => Navigator.pages0(url)
-    case RequestWithYesNo(url, value)                   => Navigator.pages1(url)(value)
-    case RequestWithIndex(url, value, journeyType, idx) => Navigator.pages3(url)(idx, journeyType, value)
+    case RequestByPass(url)                             => Navigator.nextPage(url)
+    case RequestWithYesNo(url, value)                   => Navigator.nextPageWithAnswer(url)(value)
+    case RequestWithIndex(url, value, journeyType, idx) => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
   }
 }
 
 object Navigator {
 
-  def pages0: Map[String, Call] = Map(
-    AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad()
+  def nextPage: Map[String, Call] = Map(
+    AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad(),
+    EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad()
   )
 
-  def pages1: Map[String, YesNo => Call] = Map(
+  def nextPageWithAnswer: Map[String, YesNo => Call] = Map(
     CustomsAgentController.onPageLoad().url -> customsAgent
   )
 
-  def pages3: Map[String, (Int, JourneyType, YesNo) => Call] = Map(
+  def nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
     ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
   )
 
-  private def exciseAndRestrictedGoods(idx: Int, journeyType: JourneyType, value: YesNo): Call =
+  private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     (value, journeyType) match {
       case (Yes, _)   => CannotUseServiceController.onPageLoad()
       case (_, New)   => ValueWeightOfGoodsController.onPageLoad()

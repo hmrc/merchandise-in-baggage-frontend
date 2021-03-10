@@ -39,7 +39,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
   "onPageLoad" should {
     s"return 200 with radio buttons" in {
 
-      val request = buildGet(CustomsAgentController.onPageLoad.url, aSessionId)
+      val request = buildGet(CustomsAgentController.onPageLoad().url, aSessionId)
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onPageLoad(request)
       val result = contentAsString(eventualResult)
 
