@@ -45,9 +45,10 @@ class Navigator {
 object Navigator {
 
   val nextPage: Map[String, Call] = Map(
-    AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad(),
-    EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad(),
-    EoriNumberController.onPageLoad().url   -> TravellerDetailsController.onPageLoad(),
+    AgentDetailsController.onPageLoad().url   -> EnterAgentAddressController.onPageLoad(),
+    EnterEmailController.onPageLoad().url     -> JourneyDetailsController.onPageLoad(),
+    EoriNumberController.onPageLoad().url     -> TravellerDetailsController.onPageLoad(),
+    JourneyDetailsController.onPageLoad().url -> GoodsInVehicleController.onPageLoad()
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
