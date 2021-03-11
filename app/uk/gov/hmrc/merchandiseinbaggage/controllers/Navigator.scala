@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 
 sealed trait NavigationRequests
 final case class RequestByPass(currentUrl: String) extends NavigationRequests
+final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
 final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
 final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 
@@ -32,6 +33,7 @@ class Navigator {
 
   def nextPage(request: NavigationRequests): Call = request match {
     case RequestByPass(url)                             => Navigator.nextPage(url)
+    case RequestByPassWithIndex(url, idx)               => Navigator.nextPageWithIndex(idx)(url)
     case RequestWithAnswer(url, value)                  => Navigator.nextPageWithAnswer(url)(value)
     case RequestWithIndex(url, value, journeyType, idx) => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
   }
@@ -39,7 +41,7 @@ class Navigator {
 
 object Navigator {
 
-  def nextPage: Map[String, Call] = Map(
+  val nextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad(),
     EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad(),
     EoriNumberController.onPageLoad().url   -> TravellerDetailsController.onPageLoad(),
@@ -47,11 +49,16 @@ object Navigator {
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
     GoodsDestinationController.onPageLoad().url -> goodsDestination,
-    CustomsAgentController.onPageLoad().url     -> customsAgent
+    CustomsAgentController.onPageLoad().url     -> customsAgent,
+    GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
   )
 
-  def nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
+  val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
     ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
+  )
+
+  def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
+    GoodsOriginController.onPageLoad(idx).url -> PurchaseDetailsController.onPageLoad(idx)
   )
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
@@ -67,5 +74,9 @@ object Navigator {
 
   private def goodsDestination[T](value: T) =
     if (value == NorthernIreland) routes.CannotUseServiceIrelandController.onPageLoad()
-    else routes.ExciseAndRestrictedGoodsController.onPageLoad()
+    else ExciseAndRestrictedGoodsController.onPageLoad()
+
+  private def goodsInVehicleController[T](value: T) =
+    if (value == Yes) VehicleSizeController.onPageLoad()
+    else CheckYourAnswersController.onPageLoad()
 }

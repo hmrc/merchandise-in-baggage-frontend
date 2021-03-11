@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsOriginForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,11 +32,12 @@ class GoodsOriginController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: GoodsOriginView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: GoodsOriginView,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.GoodsVatRateController.onPageLoad(index), index)
+    checkYourAnswersOrReviewGoodsElse(GoodsVatRateController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
@@ -44,7 +46,7 @@ class GoodsOriginController @Inject()(
           val preparedForm = entry.maybeProducedInEu.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
         case _: ExportGoodsEntry =>
-          Future successful Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
+          Future successful Redirect(SearchGoodsCountryController.onPageLoad(idx))
       }
     }
   }
@@ -59,7 +61,8 @@ class GoodsOriginController @Inject()(
             persistAndRedirect(
               request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
               idx,
-              routes.PurchaseDetailsController.onPageLoad(idx))
+              navigator.nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(idx).url, idx))
+          )
         )
     }
   }

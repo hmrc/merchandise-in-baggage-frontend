@@ -76,6 +76,27 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
         result mustBe CannotUseServiceIrelandController.onPageLoad()
       }
+
+      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${VehicleSizeController
+        .onPageLoad()} if Yes for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, Yes))
+
+        result mustBe VehicleSizeController.onPageLoad()
+      }
+
+      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${CheckYourAnswersController
+        .onPageLoad()} if No for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, No))
+
+        result mustBe CheckYourAnswersController.onPageLoad()
+      }
+
+      s"from ${GoodsOriginController.onPageLoad(1).url} navigates to ${PurchaseDetailsController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
+
+        result mustBe PurchaseDetailsController.onPageLoad(1)
+      }
     }
   }
 }
