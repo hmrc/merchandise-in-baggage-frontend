@@ -62,7 +62,8 @@ class GoodsVatRateController @Inject()(
             persistAndRedirect(
               request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
               idx,
-              navigator.nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(idx).url, idx)))
+              navigator.nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(idx).url, idx))
+          )
         )
     }
   }

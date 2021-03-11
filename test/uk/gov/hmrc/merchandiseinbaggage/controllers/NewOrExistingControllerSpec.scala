@@ -65,7 +65,8 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
         val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "New")
 
-        (mockNavigator.nextPage(_: RequestWithAnswer[_]))
+        (mockNavigator
+          .nextPage(_: RequestWithAnswer[_]))
           .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, New))
           .returning(GoodsDestinationController.onPageLoad())
           .once()
@@ -78,7 +79,8 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
         val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Amend")
 
-        (mockNavigator.nextPage(_: RequestWithAnswer[_]))
+        (mockNavigator
+          .nextPage(_: RequestWithAnswer[_]))
           .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, Amend))
           .returning(RetrieveDeclarationController.onPageLoad())
           .once()

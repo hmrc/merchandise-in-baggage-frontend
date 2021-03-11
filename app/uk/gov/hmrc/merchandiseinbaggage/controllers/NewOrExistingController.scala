@@ -52,12 +52,19 @@ class NewOrExistingController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case value@New   => Future successful redirect(value)
-          case value@Amend => repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ => redirect(value) }
-        }
+        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
+        amendSession(_)
       )
   }
+
+  private def amendSession(journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[_]): Future[Result] =
+    journeyType match {
+      case New => Future successful redirect(journeyType)
+      case Amend =>
+        repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
+          redirect(journeyType)
+        }
+    }
 
   private def redirect(journeyType: JourneyType)(implicit req: DeclarationJourneyRequest[_]): Result =
     Redirect(navigator.nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, journeyType)))

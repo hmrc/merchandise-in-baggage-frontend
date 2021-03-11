@@ -59,7 +59,8 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with M
       val request = buildPost(GoodsVatRateController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Zero")
 
-      (mockNavigator.nextPage(_: RequestByPassWithIndex))
+      (mockNavigator
+        .nextPage(_: RequestByPassWithIndex))
         .expects(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
         .returning(SearchGoodsCountryController.onPageLoad(1))
         .once()

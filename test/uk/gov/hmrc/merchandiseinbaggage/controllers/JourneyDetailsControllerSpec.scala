@@ -33,7 +33,12 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
   private val mockNavigator = mock[Navigator]
   private val controller: DeclarationJourney => JourneyDetailsController =
     declarationJourney =>
-      new JourneyDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+      new JourneyDetailsController(
+        controllerComponents,
+        stubProvider(declarationJourney),
+        stubRepo(declarationJourney),
+        view,
+        mockNavigator)
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
@@ -65,7 +70,8 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
             "dateOfTravel.year"  -> today.getYear.toString
           )
 
-        (mockNavigator.nextPage(_: RequestByPass))
+        (mockNavigator
+          .nextPage(_: RequestByPass))
           .expects(RequestByPass(JourneyDetailsController.onPageLoad().url))
           .returning(GoodsInVehicleController.onPageLoad())
 

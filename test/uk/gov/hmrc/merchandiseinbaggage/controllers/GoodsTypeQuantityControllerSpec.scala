@@ -32,7 +32,12 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
   private val view = app.injector.instanceOf[GoodsTypeQuantityView]
   val mockNavigator = mock[Navigator]
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsTypeQuantityController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+    new GoodsTypeQuantityController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      view,
+      mockNavigator)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
@@ -55,10 +60,13 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
       s"redirect to next page after successful form submit for $importOrExport" in {
         val request = buildPost(GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("category" -> "clothes", "quantity" -> "1")
-        val page = if (importOrExport == Import)
-          GoodsVatRateController.onPageLoad(1) else SearchGoodsCountryController.onPageLoad(1)
+        val page =
+          if (importOrExport == Import)
+            GoodsVatRateController.onPageLoad(1)
+          else SearchGoodsCountryController.onPageLoad(1)
 
-        (mockNavigator.nextPage(_: RequestWithDeclarationType))
+        (mockNavigator
+          .nextPage(_: RequestWithDeclarationType))
           .expects(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
           .returning(page)
           .once()

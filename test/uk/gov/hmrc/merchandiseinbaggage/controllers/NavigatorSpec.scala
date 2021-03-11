@@ -99,7 +99,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result mustBe PurchaseDetailsController.onPageLoad(1)
       }
 
-      if(importOrExport == Import) {
+      if (importOrExport == Import) {
         s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${GoodsVatRateController
           .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
           val result: Call = nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
@@ -130,7 +130,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result mustBe GoodsInVehicleController.onPageLoad()
       }
 
-      if(newOrAmend == New) {
+      if (newOrAmend == New) {
         s"from ${NewOrExistingController.onPageLoad().url} navigates to ${GoodsDestinationController
           .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
           val result: Call = nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, newOrAmend))
