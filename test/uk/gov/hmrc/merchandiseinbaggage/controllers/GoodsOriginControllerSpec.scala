@@ -55,6 +55,7 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .nextPage(_: RequestByPassWithIndex))
         .expects(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
         .returning(PurchaseDetailsController.onPageLoad(1))
+        .once()
 
       controller(journey).onSubmit(1)(request).futureValue
     }

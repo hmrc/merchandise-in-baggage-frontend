@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
@@ -96,6 +97,24 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val result: Call = nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
 
         result mustBe PurchaseDetailsController.onPageLoad(1)
+      }
+
+      if(importOrExport == Import) {
+        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${GoodsVatRateController
+          .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+          val result: Call = nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
+
+          result mustBe GoodsVatRateController.onPageLoad(1)
+        }
+      }
+
+      if (importOrExport == Export) {
+        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
+          .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+          val result: Call = nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
+
+          result mustBe SearchGoodsCountryController.onPageLoad(1)
+        }
       }
     }
   }

@@ -60,6 +60,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with
           .nextPage(_: RequestWithAnswer[_]))
           .expects(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, Yes))
           .returning(VehicleSizeController.onPageLoad())
+          .once()
 
         controller(journey).onSubmit()(request).futureValue
       }
