@@ -62,6 +62,7 @@ object Navigator {
 
   def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
     GoodsOriginController.onPageLoad(idx).url -> PurchaseDetailsController.onPageLoad(idx),
+    GoodsVatRateController.onPageLoad(idx).url -> SearchGoodsCountryController.onPageLoad(idx),
   )
 
   def nextPageWithIndexAndDeclarationType(declarationType: DeclarationType, idx: Int): Map[String, Call] = Map(

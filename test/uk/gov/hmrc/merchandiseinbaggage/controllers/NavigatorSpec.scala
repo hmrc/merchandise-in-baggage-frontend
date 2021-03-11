@@ -116,6 +116,12 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           result mustBe SearchGoodsCountryController.onPageLoad(1)
         }
       }
+      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
+
+        result mustBe SearchGoodsCountryController.onPageLoad(1)
+      }
     }
   }
 }

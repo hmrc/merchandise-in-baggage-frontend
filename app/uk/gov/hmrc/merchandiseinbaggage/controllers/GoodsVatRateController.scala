@@ -16,15 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsVatRateForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -32,11 +33,12 @@ class GoodsVatRateController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: GoodsVatRateView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: GoodsVatRateView,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
+    checkYourAnswersOrReviewGoodsElse(GoodsTypeQuantityController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
@@ -45,7 +47,7 @@ class GoodsVatRateController @Inject()(
           val preparedForm = entry.maybeGoodsVatRate.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, Import, backButtonUrl(idx)))
         case _: ExportGoodsEntry =>
-          Future successful Redirect(routes.SearchGoodsCountryController.onPageLoad(idx))
+          Future successful Redirect(SearchGoodsCountryController.onPageLoad(idx))
       }
     }
   }
@@ -60,7 +62,7 @@ class GoodsVatRateController @Inject()(
             persistAndRedirect(
               request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
               idx,
-              routes.SearchGoodsCountryController.onPageLoad(idx))
+              navigator.nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(idx).url, idx)))
         )
     }
   }

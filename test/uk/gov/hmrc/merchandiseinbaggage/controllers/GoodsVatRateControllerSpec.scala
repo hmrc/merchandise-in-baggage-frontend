@@ -16,19 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, DeclarationType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
+class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[GoodsVatRateView]
-
+  private val mockNavigator = mock[Navigator]
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsVatRateController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new GoodsVatRateController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   private val journey: DeclarationJourney = DeclarationJourney(
     aSessionId,
@@ -38,8 +40,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onPageLoad" should {
     "return 200 with radio buttons" in {
-
-      val request = buildPost(routes.GoodsVatRateController.onPageLoad(1).url, aSessionId)
+      val request = buildPost(GoodsVatRateController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result = contentAsString(eventualResult)
 
@@ -55,17 +56,19 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     "redirect to next page after successful form submit" in {
-      val request = buildPost(routes.GoodsVatRateController.onSubmit(1).url, aSessionId)
+      val request = buildPost(GoodsVatRateController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Zero")
 
-      val eventualResult = controller(journey).onSubmit(1)(request)
+      (mockNavigator.nextPage(_: RequestByPassWithIndex))
+        .expects(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
+        .returning(SearchGoodsCountryController.onPageLoad(1))
+        .once()
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.SearchGoodsCountryController.onPageLoad(1).url)
+      controller(journey).onSubmit(1)(request).futureValue
     }
 
     "return 400 with any form errors" in {
-      val request = buildGet(routes.GoodsVatRateController.onSubmit(1).url, aSessionId)
+      val request = buildGet(GoodsVatRateController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(1)(request)
