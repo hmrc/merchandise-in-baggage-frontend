@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
@@ -31,14 +32,14 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         s"redirect to ${CannotUseServiceController.onPageLoad().url} if submit with Yes for $importOrExport and $newOrAmend" in new Navigator {
           val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, Yes, newOrAmend, 1))
 
-          result.url mustBe CannotUseServiceController.onPageLoad().url
+          result mustBe CannotUseServiceController.onPageLoad()
         }
 
         if (newOrAmend == Amend) {
           s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
             val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
-            result.url mustBe GoodsTypeQuantityController.onPageLoad(1).url
+            result mustBe GoodsTypeQuantityController.onPageLoad(1)
           }
         }
 
@@ -46,9 +47,34 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
             val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
-            result.url mustBe ValueWeightOfGoodsController.onPageLoad().url
+            result mustBe ValueWeightOfGoodsController.onPageLoad()
           }
         }
+      }
+      s"from ${EnterEmailController.onPageLoad().url} navigates to ${JourneyDetailsController.onPageLoad().url} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPass(EnterEmailController.onPageLoad().url))
+
+        result mustBe JourneyDetailsController.onPageLoad()
+      }
+
+      s"from ${EoriNumberController.onPageLoad().url} navigates to ${TravellerDetailsController.onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPass(EoriNumberController.onPageLoad().url))
+
+        result mustBe TravellerDetailsController.onPageLoad()
+      }
+
+      s"from ${GoodsDestinationController.onPageLoad().url} navigates to ${ExciseAndRestrictedGoodsController
+        .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, GreatBritain))
+
+        result mustBe ExciseAndRestrictedGoodsController.onPageLoad()
+      }
+
+      s"from ${GoodsDestinationController.onPageLoad().url} navigates to ${CannotUseServiceIrelandController
+        .onPageLoad()} if NorthernIreland for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, NorthernIreland))
+
+        result mustBe CannotUseServiceIrelandController.onPageLoad()
       }
     }
   }

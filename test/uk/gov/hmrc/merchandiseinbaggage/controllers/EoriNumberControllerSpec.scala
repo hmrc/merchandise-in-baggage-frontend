@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -25,15 +26,17 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
+class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   val view = injector.instanceOf[EoriNumberView]
   val client = injector.instanceOf[HttpClient]
+  val mockNavigator = mock[Navigator]
   val connector = new MibConnector(client, "some url") {
     override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
       Future.successful(CheckResponse("123", false, None))
   }
-  val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)
+  val controller =
+    new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector, mockNavigator)
 
   "return an error if API EROI validation fails" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
@@ -54,7 +57,8 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
         Future.failed(new Exception("API returned 404"))
     }
-    val controller = new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector)
+    val controller =
+      new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector, mockNavigator)
 
     val result = controller.onSubmit()(
       buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)
