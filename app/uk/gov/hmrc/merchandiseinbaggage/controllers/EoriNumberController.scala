@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Eori, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,12 +36,13 @@ class EoriNumberController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: EoriNumberView,
-  mibConnector: MibConnector
+  mibConnector: MibConnector,
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController with Logging {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(CustomsAgentController.onPageLoad())
 
   private val invalidRequestMessage = "maybeIsACustomsAgent is unanswered"
 
@@ -76,7 +78,9 @@ class EoriNumberController @Inject()(
   private def validateEoriAndRedirect(eori: String, isAgent: YesNo, declarationType: DeclarationType, response: CheckResponse)(
     implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     if (response.valid)
-      persistAndRedirect(request.declarationJourney.copy(maybeEori = Some(Eori(eori))), routes.TravellerDetailsController.onPageLoad())
+      persistAndRedirect(
+        request.declarationJourney.copy(maybeEori = Some(Eori(eori))),
+        navigator.nextPage(RequestByPass(EoriNumberController.onPageLoad().url)))
     else
       Future.successful(badRequestResult(isAgent, declarationType, eori))
 

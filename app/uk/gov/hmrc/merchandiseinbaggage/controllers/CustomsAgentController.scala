@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CustomsAgentForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
@@ -56,7 +57,7 @@ class CustomsAgentController @Inject()(
           persistAndRedirect(
             request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
             navigator
-              .nextPage(RequestWithYesNo(CustomsAgentController.onPageLoad().url, isCustomsAgent))
+              .nextPage(RequestWithAnswer[YesNo](CustomsAgentController.onPageLoad().url, isCustomsAgent))
         )
       )
   }

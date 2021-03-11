@@ -17,21 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.Call
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{CustomsAgentController, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{JourneyType, YesNo}
 
 sealed trait NavigationRequests
 final case class RequestByPass(currentUrl: String) extends NavigationRequests
-final case class RequestWithYesNo(currentUrl: String, value: YesNo) extends NavigationRequests
+final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
 final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 
 class Navigator {
 
   def nextPage(request: NavigationRequests): Call = request match {
     case RequestByPass(url)                             => Navigator.nextPage(url)
-    case RequestWithYesNo(url, value)                   => Navigator.nextPageWithAnswer(url)(value)
+    case RequestWithAnswer(url, value)                  => Navigator.nextPageWithAnswer(url)(value)
     case RequestWithIndex(url, value, journeyType, idx) => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
   }
 }
@@ -40,11 +41,13 @@ object Navigator {
 
   def nextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url -> EnterAgentAddressController.onPageLoad(),
-    EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad()
+    EnterEmailController.onPageLoad().url   -> JourneyDetailsController.onPageLoad(),
+    EoriNumberController.onPageLoad().url   -> TravellerDetailsController.onPageLoad(),
   )
 
-  def nextPageWithAnswer: Map[String, YesNo => Call] = Map(
-    CustomsAgentController.onPageLoad().url -> customsAgent
+  def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
+    GoodsDestinationController.onPageLoad().url -> goodsDestination,
+    CustomsAgentController.onPageLoad().url     -> customsAgent
   )
 
   def nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
@@ -58,7 +61,11 @@ object Navigator {
       case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx)
     }
 
-  private def customsAgent(value: YesNo): Call =
+  private def customsAgent[T](value: T): Call =
     if (value == Yes) AgentDetailsController.onPageLoad()
     else EoriNumberController.onPageLoad()
+
+  private def goodsDestination[T](value: T) =
+    if (value == NorthernIreland) routes.CannotUseServiceIrelandController.onPageLoad()
+    else routes.ExciseAndRestrictedGoodsController.onPageLoad()
 }

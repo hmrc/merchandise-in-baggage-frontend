@@ -56,8 +56,8 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPage(_: RequestWithYesNo))
-        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, Yes))
+        .nextPage(_: RequestWithAnswer[_]))
+        .expects(RequestWithAnswer(CustomsAgentController.onPageLoad().url, Yes))
         .returning(AgentDetailsController.onPageLoad())
         .once()
 
@@ -72,8 +72,8 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "No")
 
       (mockNavigator
-        .nextPage(_: RequestWithYesNo))
-        .expects(RequestWithYesNo(CustomsAgentController.onPageLoad().url, No))
+        .nextPage(_: RequestWithAnswer[_]))
+        .expects(RequestWithAnswer(CustomsAgentController.onPageLoad().url, No))
         .returning(EoriNumberController.onPageLoad())
         .once()
 
