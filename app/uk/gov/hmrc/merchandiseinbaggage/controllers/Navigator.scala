@@ -19,9 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{CustomsAgentController, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, YesNo}
 
 sealed trait NavigationRequests
@@ -48,13 +48,14 @@ object Navigator {
     AgentDetailsController.onPageLoad().url   -> EnterAgentAddressController.onPageLoad(),
     EnterEmailController.onPageLoad().url     -> JourneyDetailsController.onPageLoad(),
     EoriNumberController.onPageLoad().url     -> TravellerDetailsController.onPageLoad(),
-    JourneyDetailsController.onPageLoad().url -> GoodsInVehicleController.onPageLoad()
+    JourneyDetailsController.onPageLoad().url -> GoodsInVehicleController.onPageLoad(),
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
     GoodsDestinationController.onPageLoad().url -> goodsDestination,
     CustomsAgentController.onPageLoad().url     -> customsAgent,
     GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
+    NewOrExistingController.onPageLoad().url    -> newOrExistingController,
   )
 
   val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
@@ -77,22 +78,33 @@ object Navigator {
       case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx)
     }
 
-  private def customsAgent[T](value: T): Call =
-    if (value == Yes) AgentDetailsController.onPageLoad()
-    else EoriNumberController.onPageLoad()
+  private def customsAgent[T](value: T): Call = value match {
+    case Yes => AgentDetailsController.onPageLoad()
+    case No  => EoriNumberController.onPageLoad()
+  }
 
   private def goodsDestination[T](value: T) =
-    if (value == NorthernIreland) routes.CannotUseServiceIrelandController.onPageLoad()
-    else ExciseAndRestrictedGoodsController.onPageLoad()
+    value match {
+      case NorthernIreland => CannotUseServiceIrelandController.onPageLoad()
+      case GreatBritain    => ExciseAndRestrictedGoodsController.onPageLoad()
+    }
 
   private def goodsInVehicleController[T](value: T) =
-    if (value == Yes) VehicleSizeController.onPageLoad()
-    else CheckYourAnswersController.onPageLoad()
+    value match {
+      case Yes => VehicleSizeController.onPageLoad()
+      case No  => CheckYourAnswersController.onPageLoad()
+    }
 
   private def goodsTypeQuantityController(declarationType: DeclarationType, idx: Int): Call =
     declarationType match {
       case Import => GoodsVatRateController.onPageLoad(idx)
       case Export => SearchGoodsCountryController.onPageLoad(idx)
+    }
+
+  private def newOrExistingController[T](journeyType: T): Call =
+    journeyType match {
+      case New   => GoodsDestinationController.onPageLoad()
+      case Amend => RetrieveDeclarationController.onPageLoad()
     }
 
 }

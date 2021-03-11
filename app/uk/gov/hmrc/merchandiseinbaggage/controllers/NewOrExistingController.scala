@@ -16,15 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.forms.NewOrExistingForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -32,7 +33,8 @@ class NewOrExistingController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: NewOrExistingView
+  view: NewOrExistingView,
+  navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
@@ -51,12 +53,13 @@ class NewOrExistingController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)), {
-          case New => Future successful Redirect(GoodsDestinationController.onPageLoad()).addingToSession("journeyType" -> "new")
-          case Amend =>
-            repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
-              Redirect(RetrieveDeclarationController.onPageLoad()).addingToSession("journeyType" -> "amend")
-            }
+          case value@New   => Future successful redirect(value)
+          case value@Amend => repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ => redirect(value) }
         }
       )
   }
+
+  private def redirect(journeyType: JourneyType)(implicit req: DeclarationJourneyRequest[_]): Result =
+    Redirect(navigator.nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, journeyType)))
+      .addingToSession("journeyType" -> s"${journeyType.toString.toLowerCase}")
 }
