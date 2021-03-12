@@ -47,11 +47,11 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
       }
     }
 
-  def findBy(mibReference: MibReference, eori: Eori)(implicit hc: HeaderCarrier): EitherT[Future, String, Option[DeclarationId]] =
+  def findBy(mibReference: MibReference, eori: Eori)(implicit hc: HeaderCarrier): EitherT[Future, String, Option[Declaration]] =
     EitherT(
       httpClient.GET[HttpResponse](s"$base$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}").map { response =>
         response.status match {
-          case Status.OK        => Right(Some(DeclarationId((response.json \ "declarationId").as[String])))
+          case Status.OK        => Right(response.json.asOpt[Declaration])
           case Status.NOT_FOUND => Right(None)
           case other =>
             logger.warn(s"unexpected status for findBy for mibReference:${mibReference.value}, and eori:${eori.value}, status:$other")
