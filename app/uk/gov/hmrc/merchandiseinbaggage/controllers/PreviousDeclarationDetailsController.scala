@@ -19,6 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
@@ -50,7 +52,14 @@ class PreviousDeclarationDetailsController @Inject()(
       maybeOriginalDeclaration
         .fold(actionProvider.invalidRequestF(s"declaration not found for id:${request.declarationJourney.declarationId.value}")) {
           originalDeclaration =>
-            repo.upsert(request.declarationJourney.copy(maybeGoodsDestination = Some(originalDeclaration.goodsDestination))).map { _ =>
+            val updatedDeclaration =
+              DeclarationJourney(request.declarationJourney.sessionId, originalDeclaration.declarationType)
+                .copy(
+                  declarationId = originalDeclaration.declarationId,
+                  journeyType = Amend,
+                  maybeGoodsDestination = Some(originalDeclaration.goodsDestination))
+
+            repo.upsert(updatedDeclaration).map { _ =>
               Redirect(routes.ExciseAndRestrictedGoodsController.onPageLoad())
             }
         }
