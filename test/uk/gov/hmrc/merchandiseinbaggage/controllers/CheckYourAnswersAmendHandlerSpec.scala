@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import com.softwaremill.quicklens._
 import play.api.mvc.Request
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
@@ -37,7 +37,6 @@ import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
 
-  private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]

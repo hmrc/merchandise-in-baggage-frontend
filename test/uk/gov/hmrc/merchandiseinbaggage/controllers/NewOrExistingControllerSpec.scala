@@ -16,20 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
+class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = injector.instanceOf[NewOrExistingView]
-
+  private val mockNavigator = mock[Navigator]
   def controller(declarationJourney: DeclarationJourney, amendFlag: Boolean = true) =
-    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view) {
+    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator) {
       override lazy val amendFlagConf: AmendFlagConf = AmendFlagConf(amendFlag)
     }
 
@@ -38,50 +41,57 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.NewOrExistingController.onPageLoad().url, aSessionId)
+        val request = buildGet(NewOrExistingController.onPageLoad().url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
         val result = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         result must include(messageApi(s"newOrExisting.title"))
         result must include(messageApi(s"newOrExisting.heading"))
-
         result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
       }
 
-      s"redirect to ${routes.GoodsDestinationController.onPageLoad().url} if flag is false for $importOrExport" in {
-        val request = buildGet(routes.NewOrExistingController.onPageLoad.url, aSessionId)
+      s"redirect to ${GoodsDestinationController.onPageLoad().url} if flag is false for $importOrExport" in {
+        val request = buildGet(NewOrExistingController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey, false).onPageLoad(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(GoodsDestinationController.onPageLoad().url)
       }
     }
 
     "onSubmit" should {
       s"redirect to /goods-destination after successful form submit with New for $importOrExport" in {
-        val request = buildPost(routes.NewOrExistingController.onSubmit().url, aSessionId)
+        val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "New")
 
+        (mockNavigator
+          .nextPage(_: RequestWithAnswer[_]))
+          .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, New))
+          .returning(GoodsDestinationController.onPageLoad())
+          .once()
+
         val eventualResult = controller(journey).onSubmit(request)
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsDestinationController.onPageLoad().url)
         session(eventualResult).get("journeyType") mustBe Some("new")
       }
 
       s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
-        val request = buildPost(routes.NewOrExistingController.onSubmit().url, aSessionId)
+        val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Amend")
 
+        (mockNavigator
+          .nextPage(_: RequestWithAnswer[_]))
+          .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, Amend))
+          .returning(RetrieveDeclarationController.onPageLoad())
+          .once()
+
         val eventualResult = controller(journey).onSubmit(request)
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.RetrieveDeclarationController.onPageLoad().url)
         session(eventualResult).get("journeyType") mustBe Some("amend")
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(routes.NewOrExistingController.onSubmit().url, aSessionId)
+      val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
@@ -75,6 +76,67 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val result: Call = nextPage(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, NorthernIreland))
 
         result mustBe CannotUseServiceIrelandController.onPageLoad()
+      }
+
+      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${VehicleSizeController
+        .onPageLoad()} if Yes for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, Yes))
+
+        result mustBe VehicleSizeController.onPageLoad()
+      }
+
+      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${CheckYourAnswersController
+        .onPageLoad()} if No for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, No))
+
+        result mustBe CheckYourAnswersController.onPageLoad()
+      }
+
+      s"from ${GoodsOriginController.onPageLoad(1).url} navigates to ${PurchaseDetailsController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
+
+        result mustBe PurchaseDetailsController.onPageLoad(1)
+      }
+
+      if (importOrExport == Import) {
+        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${GoodsVatRateController
+          .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+          val result: Call = nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
+
+          result mustBe GoodsVatRateController.onPageLoad(1)
+        }
+      }
+
+      if (importOrExport == Export) {
+        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
+          .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+          val result: Call = nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
+
+          result mustBe SearchGoodsCountryController.onPageLoad(1)
+        }
+      }
+      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
+
+        result mustBe SearchGoodsCountryController.onPageLoad(1)
+      }
+
+      s"from ${JourneyDetailsController.onPageLoad().url} navigates to ${GoodsInVehicleController
+        .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPass(JourneyDetailsController.onPageLoad().url))
+
+        result mustBe GoodsInVehicleController.onPageLoad()
+      }
+
+      if (newOrAmend == New) {
+        s"from ${NewOrExistingController.onPageLoad().url} navigates to ${GoodsDestinationController
+          .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
+          val result: Call = nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, newOrAmend))
+
+          result mustBe GoodsDestinationController.onPageLoad()
+        }
       }
     }
   }

@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.JourneyDetailsPage
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,11 +31,12 @@ class JourneyDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: JourneyDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: JourneyDetailsPage,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.EnterEmailController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(EnterEmailController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val journeyForm = form(request.declarationType)
@@ -53,7 +55,7 @@ class JourneyDetailsController @Inject()(
         journeyDetailsEntry =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry)),
-            routes.GoodsInVehicleController.onPageLoad()
+            navigator.nextPage(RequestByPass(JourneyDetailsController.onPageLoad().url))
         )
       )
   }

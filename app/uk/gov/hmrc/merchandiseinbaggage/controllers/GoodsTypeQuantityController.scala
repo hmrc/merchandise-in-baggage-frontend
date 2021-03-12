@@ -17,10 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.GoodsTypeQuantityController
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
@@ -32,7 +32,8 @@ class GoodsTypeQuantityController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: GoodsTypeQuantityView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: GoodsTypeQuantityView,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(idx: Int)(implicit request: DeclarationGoodsRequest[_]) =
@@ -58,12 +59,11 @@ class GoodsTypeQuantityController @Inject()(
             case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
           }
 
-          val next: Call = request.declarationType match {
-            case Import => routes.GoodsVatRateController.onPageLoad(idx)
-            case Export => routes.SearchGoodsCountryController.onPageLoad(idx)
-          }
-
-          persistAndRedirect(updatedGoodsEntry, idx, next)
+          persistAndRedirect(
+            updatedGoodsEntry,
+            idx,
+            navigator
+              .nextPage(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(idx).url, request.declarationType, idx)))
         }
       )
   }
