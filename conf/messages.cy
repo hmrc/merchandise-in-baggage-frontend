@@ -79,8 +79,8 @@ newOrExisting.error.required = Dewiswch os ydych am wneud datganiad newydd neu y
 # PreviousDeclarationDetails
 previousDeclarationDetails.title = Manylion o’ch datganiad sy’n bodoli eisoes
 previousDeclarationDetails.heading = Manylion o’ch datganiad sy’n bodoli eisoes
-previousDeclarationDetails.details = Details of the goods
-previousDeclarationDetails.journey = Manylion y nwyddau
+previousDeclarationDetails.details = Manylion y nwyddau
+previousDeclarationDetails.journey = Manylion y siwrnai
 previousDeclarationDetails.journey.arrival = Man cyrraedd
 previousDeclarationDetails.journey.date = Dyddiad cyrraedd
 previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
