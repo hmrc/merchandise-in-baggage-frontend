@@ -41,6 +41,8 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
   val PROVIDER = "merchandise-in-baggage"
   val mibConnector = injector.instanceOf[MibConnector]
 
+  val findByDeclaration = declaration.copy(mibReference = mibReference, eori = eori)
+
   val pact: ScalaPactDescription = forgePact
     .between(CONSUMER)
     .and(PROVIDER)
@@ -80,9 +82,9 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     .addInteraction(
       interaction
         .description("findBy mib ref and eori")
-        .given(s"findByTestXXX${mibReference.value}XXX${eori.value}")
+        .given(s"findByTestXXX${mibReference.value}XXX${eori.value}XXX${Json.toJson(findByDeclaration).toString}")
         .uponReceiving(GET, s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}")
-        .willRespondWith(200)
+        .willRespondWith(200, Json.toJson(findByDeclaration).toString)
     )
 
   implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
