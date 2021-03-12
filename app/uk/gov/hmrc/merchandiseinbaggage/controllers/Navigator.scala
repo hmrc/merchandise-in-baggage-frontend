@@ -23,6 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait NavigationRequests
 final case class RequestByPass(currentUrl: String) extends NavigationRequests
@@ -30,6 +33,13 @@ final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends Na
 final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
 final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
+final case class RequestWithCallBack(
+  currentUrl: String,
+  value: YesNo,
+  updatedGoodsEntries: GoodsEntries,
+  declarationJourney: DeclarationJourney,
+  callBack: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequests
 
 class Navigator {
 
@@ -39,6 +49,11 @@ class Navigator {
     case RequestWithAnswer(url, value)                         => Navigator.nextPageWithAnswer(url)(value)
     case RequestWithIndex(url, value, journeyType, idx)        => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
     case RequestWithDeclarationType(url, declarationType, idx) => Navigator.nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
+  }
+
+  def nextPageWithCallBack(request: RequestWithCallBack)(implicit ec: ExecutionContext): Future[Call] = {
+    import request._
+    Navigator.reviewGoodsController(value, declarationJourney, callBack)
   }
 }
 
@@ -107,4 +122,23 @@ object Navigator {
       case Amend => RetrieveDeclarationController.onPageLoad()
     }
 
+  private def reviewGoodsController(
+    declareMoreGoods: YesNo,
+    declarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    declareMoreGoods match {
+      case Yes => updateEntriesAndRedirect(declarationJourney, upsert)
+      case No  => Future.successful(PaymentCalculationController.onPageLoad())
+    }
+
+  private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] = {
+    val updatedJourney = updateGoodsEntries(declarationJourney)
+    upsert(updatedJourney).map { _ =>
+      GoodsTypeQuantityController.onPageLoad(updatedJourney.goodsEntries.entries.size)
+    }
+  }
+
+  def updateGoodsEntries(declarationJourney: DeclarationJourney): DeclarationJourney =
+    declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.addEmptyIfNecessary())
 }
