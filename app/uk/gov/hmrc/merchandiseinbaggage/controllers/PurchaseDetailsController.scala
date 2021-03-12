@@ -90,11 +90,13 @@ class PurchaseDetailsController @Inject()(
     CurrencyService
       .getCurrencyByCode(purchaseDetailsInput.currency)
       .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-        persistAndRedirect(
-          updateGoodsEntry(purchaseDetailsInput.price, currency),
-          idx,
-          routes.ReviewGoodsController.onPageLoad()
-        )
+        val updatedGoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency)
+        val updatedDeclarationJourney =
+          request.declarationJourney.copy(goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
+
+        repo.upsert(updatedDeclarationJourney).map { _ =>
+          Redirect(routes.ReviewGoodsController.onPageLoad())
+        }
       }
 
   private def updateGoodsEntry(amount: String, currency: Currency)(implicit request: DeclarationGoodsRequest[AnyContent]): GoodsEntry =
