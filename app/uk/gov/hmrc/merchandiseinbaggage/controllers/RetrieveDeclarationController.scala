@@ -62,9 +62,10 @@ class RetrieveDeclarationController @Inject()(
       .findBy(validData.mibReference, validData.eori)
       .fold(
         error => Future successful InternalServerError(error), {
-          case Some(id) =>
-            repo.upsert(request.declarationJourney.copy(declarationId = id)) map { _ =>
-              //TODO: redirect to next page when implemented
+          case Some(declaration) =>
+            repo.upsert(
+              request.declarationJourney
+                .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
               Redirect(routes.PreviousDeclarationDetailsController.onPageLoad())
             }
           case None => Future successful Redirect(routes.DeclarationNotFoundController.onPageLoad())

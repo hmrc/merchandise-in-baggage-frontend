@@ -31,11 +31,11 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
       submitPage(NeworExistingDeclarationPage, "Amend")
 
-      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
+      givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
 
       val sessionId = SessionId()
       val created = LocalDateTime.now
-      val id = aDeclarationId
+      val id = declaration.declarationId
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = sessionId,

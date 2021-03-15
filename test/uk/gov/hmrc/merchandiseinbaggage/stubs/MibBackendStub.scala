@@ -57,12 +57,12 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         get(urlMatching(s"$declarationsUrl/(.*)"))
           .willReturn(okJson(Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString)))
 
-  def givenFindByDeclarationReturnSuccess(mibReference: MibReference, eori: Eori, declarationId: DeclarationId)(
+  def givenFindByDeclarationReturnSuccess(mibReference: MibReference, eori: Eori, declaration: Declaration)(
     implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
-          .willReturn(okJson(s"""{"declarationId": "${declarationId.value}"}""")))
+          .willReturn(okJson(Json.toJson(declaration).toString())))
 
   def givenFindByDeclarationReturnStatus(mibReference: MibReference, eori: Eori, aStatus: Int)(
     implicit server: WireMockServer): StubMapping =

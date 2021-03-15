@@ -69,8 +69,8 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
   "findBy query" should {
     "return declarationId as expected" in {
-      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
-      client.findBy(mibReference, eori).value.futureValue mustBe Right(Some(aDeclarationId))
+      givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
+      client.findBy(mibReference, eori).value.futureValue mustBe Right(Some(declaration))
     }
 
     "handle 404 from BE" in {

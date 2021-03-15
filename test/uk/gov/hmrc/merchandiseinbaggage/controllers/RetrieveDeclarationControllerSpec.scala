@@ -73,7 +73,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   "onSubmit" should {
     s"redirect to /previous-declaration-details after successful form submit" in {
-      givenFindByDeclarationReturnSuccess(mibReference, eori, aDeclarationId)
+      givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
       val request = buildPost(routes.RetrieveDeclarationController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
