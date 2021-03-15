@@ -24,6 +24,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
@@ -137,6 +141,36 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
           result mustBe GoodsDestinationController.onPageLoad()
         }
+      }
+
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsDestinationController.onPageLoad()} " +
+        s"for $newOrAmend & $importOrExport" in new Navigator {
+        val updatedJourney: DeclarationJourney = completedDeclarationJourney.updateGoodsEntries()
+        val expectedUpdatedEntries: Int = completedDeclarationJourney.goodsEntries.entries.size + 1
+
+        val result: Future[Call] = nextPageWithCallBack(
+          RequestWithCallBack(
+            ReviewGoodsController.onPageLoad().url,
+            Yes,
+            GoodsEntries(startedImportGoods),
+            completedDeclarationJourney,
+            _ => Future.successful(updatedJourney)))
+
+        result.futureValue mustBe GoodsTypeQuantityController.onPageLoad(expectedUpdatedEntries)
+      }
+
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${PaymentCalculationController
+        .onPageLoad()} if answer No without updating goods entries for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Future[Call] = nextPageWithCallBack(
+          RequestWithCallBack(
+            ReviewGoodsController.onPageLoad().url,
+            No,
+            GoodsEntries(startedImportGoods),
+            completedDeclarationJourney,
+            _ => Future.successful(completedDeclarationJourney)
+          ))
+
+        result.futureValue mustBe PaymentCalculationController.onPageLoad()
       }
     }
   }

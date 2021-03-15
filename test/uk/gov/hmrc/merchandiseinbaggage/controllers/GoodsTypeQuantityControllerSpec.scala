@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
-import play.api.mvc.Call
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType

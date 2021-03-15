@@ -166,4 +166,9 @@ object DeclarationJourney extends MongoDateTimeFormats {
   }
 
   val id = "sessionId"
+
+  implicit class UpdateGoodsEntries(declarationJourney: DeclarationJourney) {
+    def updateGoodsEntries(): DeclarationJourney =
+      declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.addEmptyIfNecessary())
+  }
 }

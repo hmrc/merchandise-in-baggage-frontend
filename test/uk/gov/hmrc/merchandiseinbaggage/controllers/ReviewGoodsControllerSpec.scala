@@ -16,19 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
+class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[ReviewGoodsView]
+  private val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new ReviewGoodsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new ReviewGoodsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
@@ -37,7 +41,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.ReviewGoodsController.onPageLoad().url, aSessionId)
+        val request = buildGet(ReviewGoodsController.onPageLoad().url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -51,33 +55,23 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "onSubmit" should {
-      s"redirect to next page after successful form submit with Yes for $importOrExport" in {
-
-        val request = buildPost(routes.ReviewGoodsController.onSubmit().url, aSessionId)
+      s"redirect to next page after successful form submit with Yes for $importOrExport by delegating to Navigator" in {
+        val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
-        val eventualResult = controller(journey).onSubmit(request)
+        (mockNavigator
+          .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(GoodsTypeQuantityController.onPageLoad(2)))
+          .once()
 
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsTypeQuantityController.onPageLoad(2).url)
-      }
-
-      s"redirect to next page after successful form submit with No for $importOrExport" in {
-
-        val request = buildPost(routes.ReviewGoodsController.onSubmit().url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "No")
-
-        val eventualResult = controller(journey).onSubmit(request)
-
-        status(eventualResult) mustBe 303
-
-        redirectLocation(eventualResult) mustBe Some(routes.PaymentCalculationController.onPageLoad().url)
+        controller(journey).onSubmit(request).futureValue
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
 
-      val request = buildPost(routes.ReviewGoodsController.onSubmit().url, aSessionId)
+      val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import javax.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -33,11 +34,12 @@ class ReviewGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  view: ReviewGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: ReviewGoodsView,
+  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    routes.PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+    PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     import request.declarationJourney._
@@ -55,17 +57,22 @@ class ReviewGoodsController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType, journeyType))),
-            declareMoreGoods =>
-              if (declareMoreGoods == Yes) {
-                val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
-
-                repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
-                  Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
-                }
-              } else {
-                Future.successful(Redirect(routes.PaymentCalculationController.onPageLoad()))
-            }
+            redirectTo
           )
       }
+  }
+
+  private def redirectTo(declareMoreGoods: YesNo)(implicit request: DeclarationJourneyRequest[_]): Future[Result] = {
+    val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
+    navigator
+      .nextPageWithCallBack(
+        RequestWithCallBack(
+          ReviewGoodsController.onPageLoad().url,
+          declareMoreGoods,
+          updatedGoodsEntries,
+          request.declarationJourney,
+          repo.upsert)
+      )
+      .map(Redirect)
   }
 }
