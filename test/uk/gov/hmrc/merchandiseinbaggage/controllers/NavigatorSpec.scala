@@ -143,7 +143,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
       }
 
-      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsDestinationController.onPageLoad()} " +
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to /declare-commercial-goods/goods-type-quantity/idx + 1 " +
         s"for $newOrAmend & $importOrExport" in new Navigator {
         val updatedJourney: DeclarationJourney = completedDeclarationJourney.updateGoodsEntries()
         val expectedUpdatedEntries: Int = completedDeclarationJourney.goodsEntries.entries.size + 1
@@ -166,11 +166,25 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             ReviewGoodsController.onPageLoad().url,
             No,
             GoodsEntries(startedImportGoods),
+            incompleteDeclarationJourney,
+            _ => Future.successful(incompleteDeclarationJourney)
+          ))
+
+        result.futureValue mustBe PaymentCalculationController.onPageLoad()
+      }
+
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${CheckYourAnswersController
+        .onPageLoad()} if answer No without updating goods entries for $newOrAmend & $importOrExport and rest of journey is complete" in new Navigator {
+        val result: Future[Call] = nextPageWithCallBack(
+          RequestWithCallBack(
+            ReviewGoodsController.onPageLoad().url,
+            No,
+            GoodsEntries(startedImportGoods),
             completedDeclarationJourney,
             _ => Future.successful(completedDeclarationJourney)
           ))
 
-        result.futureValue mustBe PaymentCalculationController.onPageLoad()
+        result.futureValue mustBe CheckYourAnswersController.onPageLoad()
       }
     }
   }

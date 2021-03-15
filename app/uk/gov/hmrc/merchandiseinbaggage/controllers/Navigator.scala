@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.Call
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{CustomsAgentController, _}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -127,11 +127,19 @@ object Navigator {
   private def reviewGoodsController(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
-    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    declareMoreGoods match {
-      case Yes => updateEntriesAndRedirect(declarationJourney, upsert)
-      case No  => Future.successful(PaymentCalculationController.onPageLoad())
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+
+    val redirectToCya: Boolean = declarationJourney.journeyType match {
+      case New   => declarationJourney.declarationRequiredAndComplete
+      case Amend => declarationJourney.amendmentRequiredAndComplete
     }
+
+    (redirectToCya, declareMoreGoods) match {
+      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+      case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
+      case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
+    }
+  }
 
   private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
     implicit ec: ExecutionContext): Future[Call] = {
