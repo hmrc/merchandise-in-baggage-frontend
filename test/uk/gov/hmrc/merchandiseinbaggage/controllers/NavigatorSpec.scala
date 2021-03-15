@@ -25,7 +25,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
-import uk.gov.hmrc.merchandiseinbaggage.controllers.Navigator._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -146,7 +145,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsDestinationController.onPageLoad()} " +
         s"for $newOrAmend & $importOrExport" in new Navigator {
-        val updatedJourney: DeclarationJourney = updateGoodsEntries(completedDeclarationJourney)
+        val updatedJourney: DeclarationJourney = completedDeclarationJourney.updateGoodsEntries()
         val expectedUpdatedEntries: Int = completedDeclarationJourney.goodsEntries.entries.size + 1
 
         val result: Future[Call] = nextPageWithCallBack(
