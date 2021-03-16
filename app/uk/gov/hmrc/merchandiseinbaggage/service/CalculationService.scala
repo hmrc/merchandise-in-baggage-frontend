@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import cats.data.OptionT
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,6 +34,21 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
     mibConnector.calculatePayments(importGoods.map(_.calculationRequest)).map(withLogging)
+
+  def thresholdCheck(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, Boolean] =
+    if (declarationJourney.amendmentIfRequiredAndComplete.isDefined)
+      isAmendPlusOriginalOverThreshold(declarationJourney)
+    else OptionT.pure[Future](false)
+
+  private def isAmendPlusOriginalOverThreshold(declarationJourney: DeclarationJourney)(
+    implicit hc: HeaderCarrier): OptionT[Future, Boolean] =
+    for {
+      amendments                 <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
+      calculationResults         <- OptionT.liftF(paymentCalculations(amendments.goods.importGoods))
+      originalDeclaration        <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
+      originalCalculationResults <- OptionT.fromOption[Future](originalDeclaration.maybeTotalCalculationResult)
+      newThreshold = calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value
+    } yield newThreshold > originalDeclaration.goodsDestination.threshold.value
 
   private def withLogging(calculationResults: Seq[CalculationResult]): CalculationResults = {
     calculationResults.foreach(result => logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))

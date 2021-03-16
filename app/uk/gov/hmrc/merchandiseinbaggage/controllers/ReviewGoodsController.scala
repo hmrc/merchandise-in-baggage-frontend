@@ -16,15 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDeclarationIncompleteMessage
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, goodsDeclarationIncompleteMessage}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,6 +37,7 @@ class ReviewGoodsController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: ReviewGoodsView,
+  calculationService: CalculationService,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
@@ -63,16 +66,21 @@ class ReviewGoodsController @Inject()(
   }
 
   private def redirectTo(declareMoreGoods: YesNo)(implicit request: DeclarationJourneyRequest[_]): Future[Result] = {
-    val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
-    navigator
-      .nextPageWithCallBack(
-        RequestWithCallBack(
-          ReviewGoodsController.onPageLoad().url,
-          declareMoreGoods,
-          updatedGoodsEntries,
-          request.declarationJourney,
-          repo.upsert)
-      )
-      .map(Redirect)
+    val updatedGoodsEntries: GoodsEntries = request.declarationJourney.updateGoodsEntries().goodsEntries
+
+    (for {
+      check <- calculationService.thresholdCheck(request.declarationJourney)
+      call <- OptionT.liftF(
+               navigator.nextPageWithCallBack(
+                 RequestWithCallBack(
+                   ReviewGoodsController.onPageLoad().url,
+                   declareMoreGoods,
+                   updatedGoodsEntries,
+                   request.declarationJourney,
+                   check,
+                   repo.upsert
+                 )
+               ))
+    } yield call).fold(actionProvider.invalidRequest(declarationNotFoundMessage))(Redirect)
   }
 }

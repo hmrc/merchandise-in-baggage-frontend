@@ -350,7 +350,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "amendment journey complete" when {
     "amending an import and all questions have been answered" in {
-      completeAmendImportJourney.amendmentRequiredAndComplete mustBe true
+      amendImportJourneyWithGoodsEntries.amendmentRequiredAndComplete mustBe true
     }
 
     "amending an export and all questions have been answered" in {

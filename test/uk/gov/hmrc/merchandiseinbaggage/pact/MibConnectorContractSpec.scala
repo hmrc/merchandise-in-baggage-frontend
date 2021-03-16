@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.pact
 
+import java.io.File
+
 import com.itv.scalapact.ScalaPactForger._
 import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
@@ -25,13 +27,9 @@ import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-
-import java.io.File
-import scala.concurrent.Future
 
 class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration with WireMockSupport {
 
@@ -101,24 +99,16 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
 
   implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
 
+  private val pactDir = new File("./pact")
   override def beforeAll(): Unit = {
     super.beforeAll()
-    val pactDir = new File("./pact")
     if (pactDir.exists()) pactDir.listFiles().map(_.delete())
-    pact.writePactsToFile
   }
 
-  "Connecting to the merchandise-in-baggage BE Provider service" must {
-    "be able to persist a declaration" in {
-      givenDeclarationIsPersistedInBackend(declaration)
-      val results: Future[DeclarationId] = mibConnector.persistDeclaration(declaration)
-      results.futureValue mustBe declaration.declarationId
-    }
+  "generate contract files in ./pact" in {
+    if (pactDir.exists()) pactDir.listFiles().map(_.delete())
+    pact.writePactsToFile
 
-    "be able to fetch a declaration" in {
-      givenPersistedDeclarationIsFound(declaration)
-      val results: Future[Option[Declaration]] = mibConnector.findDeclaration(stubbedDeclarationId)
-      results.futureValue mustBe Some(declaration)
-    }
+    pactDir.exists() mustBe true
   }
 }

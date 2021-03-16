@@ -154,6 +154,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             Yes,
             GoodsEntries(startedImportGoods),
             completedDeclarationJourney,
+            false,
             _ => Future.successful(updatedJourney)))
 
         result.futureValue mustBe GoodsTypeQuantityController.onPageLoad(expectedUpdatedEntries)
@@ -181,10 +182,26 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             No,
             GoodsEntries(startedImportGoods),
             completedDeclarationJourney,
+            true,
             _ => Future.successful(completedDeclarationJourney)
           ))
 
         result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+      }
+
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
+        .onPageLoad()} if over for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Future[Call] = nextPageWithCallBack(
+          RequestWithCallBack(
+            ReviewGoodsController.onPageLoad().url,
+            Yes,
+            GoodsEntries(startedImportGoods),
+            importJourneyWithGoodsOverThreshold,
+            true,
+            _ => Future.successful(importJourneyWithGoodsOverThreshold)
+          ))
+
+        result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
       }
     }
   }

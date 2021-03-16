@@ -16,11 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -30,9 +33,16 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
 
   private val view = app.injector.instanceOf[ReviewGoodsView]
   private val mockNavigator = mock[Navigator]
+  private val mockCalculationService = mock[CalculationService]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new ReviewGoodsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+    new ReviewGoodsController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      view,
+      mockCalculationService,
+      mockNavigator)
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
@@ -58,6 +68,12 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       s"redirect to next page after successful form submit with Yes for $importOrExport by delegating to Navigator" in {
         val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
+
+        (mockCalculationService
+          .thresholdCheck(_: DeclarationJourney)(_: HeaderCarrier))
+          .expects(*, *)
+          .returning(OptionT.pure(false))
+          .once()
 
         (mockNavigator
           .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
