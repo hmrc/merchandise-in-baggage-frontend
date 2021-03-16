@@ -41,8 +41,8 @@ class PreviousDeclarationDetailsController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     previousDeclarationDetailsService.findDeclaration(request.declarationJourney.declarationId).map {
       _.fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}")) {
-        case (goods, journeyDetails, declarationType, withinDate) =>
-          Ok(view(goods, journeyDetails, declarationType, withinDate))
+        case (goods, journeyDetails, declarationType, withinDate, totalPayment) =>
+          Ok(view(goods, journeyDetails, declarationType, withinDate, totalPayment))
       }
     }
   }

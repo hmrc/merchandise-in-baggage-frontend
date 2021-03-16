@@ -202,6 +202,7 @@ reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.list.destination = Destination
 reviewGoods.list.price = Price paid
 reviewGoods.list.invoice = Invoice number
+reviewGoods.list.paymentMade = Payment made
 reviewGoods.h2 = Do you need to declare more types of commercial goods?
 reviewGoods.error.required = Select yes if you want to declare more goods
 
