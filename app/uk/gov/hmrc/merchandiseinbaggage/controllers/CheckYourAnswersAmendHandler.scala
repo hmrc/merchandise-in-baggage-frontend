@@ -95,7 +95,7 @@ class CheckYourAnswersAmendHandler @Inject()(
     }
 
   private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit hc: HeaderCarrier) = {
-    val amendedDeclaration = originalDeclaration.copy(amendments = amendment +: originalDeclaration.amendments)
+    val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ amendment)
     mibConnector.amendDeclaration(amendedDeclaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
   }
 
