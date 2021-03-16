@@ -32,7 +32,8 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 @Singleton
 class PaymentService @Inject()(connector: PaymentConnector)(implicit ec: ExecutionContext, appConfig: AppConfig) {
 
-  def sendPaymentRequest(mibRef: MibReference, paymentCalcs: CalculationResults)(implicit hc: HeaderCarrier): Future[String] =
+  def sendPaymentRequest(mibRef: MibReference, amendmentRef: Option[Int], paymentCalcs: CalculationResults)(
+    implicit hc: HeaderCarrier): Future[String] =
     if (paymentCalcs.totalTaxDue.value == 0) {
       Future.successful(routes.DeclarationConfirmationController.onPageLoad().url)
     } else {
@@ -44,7 +45,8 @@ class PaymentService @Inject()(connector: PaymentConnector)(implicit ec: Executi
             paymentCalcs.totalVatDue,
             paymentCalcs.totalDutyDue,
             appConfig.paymentsReturnUrl,
-            appConfig.paymentsBackUrl
+            appConfig.paymentsBackUrl,
+            amendmentRef
           )
         )
         .map(_.nextUrl.value)

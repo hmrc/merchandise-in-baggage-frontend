@@ -197,6 +197,7 @@ trait CoreTestData {
   val aCheckResponse: CheckResponse = CheckResponse(aEoriNumber, valid = true, Some(aCompanyDetails))
 
   val aAmendment = Amendment(
+    1,
     LocalDateTime.now,
     DeclarationGoods(aGoods.copy(categoryQuantityOfGoods = CategoryQuantityOfGoods("Amendment", "123")) :: Nil),
     None,
@@ -291,5 +292,7 @@ trait CoreTestData {
 
   val aTotalCalculationResult =
     TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))
+
+  val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
 
 }

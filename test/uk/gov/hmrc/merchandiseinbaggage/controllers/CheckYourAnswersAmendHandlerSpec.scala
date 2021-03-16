@@ -16,30 +16,35 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
-
 import com.softwaremill.quicklens._
+import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
+import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsAmendedInBackend, givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
+class CheckYourAnswersAmendHandlerSpec
+    extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
   private lazy val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
+  private lazy val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
@@ -53,6 +58,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
       actionBuilder,
       stubbedCalculation(paymentCalcs),
       mibConnector,
+      paymentService,
       importView,
       exportView,
     )
@@ -111,6 +117,81 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
       }
+    }
+  }
+
+  "on submit" should {
+    "will calculate tax and send payment request to pay api for Imports" in {
+      val sessionId = SessionId()
+      val id = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, createdAt = created, declarationId = id)
+
+      givenPersistedDeclarationIsFound(declaration.copy(declarationId = id), id)
+      givenADeclarationJourneyIsPersisted(importJourney)
+      givenDeclarationIsAmendedInBackend
+
+      (paymentService
+        .sendPaymentRequest(_: MibReference, _: Option[Int], _: CalculationResults)(_: HeaderCarrier))
+        .expects(*, *, *, *)
+        .returning("http://callback".asFuture)
+
+      val newAmendment = completedAmendment(declaration.declarationType)
+
+      implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+      val eventualResult = amendHandler().onSubmit(id, newAmendment)
+
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some("http://callback")
+    }
+
+    "will redirect to confirmation if totalTax is £0 and should not call pay api" in {
+      val sessionId = SessionId()
+      val id = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, createdAt = created, declarationId = id)
+
+      givenPersistedDeclarationIsFound(declaration.copy(declarationId = id), id)
+      givenADeclarationJourneyIsPersisted(importJourney)
+      givenDeclarationIsAmendedInBackend
+
+      (paymentService
+        .sendPaymentRequest(_: MibReference, _: Option[Int], _: CalculationResults)(_: HeaderCarrier))
+        .expects(*, *, *, *)
+        .returning(routes.DeclarationConfirmationController.onPageLoad().url.asFuture)
+
+      val newAmendment = completedAmendment(declaration.declarationType)
+
+      implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+      val eventualResult = amendHandler(aCalculationResultsWithNoTax).onSubmit(id, newAmendment)
+
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+    }
+
+    "will redirect to declaration-confirmation for Export" in {
+      val sessionId = SessionId()
+      val stubbedId = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
+
+      givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export, declarationId = stubbedId), stubbedId)
+      givenADeclarationJourneyIsPersisted(exportJourney)
+      givenDeclarationIsAmendedInBackend
+
+      val newAmendment = completedAmendment(Export)
+
+      implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+      val eventualResult = amendHandler().onSubmit(stubbedId, newAmendment)
+
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
     }
   }
 }

@@ -21,6 +21,7 @@ import play.api.libs.json.{Json, OFormat}
 import java.time.LocalDateTime
 
 case class Amendment(
+  reference: Int,
   dateOfAmendment: LocalDateTime,
   goods: DeclarationGoods,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,

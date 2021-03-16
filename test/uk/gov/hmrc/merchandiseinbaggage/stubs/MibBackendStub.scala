@@ -44,6 +44,12 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         post(urlPathEqualTo(s"$declarationsUrl"))
           .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
+  def givenDeclarationIsAmendedInBackend(implicit server: WireMockServer): StubMapping =
+    server
+      .stubFor(
+        put(urlPathEqualTo(s"$declarationsUrl"))
+          .willReturn(aResponse().withStatus(200).withBody(Json.toJson(stubbedDeclarationId).toString)))
+
   def givenPersistedDeclarationIsFound(declaration: Declaration, declarationId: DeclarationId = stubbedDeclarationId)(
     implicit server: WireMockServer): StubMapping =
     server
