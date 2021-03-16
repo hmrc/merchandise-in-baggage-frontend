@@ -64,11 +64,12 @@ class PaymentCalculationController @Inject()(
       }
   }
 
-  private def exportRedirectIfOverThreshold(goods: DeclarationGoods, destination: GoodsDestination): Result =
+  private def exportRedirectIfOverThreshold(goods: DeclarationGoods, destination: GoodsDestination)(
+    implicit request: DeclarationJourneyRequest[_]): Result =
     if (goods.goods.map(_.purchaseDetails.numericAmount).sum > destination.threshold.inPounds)
       Redirect(routes.GoodsOverThresholdController.onPageLoad())
     else
-      Redirect(routes.CustomsAgentController.onPageLoad())
+      Redirect(checkYourAnswersIfComplete(routes.CustomsAgentController.onPageLoad()))
 
   private def redirectIfOverThreshold(destination: GoodsDestination, paymentCalculations: CalculationResults)(
     implicit request: DeclarationJourneyRequest[_]): Result =
