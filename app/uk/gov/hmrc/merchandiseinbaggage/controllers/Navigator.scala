@@ -129,10 +129,6 @@ object Navigator {
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
     overThresholdCheck: Boolean,
-    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    declareMoreGoods match {
-      case Yes => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
-      case No  => Future.successful(PaymentCalculationController.onPageLoad())
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
 
     val redirectToCya: Boolean = declarationJourney.journeyType match {
@@ -141,7 +137,7 @@ object Navigator {
     }
 
     (redirectToCya, declareMoreGoods) match {
-      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
       case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
       case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
     }

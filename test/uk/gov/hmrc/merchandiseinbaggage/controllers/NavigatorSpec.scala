@@ -168,6 +168,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             No,
             GoodsEntries(startedImportGoods),
             incompleteDeclarationJourney,
+            false,
             _ => Future.successful(incompleteDeclarationJourney)
           ))
 
