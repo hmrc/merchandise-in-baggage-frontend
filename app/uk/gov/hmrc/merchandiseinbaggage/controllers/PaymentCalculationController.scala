@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
@@ -42,7 +43,8 @@ class PaymentCalculationController @Inject()(
     routes.ReviewGoodsController.onPageLoad()
 
   private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
-    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend)
+      routes.CheckYourAnswersController.onPageLoad()
     else default
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -62,11 +64,12 @@ class PaymentCalculationController @Inject()(
       }
   }
 
-  private def exportRedirectIfOverThreshold(goods: DeclarationGoods, destination: GoodsDestination): Result =
+  private def exportRedirectIfOverThreshold(goods: DeclarationGoods, destination: GoodsDestination)(
+    implicit request: DeclarationJourneyRequest[_]): Result =
     if (goods.goods.map(_.purchaseDetails.numericAmount).sum > destination.threshold.inPounds)
       Redirect(routes.GoodsOverThresholdController.onPageLoad())
     else
-      Redirect(routes.CustomsAgentController.onPageLoad())
+      Redirect(checkYourAnswersIfComplete(routes.CustomsAgentController.onPageLoad()))
 
   private def redirectIfOverThreshold(destination: GoodsDestination, paymentCalculations: CalculationResults)(
     implicit request: DeclarationJourneyRequest[_]): Result =
