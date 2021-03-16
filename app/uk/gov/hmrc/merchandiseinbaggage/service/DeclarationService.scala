@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, DeclarationType, Goods, JourneyDetails}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, AmountInPence, DeclarationId, DeclarationType, Goods, JourneyDetails}
 import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService._
 
 import java.time.LocalDate
@@ -29,7 +29,7 @@ class DeclarationService @Inject()(mibConnector: MibConnector) {
 
   def findDeclaration(declarationId: DeclarationId)(
     implicit hc: HeaderCarrier,
-    ec: ExecutionContext): Future[Option[(Seq[Goods], JourneyDetails, DeclarationType, Boolean)]] =
+    ec: ExecutionContext): Future[Option[(Seq[Goods], JourneyDetails, DeclarationType, Boolean, AmountInPence)]] =
     mibConnector.findDeclaration(declarationId).map {
       case Some(declaration) =>
         Some(
@@ -37,7 +37,9 @@ class DeclarationService @Inject()(mibConnector: MibConnector) {
             listGoods(declaration.declarationGoods.goods, declaration.amendments),
             declaration.journeyDetails,
             declaration.declarationType,
-            withinTimerange(declaration.journeyDetails.dateOfTravel, LocalDate.now)))
+            withinTimerange(declaration.journeyDetails.dateOfTravel, LocalDate.now),
+            totalPayment(declaration.maybeTotalCalculationResult.fold(AmountInPence(0L))(_.totalTaxDue), declaration.amendments)
+          ))
       case _ => None
 
     }
@@ -57,6 +59,14 @@ object DeclarationService {
 
     (now.isAfter(startOfRange) || now.isEqual(startOfRange)) &&
     (now.isBefore(endOfRange) || now.isEqual(endOfRange))
+  }
+
+  def totalPayment(decAmount: AmountInPence, amendments: Seq[Amendment]): AmountInPence = {
+    def paidAmendment: Seq[Amendment] = amendments.filterNot(_.paymentStatus.isEmpty)
+
+    val amendmentsTotal = paidAmendment.map(a => a.maybeTotalCalculationResult.fold(0L)(_.totalTaxDue.value)).sum
+
+    AmountInPence(decAmount.value + amendmentsTotal)
   }
 
 }

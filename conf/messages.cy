@@ -201,6 +201,7 @@ reviewGoods.list.producedInEu = Cynhyrchwyd yn yr UE
 reviewGoods.list.destination = Cyrchfan
 reviewGoods.list.price = Swm a dalwyd
 reviewGoods.list.invoice = Invoice number
+reviewGoods.list.paymentMain = Taliad a wnaed
 reviewGoods.h2 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
 reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
 

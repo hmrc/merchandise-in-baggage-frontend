@@ -52,10 +52,6 @@ object GoodsItemList {
           goods.categoryQuantityOfGoods.quantity
         ),
         rowWithOutChange(
-          "reviewGoods.list.vatRate",
-          s"${goods.goodsVatRate.value}%"
-        ),
-        rowWithOutChange(
           "reviewGoods.list.producedInEu",
           messages(goods.producedInEu.messageKey)
         ),

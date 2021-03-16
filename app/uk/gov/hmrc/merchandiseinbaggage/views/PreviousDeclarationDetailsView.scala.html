@@ -19,12 +19,12 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.Layout
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
-@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Goods
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetails
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+@import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
 
 @this(
         layout: Layout,
@@ -35,9 +35,10 @@
         link: components.link,
         goodsItemList: includes.goodsItemList,
         button: components.button,
+        summaryList: GovukSummaryList
 )
 
-@(goods: Seq[Goods], journeyDetails: JourneyDetails,  declarationType: DeclarationType, withinTimerange:Boolean )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(goods: Seq[Goods], journeyDetails: JourneyDetails,  declarationType: DeclarationType, withinTimerange:Boolean, totalPayment:AmountInPence )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = None) {
     @h1(("previousDeclarationDetails.heading"))
@@ -45,6 +46,17 @@
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
 
     @goodsItemList(goods)
+
+    @if( declarationType == Import) {
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</dt>
+                @if( totalPayment.isPaymentRequired) {
+                    <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalPayment.formattedInPounds</dd>
+                }
+            </div>
+        </dl>
+    }
 
     @h2("previousDeclarationDetails.journey", Some("govuk-heading-m"))
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">

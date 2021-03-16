@@ -17,7 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
@@ -29,10 +30,11 @@ import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 import scala.concurrent.ExecutionContext.Implicits.global
 import java.time.{LocalDate, LocalDateTime}
 
-class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport with MibConfiguration {
+class PreviousDeclarationDetailsControllerSpec
+    extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration {
 
   "creating a page" should {
-    "return 200 if declaration exists and resets the journey" in {
+    "return 200 if declaration exists" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
       val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
       val mibConnector = injector.instanceOf[MibConnector]
@@ -45,31 +47,29 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
           mibConnector,
           view)
 
-      val sessionId = SessionId()
-      val id = DeclarationId("456")
-      val created: LocalDateTime = LocalDate.now.atStartOfDay
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(
+          sessionId = aSessionId,
+          declarationType = DeclarationType.Import,
+          createdAt = journeyDate.atStartOfDay,
+          declarationId = aDeclarationId)
 
-      val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
+      givenADeclarationJourneyIsPersisted(importJourney)
 
-      givenADeclarationJourneyIsPersisted(exportJourney)
+      val persistedDeclaration = importJourney.declarationIfRequiredAndComplete.map { declaration =>
+        declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
+      }
 
-      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, sessionId)
+      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
       contentAsString(eventualResult) must include("cheese")
-
-      import exportJourney._
-      val resetJourney = DeclarationJourney(sessionId, declarationType)
-
-      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
     }
 
-    "return 303 if declaration does NOT exist and resets the journey" in {
+    "return 303 if declaration does NOT exist" in {
       val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
       val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
       val mibConnector = injector.instanceOf[MibConnector]
@@ -82,16 +82,16 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
           mibConnector,
           view)
 
-      val sessionId = SessionId()
-      val id = DeclarationId("456")
-      val created = LocalDate.now.atStartOfDay
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(
+          sessionId = aSessionId,
+          declarationType = DeclarationType.Import,
+          createdAt = journeyDate.atStartOfDay,
+          declarationId = aDeclarationId)
 
-      val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
+      givenADeclarationJourneyIsPersisted(importJourney)
 
-      givenADeclarationJourneyIsPersisted(exportJourney)
-
-      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+      givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
 
       val request =
         buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, SessionId()).withSession("declarationId" -> "987")
@@ -99,12 +99,83 @@ class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControl
       status(eventualResult) mustBe 303
 
       contentAsString(eventualResult) mustNot include("cheese")
+    }
 
-      import exportJourney._
-      val resetJourney = DeclarationJourney(sessionId, declarationType)
+    "return 200 if import declaration with amendment exists " in {
+      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
+      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
+      val mibConnector = injector.instanceOf[MibConnector]
+      val controller =
+        new PreviousDeclarationDetailsController(
+          controllerComponents,
+          actionBuilder,
+          declarationJourneyRepository,
+          previousDeclarationDetailsService,
+          mibConnector,
+          view)
 
-      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-      declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(
+          sessionId = aSessionId,
+          declarationType = DeclarationType.Import,
+          createdAt = journeyDate.atStartOfDay,
+          declarationId = aDeclarationId)
+
+      givenADeclarationJourneyIsPersisted(importJourney)
+
+      val persistedDeclaration = importJourney.declarationIfRequiredAndComplete.map { declaration =>
+        declaration
+          .copy(maybeTotalCalculationResult = Some(aTotalCalculationResult), paymentStatus = Some(Paid), amendments = Seq(aAmendmentPaid))
+      }
+
+      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
+
+      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val eventualResult = controller.onPageLoad()(request)
+      status(eventualResult) mustBe 200
+
+      contentAsString(eventualResult) must include("cheese")
+      contentAsString(eventualResult) must include("more cheese")
+      contentAsString(eventualResult) must include("Payment made")
+
+    }
+
+    "return 200 if export declaration with amendment exists " in {
+      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
+      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
+      val mibConnector = injector.instanceOf[MibConnector]
+      val controller =
+        new PreviousDeclarationDetailsController(
+          controllerComponents,
+          actionBuilder,
+          declarationJourneyRepository,
+          previousDeclarationDetailsService,
+          mibConnector,
+          view)
+
+      val exportJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(
+          sessionId = aSessionId,
+          declarationType = DeclarationType.Export,
+          createdAt = journeyDate.atStartOfDay,
+          declarationId = aDeclarationId)
+
+      givenADeclarationJourneyIsPersisted(exportJourney)
+
+      val persistedDeclaration = exportJourney.declarationIfRequiredAndComplete.map { declaration =>
+        declaration
+          .copy(maybeTotalCalculationResult = Some(aTotalCalculationResult), paymentStatus = Some(Paid), amendments = Seq(aAmendmentPaid))
+      }
+
+      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
+
+      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val eventualResult = controller.onPageLoad()(request)
+      status(eventualResult) mustBe 200
+
+      contentAsString(eventualResult) must include("cheese")
+      contentAsString(eventualResult) must include("more cheese")
+      contentAsString(eventualResult) mustNot include("Payment made")
     }
   }
 }
