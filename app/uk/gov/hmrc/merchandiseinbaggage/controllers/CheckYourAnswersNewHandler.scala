@@ -77,7 +77,7 @@ class CheckYourAnswersNewHandler @Inject()(
     for {
       taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.importGoods)
       _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, taxDue)
+      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, taxDue)
 
     } yield Redirect(redirectUrl)
 }

@@ -18,12 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Amendment
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class CheckYourAnswersController @Inject()(
@@ -59,8 +60,7 @@ class CheckYourAnswersController @Inject()(
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            //TODO: Implement
-            Future.successful(Redirect(routes.CheckYourAnswersController.onPageLoad().url))
+            amendHandler.onSubmit(request.declarationJourney.declarationId, amendment: Amendment)
           }
     }
   }

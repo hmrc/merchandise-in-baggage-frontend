@@ -26,9 +26,10 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.declarationNotFoundMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, DeclarationType}
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId, DeclarationType}
+import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +39,7 @@ class CheckYourAnswersAmendHandler @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
   mibConnector: MibConnector,
+  paymentService: PaymentService,
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
@@ -78,5 +80,38 @@ class CheckYourAnswersAmendHandler @Inject()(
           Redirect(routes.GoodsOverThresholdController.onPageLoad())
         } else Ok(amendExportView(form, amendment))
       }
+    }
+
+  def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+    mibConnector.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
+      maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage).asFuture) { originalDeclaration =>
+        originalDeclaration.declarationType match {
+          case Export =>
+            persistAndRedirect(newAmendment, originalDeclaration)
+          case Import =>
+            persistAndRedirectToPayments(newAmendment, originalDeclaration)
+        }
+      }
+    }
+
+  private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit hc: HeaderCarrier) = {
+    val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ amendment)
+    mibConnector.amendDeclaration(amendedDeclaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+  }
+
+  private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
+    implicit hc: HeaderCarrier): Future[Result] =
+    calculationService.paymentCalculations(amendment.goods.importGoods).flatMap { calculationResults =>
+      val amendmentRef = originalDeclaration.amendments.size + 1
+      val updatedAmendment =
+        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.totalCalculationResult))
+
+      val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+
+      for {
+        _ <- mibConnector.amendDeclaration(updatedDeclaration)
+        redirectUrl <- paymentService
+                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults)
+      } yield Redirect(redirectUrl)
     }
 }

@@ -37,6 +37,9 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
   def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
     httpClient.POST[Declaration, DeclarationId](s"$base$declarationsUrl", declaration)
 
+  def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
+    httpClient.PUT[Declaration, DeclarationId](s"$base$declarationsUrl", declaration)
+
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
     httpClient.GET[HttpResponse](s"$base$declarationsUrl/${declarationId.value}").map { response =>
       response.status match {

@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiReque
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsAmendedInBackend, givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
@@ -68,6 +68,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       actionBuilder,
       stubbedCalculation(paymentCalcs),
       mibConnector,
+      new PaymentService(testPaymentConnector),
       amendImportView,
       amendExportView,
     )
@@ -126,7 +127,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         val sessionId = SessionId()
         val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(journeyType = journeyType)
 
-        val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
         val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
         status(eventualResult) mustBe 303
@@ -152,12 +153,13 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(journey)
       givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
+      givenDeclarationIsAmendedInBackend
 
       val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some("http://host")
     }
   }
 }

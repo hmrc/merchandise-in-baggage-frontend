@@ -55,6 +55,18 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     )
     .addInteraction(
       interaction
+        .description("Amending a declaration")
+        .given("amendDeclarationTest")
+        .uponReceiving(
+          PUT,
+          s"$declarationsUrl",
+          None,
+          Map("Content-Type" -> "application/json"),
+          Json.toJson(declarationWithAmendment).toString)
+        .willRespondWith(200)
+    )
+    .addInteraction(
+      interaction
         .description("find a declaration")
         .given(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
         .uponReceiving(GET, s"$declarationsUrl/56789")
