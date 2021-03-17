@@ -40,6 +40,7 @@ final case class RequestWithCallBack(
   value: YesNo,
   updatedGoodsEntries: GoodsEntries,
   declarationJourney: DeclarationJourney,
+  overThresholdCheck: Boolean,
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
@@ -55,7 +56,7 @@ class Navigator {
 
   def nextPageWithCallBack(request: RequestWithCallBack)(implicit ec: ExecutionContext): Future[Call] = {
     import request._
-    Navigator.reviewGoodsController(value, declarationJourney, callBack)
+    Navigator.reviewGoodsController(value, declarationJourney, overThresholdCheck, callBack)
   }
 }
 
@@ -127,6 +128,7 @@ object Navigator {
   private def reviewGoodsController(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
+    overThresholdCheck: Boolean,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
 
     val redirectToCya: Boolean = declarationJourney.journeyType match {
@@ -135,17 +137,22 @@ object Navigator {
     }
 
     (redirectToCya, declareMoreGoods) match {
-      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
       case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
       case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
     }
   }
 
-  private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
-    implicit ec: ExecutionContext): Future[Call] = {
-    val updatedJourney = declarationJourney.updateGoodsEntries()
-    upsert(updatedJourney).map { _ =>
-      GoodsTypeQuantityController.onPageLoad(updatedJourney.goodsEntries.entries.size)
+  private def updateEntriesAndRedirect(
+    declarationJourney: DeclarationJourney,
+    overThresholdCheck: Boolean,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    if (overThresholdCheck)
+      Future successful GoodsOverThresholdController.onPageLoad()
+    else {
+      val updatedJourney = declarationJourney.updateGoodsEntries()
+      upsert(updatedJourney).map { _ =>
+        GoodsTypeQuantityController.onPageLoad(updatedJourney.goodsEntries.entries.size)
+      }
     }
-  }
 }

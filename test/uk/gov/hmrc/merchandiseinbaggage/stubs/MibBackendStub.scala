@@ -51,11 +51,13 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
           .willReturn(aResponse().withStatus(200).withBody(Json.toJson(stubbedDeclarationId).toString)))
 
   def givenPersistedDeclarationIsFound(declaration: Declaration, declarationId: DeclarationId = stubbedDeclarationId)(
-    implicit server: WireMockServer): StubMapping =
+    implicit server: WireMockServer): StubMapping = {
+    val declarationWithId = declaration.copy(declarationId = declarationId)
     server
       .stubFor(
-        get(urlPathEqualTo(s"$declarationsUrl/${declarationId.value}"))
-          .willReturn(okJson(Json.toJson(declaration).toString)))
+        get(urlPathEqualTo(s"$declarationsUrl/${declarationWithId.declarationId.value}"))
+          .willReturn(okJson(Json.toJson(declarationWithId).toString)))
+  }
 
   def givenPersistedDeclarationIsFound()(implicit server: WireMockServer): StubMapping =
     server

@@ -149,7 +149,7 @@ trait CoreTestData {
   val startedAmendExportJourney: DeclarationJourney =
     DeclarationJourney(aSessionId, Export).copy(journeyType = Amend)
 
-  val completeAmendImportJourney: DeclarationJourney =
+  val amendImportJourneyWithGoodsEntries: DeclarationJourney =
     startedAmendImportJourney.copy(goodsEntries = GoodsEntries(completedImportGoods))
 
   val completeAmendExportJourney: DeclarationJourney =
@@ -281,12 +281,12 @@ trait CoreTestData {
   }
 
   def completedAmendedJourney(declarationType: DeclarationType): DeclarationJourney = declarationType match {
-    case Import => completeAmendImportJourney
+    case Import => amendImportJourneyWithGoodsEntries
     case Export => completeAmendExportJourney
   }
 
   def completedAmendment(declarationType: DeclarationType) = declarationType match {
-    case Import => completeAmendImportJourney.amendmentIfRequiredAndComplete.get
+    case Import => amendImportJourneyWithGoodsEntries.amendmentIfRequiredAndComplete.get
     case Export => completeAmendExportJourney.amendmentIfRequiredAndComplete.get
   }
 
@@ -294,5 +294,28 @@ trait CoreTestData {
     TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))
 
   val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
+
+  implicit class JourneyToDeclaration(declarationJourney: DeclarationJourney) {
+    import declarationJourney._
+    def toDeclaration =
+      Declaration(
+        declarationId,
+        sessionId,
+        declarationType,
+        maybeGoodsDestination.get,
+        goodsEntries.declarationGoodsIfComplete.get,
+        maybeNameOfPersonCarryingTheGoods.get,
+        maybeEmailAddress,
+        maybeCustomsAgent,
+        maybeEori.get,
+        JourneyInSmallVehicle(
+          Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
+          maybeJourneyDetailsEntry.get.dateOfTravel,
+          maybeRegistrationNumber.get
+        ),
+        createdAt,
+        MibReference("xx")
+      )
+  }
 
 }

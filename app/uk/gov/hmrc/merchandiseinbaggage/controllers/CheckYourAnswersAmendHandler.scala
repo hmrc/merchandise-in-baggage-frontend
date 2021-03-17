@@ -62,6 +62,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { originalDeclaration =>
         originalDeclaration.maybeTotalCalculationResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) {
           originalCalculationResults =>
+            //TODO remove this logic this is now done in Calculation service
             if ((calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value) > originalDeclaration.goodsDestination.threshold.value) {
               Redirect(routes.GoodsOverThresholdController.onPageLoad())
             } else Ok(amendImportView(form, amendment, calculationResults))
