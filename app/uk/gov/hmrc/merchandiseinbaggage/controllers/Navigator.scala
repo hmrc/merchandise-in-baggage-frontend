@@ -131,9 +131,10 @@ object Navigator {
     overThresholdCheck: Boolean,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
 
-    val redirectToCya: Boolean = declarationJourney.journeyType match {
-      case New   => declarationJourney.declarationRequiredAndComplete
-      case Amend => declarationJourney.amendmentRequiredAndComplete
+    val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
+      case (Export, New)   => declarationJourney.declarationRequiredAndComplete
+      case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
+      case (Import, _)     => false
     }
 
     (redirectToCya, declareMoreGoods) match {
