@@ -62,7 +62,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.goods.map { case i: ImportGoods => i }.map(_.calculationRequest), *)
+      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest), *)
       .returning(Future.successful(Seq(stubbedResult)))
 
     (mockConnector
@@ -87,7 +87,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.goods.map { case i: ImportGoods => i }.map(_.calculationRequest), *)
+      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest), *)
       .returning(Future.successful(Seq(stubbedResult.copy(gbpAmount = AmountInPence(150000)))))
 
     (mockConnector

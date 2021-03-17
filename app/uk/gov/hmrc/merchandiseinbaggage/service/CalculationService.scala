@@ -36,7 +36,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
     mibConnector.calculatePayments(importGoods.map(_.calculationRequest)).map(withLogging)
 
   def thresholdCheck(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, Boolean] =
-    if (declarationJourney.amendmentIfRequiredAndComplete.isDefined)
+    if (declarationJourney.amendmentRequiredAndComplete)
       isAmendPlusOriginalOverThreshold(declarationJourney)
     else OptionT.pure[Future](false)
 
@@ -47,8 +47,8 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
       calculationResults         <- OptionT.liftF(paymentCalculations(amendments.goods.importGoods))
       originalDeclaration        <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       originalCalculationResults <- OptionT.fromOption[Future](originalDeclaration.maybeTotalCalculationResult)
-      newThreshold = calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value
-    } yield newThreshold > originalDeclaration.goodsDestination.threshold.value
+      totalGbpAmount = calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value
+    } yield totalGbpAmount > originalDeclaration.goodsDestination.threshold.value
 
   private def withLogging(calculationResults: Seq[CalculationResult]): CalculationResults = {
     calculationResults.foreach(result => logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))

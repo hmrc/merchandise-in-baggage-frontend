@@ -16,6 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import java.time.LocalDateTime
+
+import cats.data.OptionT
 import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
@@ -23,28 +26,28 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsAmendedInBackend, givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec
     extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
-  private lazy val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
-  private lazy val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
-  private lazy val mibConnector = injector.instanceOf[MibConnector]
-  private lazy val paymentService = mock[PaymentService]
+  private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
+  private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
+  private val mibConnector = injector.instanceOf[MibConnector]
+  private val paymentService = mock[PaymentService]
+  private val mockCalculationService = mock[CalculationService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
@@ -79,7 +82,7 @@ class CheckYourAnswersAmendHandlerSpec
 
         val amendment = completedAmendment(importOrExport)
 
-        val eventualResult = amendHandler().onPageLoad(importOrExport, amendment, journey.declarationId)
+        val eventualResult = amendHandler().onPageLoad(journey.copy(declarationType = importOrExport), amendment)
 
         status(eventualResult) mustBe OK
         contentAsString(eventualResult) must include(messageApi("checkYourAnswers.amend.title"))
@@ -97,22 +100,38 @@ class CheckYourAnswersAmendHandlerSpec
             declarationId = id,
             goodsEntries = overThresholdGoods(importOrExport))
 
-        val declaration = journey.declarationIfRequiredAndComplete.get
-        val exportOverThresholdDeclaration = declaration.copy(
-          maybeTotalCalculationResult = Some(aTotalCalculationResult.modify(_.totalGbpValue).setTo(AmountInPence(150000001))))
-
-        givenADeclarationJourneyIsPersisted(journey)
-        givenPersistedDeclarationIsFound(exportOverThresholdDeclaration, id)
-
-        val amendment = completedAmendment(importOrExport)
-
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val handler = new CheckYourAnswersAmendHandler(
+          actionBuilder,
+          mockCalculationService,
+          mibConnector,
+          paymentService,
+          importView,
+          exportView,
+        )
 
         val importOverThresholdGoods = aCalculationResults
           .modify(_.calculationResults.each)
           .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))
 
-        val eventualResult = amendHandler(importOverThresholdGoods).onPageLoad(importOrExport, amendment, journey.declarationId)
+        (mockCalculationService
+          .thresholdCheck(_: DeclarationJourney)(_: HeaderCarrier))
+          .expects(journey, *)
+          .returning(OptionT.pure(true))
+          .once()
+
+        if (importOrExport == Import) {
+          (mockCalculationService
+            .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
+            .expects(completedAmendment(importOrExport).goods.importGoods, *)
+            .returning(Future(importOverThresholdGoods))
+            .once()
+        }
+
+        val amendment = completedAmendment(importOrExport)
+
+        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+        val eventualResult = handler.onPageLoad(journey.copy(declarationType = importOrExport), amendment)
 
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)

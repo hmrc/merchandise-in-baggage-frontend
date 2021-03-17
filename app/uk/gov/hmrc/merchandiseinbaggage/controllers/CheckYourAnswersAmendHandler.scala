@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
 import com.google.inject.{Inject, Singleton}
 import play.api.i18n.Messages
 import play.api.mvc.Results._
@@ -26,7 +27,8 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.declarationNotFoundMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId, DeclarationType}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
@@ -38,50 +40,40 @@ import scala.concurrent.{ExecutionContext, Future}
 class CheckYourAnswersAmendHandler @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
-  mibConnector: MibConnector,
+  mibConnector: MibConnector, //TODO remove this connectors call should be handled by calculation service
   paymentService: PaymentService,
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  def onPageLoad(declarationType: DeclarationType, amendment: Amendment, declarationId: DeclarationId)(
-    implicit hc: HeaderCarrier,
-    request: Request[_],
-    messages: Messages): Future[Result] =
-    declarationType match {
-      case Import => onPageLoadImport(amendment, declarationId)
-      case Export => onPageLoadExport(amendment, declarationId)
+  def onPageLoad(
+    declarationJourney: DeclarationJourney,
+    amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
+    declarationJourney.declarationType match {
+      case Import => onPageLoadImport(amendment, declarationJourney)
+      case Export => onPageLoadExport(amendment, declarationJourney)
     }
 
   private def onPageLoadImport(
     amendment: Amendment,
-    declarationId: DeclarationId)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    for {
-      calculationResults       <- calculationService.paymentCalculations(amendment.goods.importGoods)
-      maybeOriginalDeclaration <- mibConnector.findDeclaration(declarationId)
-    } yield {
-      maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { originalDeclaration =>
-        originalDeclaration.maybeTotalCalculationResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) {
-          originalCalculationResults =>
-            //TODO remove this logic this is now done in Calculation service
-            if ((calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value) > originalDeclaration.goodsDestination.threshold.value) {
-              Redirect(routes.GoodsOverThresholdController.onPageLoad())
-            } else Ok(amendImportView(form, amendment, calculationResults))
-        }
-      }
+    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
+    (for { //TODO remove calculationService.paymentCalculations. Is handled by calculation service
+      calculationResults <- OptionT.liftF(calculationService.paymentCalculations(amendment.goods.importGoods))
+      check              <- calculationService.thresholdCheck(declarationJourney)
+    } yield (check, calculationResults)).fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
+      if (res._1) {
+        Redirect(routes.GoodsOverThresholdController.onPageLoad())
+      } else Ok(amendImportView(form, amendment, res._2))
     }
 
   private def onPageLoadExport(
     amendment: Amendment,
-    declarationId: DeclarationId)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    mibConnector.findDeclaration(declarationId).map { maybeOriginalDeclaration =>
-      maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { originalDeclaration =>
-        val originalGbpValue = originalDeclaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum
-        val amendGbpValue = amendment.goods.goods.map(_.purchaseDetails.numericAmount).sum
-        if ((originalGbpValue + amendGbpValue) > originalDeclaration.goodsDestination.threshold.inPounds) {
-          Redirect(routes.GoodsOverThresholdController.onPageLoad())
-        } else Ok(amendExportView(form, amendment))
+    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
+    calculationService
+      .thresholdCheck(declarationJourney)
+      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { overThreshold =>
+        if (overThreshold) Redirect(routes.GoodsOverThresholdController.onPageLoad())
+        else Ok(amendExportView(form, amendment))
       }
-    }
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     mibConnector.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>

@@ -45,7 +45,7 @@ class CheckYourAnswersController @Inject()(
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            amendHandler.onPageLoad(request.declarationType, amendment, request.declarationJourney.declarationId)
+            amendHandler.onPageLoad(request.declarationJourney, amendment)
           }
     }
   }
