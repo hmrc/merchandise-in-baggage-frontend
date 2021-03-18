@@ -16,69 +16,70 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsAmendedInBackend, givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
-  private lazy val httpClient = injector.instanceOf[HttpClient]
-  private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
-  private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
-  private lazy val amendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
-  private lazy val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
-  private lazy val mibConnector = injector.instanceOf[MibConnector]
+  private val httpClient = injector.instanceOf[HttpClient]
+  private val importView = injector.instanceOf[CheckYourAnswersImportView]
+  private val exportView = injector.instanceOf[CheckYourAnswersExportView]
+  private val amendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
+  private val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
+  private val mibConnector = injector.instanceOf[MibConnector]
+  private val mockCalculationService = mock[CalculationService]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
-    new CalculationService(mibConnector) {
-      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
-        Future.successful(aPaymentCalculations)
-  }
+//  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
+//    new CalculationService(mibConnector) {
+//      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
+//        Future.successful(aPaymentCalculations)
+//  }
 
-  private def newHandler(paymentCalcs: CalculationResults) =
+  private def newHandler() =
     new CheckYourAnswersNewHandler(
-      stubbedCalculation(paymentCalcs),
+      mockCalculationService,
       new PaymentService(testPaymentConnector),
       mibConnector,
       importView,
       exportView,
     )
 
-  private def amendHandler(paymentCalcs: CalculationResults) =
+  private def amendHandler() =
     new CheckYourAnswersAmendHandler(
       actionBuilder,
-      stubbedCalculation(paymentCalcs),
-      mibConnector,
+      mockCalculationService,
       new PaymentService(testPaymentConnector),
       amendImportView,
       amendExportView,
     )
 
-  private def controller(paymentCalcs: CalculationResults = aCalculationResults, declarationJourney: DeclarationJourney) =
+  private def controller(declarationJourney: DeclarationJourney) =
     new CheckYourAnswersController(
       controllerComponents,
       actionBuilder,
-      newHandler(paymentCalcs),
-      amendHandler(paymentCalcs),
+      newHandler(),
+      amendHandler(),
       stubRepo(declarationJourney)
     )
 
@@ -103,6 +104,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
       givenADeclarationJourneyIsPersisted(journey)
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+
+      (mockCalculationService
+        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aCalculationResults))
+
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
       status(eventualResult) mustBe 200
@@ -113,6 +120,11 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
       givenADeclarationJourneyIsPersisted(journey)
       givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
+
+      (mockCalculationService
+        .isAmendPlusOriginalOverThreshold(_: DeclarationJourney)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(OptionT.pure[Future](AmendCalculationResult(false, aTotalCalculationResult.calculationResults)))
 
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
@@ -141,6 +153,11 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersisted(journey)
       givenDeclarationIsPersistedInBackend
 
+      (mockCalculationService
+        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aCalculationResults))
+
       val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
@@ -152,8 +169,22 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
 
       givenADeclarationJourneyIsPersisted(journey)
-      givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
-      givenDeclarationIsAmendedInBackend
+      val declarationWithResult = declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
+
+      (mockCalculationService
+        .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(Some(declarationWithResult)))
+
+      (mockCalculationService
+        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aTotalCalculationResult.calculationResults))
+
+      (mockCalculationService
+        .amendDeclaration(_: Declaration)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(declarationWithResult.declarationId))
 
       val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)

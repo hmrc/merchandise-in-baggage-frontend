@@ -79,8 +79,8 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           s"$calculationsUrl",
           None,
           Map("Content-Type" -> "application/json"),
-          Json.toJson(List(aImportGoods).map(_.calculationRequest)).toString)
-        .willRespondWith(200, Json.toJson(List(aImportGoods).map(_.calculationRequest)).toString)
+          Json.toJson(List(aGoods).map(_.calculationRequest)).toString)
+        .willRespondWith(200, Json.toJson(List(aGoods).map(_.calculationRequest)).toString)
     )
     .addInteraction(
       interaction

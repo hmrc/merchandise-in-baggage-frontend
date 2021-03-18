@@ -37,8 +37,8 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   }
 
   "send a calculation request to backend for payment" in {
-    val calculationRequest = List(aImportGoods).map(_.calculationRequest)
-    val stubbedResult = List(CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
+    val calculationRequest = List(aGoods).map(_.calculationRequest)
+    val stubbedResult = List(CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
 
     givenAPaymentCalculations(calculationRequest, stubbedResult)
 
@@ -48,7 +48,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   "send a calculation requests to backend for payment" in {
     val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest)
     val stubbedResults =
-      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
+      CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 
     givenAPaymentCalculations(calculationRequests, stubbedResults)
 

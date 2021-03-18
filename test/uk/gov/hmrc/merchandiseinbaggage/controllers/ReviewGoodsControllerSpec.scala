@@ -16,10 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import cats.data.OptionT
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -68,12 +66,6 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       s"redirect to next page after successful form submit with Yes for $importOrExport by delegating to Navigator" in {
         val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
-
-        (mockCalculationService
-          .thresholdCheck(_: DeclarationJourney)(_: HeaderCarrier))
-          .expects(*, *)
-          .returning(OptionT.pure(false))
-          .once()
 
         (mockNavigator
           .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
