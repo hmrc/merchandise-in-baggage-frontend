@@ -24,6 +24,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
@@ -38,7 +39,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec
-    extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
+    extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory with PropertyBaseTables {
 
   private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
@@ -61,7 +62,7 @@ class CheckYourAnswersAmendHandlerSpec
       exportView,
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
         val sessionId = SessionId()
