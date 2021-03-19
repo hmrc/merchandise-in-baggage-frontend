@@ -66,7 +66,7 @@ class CheckYourAnswersAmendHandler @Inject()(
     amendment: Amendment,
     declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService
-      .isAmendPlusOriginalOverThreshold(declarationJourney)
+      .isAmendPlusOriginalOverThresholdExport(declarationJourney)
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { amendCalculationResult =>
         if (amendCalculationResult.isOverThreshold) Redirect(GoodsOverThresholdController.onPageLoad())
         else Ok(amendExportView(form, amendment))
