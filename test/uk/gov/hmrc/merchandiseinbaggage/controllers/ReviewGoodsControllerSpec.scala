@@ -22,7 +22,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
@@ -69,12 +71,6 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
-        (mockCalculationService
-          .thresholdCheck(_: DeclarationJourney)(_: HeaderCarrier))
-          .expects(*, *)
-          .returning(OptionT.pure(false))
-          .once()
-
         (mockNavigator
           .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
           .expects(*, *)
@@ -98,5 +94,34 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       result must include(messageApi("reviewGoods.New.title"))
       result must include(messageApi("reviewGoods.New.heading"))
     }
+  }
+
+  s"redirect to next page after successful form submit with No for $Export" in {
+    val id = aSessionId
+    val journey: DeclarationJourney =
+      DeclarationJourney(id, Export, goodsEntries = completedGoodsEntries(Export))
+        .copy(journeyType = Amend)
+
+    val controller =
+      new ReviewGoodsController(
+        controllerComponents,
+        stubProvider(journey),
+        stubRepo(journey),
+        view,
+        mockCalculationService,
+        injector.instanceOf[Navigator])
+
+    (mockCalculationService
+      .isAmendPlusOriginalOverThresholdExport(_: DeclarationJourney)(_: HeaderCarrier))
+      .expects(*, *)
+      .returning(OptionT.pure[Future](AmendCalculationResult(false, CalculationResults(Seq.empty))))
+
+    val request = buildPost(ReviewGoodsController.onSubmit().url, id)
+      .withFormUrlEncodedBody("value" -> "No")
+
+    val eventualResult = controller.onSubmit()(request)
+
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some(CheckYourAnswersController.onPageLoad().url)
   }
 }

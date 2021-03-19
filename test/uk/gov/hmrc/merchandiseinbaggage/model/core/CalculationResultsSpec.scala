@@ -26,7 +26,7 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
   "Calculate each total tax due" in {
     val calculationResult: CalculationResult =
-      CalculationResult(aImportGoods, AmountInPence(20L), AmountInPence(10), AmountInPence(30), None)
+      CalculationResult(aGoods, AmountInPence(20L), AmountInPence(10), AmountInPence(30), None)
     val calculations = CalculationResults(Seq(calculationResult))
 
     calculations.totalTaxDue mustBe AmountInPence(10 + 30)
@@ -36,11 +36,11 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
   "Check if proof of origin needed" in {
     val calculationResultEU: CalculationResult =
-      CalculationResult(aImportGoods, AmountInPence(100001), AmountInPence(10), AmountInPence(30), None)
+      CalculationResult(aGoods, AmountInPence(100001), AmountInPence(10), AmountInPence(30), None)
 
     val calculationResultUSA: CalculationResult =
       CalculationResult(
-        aImportGoods.modify(_.producedInEu).setTo(YesNoDontKnow.No),
+        aGoods.modify(_.producedInEu).setTo(YesNoDontKnow.No),
         AmountInPence(20L),
         AmountInPence(10),
         AmountInPence(30),

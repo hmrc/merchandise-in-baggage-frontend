@@ -29,6 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
+import com.softwaremill.quicklens._
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
@@ -124,7 +125,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "DeclarationJourney" should {
     "serialise and de-serialise" in {
-      parse(toJson(completedDeclarationJourney).toString()).validate[DeclarationJourney].get mustBe completedDeclarationJourney
+      val journey = completedDeclarationJourney.modify(_.createdAt).using(_.withNano(0))
+      parse(toJson(journey).toString()).validate[DeclarationJourney].get mustBe journey
     }
 
     "be obfuscated" in {
