@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -26,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.AmendCalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-import com.softwaremill.quicklens._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

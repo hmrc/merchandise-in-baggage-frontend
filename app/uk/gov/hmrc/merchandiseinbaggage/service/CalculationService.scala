@@ -21,6 +21,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, ImportGoods}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
@@ -49,6 +50,15 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
       originalCalculationResults <- OptionT.fromOption[Future](originalDeclaration.maybeTotalCalculationResult)
       totalGbpAmount = calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value
     } yield AmendCalculationResult(totalGbpAmount > originalDeclaration.goodsDestination.threshold.value, calculationResults)
+
+  def isAmendPlusOriginalOverThresholdExport(declarationJourney: DeclarationJourney)(
+    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    for {
+      amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
+      originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
+      totalGbpAmount = originalDeclaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum +
+        amendments.goods.goods.map(_.purchaseDetails.numericAmount).sum
+    } yield AmendCalculationResult(totalGbpAmount > originalDeclaration.goodsDestination.threshold.value, CalculationResults(Seq.empty))
 
   private def amendCalculation(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {

@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, goodsDeclarationIncompleteMessage}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, GoodsEntries}
@@ -71,22 +72,28 @@ class ReviewGoodsController @Inject()(
     val updatedGoodsEntries: GoodsEntries = request.declarationJourney.updateGoodsEntries().goodsEntries
     (for {
       check <- checkThresholdIfAmending
-      call  <- OptionT.liftF(
-                 navigator.nextPageWithCallBack(
-                   RequestWithCallBack(
-                     ReviewGoodsController.onPageLoad().url,
-                     declareMoreGoods,
-                     updatedGoodsEntries,
-                     request.declarationJourney,
-                     check.isOverThreshold,
-                     repo.upsert
-                   )
-                 ))
+      call <- OptionT.liftF(
+               navigator.nextPageWithCallBack(
+                 RequestWithCallBack(
+                   ReviewGoodsController.onPageLoad().url,
+                   declareMoreGoods,
+                   updatedGoodsEntries,
+                   request.declarationJourney,
+                   check.isOverThreshold,
+                   repo.upsert
+                 )
+               ))
     } yield call).fold(actionProvider.invalidRequest(declarationNotFoundMessage))(Redirect)
   }
 
-  private def checkThresholdIfAmending(implicit request: DeclarationJourneyRequest[_], hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
-    if (request.declarationJourney.amendmentRequiredAndComplete)
+  //TODO clean up the if festival
+  private def checkThresholdIfAmending(
+    implicit request: DeclarationJourneyRequest[_],
+    hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    if (request.declarationJourney.amendmentRequiredAndComplete && request.declarationJourney.declarationType == Import)
       calculationService.isAmendPlusOriginalOverThreshold(request.declarationJourney)
-    else OptionT.pure[Future](AmendCalculationResult(isOverThreshold = false, CalculationResults(Seq.empty)))
+    else if (request.declarationJourney.amendmentRequiredAndComplete && request.declarationJourney.declarationType == Export)
+      calculationService.isAmendPlusOriginalOverThresholdExport(request.declarationJourney)
+    else
+      OptionT.pure[Future](AmendCalculationResult(isOverThreshold = false, CalculationResults(Seq.empty)))
 }
