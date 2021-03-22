@@ -40,8 +40,7 @@ class GoodsTypeQuantityController @Inject()(
   val logger = Logger("GoodsTypeQuantityController")
 
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
-    val referer: Option[String] = request.headers.get(REFERER)
-    logger.warn(s"referer: $referer cya: ${routes.CheckYourAnswersController.onPageLoad().url} reviewGoods: ${routes.ReviewGoodsController.onPageLoad().url}")
+    val referer: String = request.headers.get(REFERER).getOrElse("")
     if (referer.contains(routes.CheckYourAnswersController.onPageLoad().url)) routes.CheckYourAnswersController.onPageLoad()
     else if (referer.contains(routes.ReviewGoodsController.onPageLoad().url)) routes.ReviewGoodsController.onPageLoad()
     else if (request.declarationJourney.journeyType == Amend) routes.ExciseAndRestrictedGoodsController.onPageLoad()
