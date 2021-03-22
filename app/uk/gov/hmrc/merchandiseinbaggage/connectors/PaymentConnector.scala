@@ -16,23 +16,27 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
-import javax.inject.{Inject, Named, Singleton}
+import play.api.Logging
 import play.api.http.Status
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{PayApiRequest, PayApiResponse}
 
+import javax.inject.{Inject, Named, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 case class PayApiException(message: String) extends RuntimeException(message)
 
 @Singleton
-class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) {
+class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) extends Logging {
 
   private val url = s"$baseUrl$payUrl"
 
-  def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
+  def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] = {
+    logger.warn(s"payments requestBody: ${Json.toJson(requestBody)}")
+
     httpClient.POST[PayApiRequest, HttpResponse](url, requestBody).map { response =>
       response.status match {
         case Status.CREATED => response.json.as[PayApiResponse]
@@ -41,6 +45,7 @@ class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl"
           throw PayApiException(s"unexpected status from pay-api for reference:${requestBody.mibReference.value}, status:$other")
       }
     }
+  }
 }
 
 object PaymentApiUrls {
