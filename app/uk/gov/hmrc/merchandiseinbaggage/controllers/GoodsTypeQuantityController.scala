@@ -35,9 +35,9 @@ class GoodsTypeQuantityController @Inject()(
   view: GoodsTypeQuantityView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
-
+  
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
-    val referer: Option[String] = request.headers.get(REFERER)
+    val referer: String = request.headers.get(REFERER).getOrElse("")
     if (referer.contains(routes.CheckYourAnswersController.onPageLoad().url)) routes.CheckYourAnswersController.onPageLoad()
     else if (referer.contains(routes.ReviewGoodsController.onPageLoad().url)) routes.ReviewGoodsController.onPageLoad()
     else if (request.declarationJourney.journeyType == Amend) routes.ExciseAndRestrictedGoodsController.onPageLoad()
