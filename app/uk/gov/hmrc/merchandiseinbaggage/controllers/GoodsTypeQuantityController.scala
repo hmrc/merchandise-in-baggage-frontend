@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.Logger
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
@@ -36,9 +35,7 @@ class GoodsTypeQuantityController @Inject()(
   view: GoodsTypeQuantityView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
-
-  val logger = Logger("GoodsTypeQuantityController")
-
+  
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
     if (referer.contains(routes.CheckYourAnswersController.onPageLoad().url)) routes.CheckYourAnswersController.onPageLoad()
