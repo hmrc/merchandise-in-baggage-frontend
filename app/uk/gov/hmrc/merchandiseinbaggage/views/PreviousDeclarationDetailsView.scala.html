@@ -51,9 +51,7 @@
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</dt>
-                @if( totalPayment.isPaymentRequired) {
-                    <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalPayment.formattedInPounds</dd>
-                }
+                <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalPayment.formattedInPounds</dd>
             </div>
         </dl>
     }
