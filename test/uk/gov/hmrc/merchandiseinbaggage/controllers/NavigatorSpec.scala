@@ -175,8 +175,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result.futureValue mustBe PaymentCalculationController.onPageLoad()
       }
 
-      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${PaymentCalculationController
-        .onPageLoad()} if answer No without updating goods entries for $newOrAmend & $importOrExport and rest of journey is complete" in new Navigator {
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
+        .onPageLoad()} if answer No $newOrAmend & $importOrExport and over threshold" in new Navigator {
         val result: Future[Call] = nextPageWithCallBack(
           RequestWithCallBack(
             ReviewGoodsController.onPageLoad().url,
@@ -187,7 +187,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             _ => Future.successful(completedDeclarationJourney)
           ))
 
-        result.futureValue mustBe PaymentCalculationController.onPageLoad()
+        result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
       }
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
