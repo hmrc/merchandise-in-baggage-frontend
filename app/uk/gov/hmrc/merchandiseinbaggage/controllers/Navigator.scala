@@ -138,9 +138,10 @@ object Navigator {
     }
 
     (redirectToCya, declareMoreGoods) match {
-      case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
-      case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
-      case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
+      case (_, Yes)                          => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
+      case (false, No) if overThresholdCheck => Future.successful(GoodsOverThresholdController.onPageLoad())
+      case (false, No)                       => Future.successful(PaymentCalculationController.onPageLoad())
+      case (true, No)                        => Future.successful(CheckYourAnswersController.onPageLoad())
     }
   }
 

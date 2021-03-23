@@ -50,12 +50,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-//  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
-//    new CalculationService(mibConnector) {
-//      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
-//        Future.successful(aPaymentCalculations)
-//  }
-
   private def newHandler() =
     new CheckYourAnswersNewHandler(
       mockCalculationService,
