@@ -129,32 +129,25 @@ object Navigator {
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
     overThresholdCheck: Boolean,
-    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
-
-    val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
-      case (Export, New)   => declarationJourney.declarationRequiredAndComplete
-      case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
-      case (Import, _)     => false
-    }
-
-    (redirectToCya, declareMoreGoods) match {
-      case (_, Yes)                          => updateEntriesAndRedirect(declarationJourney, overThresholdCheck, upsert)
-      case (false, No) if overThresholdCheck => Future.successful(GoodsOverThresholdController.onPageLoad())
-      case (false, No)                       => Future.successful(PaymentCalculationController.onPageLoad())
-      case (true, No)                        => Future.successful(CheckYourAnswersController.onPageLoad())
-    }
-  }
-
-  private def updateEntriesAndRedirect(
-    declarationJourney: DeclarationJourney,
-    overThresholdCheck: Boolean,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    if (overThresholdCheck)
-      Future successful GoodsOverThresholdController.onPageLoad()
+    if (overThresholdCheck) Future.successful(GoodsOverThresholdController.onPageLoad())
     else {
-      val updatedJourney = declarationJourney.updateGoodsEntries()
-      upsert(updatedJourney).map { _ =>
-        GoodsTypeQuantityController.onPageLoad(updatedJourney.goodsEntries.entries.size)
+      val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
+        case (Export, New)   => declarationJourney.declarationRequiredAndComplete
+        case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
+        case (Import, _)     => false
       }
+
+      (redirectToCya, declareMoreGoods) match {
+        case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+        case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
+        case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
+      }
+    }
+
+  private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] =
+    upsert(declarationJourney.updateGoodsEntries()).map { _ =>
+      GoodsTypeQuantityController.onPageLoad(declarationJourney.updateGoodsEntries().goodsEntries.entries.size)
     }
 }

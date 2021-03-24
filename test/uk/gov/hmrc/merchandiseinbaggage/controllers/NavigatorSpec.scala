@@ -145,17 +145,20 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to /declare-commercial-goods/goods-type-quantity/idx + 1 " +
         s"for $newOrAmend & $importOrExport" in new Navigator {
-        val updatedJourney: DeclarationJourney = completedDeclarationJourney.updateGoodsEntries()
+        val updatedJourney: DeclarationJourney = completedDeclarationJourney
+          .updateGoodsEntries()
+          .copy(declarationType = importOrExport, journeyType = newOrAmend)
         val expectedUpdatedEntries: Int = completedDeclarationJourney.goodsEntries.entries.size + 1
 
         val result: Future[Call] = nextPageWithCallBack(
           RequestWithCallBack(
             ReviewGoodsController.onPageLoad().url,
             Yes,
-            GoodsEntries(startedImportGoods),
-            completedDeclarationJourney,
+            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend),
             false,
-            _ => Future.successful(updatedJourney)))
+            _ => Future.successful(updatedJourney)
+          ))
 
         result.futureValue mustBe GoodsTypeQuantityController.onPageLoad(expectedUpdatedEntries)
       }
@@ -166,10 +169,10 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           RequestWithCallBack(
             ReviewGoodsController.onPageLoad().url,
             No,
-            GoodsEntries(startedImportGoods),
-            incompleteDeclarationJourney,
-            false,
-            _ => Future.successful(incompleteDeclarationJourney)
+            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
+            incompleteDeclarationJourney.copy(declarationType = importOrExport),
+            overThresholdCheck = false,
+            _ => Future.successful(incompleteDeclarationJourney.copy(declarationType = importOrExport))
           ))
 
         result.futureValue mustBe PaymentCalculationController.onPageLoad()
@@ -177,14 +180,15 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
         .onPageLoad()} if answer No $newOrAmend & $importOrExport and over threshold" in new Navigator {
+        val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPageWithCallBack(
           RequestWithCallBack(
             ReviewGoodsController.onPageLoad().url,
             No,
-            GoodsEntries(startedImportGoods),
-            completedDeclarationJourney,
+            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
+            journey,
             true,
-            _ => Future.successful(completedDeclarationJourney)
+            _ => Future.successful(journey)
           ))
 
         result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
@@ -192,14 +196,16 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
         .onPageLoad()} if over for $newOrAmend & $importOrExport" in new Navigator {
+        val journey: DeclarationJourney =
+          importJourneyWithGoodsOverThreshold.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPageWithCallBack(
           RequestWithCallBack(
             ReviewGoodsController.onPageLoad().url,
             Yes,
-            GoodsEntries(startedImportGoods),
-            importJourneyWithGoodsOverThreshold,
+            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
+            journey,
             true,
-            _ => Future.successful(importJourneyWithGoodsOverThreshold)
+            _ => Future.successful(journey)
           ))
 
         result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
