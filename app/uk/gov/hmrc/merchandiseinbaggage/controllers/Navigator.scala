@@ -90,10 +90,9 @@ object Navigator {
   )
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
-    (value, journeyType) match {
-      case (Yes, _)   => CannotUseServiceController.onPageLoad()
-      case (_, New)   => ValueWeightOfGoodsController.onPageLoad()
-      case (_, Amend) => GoodsTypeQuantityController.onPageLoad(idx)
+    value match {
+      case Yes => CannotUseServiceController.onPageLoad()
+      case No  => ValueWeightOfGoodsController.onPageLoad()
     }
 
   private def customsAgent[T](value: T): Call = value match {
