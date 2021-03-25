@@ -41,15 +41,15 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
 
         if (newOrAmend == Amend) {
-          s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
+          s"redirect to ${ValueWeightOfGoodsController.onPageLoad().url} for $newOrAmend on submit for $importOrExport" in new Navigator {
             val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
-            result mustBe GoodsTypeQuantityController.onPageLoad(1)
+            result mustBe ValueWeightOfGoodsController.onPageLoad()
           }
         }
 
         if (newOrAmend == New) {
-          s"redirect to ${GoodsTypeQuantityController.onPageLoad(1).url} for $newOrAmend on submit for $importOrExport" in new Navigator {
+          s"redirect to ${ValueWeightOfGoodsController.onPageLoad().url} for $newOrAmend on submit for $importOrExport" in new Navigator {
             val result: Call = nextPage(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, newOrAmend, 1))
 
             result mustBe ValueWeightOfGoodsController.onPageLoad()
