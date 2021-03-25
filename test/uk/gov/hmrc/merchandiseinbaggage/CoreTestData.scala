@@ -86,6 +86,13 @@ trait CoreTestData {
       completedImportGoods.maybePurchaseDetails.get
     )
 
+  val aExportGoods =
+    ExportGoods(
+      completedExportGoods.maybeCategoryQuantityOfGoods.get,
+      completedExportGoods.maybeDestination.get,
+      completedExportGoods.maybePurchaseDetails.get
+    )
+
   def overThresholdGoods(declarationType: DeclarationType = Import): GoodsEntries =
     declarationType match {
       case Import =>
@@ -304,14 +311,14 @@ trait CoreTestData {
         declarationType,
         maybeGoodsDestination.get,
         goodsEntries.declarationGoodsIfComplete.get,
-        maybeNameOfPersonCarryingTheGoods.get,
+        maybeNameOfPersonCarryingTheGoods.getOrElse(Name("xx", "yy")),
         maybeEmailAddress,
         maybeCustomsAgent,
-        maybeEori.get,
+        maybeEori.getOrElse(Eori("GB123")),
         JourneyInSmallVehicle(
           Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
-          maybeJourneyDetailsEntry.get.dateOfTravel,
-          maybeRegistrationNumber.get
+          maybeJourneyDetailsEntry.getOrElse(JourneyDetailsEntry("BH", LocalDate.now)).dateOfTravel,
+          maybeRegistrationNumber.getOrElse("Lx123")
         ),
         createdAt,
         MibReference("xx")

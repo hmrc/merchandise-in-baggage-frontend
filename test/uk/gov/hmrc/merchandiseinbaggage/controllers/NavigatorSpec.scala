@@ -212,4 +212,20 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       }
     }
   }
+
+  s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${GoodsOverThresholdController
+    .onPageLoad()} if answer No & Export and over threshold" in new Navigator {
+    val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
+    val result: Future[Call] = nextPageWithCallBack(
+      RequestWithCallBack(
+        ReviewGoodsController.onPageLoad().url,
+        No,
+        GoodsEntries(startedExportGoods),
+        journey,
+        overThresholdCheck = true,
+        _ => Future.successful(journey)
+      ))
+
+    result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
+  }
 }

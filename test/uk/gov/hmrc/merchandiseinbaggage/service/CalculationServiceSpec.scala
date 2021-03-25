@@ -20,10 +20,11 @@ import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.AmendCalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -101,6 +102,30 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     service.isAmendPlusOriginalOverThreshold(amended).value.futureValue mustBe Some(
       AmendCalculationResult(isOverThreshold = true, expected.modify(_.calculationResults.each).setTo(expectedResult)))
+  }
+
+  "returns true if over threshold for amend export journey" in {
+    import com.softwaremill.quicklens._
+    val amended: DeclarationJourney = startedExportFromGreatBritain
+      .modify(_.goodsEntries)
+      .setTo(
+        overThresholdGoods(Export)
+          .modify(_.entries.each.maybePurchaseDetails.each.amount)
+          .setTo("1450"))
+      .modify(_.journeyType)
+      .setTo(Amend)
+
+    val declaration = amended.toDeclaration
+      .modify(_.declarationGoods.goods.each.purchaseDetails.amount)
+      .setTo("51")
+
+    (mockConnector
+      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+      .expects(amended.declarationId, *)
+      .returning(Future.successful(Some(declaration)))
+
+    service.isAmendPlusOriginalOverThresholdExport(amended).value.futureValue mustBe Some(
+      AmendCalculationResult(isOverThreshold = true, CalculationResults(Seq.empty)))
   }
 
   "return None for any journey that are NOT amendmentRequiredAndComplete" in {

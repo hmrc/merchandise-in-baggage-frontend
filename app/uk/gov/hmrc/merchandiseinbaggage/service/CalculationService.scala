@@ -57,7 +57,8 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       totalGbpAmount = originalDeclaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum +
         amendments.goods.goods.map(_.purchaseDetails.numericAmount).sum
-    } yield AmendCalculationResult(totalGbpAmount > originalDeclaration.goodsDestination.threshold.value, CalculationResults(Seq.empty))
+    } yield
+      AmendCalculationResult((totalGbpAmount * 100) > originalDeclaration.goodsDestination.threshold.value, CalculationResults(Seq.empty))
 
   private def amendCalculation(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
