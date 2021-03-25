@@ -104,25 +104,20 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       AmendCalculationResult(isOverThreshold = true, expected.modify(_.calculationResults.each).setTo(expectedResult)))
   }
 
-  "returns true if over threshold for amend journey Export" in {
+  "returns true if over threshold for amend export journey" in {
     import com.softwaremill.quicklens._
     val amended: DeclarationJourney = startedExportFromGreatBritain
       .modify(_.goodsEntries)
       .setTo(
         overThresholdGoods(Export)
           .modify(_.entries.each.maybePurchaseDetails.each.amount)
-          .setTo("145000"))
+          .setTo("1450"))
       .modify(_.journeyType)
       .setTo(Amend)
 
     val declaration = amended.toDeclaration
       .modify(_.declarationGoods.goods.each.purchaseDetails.amount)
-      .setTo("5100")
-
-    println(s"===> amend ${amended.amendmentIfRequiredAndComplete.get.goods.goods.map(_.purchaseDetails.numericAmount).size}")
-    println(s"===> amend ${amended.amendmentIfRequiredAndComplete.get.goods.goods.map(_.purchaseDetails.numericAmount).sum}")
-    println(s"===> originalDeclaration.goodsDestination.threshold.value ${declaration.goodsDestination.threshold.value}")
-    println(s"===> original ${declaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).size}")
+      .setTo("51")
 
     (mockConnector
       .findDeclaration(_: DeclarationId)(_: HeaderCarrier))

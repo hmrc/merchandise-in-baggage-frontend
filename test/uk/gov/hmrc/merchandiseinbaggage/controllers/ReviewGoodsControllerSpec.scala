@@ -124,23 +124,4 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some(CheckYourAnswersController.onPageLoad().url)
   }
-
-//  s"redirect to ${GoodsOverThresholdController.onPageLoad().url} form submit with No for Export" in {
-//    val journey: DeclarationJourney =
-//      DeclarationJourney(aSessionId, Export, goodsEntries = overThresholdGoods(Export))
-//
-//    val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
-//      .withFormUrlEncodedBody("value" -> "No")
-//
-//    (mockNavigator
-//      .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
-//      .expects(*, *)
-//      .returning(Future.successful(GoodsOverThresholdController.onPageLoad()))
-//      .once()
-//
-//    val eventualResult = controller(journey).onSubmit(request)
-//
-//    redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad())
-////    eventualResult.futureValue
-//  }
 }
