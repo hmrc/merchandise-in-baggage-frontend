@@ -41,7 +41,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
     mibConnector.findDeclaration(declarationId)
 
-  def isAmendPlusOriginalOverThreshold(declarationJourney: DeclarationJourney)(
+  def isAmendPlusOriginalOverThresholdImport(declarationJourney: DeclarationJourney)(
     implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
     for {
       calculationResults         <- amendCalculation(declarationJourney)

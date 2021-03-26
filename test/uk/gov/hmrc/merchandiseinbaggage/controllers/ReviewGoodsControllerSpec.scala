@@ -21,6 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
@@ -31,7 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
 
   private val view = app.injector.instanceOf[ReviewGoodsView]
   private val mockNavigator = mock[Navigator]
@@ -46,7 +47,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       mockCalculationService,
       mockNavigator)
 
-  declarationTypes.foreach { importOrExport =>
+  forAll(declarationTypesTable) { importOrExport =>
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
 

@@ -73,7 +73,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(amended.declarationId, *)
       .returning(Future.successful(Some(declaration)))
 
-    service.isAmendPlusOriginalOverThreshold(amended).value.futureValue.get.isOverThreshold mustBe false
+    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.isOverThreshold mustBe false
   }
 
   "returns true if over threshold for amend journey" in {
@@ -100,7 +100,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(amended.declarationId, *)
       .returning(Future.successful(Some(declaration)))
 
-    service.isAmendPlusOriginalOverThreshold(amended).value.futureValue mustBe Some(
+    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue mustBe Some(
       AmendCalculationResult(isOverThreshold = true, expected.modify(_.calculationResults.each).setTo(expectedResult)))
   }
 
@@ -129,6 +129,9 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   }
 
   "return None for any journey that are NOT amendmentRequiredAndComplete" in {
-    service.isAmendPlusOriginalOverThreshold(startedImportToGreatBritainJourney.copy(journeyType = Amend)).value.futureValue mustBe None
+    service
+      .isAmendPlusOriginalOverThresholdImport(startedImportToGreatBritainJourney.copy(journeyType = Amend))
+      .value
+      .futureValue mustBe None
   }
 }
