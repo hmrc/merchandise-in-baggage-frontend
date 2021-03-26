@@ -116,7 +116,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
 
       (mockCalculationService
-        .isAmendPlusOriginalOverThreshold(_: DeclarationJourney)(_: HeaderCarrier))
+        .isAmendPlusOriginalOverThresholdImport(_: DeclarationJourney)(_: HeaderCarrier))
         .expects(*, *)
         .returning(OptionT.pure[Future](AmendCalculationResult(false, aTotalCalculationResult.calculationResults)))
 
