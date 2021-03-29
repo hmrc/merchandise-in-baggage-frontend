@@ -24,10 +24,12 @@
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
-@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration, journeyType: JourneyType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @printLink = {
  <script>
@@ -61,7 +63,7 @@
   } else {
    @Html("")
   }
-  <li>@messages("declarationConfirmation.ul.2")</li>
+  <li>@messages(s"declarationConfirmation.ul.2.${journeyType.entryName}")</li>
 
   @for(calcResult <- declaration.maybeTotalCalculationResult) {
     @if(calcResult.calculationResults.proofOfOriginNeeded && declaration.declarationType == Import) {
