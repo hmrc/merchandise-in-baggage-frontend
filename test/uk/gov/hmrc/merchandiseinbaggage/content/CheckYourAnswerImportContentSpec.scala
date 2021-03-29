@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+package uk.gov.hmrc.merchandiseinbaggage.content
 
 import org.openqa.selenium.{By, WebElement}
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+
 import scala.collection.JavaConverters._
 
 class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTestData {

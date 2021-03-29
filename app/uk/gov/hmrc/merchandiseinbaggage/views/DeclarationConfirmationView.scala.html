@@ -26,6 +26,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
+@import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationConfirmationView._
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
@@ -75,7 +76,7 @@
  </ul>
 
  <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
-  @for((goods, index) <- declaration.declarationGoods.goods.zipWithIndex) {
+  @for((goods, index) <- allGoods(declaration).zipWithIndex) {
    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
      <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
@@ -113,15 +114,15 @@
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
     <dt id="customsDutyLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.customsDuty")</dt>
-    <dd id="customsDuty" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalDutyDue.formattedInPounds)</dd>
+    <dd id="customsDuty" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalDutyDue(declaration).formattedInPounds}</dd>
    </div>
    <div class="govuk-summary-list__row">
     <dt id="vatLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.vat")</dt>
-    <dd id="vat" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalVatDue.formattedInPounds)</dd>
+    <dd id="vat" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalVatDue(declaration).formattedInPounds}</dd>
    </div>
    <div class="govuk-summary-list__row">
     <dt id="totalTaxLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.totalTax")</dt>
-    <dd id="totalTax" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.maybeTotalCalculationResult.map(_.totalTaxDue.formattedInPounds)</dd>
+    <dd id="totalTax" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalTaxDue(declaration).formattedInPounds}</dd>
    </div>
   </dl>
  }
