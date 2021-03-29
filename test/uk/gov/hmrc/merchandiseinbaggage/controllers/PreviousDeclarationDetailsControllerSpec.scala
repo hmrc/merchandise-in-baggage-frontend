@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
@@ -30,13 +32,15 @@ import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PreviousDeclarationDetailsControllerSpec
-    extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration {
+    extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration with MockFactory {
+
+  val mockNavigator: Navigator = mock[Navigator]
+  val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
+  val mibConnector = injector.instanceOf[MibConnector]
+  val previousDeclarationDetailsService = injector.instanceOf[DeclarationService]
 
   "creating a page" should {
     "return 200 if declaration exists" in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
-      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
         new PreviousDeclarationDetailsController(
           controllerComponents,
@@ -44,6 +48,7 @@ class PreviousDeclarationDetailsControllerSpec
           declarationJourneyRepository,
           previousDeclarationDetailsService,
           mibConnector,
+          mockNavigator,
           view)
 
       val importJourney: DeclarationJourney = completedDeclarationJourney
@@ -61,7 +66,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -69,9 +74,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 303 if declaration does NOT exist" in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
-      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
         new PreviousDeclarationDetailsController(
           controllerComponents,
@@ -79,6 +81,7 @@ class PreviousDeclarationDetailsControllerSpec
           declarationJourneyRepository,
           previousDeclarationDetailsService,
           mibConnector,
+          mockNavigator,
           view)
 
       val importJourney: DeclarationJourney = completedDeclarationJourney
@@ -93,7 +96,7 @@ class PreviousDeclarationDetailsControllerSpec
       givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
 
       val request =
-        buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, SessionId()).withSession("declarationId" -> "987")
+        buildGet(PreviousDeclarationDetailsController.onPageLoad().url, SessionId()).withSession("declarationId" -> "987")
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 303
 
@@ -101,9 +104,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 200 if import declaration with amendment exists " in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
-      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
         new PreviousDeclarationDetailsController(
           controllerComponents,
@@ -111,6 +111,7 @@ class PreviousDeclarationDetailsControllerSpec
           declarationJourneyRepository,
           previousDeclarationDetailsService,
           mibConnector,
+          mockNavigator,
           view)
 
       val importJourney: DeclarationJourney = completedDeclarationJourney
@@ -129,7 +130,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -140,9 +141,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 200 if export declaration with amendment exists " in {
-      val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-      val previousDeclarationDetailsService = app.injector.instanceOf[DeclarationService]
-      val mibConnector = injector.instanceOf[MibConnector]
       val controller =
         new PreviousDeclarationDetailsController(
           controllerComponents,
@@ -150,6 +148,7 @@ class PreviousDeclarationDetailsControllerSpec
           declarationJourneyRepository,
           previousDeclarationDetailsService,
           mibConnector,
+          mockNavigator,
           view)
 
       val exportJourney: DeclarationJourney = completedDeclarationJourney
@@ -168,7 +167,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(routes.PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -176,5 +175,22 @@ class PreviousDeclarationDetailsControllerSpec
       contentAsString(eventualResult) must include("more cheese")
       contentAsString(eventualResult) mustNot include("Payment made")
     }
+  }
+
+  "on submit update and redirect" in {
+    val controller =
+      new PreviousDeclarationDetailsController(
+        controllerComponents,
+        actionBuilder,
+        declarationJourneyRepository,
+        previousDeclarationDetailsService,
+        mibConnector,
+        mockNavigator,
+        view)
+
+    val postRequest = buildPost(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+
+    val result = controller.onSubmit()(postRequest)
+    status(result) mustBe 303
   }
 }

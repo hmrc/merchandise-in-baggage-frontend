@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import javax.inject.{Inject, Singleton}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.NorthernIreland
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -31,11 +31,12 @@ class GoodsDestinationController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: GoodsDestinationView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
-  private val backLink = if (amendFlagConf.canBeAmended) Some(routes.NewOrExistingController.onPageLoad()) else None
+  private val backLink = if (amendFlagConf.canBeAmended) Some(NewOrExistingController.onPageLoad()) else None
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(
@@ -53,13 +54,8 @@ class GoodsDestinationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
         value => {
-          val redirectIfNotComplete =
-            if (value == NorthernIreland)
-              routes.CannotUseServiceIrelandController.onPageLoad()
-            else
-              routes.ExciseAndRestrictedGoodsController.onPageLoad()
-
-          persistAndRedirect(request.declarationJourney.copy(maybeGoodsDestination = Some(value)), redirectIfNotComplete)
+          val call: Call = navigator.nextPage(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, value))
+          persistAndRedirect(request.declarationJourney.copy(maybeGoodsDestination = Some(value)), call)
         }
       )
   }

@@ -16,26 +16,36 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
+class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 
   val view = injector.instanceOf[GoodsDestinationView]
+  val mockNavigator: Navigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsDestinationController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new GoodsDestinationController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      mockNavigator,
+      view)
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.GoodsDestinationController.onPageLoad.url, aSessionId)
+        val request = buildGet(GoodsDestinationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
         val result = contentAsString(eventualResult)
 
@@ -50,18 +60,23 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "onSubmit" should {
-      s"redirect to /excise-and-restricted-goods after successful form submit with GreatBritain for $importOrExport" in {
-        val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+      s"redirect for $importOrExport using Navigator" in {
+        val request = buildPost(GoodsDestinationController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "GreatBritain")
+
+        (mockNavigator
+          .nextPage(_: RequestWithAnswer[_]))
+          .expects(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, GreatBritain))
+          .returning(ExciseAndRestrictedGoodsController.onPageLoad())
+          .once()
 
         val eventualResult = controller(journey).onSubmit(request)
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(routes.GoodsDestinationController.onSubmit().url, aSessionId)
+      val request = buildPost(GoodsDestinationController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

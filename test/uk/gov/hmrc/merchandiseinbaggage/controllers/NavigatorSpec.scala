@@ -134,6 +134,13 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result mustBe GoodsInVehicleController.onPageLoad()
       }
 
+      s"from ${PreviousDeclarationDetailsController.onPageLoad().url} navigates to ${ExciseAndRestrictedGoodsController
+        .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
+        val result: Call = nextPage(RequestByPass(PreviousDeclarationDetailsController.onPageLoad().url))
+
+        result mustBe ExciseAndRestrictedGoodsController.onPageLoad()
+      }
+
       if (newOrAmend == New) {
         s"from ${NewOrExistingController.onPageLoad().url} navigates to ${GoodsDestinationController
           .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
@@ -204,7 +211,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             Yes,
             GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
             journey,
-            true,
+            overThresholdCheck = true,
             _ => Future.successful(journey)
           ))
 
