@@ -39,10 +39,11 @@ class DeclarationConfirmationController @Inject()(
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
+    val journeyType = request.declarationJourney.journeyType
     connector.findDeclaration(declarationId).map {
       case Some(declaration) if showConfirmation(declaration) =>
         clearAnswers()
-        Ok(view(declaration))
+        Ok(view(declaration, journeyType))
       case Some(declaration) =>
         clearAnswers()
         val message =

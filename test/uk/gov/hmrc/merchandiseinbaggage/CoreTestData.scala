@@ -31,7 +31,7 @@ import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
 
@@ -241,9 +241,10 @@ trait CoreTestData {
       case Export => GoodsEntries(completedExportGoods)
     }
 
-  def generateDeclarationConfirmationPage(
-    decType: DeclarationType,
-    purchaseAmount: Long)(implicit app: Application, message: Messages, appConfig: AppConfig): String = {
+  def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long, journeyType: JourneyType = New)(
+    implicit app: Application,
+    message: Messages,
+    appConfig: AppConfig): String = {
     val layout = app.injector.instanceOf[Layout]
     val link = app.injector.instanceOf[uk.gov.hmrc.merchandiseinbaggage.views.html.components.link]
     val dummyAmount = AmountInPence(0)
@@ -282,7 +283,7 @@ trait CoreTestData {
     }
 
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
-    val result = declarationConfirmationView.apply(persistedDeclaration.get)(fakeRequest, message, appConfig)
+    val result = declarationConfirmationView.apply(persistedDeclaration.get, journeyType)(fakeRequest, message, appConfig)
 
     result.body
   }
