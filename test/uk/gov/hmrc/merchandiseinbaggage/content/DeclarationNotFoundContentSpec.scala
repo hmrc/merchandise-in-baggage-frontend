@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+package uk.gov.hmrc.merchandiseinbaggage.content
 
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{DeclarationNotFoundPage, RetrieveDeclarationPage, StartImportPage}
 
 class DeclarationNotFoundContentSpec extends DeclarationNotFoundPage with CoreTestData {
 

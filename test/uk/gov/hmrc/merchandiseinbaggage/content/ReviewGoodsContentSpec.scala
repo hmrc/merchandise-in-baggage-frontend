@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+package uk.gov.hmrc.merchandiseinbaggage.content
 
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.Assertion
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage
 
 class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with PropertyBaseTables {
 

@@ -293,7 +293,7 @@ trait CoreTestData {
     case Export => completeAmendExportJourney
   }
 
-  def completedAmendment(declarationType: DeclarationType) = declarationType match {
+  def completedAmendment(declarationType: DeclarationType): Amendment = declarationType match {
     case Import => amendImportJourneyWithGoodsEntries.amendmentIfRequiredAndComplete.get
     case Export => completeAmendExportJourney.amendmentIfRequiredAndComplete.get
   }
@@ -302,6 +302,13 @@ trait CoreTestData {
     TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))
 
   val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
+
+  val declarationWithPaidAmendment: Declaration = {
+    val paidAmendment = completedAmendment(declaration.declarationType)
+      .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult))
+    declaration
+      .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult), amendments = Seq(paidAmendment))
+  }
 
   implicit class JourneyToDeclaration(declarationJourney: DeclarationJourney) {
     import declarationJourney._

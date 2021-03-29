@@ -16,7 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
+import org.scalatest.{Assertion, Suite}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmationPage._
+
 object DeclarationConfirmationPage {
   val path = "/declare-commercial-goods/declaration-confirmation"
   val title = "Declaration complete - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+}
+
+trait DeclarationConfirmationPage extends BaseUiSpec { this: Suite =>
+
+  def goToConfirmationPage: Assertion = {
+    goto(path)
+    pageTitle mustBe title
+  }
 }
