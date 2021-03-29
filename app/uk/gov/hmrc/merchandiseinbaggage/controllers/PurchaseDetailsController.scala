@@ -17,12 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.PurchaseDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
@@ -66,42 +66,32 @@ class PurchaseDetailsController @Inject()(
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async {
     implicit request: DeclarationGoodsRequest[AnyContent] =>
       withGoodsCategory(request.goodsEntry) { category =>
+        val requestWithIndexAndCallBack: PurchaseDetailsInput => Future[Result] = purchaseDetailsInput =>
+          navigator
+            .nextPageWithCallBack(
+              RequestWithIndexAndCallBack(
+                PurchaseDetailsController.onPageLoad(idx).url,
+                purchaseDetailsInput,
+                idx,
+                request.goodsEntry,
+                request.declarationJourney,
+                repo.upsert))
+            .map(Redirect)
+
         request.declarationJourney.declarationType match {
           case Import =>
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput =>
-                  navigator
-                    .nextPageWithCallBack(
-                      RequestWithIndexAndCallBack(
-                        PurchaseDetailsController.onPageLoad(idx).url,
-                        purchaseDetailsInput,
-                        idx,
-                        request.goodsEntry,
-                        request.declarationJourney,
-                        repo.upsert)
-                    )
-                    .map(Redirect)
+                purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
           case Export =>
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput =>
-                  navigator
-                    .nextPageWithCallBack(
-                      RequestWithIndexAndCallBack(
-                        PurchaseDetailsController.onPageLoad(idx).url,
-                        purchaseDetailsInput,
-                        idx,
-                        request.goodsEntry,
-                        request.declarationJourney,
-                        repo.upsert)
-                    )
-                    .map(Redirect)
+                purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
         }
       }
