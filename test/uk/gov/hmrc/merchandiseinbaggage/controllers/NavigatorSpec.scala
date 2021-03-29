@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
@@ -24,12 +25,12 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
+class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     forAll(journeyTypesTable) { newOrAmend: JourneyType =>
@@ -139,6 +140,24 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val result: Call = nextPage(RequestByPass(PreviousDeclarationDetailsController.onPageLoad().url))
 
         result mustBe ExciseAndRestrictedGoodsController.onPageLoad()
+      }
+
+      s"from ${PurchaseDetailsController.onPageLoad(1).url} navigates to ${ReviewGoodsController
+        .onPageLoad()} for $newOrAmend & $importOrExport updating goods entries" in new Navigator {
+        val detailsInput: PurchaseDetailsInput = PurchaseDetailsInput("123", "EUR")
+        val stubUpsert: DeclarationJourney => Future[DeclarationJourney] =
+          _ => Future.successful(completedDeclarationJourney) //TODO make it work with mockFunction
+
+        val result = nextPageWithCallBack(
+          RequestWithIndexAndCallBack(
+            PurchaseDetailsController.onPageLoad(1).url,
+            detailsInput,
+            1,
+            completedGoodsEntries(importOrExport).entries.head,
+            completedDeclarationJourney,
+            stubUpsert))
+
+        result.futureValue mustBe ReviewGoodsController.onPageLoad()
       }
 
       if (newOrAmend == New) {
