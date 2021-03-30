@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDeta
 
 object PreviousDeclarationDetailsPage extends Page {
   val path = "/declare-commercial-goods/previous-declaration-details"
-  val title = "Details of your existing declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+  val title = "Details of your existing declaration"
 
   override def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = ???
 }
@@ -31,6 +31,6 @@ trait PreviousDeclarationDetailsPage extends BaseUiSpec { this: Suite =>
 
   def goToPreviousDeclarationDetailsPage: Assertion = {
     goto(path)
-    pageTitle mustBe title
+    pageTitle must startWith(title)
   }
 }
