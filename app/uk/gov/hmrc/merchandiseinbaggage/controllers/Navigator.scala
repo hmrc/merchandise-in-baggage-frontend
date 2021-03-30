@@ -22,8 +22,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, YesNo}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -44,6 +45,15 @@ final case class RequestWithCallBack(
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
+final case class RequestWithIndexAndCallBack(
+  currentUrl: String,
+  purchaseDetailsInput: PurchaseDetailsInput,
+  index: Int,
+  goodsEntry: GoodsEntry,
+  journey: DeclarationJourney,
+  callBack: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
 class Navigator {
 
   def nextPage(request: NavigationRequests): Call = request match {
@@ -54,19 +64,22 @@ class Navigator {
     case RequestWithDeclarationType(url, declarationType, idx) => Navigator.nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
 
-  def nextPageWithCallBack(request: RequestWithCallBack)(implicit ec: ExecutionContext): Future[Call] = {
-    import request._
-    Navigator.reviewGoodsController(value, declarationJourney, overThresholdCheck, callBack)
+  def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] = request match {
+    case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
+    case r: RequestWithIndexAndCallBack =>
+      Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
   }
+
 }
 
 object Navigator {
 
   val nextPage: Map[String, Call] = Map(
-    AgentDetailsController.onPageLoad().url   -> EnterAgentAddressController.onPageLoad(),
-    EnterEmailController.onPageLoad().url     -> JourneyDetailsController.onPageLoad(),
-    EoriNumberController.onPageLoad().url     -> TravellerDetailsController.onPageLoad(),
-    JourneyDetailsController.onPageLoad().url -> GoodsInVehicleController.onPageLoad(),
+    AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
+    EnterEmailController.onPageLoad().url                 -> JourneyDetailsController.onPageLoad(),
+    EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
+    JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
+    PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
@@ -148,5 +161,29 @@ object Navigator {
     implicit ec: ExecutionContext): Future[Call] =
     upsert(declarationJourney.updateGoodsEntries()).map { _ =>
       GoodsTypeQuantityController.onPageLoad(declarationJourney.updateGoodsEntries().goodsEntries.entries.size)
+    }
+
+  def purchaseDetailsController(
+    purchaseDetailsInput: PurchaseDetailsInput,
+    idx: Int,
+    declarationJourney: DeclarationJourney,
+    goodsEntry: GoodsEntry,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    CurrencyService
+      .getCurrencyByCode(purchaseDetailsInput.currency)
+      .fold(Future(CannotAccessPageController.onPageLoad())) { currency =>
+        val updatedGoodsEntry: GoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency, goodsEntry)
+        val updatedDeclarationJourney =
+          declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
+
+        upsert(updatedDeclarationJourney).map { _ =>
+          ReviewGoodsController.onPageLoad()
+        }
+      }
+
+  def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =
+    goodsEntry match {
+      case entry: ImportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
+      case entry: ExportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
     }
 }

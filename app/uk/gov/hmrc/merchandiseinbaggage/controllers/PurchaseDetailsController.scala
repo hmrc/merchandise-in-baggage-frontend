@@ -19,14 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.PurchaseDetailsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, GoodsEntry, ImportGoodsEntry, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
-import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,6 +34,7 @@ class PurchaseDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   importView: PurchaseDetailsImportView,
   exportView: PurchaseDetailsExportView,
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -43,9 +43,9 @@ class PurchaseDetailsController @Inject()(
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
     request.goodsEntry match {
       case _: ImportGoodsEntry =>
-        checkYourAnswersOrReviewGoodsElse(routes.GoodsOriginController.onPageLoad(index), index)
+        checkYourAnswersOrReviewGoodsElse(GoodsOriginController.onPageLoad(index), index)
       case _: ExportGoodsEntry =>
-        checkYourAnswersOrReviewGoodsElse(routes.SearchGoodsCountryController.onPageLoad(index), index)
+        checkYourAnswersOrReviewGoodsElse(SearchGoodsCountryController.onPageLoad(index), index)
     }
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
@@ -66,42 +66,34 @@ class PurchaseDetailsController @Inject()(
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async {
     implicit request: DeclarationGoodsRequest[AnyContent] =>
       withGoodsCategory(request.goodsEntry) { category =>
+        val requestWithIndexAndCallBack: PurchaseDetailsInput => Future[Result] = purchaseDetailsInput =>
+          navigator
+            .nextPageWithCallBack(
+              RequestWithIndexAndCallBack(
+                PurchaseDetailsController.onPageLoad(idx).url,
+                purchaseDetailsInput,
+                idx,
+                request.goodsEntry,
+                request.declarationJourney,
+                repo.upsert))
+            .map(Redirect)
+
         request.declarationJourney.declarationType match {
           case Import =>
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput => handleSuccess(purchaseDetailsInput, idx)
+                purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
           case Export =>
             form
               .bindFromRequest()
               .fold(
                 formWithErrors => Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
-                purchaseDetailsInput => handleSuccess(purchaseDetailsInput, idx)
+                purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
         }
       }
   }
-
-  private def handleSuccess(purchaseDetailsInput: PurchaseDetailsInput, idx: Int)(
-    implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
-    CurrencyService
-      .getCurrencyByCode(purchaseDetailsInput.currency)
-      .fold(actionProvider.invalidRequestF(s"currency [${purchaseDetailsInput.currency}] not found")) { currency =>
-        val updatedGoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency)
-        val updatedDeclarationJourney =
-          request.declarationJourney.copy(goodsEntries = request.declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
-
-        repo.upsert(updatedDeclarationJourney).map { _ =>
-          Redirect(routes.ReviewGoodsController.onPageLoad())
-        }
-      }
-
-  private def updateGoodsEntry(amount: String, currency: Currency)(implicit request: DeclarationGoodsRequest[AnyContent]): GoodsEntry =
-    request.goodsEntry match {
-      case entry: ImportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
-      case entry: ExportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
-    }
 }
