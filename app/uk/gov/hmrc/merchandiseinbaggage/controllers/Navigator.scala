@@ -54,6 +54,14 @@ final case class RequestWithIndexAndCallBack(
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
+final case class RemoveGoodsControllerRequest(
+  currentUrl: String,
+  idx: Int,
+  declarationJourney: DeclarationJourney,
+  removeGoods: YesNo,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
 class Navigator {
 
   def nextPage(request: NavigationRequests): Call = request match {
@@ -68,6 +76,8 @@ class Navigator {
     case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
     case r: RequestWithIndexAndCallBack =>
       Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
+    case RemoveGoodsControllerRequest(_, idx, journey, value, upsert) =>
+      Navigator.removeGoodOrRedirect(idx, journey, value, upsert)
   }
 
 }
@@ -186,4 +196,29 @@ object Navigator {
       case entry: ImportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
       case entry: ExportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
     }
+
+  def removeGoodOrRedirect(
+    idx: Int,
+    declarationJourney: DeclarationJourney,
+    removeGoods: YesNo,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    removeGoods match {
+      case Yes =>
+        upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
+          .flatMap { _ =>
+            redirectIfGoodRemoved(declarationJourney)
+          }
+      case No =>
+        backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+    }
+
+  private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Call] =
+    if (declarationJourney.goodsEntries.entries.size == 1)
+      Future successful GoodsRemovedController.onPageLoad()
+    else backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+
+  private def backToCheckYourAnswersIfJourneyCompleted(declarationJourney: DeclarationJourney): Future[Call] =
+    if (declarationJourney.declarationRequiredAndComplete)
+      Future successful CheckYourAnswersController.onPageLoad()
+    else Future successful ReviewGoodsController.onPageLoad()
 }

@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
+import com.softwaremill.quicklens._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -235,6 +236,83 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ))
 
         result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
+      }
+
+      "on RemoveGoodsControllerRequest submit" should {
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${GoodsRemovedController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport Yes and entries are 1" in new Navigator {
+          val oneSizeEntries: GoodsEntries = GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods)
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = oneSizeEntries)
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              RemoveGoodsController.onPageLoad(1).url,
+              1,
+              journey,
+              Yes,
+              _ => Future.successful(journey)
+            ))
+
+          oneSizeEntries.entries.size mustBe 1
+          result.futureValue mustBe GoodsRemovedController.onPageLoad()
+        }
+
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${CheckYourAnswersController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport Yes and entries > 1" in new Navigator {
+          println(s"====> ${startedImportGoods.isComplete} ${startedExportGoods.isComplete}")
+
+          val twoSizeEntries: GoodsEntries =
+            GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
+              .modify(_.entries)
+              .using(e => e.+:(e.head))
+
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = twoSizeEntries)
+
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              RemoveGoodsController.onPageLoad(1).url,
+              1,
+              journey,
+              Yes,
+              _ => Future.successful(journey)
+            ))
+
+          twoSizeEntries.entries.size mustBe 2
+          newOrAmend match {
+            case New =>
+              journey.declarationRequiredAndComplete mustBe true
+              result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+            case Amend => result.futureValue mustBe ReviewGoodsController.onPageLoad()
+          }
+        }
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${CheckYourAnswersController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport No and completed" in new Navigator {
+          val twoSizeEntries: GoodsEntries =
+            GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
+              .modify(_.entries)
+              .using(e => e.+:(e.head))
+
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = twoSizeEntries)
+
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              RemoveGoodsController.onPageLoad(1).url,
+              1,
+              journey,
+              No,
+              _ => Future.successful(journey)
+            ))
+
+          twoSizeEntries.entries.size mustBe 2
+          newOrAmend match {
+            case New =>
+              journey.declarationRequiredAndComplete mustBe true
+              result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+            case Amend => result.futureValue mustBe ReviewGoodsController.onPageLoad()
+          }
+        }
       }
     }
   }
