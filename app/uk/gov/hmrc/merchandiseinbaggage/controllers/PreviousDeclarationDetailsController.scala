@@ -24,7 +24,6 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 
 import scala.concurrent.ExecutionContext
@@ -34,18 +33,15 @@ class PreviousDeclarationDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
-  previousDeclarationDetailsService: DeclarationService,
   mibConnector: MibConnector,
   navigator: Navigator,
   view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    previousDeclarationDetailsService.findDeclaration(request.declarationJourney.declarationId).map {
-      _.fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}")) {
-        case (goods, journeyDetails, declarationType, withinDate, totalPayment) =>
-          Ok(view(goods, journeyDetails, declarationType, withinDate, totalPayment))
-      }
+    mibConnector.findDeclaration(request.declarationJourney.declarationId).map {
+      _.fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}"))(
+        declaration => Ok(view(declaration)))
     }
   }
 

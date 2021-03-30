@@ -22,6 +22,8 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, NotRequired, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
@@ -62,14 +64,20 @@ class RetrieveDeclarationController @Inject()(
       .findBy(validData.mibReference, validData.eori)
       .fold(
         error => Future successful InternalServerError(error), {
-          case Some(declaration) =>
+          case Some(declaration) if isValid(declaration) =>
             repo.upsert(
               request.declarationJourney
                 .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
               Redirect(routes.PreviousDeclarationDetailsController.onPageLoad())
             }
-          case None => Future successful Redirect(routes.DeclarationNotFoundController.onPageLoad())
+          case _ => Future successful Redirect(routes.DeclarationNotFoundController.onPageLoad())
         }
       )
       .flatten
+
+  private def isValid(declaration: Declaration) =
+    declaration.declarationType match {
+      case Export => true
+      case Import => declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
+    }
 }

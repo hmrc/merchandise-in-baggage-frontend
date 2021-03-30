@@ -19,7 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.viewmodels
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 
-object DeclarationConfirmationView {
+import java.time.LocalDate
+
+object DeclarationView {
 
   def allGoods(declaration: Declaration): Seq[Goods] =
     declaration.declarationGoods.goods ++ validAmendments(declaration).flatMap(_.goods.goods)
@@ -47,4 +49,14 @@ object DeclarationConfirmationView {
       case Export => declaration.amendments
       case Import => declaration.amendments.filter(a => a.paymentStatus.contains(Paid) || a.paymentStatus.contains(NotRequired))
     }
+
+  def journeyDateWithInAllowedRange(declaration: Declaration): Boolean = {
+    val now = LocalDate.now()
+    val travelDate = declaration.journeyDetails.dateOfTravel
+    val startOfRange = travelDate.minusDays(5)
+    val endOfRange = travelDate.plusDays(30)
+
+    (now.isAfter(startOfRange) || now.isEqual(startOfRange)) &&
+    (now.isBefore(endOfRange) || now.isEqual(endOfRange))
+  }
 }
