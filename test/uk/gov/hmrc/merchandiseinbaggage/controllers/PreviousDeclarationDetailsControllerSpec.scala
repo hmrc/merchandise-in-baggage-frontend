@@ -37,7 +37,13 @@ class PreviousDeclarationDetailsControllerSpec
   val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
   val mibConnector = injector.instanceOf[MibConnector]
   val controller =
-    new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, declarationJourneyRepository, mibConnector, view)
+    new PreviousDeclarationDetailsController(
+      controllerComponents,
+      actionBuilder,
+      declarationJourneyRepository,
+      mibConnector,
+      mockNavigator,
+      view)
 
   "creating a page" should {
     "return 200 if declaration exists" in {
@@ -138,14 +144,6 @@ class PreviousDeclarationDetailsControllerSpec
   }
 
   "on submit update and redirect" in {
-    val controller =
-      new PreviousDeclarationDetailsController(
-        controllerComponents,
-        actionBuilder,
-        declarationJourneyRepository,
-        mibConnector,
-        mockNavigator,
-        view)
 
     val postRequest = buildPost(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
 
