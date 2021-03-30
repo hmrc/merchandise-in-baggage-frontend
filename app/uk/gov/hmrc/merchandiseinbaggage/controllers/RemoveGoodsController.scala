@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.RemoveGoodsController
 import uk.gov.hmrc.merchandiseinbaggage.forms.RemoveGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
@@ -56,7 +55,6 @@ class RemoveGoodsController @Inject()(
             navigator
               .nextPageWithCallBack(
                 RemoveGoodsControllerRequest(
-                  RemoveGoodsController.onPageLoad(idx).url,
                   idx,
                   request.declarationJourney,
                   removeGoods,

@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -26,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
-import com.softwaremill.quicklens._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -151,7 +151,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
         val result = nextPageWithCallBack(
           RequestWithIndexAndCallBack(
-            PurchaseDetailsController.onPageLoad(1).url,
             detailsInput,
             1,
             completedGoodsEntries(importOrExport).entries.head,
@@ -246,7 +245,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = oneSizeEntries)
           val result: Future[Call] = nextPageWithCallBack(
             RemoveGoodsControllerRequest(
-              RemoveGoodsController.onPageLoad(1).url,
               1,
               journey,
               Yes,
@@ -259,8 +257,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
         s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${CheckYourAnswersController.onPageLoad()} " +
           s"if over for $newOrAmend & $importOrExport Yes and entries > 1" in new Navigator {
-          println(s"====> ${startedImportGoods.isComplete} ${startedExportGoods.isComplete}")
-
           val twoSizeEntries: GoodsEntries =
             GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
               .modify(_.entries)
@@ -271,7 +267,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
           val result: Future[Call] = nextPageWithCallBack(
             RemoveGoodsControllerRequest(
-              RemoveGoodsController.onPageLoad(1).url,
               1,
               journey,
               Yes,
@@ -298,7 +293,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
           val result: Future[Call] = nextPageWithCallBack(
             RemoveGoodsControllerRequest(
-              RemoveGoodsController.onPageLoad(1).url,
               1,
               journey,
               No,
@@ -312,6 +306,31 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
               result.futureValue mustBe CheckYourAnswersController.onPageLoad()
             case Amend => result.futureValue mustBe ReviewGoodsController.onPageLoad()
           }
+        }
+      }
+
+      s"on $RetrieveDeclarationController submit" should {
+        s"navigate to $PreviousDeclarationDetailsController and update if found declaration for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              Some(journey.toDeclaration),
+              journey,
+              _ => Future.successful(journey)
+            ))
+
+          result.futureValue mustBe PreviousDeclarationDetailsController.onPageLoad()
+        }
+
+        s"navigate to $DeclarationNotFoundController if NOT found declaration for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              None,
+              journey,
+              _ => Future.successful(journey)
+            ))
+          result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
         }
       }
     }

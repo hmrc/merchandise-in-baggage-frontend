@@ -46,7 +46,6 @@ final case class RequestWithCallBack(
     extends NavigationRequestsAsync
 
 final case class RequestWithIndexAndCallBack(
-  currentUrl: String,
   purchaseDetailsInput: PurchaseDetailsInput,
   index: Int,
   goodsEntry: GoodsEntry,
@@ -55,10 +54,15 @@ final case class RequestWithIndexAndCallBack(
     extends NavigationRequestsAsync
 
 final case class RemoveGoodsControllerRequest(
-  currentUrl: String,
   idx: Int,
   declarationJourney: DeclarationJourney,
   removeGoods: YesNo,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class RetrieveDeclarationControllerRequest(
+  declaration: Option[Declaration],
+  declarationJourney: DeclarationJourney,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
@@ -72,14 +76,16 @@ class Navigator {
     case RequestWithDeclarationType(url, declarationType, idx) => Navigator.nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
 
-  def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] = request match {
-    case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
-    case r: RequestWithIndexAndCallBack =>
-      Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
-    case RemoveGoodsControllerRequest(_, idx, journey, value, upsert) =>
-      Navigator.removeGoodOrRedirect(idx, journey, value, upsert)
-  }
-
+  def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] =
+    request match {
+      case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
+      case r: RequestWithIndexAndCallBack =>
+        Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
+      case RemoveGoodsControllerRequest(idx, journey, value, upsert) =>
+        Navigator.removeGoodOrRedirect(idx, journey, value, upsert)
+      case RetrieveDeclarationControllerRequest(declaration, journey, upsert) =>
+        Navigator.retrieveDeclarationControllerSubmit(declaration, journey, upsert)
+    }
 }
 
 object Navigator {
@@ -221,4 +227,15 @@ object Navigator {
     if (declarationJourney.declarationRequiredAndComplete)
       Future successful CheckYourAnswersController.onPageLoad()
     else Future successful ReviewGoodsController.onPageLoad()
+
+  def retrieveDeclarationControllerSubmit(
+    maybeDeclaration: Option[Declaration],
+    declarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    maybeDeclaration.fold(Future successful DeclarationNotFoundController.onPageLoad())(
+      declaration =>
+        upsert(declarationJourney
+          .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
+          PreviousDeclarationDetailsController.onPageLoad()
+      })
 }
