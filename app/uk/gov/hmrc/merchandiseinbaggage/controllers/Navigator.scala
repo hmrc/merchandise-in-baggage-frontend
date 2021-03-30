@@ -228,14 +228,23 @@ object Navigator {
       Future successful CheckYourAnswersController.onPageLoad()
     else Future successful ReviewGoodsController.onPageLoad()
 
-  def retrieveDeclarationControllerSubmit(
+  private def retrieveDeclarationControllerSubmit(
     maybeDeclaration: Option[Declaration],
     declarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    maybeDeclaration.fold(Future successful DeclarationNotFoundController.onPageLoad())(
-      declaration =>
-        upsert(declarationJourney
-          .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
+    maybeDeclaration match {
+      case Some(declaration) if isValid(declaration) =>
+        upsert(
+          declarationJourney
+            .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
           PreviousDeclarationDetailsController.onPageLoad()
-      })
+        }
+      case _ => Future successful DeclarationNotFoundController.onPageLoad()
+    }
+
+  private def isValid(declaration: Declaration) =
+    declaration.declarationType match {
+      case Export => true
+      case Import => declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
+    }
 }

@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -311,10 +311,10 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"on $RetrieveDeclarationController submit" should {
         s"navigate to $PreviousDeclarationDetailsController and update if found declaration for $newOrAmend & $importOrExport" in new Navigator {
-          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result = nextPageWithCallBack(
             RetrieveDeclarationControllerRequest(
-              Some(journey.toDeclaration),
+              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(Some(Paid))),
               journey,
               _ => Future.successful(journey)
             ))
@@ -323,7 +323,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
 
         s"navigate to $DeclarationNotFoundController if NOT found declaration for $newOrAmend & $importOrExport" in new Navigator {
-          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result = nextPageWithCallBack(
             RetrieveDeclarationControllerRequest(
               None,
@@ -331,6 +331,17 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
               _ => Future.successful(journey)
             ))
           result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
+        }
+
+        s"navigate to $DeclarationNotFoundController if payment status is invalid for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(None)),
+              journey,
+              _ => Future.successful(journey)
+            ))
+          if(importOrExport == Import) result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
         }
       }
     }
