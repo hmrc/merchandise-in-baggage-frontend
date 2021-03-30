@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
@@ -31,11 +31,13 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
       submitPage(NeworExistingDeclarationPage, "Amend")
 
-      givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
+      val paidDeclaration = declaration.copy(paymentStatus = Some(Paid))
+
+      givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
       val sessionId = SessionId()
       val created = LocalDateTime.now
-      val id = declaration.declarationId
+      val id = paidDeclaration.declarationId
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = sessionId,

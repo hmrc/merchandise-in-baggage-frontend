@@ -19,12 +19,11 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.Layout
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.Goods
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetails
+@import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
+@import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
 
 @this(
         layout: Layout,
@@ -38,20 +37,20 @@
         summaryList: GovukSummaryList
 )
 
-@(goods: Seq[Goods], journeyDetails: JourneyDetails,  declarationType: DeclarationType, withinTimerange:Boolean, totalPayment:AmountInPence )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = None) {
     @h1(("previousDeclarationDetails.heading"))
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
 
-    @goodsItemList(goods)
+    @goodsItemList(allGoods(declaration))
 
-    @if( declarationType == Import) {
+    @if(declaration.declarationType == Import) {
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
                 <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</dt>
-                <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalPayment.formattedInPounds</dd>
+                <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue(declaration).formattedInPounds</dd>
             </div>
         </dl>
     }
@@ -60,18 +59,18 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt  class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.arrival")</dt>
-            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@messages(journeyDetails.port.displayName)</dd>
+            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.port.displayName)</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt  class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.date")</dt>
-            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@journeyDetails.dateOfTravel.formattedDate</dd>
+            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.dateOfTravel.formattedDate</dd>
         </div>
     </dl>
 
     @h2(("previousDeclarationDetails.add"), Some("govuk-heading-m"))
 
 
-    @if(withinTimerange) {
+    @if(journeyDateWithInAllowedRange(declaration)) {
         @p(Html(messages("previousDeclarationDetails.add_goods")))
         @formHelper(action = PreviousDeclarationDetailsController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
             @button("previousDeclarationDetails.add.button.text", name = Some("continue"))

@@ -24,7 +24,6 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.DeclarationService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -37,20 +36,11 @@ class PreviousDeclarationDetailsControllerSpec
   val mockNavigator: Navigator = mock[Navigator]
   val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
   val mibConnector = injector.instanceOf[MibConnector]
-  val previousDeclarationDetailsService = injector.instanceOf[DeclarationService]
+  val controller =
+    new PreviousDeclarationDetailsController(controllerComponents, actionBuilder, declarationJourneyRepository, mibConnector, view)
 
   "creating a page" should {
     "return 200 if declaration exists" in {
-      val controller =
-        new PreviousDeclarationDetailsController(
-          controllerComponents,
-          actionBuilder,
-          declarationJourneyRepository,
-          previousDeclarationDetailsService,
-          mibConnector,
-          mockNavigator,
-          view)
-
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = aSessionId,
@@ -74,16 +64,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 303 if declaration does NOT exist" in {
-      val controller =
-        new PreviousDeclarationDetailsController(
-          controllerComponents,
-          actionBuilder,
-          declarationJourneyRepository,
-          previousDeclarationDetailsService,
-          mibConnector,
-          mockNavigator,
-          view)
-
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = aSessionId,
@@ -104,16 +84,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 200 if import declaration with amendment exists " in {
-      val controller =
-        new PreviousDeclarationDetailsController(
-          controllerComponents,
-          actionBuilder,
-          declarationJourneyRepository,
-          previousDeclarationDetailsService,
-          mibConnector,
-          mockNavigator,
-          view)
-
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = aSessionId,
@@ -141,16 +111,6 @@ class PreviousDeclarationDetailsControllerSpec
     }
 
     "return 200 if export declaration with amendment exists " in {
-      val controller =
-        new PreviousDeclarationDetailsController(
-          controllerComponents,
-          actionBuilder,
-          declarationJourneyRepository,
-          previousDeclarationDetailsService,
-          mibConnector,
-          mockNavigator,
-          view)
-
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = aSessionId,
@@ -183,7 +143,6 @@ class PreviousDeclarationDetailsControllerSpec
         controllerComponents,
         actionBuilder,
         declarationJourneyRepository,
-        previousDeclarationDetailsService,
         mibConnector,
         mockNavigator,
         view)
