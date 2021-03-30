@@ -20,9 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.RemoveGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 
@@ -33,6 +30,7 @@ class RemoveGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: RemoveGoodsView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
@@ -53,30 +51,17 @@ class RemoveGoodsController @Inject()(
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
-          removeGoods => removeGoodOrRedirect(idx, request.declarationJourney, removeGoods)
+          removeGoods =>
+            navigator
+              .nextPageWithCallBack(
+                RemoveGoodsControllerRequest(
+                  idx,
+                  request.declarationJourney,
+                  removeGoods,
+                  repo.upsert
+                ))
+              .map(Redirect)
         )
     }
   }
-
-  def removeGoodOrRedirect(idx: Int, declarationJourney: DeclarationJourney, removeGoods: YesNo): Future[Result] =
-    removeGoods match {
-      case Yes =>
-        repo
-          .upsert(declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.remove(idx)))
-          .flatMap { _ =>
-            redirectIfGoodRemoved(declarationJourney)
-          }
-      case No =>
-        backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
-    }
-
-  private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Result] =
-    if (declarationJourney.goodsEntries.entries.size == 1)
-      Future successful Redirect(routes.GoodsRemovedController.onPageLoad())
-    else backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
-
-  private def backToCheckYourAnswersIfJourneyCompleted(declarationJourney: DeclarationJourney): Future[Result] =
-    if (declarationJourney.declarationRequiredAndComplete)
-      Future successful Redirect(routes.CheckYourAnswersController.onPageLoad())
-    else Future successful Redirect(routes.ReviewGoodsController.onPageLoad())
 }

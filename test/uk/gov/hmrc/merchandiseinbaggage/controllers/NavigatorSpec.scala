@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -24,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -150,7 +151,6 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
         val result = nextPageWithCallBack(
           RequestWithIndexAndCallBack(
-            PurchaseDetailsController.onPageLoad(1).url,
             detailsInput,
             1,
             completedGoodsEntries(importOrExport).entries.head,
@@ -235,6 +235,114 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ))
 
         result.futureValue mustBe GoodsOverThresholdController.onPageLoad()
+      }
+
+      "on RemoveGoodsControllerRequest submit" should {
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${GoodsRemovedController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport Yes and entries are 1" in new Navigator {
+          val oneSizeEntries: GoodsEntries = GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods)
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = oneSizeEntries)
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              1,
+              journey,
+              Yes,
+              _ => Future.successful(journey)
+            ))
+
+          oneSizeEntries.entries.size mustBe 1
+          result.futureValue mustBe GoodsRemovedController.onPageLoad()
+        }
+
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${CheckYourAnswersController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport Yes and entries > 1" in new Navigator {
+          val twoSizeEntries: GoodsEntries =
+            GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
+              .modify(_.entries)
+              .using(e => e.+:(e.head))
+
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = twoSizeEntries)
+
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              1,
+              journey,
+              Yes,
+              _ => Future.successful(journey)
+            ))
+
+          twoSizeEntries.entries.size mustBe 2
+          newOrAmend match {
+            case New =>
+              journey.declarationRequiredAndComplete mustBe true
+              result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+            case Amend => result.futureValue mustBe ReviewGoodsController.onPageLoad()
+          }
+        }
+        s"from ${RemoveGoodsController.onPageLoad(1).url} navigates to ${CheckYourAnswersController.onPageLoad()} " +
+          s"if over for $newOrAmend & $importOrExport No and completed" in new Navigator {
+          val twoSizeEntries: GoodsEntries =
+            GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
+              .modify(_.entries)
+              .using(e => e.+:(e.head))
+
+          val journey: DeclarationJourney =
+            completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend, goodsEntries = twoSizeEntries)
+
+          val result: Future[Call] = nextPageWithCallBack(
+            RemoveGoodsControllerRequest(
+              1,
+              journey,
+              No,
+              _ => Future.successful(journey)
+            ))
+
+          twoSizeEntries.entries.size mustBe 2
+          newOrAmend match {
+            case New =>
+              journey.declarationRequiredAndComplete mustBe true
+              result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+            case Amend => result.futureValue mustBe ReviewGoodsController.onPageLoad()
+          }
+        }
+      }
+
+      s"on $RetrieveDeclarationController submit" should {
+        s"navigate to $PreviousDeclarationDetailsController and update if found declaration for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(Some(Paid))),
+              journey,
+              _ => Future.successful(journey)
+            ))
+
+          result.futureValue mustBe PreviousDeclarationDetailsController.onPageLoad()
+        }
+
+        s"navigate to $DeclarationNotFoundController if NOT found declaration for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              None,
+              journey,
+              _ => Future.successful(journey)
+            ))
+          result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
+        }
+
+        s"navigate to $DeclarationNotFoundController if payment status is invalid for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(
+            RetrieveDeclarationControllerRequest(
+              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(None)),
+              journey,
+              _ => Future.successful(journey)
+            ))
+          if(importOrExport == Import) result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
+        }
       }
     }
   }

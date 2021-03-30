@@ -16,60 +16,37 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.mvc.Http.Status
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
+class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData with MockFactory {
 
   val repo = app.injector.instanceOf[DeclarationJourneyRepository]
   val view = app.injector.instanceOf[RemoveGoodsView]
-  val controller = new RemoveGoodsController(controllerComponents, actionBuilder, repo, view)
+  val mockNavigator = mock[Navigator]
+  val controller = new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
 
-  "on submit if answer No" should {
-    s"redirect back to ${routes.CheckYourAnswersController.onPageLoad().url} if journey was completed" in {
-      val result = controller.removeGoodOrRedirect(1, completedDeclarationJourney, No)
+  "delegate to navigator for navigation in" in {
+    givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
+    val postReq = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
+      .withFormUrlEncodedBody("value" -> "Yes")
+    val result: Future[Result] = controller.onSubmit(1)(postReq)
 
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
-    }
+    (mockNavigator
+      .nextPageWithCallBack(_: RemoveGoodsControllerRequest)(_: ExecutionContext))
+      .expects(*, *)
+      .returning(Future.successful(CheckYourAnswersController.onPageLoad()))
 
-    s"redirect back to ${routes.ReviewGoodsController.onPageLoad().url} if journey was NOT completed" in {
-      val result = controller.removeGoodOrRedirect(1, startedImportJourney, No)
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
-    }
-  }
-
-  "on submit if answer yes" should {
-    s"redirect to ${routes.GoodsRemovedController.onPageLoad()} if goods contains an entry" in {
-      val result = controller.removeGoodOrRedirect(1, importJourneyWithStartedGoodsEntry, Yes)
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.GoodsRemovedController.onPageLoad().url)
-    }
-
-    s"redirect to ${routes.ReviewGoodsController.onPageLoad()} if goods contains more entries" in {
-      val journey = importJourneyWithStartedGoodsEntry.copy(goodsEntries = GoodsEntries(Seq(startedImportGoods, startedImportGoods)))
-      val result = controller.removeGoodOrRedirect(1, journey, Yes)
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
-    }
-
-    s"redirect to ${routes.CheckYourAnswersController.onPageLoad()} if goods contains more entries and is completed" in {
-      val journey = completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedImportGoods, completedImportGoods)))
-      val result = controller.removeGoodOrRedirect(1, journey, Yes)
-
-      status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.CheckYourAnswersController.onPageLoad().url)
-    }
+    status(result) mustBe Status.SEE_OTHER
   }
 }
