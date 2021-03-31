@@ -31,7 +31,8 @@ trait DeclarationJourneyController extends FrontendBaseController {
   val onPageLoad: Action[AnyContent]
 
   def backToCheckYourAnswersIfCompleteElse(backIfIncomplete: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
-    if (request.declarationJourney.declarationRequiredAndComplete) routes.CheckYourAnswersController.onPageLoad()
+    if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete)
+      routes.CheckYourAnswersController.onPageLoad()
     else backIfIncomplete
 }
 

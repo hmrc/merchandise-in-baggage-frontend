@@ -17,7 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ExciseAndRestrictedGoodsPage._
 
 object ExciseAndRestrictedGoodsPage extends Page {
   val path = "/declare-commercial-goods/excise-and-restricted-goods"
@@ -27,5 +32,17 @@ object ExciseAndRestrictedGoodsPage extends Page {
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
+  }
+}
+
+trait ExciseAndRestrictedGoodsPage extends BaseUiSpec { this: Suite =>
+
+  def goToExciseAndRestrictedPage(declarationType: DeclarationType): Assertion = {
+    goto(path)
+    val titleStart = declarationType match {
+      case Import => importTitle
+      case Export => exportTitle
+    }
+    pageTitle must startWith(titleStart)
   }
 }
