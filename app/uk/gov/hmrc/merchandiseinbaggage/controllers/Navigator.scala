@@ -115,6 +115,7 @@ object NavigatorMapping {
     CustomsAgentController.onPageLoad().url     -> customsAgent,
     GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
     NewOrExistingController.onPageLoad().url    -> newOrExistingController,
+    VehicleSizeController.onPageLoad().url      -> vehicleSizeControllerSubmit
   )
 
   val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
@@ -144,6 +145,11 @@ object NavigatorMapping {
       .map { _ =>
         CheckYourAnswersController.onPageLoad()
       }
+
+  private def vehicleSizeControllerSubmit[T](isSmallVehicle: T): Call = isSmallVehicle match {
+    case Yes => VehicleRegistrationNumberController.onPageLoad()
+    case No  => CannotUseServiceController.onPageLoad()
+  }
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     value match {

@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.VehicleSizeForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleSizeView
 
@@ -30,12 +30,13 @@ class VehicleSizeController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: VehicleSizeView,
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.GoodsInVehicleController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(GoodsInVehicleController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(
@@ -55,8 +56,7 @@ class VehicleSizeController @Inject()(
         isSmallVehicle =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle)),
-            if (isSmallVehicle == Yes) routes.VehicleRegistrationNumberController.onPageLoad()
-            else routes.CannotUseServiceController.onPageLoad()
+            navigator.nextPage(RequestWithAnswer(VehicleSizeController.onPageLoad().url, isSmallVehicle))
         )
       )
   }

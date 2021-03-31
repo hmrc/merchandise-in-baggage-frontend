@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -111,6 +111,20 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             _ => Future.successful(completedDeclarationJourney)))
 
         result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+      }
+
+      s"from ${VehicleSizeController.onPageLoad().url} navigates to ${VehicleRegistrationNumberController
+        .onPageLoad()} for $newOrAmend & $importOrExport if Yes" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer[YesNo](VehicleSizeController.onPageLoad().url, Yes))
+
+        result mustBe VehicleRegistrationNumberController.onPageLoad()
+      }
+
+      s"from ${VehicleSizeController.onPageLoad().url} navigates to ${CannotUseServiceController
+        .onPageLoad()} for $newOrAmend & $importOrExport if No" in new Navigator {
+        val result: Call = nextPage(RequestWithAnswer[YesNo](VehicleSizeController.onPageLoad().url, No))
+
+        result mustBe CannotUseServiceController.onPageLoad()
       }
 
       s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${VehicleSizeController

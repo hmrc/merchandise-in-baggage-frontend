@@ -24,10 +24,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[VehicleSizeView]
+  private val view = injector.instanceOf[VehicleSizeView]
+  private val navigator = injector.instanceOf[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new VehicleSizeController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new VehicleSizeController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), navigator, view)
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
