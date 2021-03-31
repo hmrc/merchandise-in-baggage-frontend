@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.VehicleSizeForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleSizeView
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 import scala.concurrent.{ExecutionContext, Future}
 

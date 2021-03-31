@@ -26,6 +26,7 @@ import java.time.LocalDate
 import org.scalamock.scalatest.MockFactory
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 

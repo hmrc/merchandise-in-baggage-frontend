@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class EnterEmailController @Inject()(

@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TravellerDetailsPage
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

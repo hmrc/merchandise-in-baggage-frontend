@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
-
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import scala.concurrent.ExecutionContext
 
 @Singleton

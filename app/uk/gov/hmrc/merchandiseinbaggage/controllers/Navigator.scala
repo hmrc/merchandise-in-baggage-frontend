@@ -24,54 +24,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 
 import scala.concurrent.{ExecutionContext, Future}
-
-sealed trait NavigationRequests
-final case class RequestByPass(currentUrl: String) extends NavigationRequests
-final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-final case class RequestByPassWithIndexAndValue(value: YesNo, idx: Int) extends NavigationRequests
-final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
-final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
-final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
-
-sealed trait NavigationRequestsAsync
-final case class RequestWithCallBack(
-  currentUrl: String,
-  value: YesNo,
-  updatedGoodsEntries: GoodsEntries,
-  declarationJourney: DeclarationJourney,
-  overThresholdCheck: Boolean,
-  callBack: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RequestWithIndexAndCallBack(
-  purchaseDetailsInput: PurchaseDetailsInput,
-  index: Int,
-  goodsEntry: GoodsEntry,
-  journey: DeclarationJourney,
-  callBack: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RemoveGoodsControllerRequest(
-  idx: Int,
-  declarationJourney: DeclarationJourney,
-  removeGoods: YesNo,
-  upsert: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RetrieveDeclarationControllerRequest(
-  declaration: Option[Declaration],
-  declarationJourney: DeclarationJourney,
-  upsert: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class VehicleRegistrationNumberControllerRequest(
-  declarationJourney: DeclarationJourney,
-  regNumber: String,
-  upsert: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
 
 class Navigator {
   import NavigatorMapping._

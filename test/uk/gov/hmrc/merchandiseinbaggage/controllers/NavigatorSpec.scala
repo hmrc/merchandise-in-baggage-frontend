@@ -27,6 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

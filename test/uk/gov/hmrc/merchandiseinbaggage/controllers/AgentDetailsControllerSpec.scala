@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
