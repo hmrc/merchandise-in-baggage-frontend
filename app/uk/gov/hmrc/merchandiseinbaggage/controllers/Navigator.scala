@@ -31,6 +31,7 @@ import scala.concurrent.{ExecutionContext, Future}
 sealed trait NavigationRequests
 final case class RequestByPass(currentUrl: String) extends NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
+final case class RequestByPassWithIndexAndValue(value: YesNo, idx: Int) extends NavigationRequests
 final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
 final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
@@ -72,6 +73,7 @@ class Navigator {
   def nextPage(request: NavigationRequests): Call = request match {
     case RequestByPass(url)                                    => toNextPage(url)
     case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
+    case RequestByPassWithIndexAndValue(value, idx)            => valueWeightOfGoodsControllerSubmit(value, idx)
     case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
     case RequestWithIndex(url, value, journeyType, idx)        => nextPageWithIndex(url)(value, journeyType, idx)
     case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
@@ -120,6 +122,11 @@ object NavigatorMapping {
   def nextPageWithIndexAndDeclarationType(declarationType: DeclarationType, idx: Int): Map[String, Call] = Map(
     GoodsTypeQuantityController.onPageLoad(idx).url -> goodsTypeQuantityController(declarationType, idx),
   )
+
+  def valueWeightOfGoodsControllerSubmit(belowThreshold: YesNo, entriesSize: Int): Call = belowThreshold match {
+    case No  => CannotUseServiceController.onPageLoad()
+    case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
+  }
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     value match {
