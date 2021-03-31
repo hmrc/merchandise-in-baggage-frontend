@@ -67,35 +67,37 @@ final case class RetrieveDeclarationControllerRequest(
     extends NavigationRequestsAsync
 
 class Navigator {
+  import NavigatorMapping._
 
   def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPass(url)                                    => Navigator.nextPage(url)
-    case RequestByPassWithIndex(url, idx)                      => Navigator.nextPageWithIndex(idx)(url)
-    case RequestWithAnswer(url, value)                         => Navigator.nextPageWithAnswer(url)(value)
-    case RequestWithIndex(url, value, journeyType, idx)        => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
-    case RequestWithDeclarationType(url, declarationType, idx) => Navigator.nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
+    case RequestByPass(url)                                    => toNextPage(url)
+    case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
+    case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
+    case RequestWithIndex(url, value, journeyType, idx)        => nextPageWithIndex(url)(value, journeyType, idx)
+    case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
 
   def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] =
     request match {
-      case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
+      case r: RequestWithCallBack => reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
       case r: RequestWithIndexAndCallBack =>
-        Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
+        purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
       case RemoveGoodsControllerRequest(idx, journey, value, upsert) =>
-        Navigator.removeGoodOrRedirect(idx, journey, value, upsert)
+        removeGoodOrRedirect(idx, journey, value, upsert)
       case RetrieveDeclarationControllerRequest(declaration, journey, upsert) =>
-        Navigator.retrieveDeclarationControllerSubmit(declaration, journey, upsert)
+        retrieveDeclarationControllerSubmit(declaration, journey, upsert)
     }
 }
 
-object Navigator {
+object NavigatorMapping {
 
-  val nextPage: Map[String, Call] = Map(
+  val toNextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
     EnterEmailController.onPageLoad().url                 -> JourneyDetailsController.onPageLoad(),
     EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
     JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
     PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
+    TravellerDetailsController.onPageLoad().url           -> EnterEmailController.onPageLoad(),
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
@@ -154,7 +156,7 @@ object Navigator {
       case Amend => RetrieveDeclarationController.onPageLoad()
     }
 
-  private def reviewGoodsController(
+  def reviewGoodsController(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
     overThresholdCheck: Boolean,
@@ -229,7 +231,7 @@ object Navigator {
       Future successful CheckYourAnswersController.onPageLoad()
     else Future successful ReviewGoodsController.onPageLoad()
 
-  private def retrieveDeclarationControllerSubmit(
+  def retrieveDeclarationControllerSubmit(
     maybeDeclaration: Option[Declaration],
     declarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =

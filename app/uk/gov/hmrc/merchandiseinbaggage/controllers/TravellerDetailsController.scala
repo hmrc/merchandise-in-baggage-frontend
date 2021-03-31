@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TravellerDetailsPage
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,11 +31,12 @@ class TravellerDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.EoriNumberController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(EoriNumberController.onPageLoad())
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill), request.declarationType, backButtonUrl))
@@ -48,7 +50,8 @@ class TravellerDetailsController @Inject()(
         nameOfPersonCarryingTheGoods =>
           persistAndRedirect(
             request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods)),
-            routes.EnterEmailController.onPageLoad())
+            navigator.nextPage(RequestByPass(TravellerDetailsController.onPageLoad().url))
+        )
       )
   }
 }

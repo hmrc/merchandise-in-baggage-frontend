@@ -20,7 +20,6 @@ import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.mvc.Http.Status
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
