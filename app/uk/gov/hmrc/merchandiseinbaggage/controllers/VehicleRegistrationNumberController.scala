@@ -24,12 +24,14 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleRegistrationNumberView
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class VehicleRegistrationNumberController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: VehicleRegistrationNumberView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
@@ -48,15 +50,15 @@ class VehicleRegistrationNumberController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-        vehicleReg => {
-          repo
-            .upsert(
-              request.declarationJourney.copy(maybeRegistrationNumber = Some(vehicleReg))
-            )
-            .map { _ =>
-              Redirect(routes.CheckYourAnswersController.onPageLoad())
-            }
-        }
+        vehicleReg =>
+          navigator
+            .nextPageWithCallBack(
+              VehicleRegistrationNumberControllerRequest(
+                request.declarationJourney,
+                vehicleReg,
+                repo.upsert
+              ))
+            .map(Redirect)
       )
   }
 }

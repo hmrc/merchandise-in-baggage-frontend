@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 

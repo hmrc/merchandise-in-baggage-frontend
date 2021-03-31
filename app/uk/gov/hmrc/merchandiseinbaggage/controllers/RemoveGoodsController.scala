@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class RemoveGoodsController @Inject()(

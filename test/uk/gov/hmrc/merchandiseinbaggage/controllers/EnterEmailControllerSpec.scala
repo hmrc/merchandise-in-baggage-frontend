@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 

@@ -24,78 +24,46 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 
 import scala.concurrent.{ExecutionContext, Future}
 
-sealed trait NavigationRequests
-final case class RequestByPass(currentUrl: String) extends NavigationRequests
-final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
-final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
-final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
-
-sealed trait NavigationRequestsAsync
-final case class RequestWithCallBack(
-  currentUrl: String,
-  value: YesNo,
-  updatedGoodsEntries: GoodsEntries,
-  declarationJourney: DeclarationJourney,
-  overThresholdCheck: Boolean,
-  callBack: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RequestWithIndexAndCallBack(
-  purchaseDetailsInput: PurchaseDetailsInput,
-  index: Int,
-  goodsEntry: GoodsEntry,
-  journey: DeclarationJourney,
-  callBack: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RemoveGoodsControllerRequest(
-  idx: Int,
-  declarationJourney: DeclarationJourney,
-  removeGoods: YesNo,
-  upsert: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
-final case class RetrieveDeclarationControllerRequest(
-  declaration: Option[Declaration],
-  declarationJourney: DeclarationJourney,
-  upsert: DeclarationJourney => Future[DeclarationJourney])
-    extends NavigationRequestsAsync
-
 class Navigator {
+  import NavigatorMapping._
 
   def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPass(url)                                    => Navigator.nextPage(url)
-    case RequestByPassWithIndex(url, idx)                      => Navigator.nextPageWithIndex(idx)(url)
-    case RequestWithAnswer(url, value)                         => Navigator.nextPageWithAnswer(url)(value)
-    case RequestWithIndex(url, value, journeyType, idx)        => Navigator.nextPageWithIndex(url)(value, journeyType, idx)
-    case RequestWithDeclarationType(url, declarationType, idx) => Navigator.nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
+    case RequestByPass(url)                                    => toNextPage(url)
+    case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
+    case RequestByPassWithIndexAndValue(value, idx)            => valueWeightOfGoodsControllerSubmit(value, idx)
+    case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
+    case RequestWithIndex(url, value, journeyType, idx)        => nextPageWithIndex(url)(value, journeyType, idx)
+    case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
 
   def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] =
     request match {
-      case r: RequestWithCallBack => Navigator.reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
+      case r: RequestWithCallBack => reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
       case r: RequestWithIndexAndCallBack =>
-        Navigator.purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
+        purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
       case RemoveGoodsControllerRequest(idx, journey, value, upsert) =>
-        Navigator.removeGoodOrRedirect(idx, journey, value, upsert)
+        removeGoodOrRedirect(idx, journey, value, upsert)
       case RetrieveDeclarationControllerRequest(declaration, journey, upsert) =>
-        Navigator.retrieveDeclarationControllerSubmit(declaration, journey, upsert)
+        retrieveDeclarationControllerSubmit(declaration, journey, upsert)
+      case VehicleRegistrationNumberControllerRequest(journey, regNumber, upsert) =>
+        vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
     }
 }
 
-object Navigator {
+object NavigatorMapping {
 
-  val nextPage: Map[String, Call] = Map(
+  val toNextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
     EnterEmailController.onPageLoad().url                 -> JourneyDetailsController.onPageLoad(),
     EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
     JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
     PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
+    TravellerDetailsController.onPageLoad().url           -> EnterEmailController.onPageLoad(),
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
@@ -103,6 +71,7 @@ object Navigator {
     CustomsAgentController.onPageLoad().url     -> customsAgent,
     GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
     NewOrExistingController.onPageLoad().url    -> newOrExistingController,
+    VehicleSizeController.onPageLoad().url      -> vehicleSizeControllerSubmit
   )
 
   val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
@@ -110,13 +79,33 @@ object Navigator {
   )
 
   def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
-    GoodsOriginController.onPageLoad(idx).url  -> PurchaseDetailsController.onPageLoad(idx),
-    GoodsVatRateController.onPageLoad(idx).url -> SearchGoodsCountryController.onPageLoad(idx),
+    GoodsOriginController.onPageLoad(idx).url        -> PurchaseDetailsController.onPageLoad(idx),
+    GoodsVatRateController.onPageLoad(idx).url       -> SearchGoodsCountryController.onPageLoad(idx),
+    SearchGoodsCountryController.onPageLoad(idx).url -> PurchaseDetailsController.onPageLoad(idx)
   )
 
   def nextPageWithIndexAndDeclarationType(declarationType: DeclarationType, idx: Int): Map[String, Call] = Map(
     GoodsTypeQuantityController.onPageLoad(idx).url -> goodsTypeQuantityController(declarationType, idx),
   )
+
+  def valueWeightOfGoodsControllerSubmit(belowThreshold: YesNo, entriesSize: Int): Call = belowThreshold match {
+    case No  => CannotUseServiceController.onPageLoad()
+    case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
+  }
+
+  def vehicleRegistrationNumberControllerSubmit(
+    journey: DeclarationJourney,
+    vehicleReg: String,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    upsert(journey.copy(maybeRegistrationNumber = Some(vehicleReg)))
+      .map { _ =>
+        CheckYourAnswersController.onPageLoad()
+      }
+
+  private def vehicleSizeControllerSubmit[T](isSmallVehicle: T): Call = isSmallVehicle match {
+    case Yes => VehicleRegistrationNumberController.onPageLoad()
+    case No  => CannotUseServiceController.onPageLoad()
+  }
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     value match {
@@ -153,7 +142,7 @@ object Navigator {
       case Amend => RetrieveDeclarationController.onPageLoad()
     }
 
-  private def reviewGoodsController(
+  def reviewGoodsController(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
     overThresholdCheck: Boolean,
@@ -228,7 +217,7 @@ object Navigator {
       Future successful CheckYourAnswersController.onPageLoad()
     else Future successful ReviewGoodsController.onPageLoad()
 
-  private def retrieveDeclarationControllerSubmit(
+  def retrieveDeclarationControllerSubmit(
     maybeDeclaration: Option[Declaration],
     declarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =

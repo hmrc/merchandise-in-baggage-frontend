@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 

@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 

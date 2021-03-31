@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 

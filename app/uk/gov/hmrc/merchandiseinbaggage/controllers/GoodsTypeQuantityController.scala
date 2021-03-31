@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class GoodsTypeQuantityController @Inject()(

@@ -26,11 +26,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[TravellerDetailsPage]
+  private val view = injector.instanceOf[TravellerDetailsPage]
+  private val navigator = injector.instanceOf[Navigator]
 
   val controller: DeclarationJourney => TravellerDetailsController =
     declarationJourney =>
-      new TravellerDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+      new TravellerDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), navigator, view)
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(maybeIsACustomsAgent = Some(YesNo.No))
   "onPageLoad" should {

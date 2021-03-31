@@ -21,17 +21,18 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDestinationUnansweredMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class ValueWeightOfGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: ValueWeightOfGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
@@ -63,8 +64,7 @@ class ValueWeightOfGoodsController @Inject()(
             belowThreshold => {
               persistAndRedirect(
                 declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold)),
-                if (belowThreshold == No) routes.CannotUseServiceController.onPageLoad()
-                else routes.GoodsTypeQuantityController.onPageLoad(declarationJourney.goodsEntries.entries.size)
+                navigator.nextPage(RequestByPassWithIndexAndValue(belowThreshold, declarationJourney.goodsEntries.entries.size))
               )
             }
           )

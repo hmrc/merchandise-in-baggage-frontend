@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggage.navigation.RequestWithCallBack
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView

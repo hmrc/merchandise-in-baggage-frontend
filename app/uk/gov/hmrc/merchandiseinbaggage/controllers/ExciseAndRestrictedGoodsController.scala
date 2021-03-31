@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class ExciseAndRestrictedGoodsController @Inject()(

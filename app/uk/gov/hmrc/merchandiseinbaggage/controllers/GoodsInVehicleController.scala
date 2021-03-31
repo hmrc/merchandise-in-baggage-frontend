@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepositor
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsInVehicleView
 
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsInVehicleController @Inject()(
   override val controllerComponents: MessagesControllerComponents,

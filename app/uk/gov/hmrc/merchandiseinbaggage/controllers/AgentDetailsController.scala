@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.AgentDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.navigation.RequestByPass
 
 import scala.concurrent.{ExecutionContext, Future}
 

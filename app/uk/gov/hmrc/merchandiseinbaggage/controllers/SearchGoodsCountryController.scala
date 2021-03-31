@@ -23,6 +23,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGood
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,17 +34,18 @@ class SearchGoodsCountryController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
+  navigator: Navigator,
   view: SearchGoodsCountryView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(routes.GoodsTypeQuantityController.onPageLoad(index), index)
+    checkYourAnswersOrReviewGoodsElse(GoodsTypeQuantityController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       request.goodsEntry match {
-        case _: ImportGoodsEntry => Future successful Redirect(routes.GoodsOriginController.onPageLoad(idx))
+        case _: ImportGoodsEntry => Future successful Redirect(GoodsOriginController.onPageLoad(idx))
         case entry: ExportGoodsEntry =>
           val preparedForm = entry.maybeDestination
             .fold(form)(c => form.fill(c.code))
@@ -63,9 +66,11 @@ class SearchGoodsCountryController @Inject()(
               .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
                 persistAndRedirect(
+                  //TODO remove casting
                   request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
                   idx,
-                  routes.PurchaseDetailsController.onPageLoad(idx))
+                  navigator.nextPage(RequestByPassWithIndex(SearchGoodsCountryController.onPageLoad(idx).url, idx))
+                )
             }
         )
     }

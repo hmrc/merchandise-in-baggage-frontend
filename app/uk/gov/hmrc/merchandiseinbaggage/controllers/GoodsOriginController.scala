@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class GoodsOriginController @Inject()(
