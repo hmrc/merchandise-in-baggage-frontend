@@ -26,18 +26,23 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[SearchGoodsCountryView]
+  private val view = injector.instanceOf[SearchGoodsCountryView]
+  private val navigator = injector.instanceOf[Navigator]
 
   val controller: DeclarationJourney => SearchGoodsCountryController =
     declarationJourney =>
-      new SearchGoodsCountryController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+      new SearchGoodsCountryController(
+        controllerComponents,
+        stubProvider(declarationJourney),
+        stubRepo(declarationJourney),
+        navigator,
+        view)
 
   val journey: DeclarationJourney =
     DeclarationJourney(SessionId("123"), Export, goodsEntries = GoodsEntries(Seq(completedExportGoods.copy(maybePurchaseDetails = None))))
 
   "onPageLoad" should {
     s"return 200 with correct content Export" in {
-
       val request = buildGet(routes.SearchGoodsCountryController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result = contentAsString(eventualResult)
