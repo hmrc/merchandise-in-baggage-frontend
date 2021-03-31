@@ -341,7 +341,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
               journey,
               _ => Future.successful(journey)
             ))
-          if(importOrExport == Import) result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
+          if (importOrExport == Import) result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
         }
       }
     }
