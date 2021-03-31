@@ -67,6 +67,12 @@ final case class RetrieveDeclarationControllerRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
+final case class VehicleRegistrationNumberControllerRequest(
+  declarationJourney: DeclarationJourney,
+  regNumber: String,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
 class Navigator {
   import NavigatorMapping._
 
@@ -88,6 +94,8 @@ class Navigator {
         removeGoodOrRedirect(idx, journey, value, upsert)
       case RetrieveDeclarationControllerRequest(declaration, journey, upsert) =>
         retrieveDeclarationControllerSubmit(declaration, journey, upsert)
+      case VehicleRegistrationNumberControllerRequest(journey, regNumber, upsert) =>
+        vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
     }
 }
 
@@ -127,6 +135,15 @@ object NavigatorMapping {
     case No  => CannotUseServiceController.onPageLoad()
     case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
   }
+
+  def vehicleRegistrationNumberControllerSubmit(
+    journey: DeclarationJourney,
+    vehicleReg: String,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    upsert(journey.copy(maybeRegistrationNumber = Some(vehicleReg)))
+      .map { _ =>
+        CheckYourAnswersController.onPageLoad()
+      }
 
   private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
     value match {

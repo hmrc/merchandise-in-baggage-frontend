@@ -16,18 +16,25 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleRegistrationNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec {
+class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  val view = app.injector.instanceOf[VehicleRegistrationNumberView]
+  val view = injector.instanceOf[VehicleRegistrationNumberView]
+  val navigator = injector.instanceOf[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new VehicleRegistrationNumberController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view)
+    new VehicleRegistrationNumberController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      navigator,
+      view)
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
