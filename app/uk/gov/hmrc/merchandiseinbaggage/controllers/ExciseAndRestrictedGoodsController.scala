@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ExciseAndRestrictedGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
@@ -35,8 +36,15 @@ class ExciseAndRestrictedGoodsController @Inject()(
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
-    backToCheckYourAnswersIfCompleteElse(GoodsDestinationController.onPageLoad())
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
+    val backIfIncomplete =
+      request.declarationJourney.journeyType match {
+        case New   => GoodsDestinationController.onPageLoad()
+        case Amend => PreviousDeclarationDetailsController.onPageLoad()
+      }
+
+    backToCheckYourAnswersIfCompleteElse(backIfIncomplete)
+  }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(

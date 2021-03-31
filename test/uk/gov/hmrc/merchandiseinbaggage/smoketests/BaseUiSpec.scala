@@ -68,13 +68,16 @@ class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlU
     }
 
   //TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
-  def givenAJourneyWithSession(journeyType: JourneyType = New, declarationType: DeclarationType = Import): DeclarationJourney = {
+  def givenAJourneyWithSession(
+    journeyType: JourneyType = New,
+    declarationType: DeclarationType = Import,
+    declarationJourney: DeclarationJourney = completedDeclarationJourney): DeclarationJourney = {
     goto(StartImportPage.path)
 
     (for {
       persisted <- declarationJourneyRepository.findAll()
       updated <- declarationJourneyRepository.upsert(
-                  completedDeclarationJourney
+                  declarationJourney
                     .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType))
     } yield updated).futureValue
   }
