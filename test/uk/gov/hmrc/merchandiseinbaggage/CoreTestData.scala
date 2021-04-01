@@ -49,6 +49,8 @@ trait CoreTestData {
 
   val declarationTypes = List(Import, Export)
 
+  val journeyTypes = List(New, Amend)
+
   val aSessionId: SessionId = SessionId()
 
   val mibReference = MibReference("XAMB0000010000")

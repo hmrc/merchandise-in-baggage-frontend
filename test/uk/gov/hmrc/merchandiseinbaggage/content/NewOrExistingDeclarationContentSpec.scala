@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.content
 
-import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Eori, MibReference}
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.NewOrExistingDeclarationPage
 
-case class RetrieveDeclaration(mibReference: MibReference, eori: Eori)
+class NewOrExistingDeclarationContentSpec extends NewOrExistingDeclarationPage with CoreTestData {
 
-object RetrieveDeclaration {
-  implicit val format: Format[RetrieveDeclaration] = Json.format[RetrieveDeclaration]
+  "page should pre-populate the already stored inputs" in {
+    journeyTypes.foreach { journeyType =>
+      givenAJourneyWithSession(journeyType)
+      goToNewOrExistingPage()
+
+      findById(journeyType.toString).isSelected mustBe true
+    }
+
+  }
+
 }

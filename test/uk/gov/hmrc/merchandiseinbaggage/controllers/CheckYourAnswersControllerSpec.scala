@@ -77,8 +77,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       stubRepo(declarationJourney)
     )
 
-  val journeyTypes = List(New, Amend)
-
   "onPageLoad" should {
     journeyTypes.foreach { journeyType =>
       s"redirect to /cannot-access-service for in-completed journies for $journeyType" in {

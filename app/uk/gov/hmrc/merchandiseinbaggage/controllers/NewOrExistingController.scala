@@ -43,7 +43,7 @@ class NewOrExistingController @Inject()(
     if (amendFlagConf.canBeAmended)
       Ok(
         view(
-          form,
+          form.fill(request.declarationJourney.journeyType),
           request.declarationJourney.declarationType
         ))
     else Redirect(GoodsDestinationController.onPageLoad())
@@ -54,18 +54,12 @@ class NewOrExistingController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
-        amendSession(_)
+        journeyType =>
+          repo.upsert(request.declarationJourney.copy(journeyType = journeyType)).map { _ =>
+            redirect(journeyType)
+        }
       )
   }
-
-  private def amendSession(journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[_]): Future[Result] =
-    journeyType match {
-      case New => Future successful redirect(journeyType)
-      case Amend =>
-        repo.upsert(request.declarationJourney.copy(journeyType = Amend)).map { _ =>
-          redirect(journeyType)
-        }
-    }
 
   private def redirect(journeyType: JourneyType)(implicit req: DeclarationJourneyRequest[_]): Result =
     Redirect(navigator.nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, journeyType)))

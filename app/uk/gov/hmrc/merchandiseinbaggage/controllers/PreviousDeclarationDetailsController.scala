@@ -55,7 +55,9 @@ class PreviousDeclarationDetailsController @Inject()(
                 .copy(
                   declarationId = originalDeclaration.declarationId,
                   journeyType = Amend,
-                  maybeGoodsDestination = Some(originalDeclaration.goodsDestination))
+                  maybeGoodsDestination = Some(originalDeclaration.goodsDestination),
+                  maybeRetrieveDeclaration = request.declarationJourney.maybeRetrieveDeclaration
+                )
 
             repo.upsert(updatedDeclaration).map { _ =>
               Redirect(navigator.nextPage(RequestByPass(PreviousDeclarationDetailsController.onPageLoad().url)))
