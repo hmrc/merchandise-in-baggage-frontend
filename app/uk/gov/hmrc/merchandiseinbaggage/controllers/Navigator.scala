@@ -58,6 +58,7 @@ class Navigator {
       case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete) => exciseAndRestrictedGoods(value, journey, upsert, complete)
       case GoodsDestinationRequest(value, journey, upsert, complete)         => goodsDestination(value, journey, upsert, complete)
       case GoodsInVehicleRequest(value, journey, upsert, complete)           => goodsInVehicleController(value, journey, upsert, complete)
+      case JourneyDetailsRequest(journey, upsert, complete)                  => journeyDetails(journey, upsert, complete)
     }
 }
 
@@ -65,7 +66,6 @@ object NavigatorMapping {
 
   val toNextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
-    JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
     PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
     TravellerDetailsController.onPageLoad().url           -> EnterEmailController.onPageLoad(),
   )
@@ -163,6 +163,12 @@ object NavigatorMapping {
     }
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
+
+  def journeyDetails(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, GoodsInVehicleController.onPageLoad(), upsert)
 
   private def persistAndRedirect(
     updatedDeclarationJourney: DeclarationJourney,

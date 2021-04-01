@@ -193,9 +193,10 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${JourneyDetailsController.onPageLoad().url} navigates to ${GoodsInVehicleController
         .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestByPass(JourneyDetailsController.onPageLoad().url))
+        val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+        val result = nextPageWithCallBack(JourneyDetailsRequest(journey, _ => Future(journey), false))
 
-        result mustBe GoodsInVehicleController.onPageLoad()
+        result.futureValue mustBe GoodsInVehicleController.onPageLoad()
       }
 
       s"from ${PreviousDeclarationDetailsController.onPageLoad().url} navigates to ${ExciseAndRestrictedGoodsController
