@@ -17,9 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.NewOrExistingDeclarationPage.{path, title}
 
-object NeworExistingDeclarationPage extends Page {
+object NewOrExistingDeclarationPage extends Page {
   val path = "/declare-commercial-goods/new-or-existing"
   val title = "What do you want to do?"
 
@@ -27,4 +30,13 @@ object NeworExistingDeclarationPage extends Page {
     click.on(IdQuery(formData.toString))
     click.on(NameQuery("continue"))
   }
+}
+
+trait NewOrExistingDeclarationPage extends BaseUiSpec { this: Suite =>
+
+  def goToNewOrExistingPage(): Assertion = {
+    goto(path)
+    pageTitle must startWith(title)
+  }
+
 }

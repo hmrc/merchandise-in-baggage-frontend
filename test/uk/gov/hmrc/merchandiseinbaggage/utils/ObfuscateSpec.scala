@@ -71,6 +71,7 @@ class ObfuscateSpec extends BaseSpec with CoreTestData {
         maybeTravellingByVehicle,
         maybeTravellingBySmallVehicle,
         Some("******"),
+        None,
         declarationId
       )
   }
