@@ -17,11 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.NewOrExistingForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
@@ -53,14 +52,13 @@ class NewOrExistingController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
-        journeyType =>
-          repo.upsert(request.declarationJourney.copy(journeyType = journeyType)).map { _ =>
-            redirect(journeyType)
+        journeyType => {
+          val updated = request.declarationJourney.copy(journeyType = journeyType)
+          navigator
+            .nextPageWithCallBack(NewOrExistingRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .map(Redirect)
+            .map(_.addingToSession("journeyType" -> s"${journeyType.toString.toLowerCase}"))
         }
       )
   }
-
-  private def redirect(journeyType: JourneyType)(implicit req: DeclarationJourneyRequest[_]): Result =
-    Redirect(navigator.nextPage(RequestWithAnswer(NewOrExistingController.onPageLoad().url, journeyType)))
-      .addingToSession("journeyType" -> s"${journeyType.toString.toLowerCase}")
 }

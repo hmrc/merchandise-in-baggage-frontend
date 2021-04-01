@@ -54,11 +54,18 @@ class VehicleSizeController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
-        isSmallVehicle =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle)),
-            navigator.nextPage(RequestWithAnswer(VehicleSizeController.onPageLoad().url, isSmallVehicle))
-        )
+        isSmallVehicle => {
+          val updated = request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle))
+          navigator
+            .nextPageWithCallBack(
+              VehicleSizeRequest(
+                isSmallVehicle,
+                updated,
+                repo.upsert,
+                updated.declarationRequiredAndComplete
+              ))
+            .map(Redirect)
+        }
       )
   }
 }

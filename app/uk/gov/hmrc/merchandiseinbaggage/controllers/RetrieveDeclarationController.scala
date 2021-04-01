@@ -69,7 +69,7 @@ class RetrieveDeclarationController @Inject()(
         error => Future successful InternalServerError(error), { maybeDeclaration =>
           navigator
             .nextPageWithCallBack(
-              RetrieveDeclarationControllerRequest(
+              RetrieveDeclarationRequest(
                 maybeDeclaration,
                 request.declarationJourney.copy(maybeRetrieveDeclaration = Some(retrieveDeclaration)),
                 repo.upsert))

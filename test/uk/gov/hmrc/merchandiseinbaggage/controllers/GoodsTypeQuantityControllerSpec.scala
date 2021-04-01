@@ -22,10 +22,10 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -66,8 +66,8 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
           else SearchGoodsCountryController.onPageLoad(1)
 
         (mockNavigator
-          .nextPage(_: RequestWithDeclarationType))
-          .expects(RequestWithDeclarationType(GoodsTypeQuantityController.onPageLoad(1).url, importOrExport, 1))
+          .nextPage(_: GoodsTypeQuantityRequest))
+          .expects(GoodsTypeQuantityRequest(importOrExport, 1))
           .returning(page)
           .once()
 
