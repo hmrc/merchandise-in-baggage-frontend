@@ -27,12 +27,14 @@
         hint: Option[String] = None,
         classes: Option[String] = None,
         stripWhitespace: Boolean = false,
+        attributes: Map[String, String] = Map.empty,
         labelClasses: Option[String] = None
 )(implicit messages: Messages)
 
 @govukInput(Input(
     id,
     name,
+    attributes = attributes,
     classes = classes.fold("")(x => x),
     label = Label(
         content = Text(messages(label, headingMessageArgs:_*)),
