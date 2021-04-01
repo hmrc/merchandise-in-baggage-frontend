@@ -111,3 +111,9 @@ final case class JourneyDetailsRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)
     extends NavigationRequestsAsync
+
+final case class TravellerDetailsRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
