@@ -52,6 +52,8 @@ class Navigator {
         retrieveDeclarationControllerSubmit(declaration, journey, upsert)
       case VehicleRegistrationNumberControllerRequest(journey, regNumber, upsert) =>
         vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
+
+      case CustomsAgentRequest(asw, journey, upsert, complete) => customsAgentAsync(asw, journey, upsert, complete)
     }
 }
 
@@ -117,6 +119,21 @@ object NavigatorMapping {
     case Yes => AgentDetailsController.onPageLoad()
     case No  => EoriNumberController.onPageLoad()
   }
+
+  def customsAgentAsync(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    upsert(updatedDeclarationJourney).map { _ =>
+      if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad()
+      else {
+        value match {
+          case Yes => AgentDetailsController.onPageLoad()
+          case No  => EoriNumberController.onPageLoad()
+        }
+      }
+    }
 
   private def goodsDestination[T](value: T) =
     value match {

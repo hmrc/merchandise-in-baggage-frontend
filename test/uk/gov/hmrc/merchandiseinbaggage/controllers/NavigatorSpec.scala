@@ -395,6 +395,23 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           if (importOrExport == Import) result.futureValue mustBe DeclarationNotFoundController.onPageLoad()
         }
       }
+
+      s"on $CustomsAgentController submit" should {
+        s"navigate to ${AgentDetailsController.onPageLoad()} if Yes for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney
+            .copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val eventualCall: Future[Call] = nextPageWithCallBack(CustomsAgentRequest(Yes, journey, _ => Future.successful(journey), false))
+
+          eventualCall.futureValue mustBe AgentDetailsController.onPageLoad()
+        }
+
+        s"navigate to ${EoriNumberController.onPageLoad()} if No for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val eventualCall: Future[Call] = nextPageWithCallBack(CustomsAgentRequest(No, journey, _ => Future.successful(journey), false))
+
+          eventualCall.futureValue mustBe EoriNumberController.onPageLoad()
+        }
+      }
     }
   }
 

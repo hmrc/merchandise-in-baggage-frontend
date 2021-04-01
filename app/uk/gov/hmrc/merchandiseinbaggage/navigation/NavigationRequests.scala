@@ -65,3 +65,11 @@ final case class VehicleRegistrationNumberControllerRequest(
   regNumber: String,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
+
+//New Request to depracate all of above
+final case class CustomsAgentRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync

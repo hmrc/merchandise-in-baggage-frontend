@@ -19,15 +19,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CustomsAgentForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class CustomsAgentController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
@@ -54,12 +52,14 @@ class CustomsAgentController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationType, backButtonUrl)),
-        isCustomsAgent =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent)),
-            navigator
-              .nextPage(RequestWithAnswer[YesNo](CustomsAgentController.onPageLoad().url, isCustomsAgent))
-        )
+        isCustomsAgent => {
+          val updatedJourney = request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent))
+          navigator
+            .nextPageWithCallBack(
+              CustomsAgentRequest(isCustomsAgent, updatedJourney, repo.upsert, updatedJourney.declarationRequiredAndComplete)
+            )
+            .map(Redirect)
+        }
       )
   }
 }
