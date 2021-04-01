@@ -73,3 +73,9 @@ final case class CustomsAgentRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)
     extends NavigationRequestsAsync
+
+final case class EnterEmailRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync

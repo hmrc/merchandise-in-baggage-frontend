@@ -20,12 +20,11 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm.form
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class EnterEmailController @Inject()(
@@ -51,10 +50,10 @@ class EnterEmailController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-        email =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeEmailAddress = Some(email)),
-            navigator.nextPage(RequestByPass(EnterEmailController.onPageLoad().url)))
+        email => {
+          val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
+          navigator.nextPageWithCallBack(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+        }.map(Redirect)
       )
   }
 }

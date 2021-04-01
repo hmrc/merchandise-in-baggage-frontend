@@ -54,6 +54,7 @@ class Navigator {
         vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
 
       case CustomsAgentRequest(asw, journey, upsert, complete) => customsAgentAsync(asw, journey, upsert, complete)
+      case EnterEmailRequest(journey, upsert, complete)        => enterEmailAsync(journey, upsert, complete)
     }
 }
 
@@ -61,7 +62,6 @@ object NavigatorMapping {
 
   val toNextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
-    EnterEmailController.onPageLoad().url                 -> JourneyDetailsController.onPageLoad(),
     EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
     JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
     PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
@@ -124,15 +124,28 @@ object NavigatorMapping {
     value: YesNo,
     updatedDeclarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case Yes => AgentDetailsController.onPageLoad()
+      case No  => EoriNumberController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  def enterEmailAsync(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
     declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, JourneyDetailsController.onPageLoad(), upsert)
+
+  def persistAndRedirect(
+    updatedDeclarationJourney: DeclarationJourney,
+    declarationRequiredAndComplete: Boolean,
+    redirectIfNotComplete: Call,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
     upsert(updatedDeclarationJourney).map { _ =>
       if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad()
-      else {
-        value match {
-          case Yes => AgentDetailsController.onPageLoad()
-          case No  => EoriNumberController.onPageLoad()
-        }
-      }
+      else redirectIfNotComplete
     }
 
   private def goodsDestination[T](value: T) =
