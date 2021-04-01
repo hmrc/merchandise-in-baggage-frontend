@@ -35,7 +35,6 @@ class Navigator {
   def nextPage(request: NavigationRequests): Call = request match {
     case RequestByPass(url)                                    => toNextPage(url)
     case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
-    case RequestByPassWithIndexAndValue(value, idx)            => valueWeightOfGoodsControllerSubmit(value, idx)
     case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
     case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
@@ -60,6 +59,7 @@ class Navigator {
       case GoodsInVehicleRequest(value, journey, upsert, complete)           => goodsInVehicleController(value, journey, upsert, complete)
       case JourneyDetailsRequest(journey, upsert, complete)                  => journeyDetails(journey, upsert, complete)
       case TravellerDetailsRequest(journey, upsert, complete)                => travellerDetails(journey, upsert, complete)
+      case ValueWeightOfGoodsRequest(value, idx, journey, upsert, complete)  => valueWeightOfGoods(value, idx, journey, upsert, complete)
     }
 }
 
@@ -85,11 +85,6 @@ object NavigatorMapping {
     GoodsTypeQuantityController.onPageLoad(idx).url -> goodsTypeQuantityController(declarationType, idx),
   )
 
-  def valueWeightOfGoodsControllerSubmit(belowThreshold: YesNo, entriesSize: Int): Call = belowThreshold match {
-    case No  => CannotUseServiceController.onPageLoad()
-    case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
-  }
-
   def vehicleRegistrationNumberControllerSubmit(
     journey: DeclarationJourney,
     vehicleReg: String,
@@ -112,6 +107,19 @@ object NavigatorMapping {
     val redirectTo = value match {
       case Yes => CannotUseServiceController.onPageLoad()
       case No  => ValueWeightOfGoodsController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  def valueWeightOfGoods(
+    value: YesNo,
+    entriesSize: Int,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case No  => CannotUseServiceController.onPageLoad()
+      case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
     }
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }

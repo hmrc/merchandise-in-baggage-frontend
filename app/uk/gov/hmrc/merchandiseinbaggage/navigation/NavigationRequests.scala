@@ -24,7 +24,6 @@ import scala.concurrent.Future
 sealed trait NavigationRequests
 final case class RequestByPass(currentUrl: String) extends NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-final case class RequestByPassWithIndexAndValue(value: YesNo, idx: Int) extends NavigationRequests
 final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
 final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
 
@@ -113,6 +112,14 @@ final case class JourneyDetailsRequest(
     extends NavigationRequestsAsync
 
 final case class TravellerDetailsRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class ValueWeightOfGoodsRequest(
+  value: YesNo,
+  idx: Int,
   updatedDeclarationJourney: DeclarationJourney,
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)

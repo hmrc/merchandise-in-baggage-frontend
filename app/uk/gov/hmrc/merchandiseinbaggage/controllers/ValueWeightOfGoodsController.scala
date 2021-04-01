@@ -21,11 +21,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDestinationUnansweredMessage
 import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class ValueWeightOfGoodsController @Inject()(
@@ -62,10 +62,17 @@ class ValueWeightOfGoodsController @Inject()(
           .fold(
             formWithErrors => Future successful BadRequest(view(formWithErrors, goodsDestination, request.declarationType, backButtonUrl)),
             belowThreshold => {
-              persistAndRedirect(
-                declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold)),
-                navigator.nextPage(RequestByPassWithIndexAndValue(belowThreshold, declarationJourney.goodsEntries.entries.size))
-              )
+              val updated = declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold))
+              navigator
+                .nextPageWithCallBack(
+                  ValueWeightOfGoodsRequest(
+                    belowThreshold,
+                    declarationJourney.goodsEntries.entries.size,
+                    updated,
+                    repo.upsert,
+                    updated.declarationRequiredAndComplete
+                  ))
+                .map(Redirect)
             }
           )
       }
