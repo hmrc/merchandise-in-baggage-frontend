@@ -37,7 +37,6 @@ class Navigator {
     case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
     case RequestByPassWithIndexAndValue(value, idx)            => valueWeightOfGoodsControllerSubmit(value, idx)
     case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
-    case RequestWithIndex(url, value, journeyType, idx)        => nextPageWithIndex(url)(value, journeyType, idx)
     case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
   }
 
@@ -53,8 +52,11 @@ class Navigator {
       case VehicleRegistrationNumberControllerRequest(journey, regNumber, upsert) =>
         vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
 
-      case CustomsAgentRequest(asw, journey, upsert, complete) => customsAgentAsync(asw, journey, upsert, complete)
-      case EnterEmailRequest(journey, upsert, complete)        => enterEmailAsync(journey, upsert, complete)
+      case CustomsAgentRequest(value, journey, upsert, complete)             => customsAgent(value, journey, upsert, complete)
+      case EnterEmailRequest(journey, upsert, complete)                      => enterEmail(journey, upsert, complete)
+      case EoriNumberRequest(journey, upsert, complete)                      => enterEori(journey, upsert, complete)
+      case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete) => exciseAndRestrictedGoods(value, journey, upsert, complete)
+      case GoodsDestinationRequest(value, journey, upsert, complete)         => goodsDestination(value, journey, upsert, complete)
     }
 }
 
@@ -62,22 +64,15 @@ object NavigatorMapping {
 
   val toNextPage: Map[String, Call] = Map(
     AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
-    EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
     JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
     PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
     TravellerDetailsController.onPageLoad().url           -> EnterEmailController.onPageLoad(),
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
-    GoodsDestinationController.onPageLoad().url -> goodsDestination,
-    CustomsAgentController.onPageLoad().url     -> customsAgent,
-    GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
-    NewOrExistingController.onPageLoad().url    -> newOrExistingController,
-    VehicleSizeController.onPageLoad().url      -> vehicleSizeControllerSubmit
-  )
-
-  val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
-    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
+    GoodsInVehicleController.onPageLoad().url -> goodsInVehicleController,
+    NewOrExistingController.onPageLoad().url  -> newOrExistingController,
+    VehicleSizeController.onPageLoad().url    -> vehicleSizeControllerSubmit
   )
 
   def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
@@ -109,18 +104,19 @@ object NavigatorMapping {
     case No  => CannotUseServiceController.onPageLoad()
   }
 
-  private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
-    value match {
+  def exciseAndRestrictedGoods(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
       case Yes => CannotUseServiceController.onPageLoad()
       case No  => ValueWeightOfGoodsController.onPageLoad()
     }
-
-  private def customsAgent[T](value: T): Call = value match {
-    case Yes => AgentDetailsController.onPageLoad()
-    case No  => EoriNumberController.onPageLoad()
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
 
-  def customsAgentAsync(
+  def customsAgent(
     value: YesNo,
     updatedDeclarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney],
@@ -132,13 +128,31 @@ object NavigatorMapping {
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
 
-  def enterEmailAsync(
+  def enterEmail(
     updatedDeclarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney],
     declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, JourneyDetailsController.onPageLoad(), upsert)
 
-  def persistAndRedirect(
+  def enterEori(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, TravellerDetailsController.onPageLoad(), upsert)
+
+  def goodsDestination(
+    value: GoodsDestination,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case NorthernIreland => CannotUseServiceIrelandController.onPageLoad()
+      case GreatBritain    => ExciseAndRestrictedGoodsController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  private def persistAndRedirect(
     updatedDeclarationJourney: DeclarationJourney,
     declarationRequiredAndComplete: Boolean,
     redirectIfNotComplete: Call,
@@ -146,12 +160,6 @@ object NavigatorMapping {
     upsert(updatedDeclarationJourney).map { _ =>
       if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad()
       else redirectIfNotComplete
-    }
-
-  private def goodsDestination[T](value: T) =
-    value match {
-      case NorthernIreland => CannotUseServiceIrelandController.onPageLoad()
-      case GreatBritain    => ExciseAndRestrictedGoodsController.onPageLoad()
     }
 
   private def goodsInVehicleController[T](value: T) =

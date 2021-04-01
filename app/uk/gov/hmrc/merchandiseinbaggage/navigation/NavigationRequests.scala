@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.navigation
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, JourneyType, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, GoodsDestination, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry, PurchaseDetailsInput}
 
 import scala.concurrent.Future
@@ -26,7 +26,6 @@ final case class RequestByPass(currentUrl: String) extends NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
 final case class RequestByPassWithIndexAndValue(value: YesNo, idx: Int) extends NavigationRequests
 final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
-final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
 final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
 
 sealed trait NavigationRequestsAsync
@@ -75,6 +74,26 @@ final case class CustomsAgentRequest(
     extends NavigationRequestsAsync
 
 final case class EnterEmailRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class EoriNumberRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class ExciseAndRestrictedGoodsRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class GoodsDestinationRequest(
+  answer: GoodsDestination,
   updatedDeclarationJourney: DeclarationJourney,
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)

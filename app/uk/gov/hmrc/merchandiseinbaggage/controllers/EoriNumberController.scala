@@ -21,15 +21,15 @@ import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.EoriNumberForm.{form, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Eori, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class EoriNumberController @Inject()(
@@ -78,11 +78,12 @@ class EoriNumberController @Inject()(
 
   private def validateEoriAndRedirect(eori: String, isAgent: YesNo, declarationType: DeclarationType, response: CheckResponse)(
     implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
-    if (response.valid)
-      persistAndRedirect(
-        request.declarationJourney.copy(maybeEori = Some(Eori(eori))),
-        navigator.nextPage(RequestByPass(EoriNumberController.onPageLoad().url)))
-    else
+    if (response.valid) {
+      val updated = request.declarationJourney.copy(maybeEori = Some(Eori(eori)))
+      navigator
+        .nextPageWithCallBack(EoriNumberRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+        .map(Redirect)
+    } else
       Future.successful(badRequestResult(isAgent, declarationType, eori))
 
   private def badRequestResult(isAgent: YesNo, declarationType: DeclarationType, eori: String)(

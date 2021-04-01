@@ -17,15 +17,15 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class GoodsDestinationController @Inject()(
@@ -55,8 +55,16 @@ class GoodsDestinationController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
         value => {
-          val call: Call = navigator.nextPage(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, value))
-          persistAndRedirect(request.declarationJourney.copy(maybeGoodsDestination = Some(value)), call)
+          val updated = request.declarationJourney.copy(maybeGoodsDestination = Some(value))
+          navigator
+            .nextPageWithCallBack(
+              GoodsDestinationRequest(
+                value,
+                updated,
+                repo.upsert,
+                updated.declarationRequiredAndComplete
+              ))
+            .map(Redirect)
         }
       )
   }
