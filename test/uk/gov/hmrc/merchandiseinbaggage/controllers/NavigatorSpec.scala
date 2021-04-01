@@ -137,18 +137,20 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result mustBe CannotUseServiceController.onPageLoad()
       }
 
-      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${VehicleSizeController
-        .onPageLoad()} if Yes for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, Yes))
+      s"on ${GoodsInVehicleController.onPageLoad().url} submit" must {
+        s"navigates to ${VehicleSizeController.onPageLoad()} if Yes for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(GoodsInVehicleRequest(Yes, journey, _ => Future(journey), false))
 
-        result mustBe VehicleSizeController.onPageLoad()
-      }
+          result.futureValue mustBe VehicleSizeController.onPageLoad()
+        }
 
-      s"from ${GoodsInVehicleController.onPageLoad().url} navigates to ${CheckYourAnswersController
-        .onPageLoad()} if No for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, No))
+        s"navigates to ${CheckYourAnswersController.onPageLoad()} if No for $newOrAmend & $importOrExport" in new Navigator {
+          val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+          val result = nextPageWithCallBack(GoodsInVehicleRequest(No, journey, _ => Future(journey), false))
 
-        result mustBe CheckYourAnswersController.onPageLoad()
+          result.futureValue mustBe CheckYourAnswersController.onPageLoad()
+        }
       }
 
       s"from ${GoodsOriginController.onPageLoad(1).url} navigates to ${PurchaseDetailsController

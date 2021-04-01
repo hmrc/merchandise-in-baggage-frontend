@@ -98,3 +98,10 @@ final case class GoodsDestinationRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)
     extends NavigationRequestsAsync
+
+final case class GoodsInVehicleRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync

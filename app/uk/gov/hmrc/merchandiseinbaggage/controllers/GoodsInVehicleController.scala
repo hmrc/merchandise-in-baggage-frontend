@@ -21,11 +21,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsInVehicleForm.form
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsInVehicleView
 
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 class GoodsInVehicleController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
@@ -54,11 +54,12 @@ class GoodsInVehicleController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationType, backButtonUrl)),
-        goodsInVehicle =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle)),
-            navigator.nextPage(RequestWithAnswer(GoodsInVehicleController.onPageLoad().url, goodsInVehicle))
-        )
+        goodsInVehicle => {
+          val updated = request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle))
+          navigator
+            .nextPageWithCallBack(GoodsInVehicleRequest(goodsInVehicle, updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .map(Redirect)
+        }
       )
   }
 }

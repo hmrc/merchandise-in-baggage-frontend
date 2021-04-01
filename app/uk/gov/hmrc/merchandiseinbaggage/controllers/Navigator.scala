@@ -57,6 +57,7 @@ class Navigator {
       case EoriNumberRequest(journey, upsert, complete)                      => enterEori(journey, upsert, complete)
       case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete) => exciseAndRestrictedGoods(value, journey, upsert, complete)
       case GoodsDestinationRequest(value, journey, upsert, complete)         => goodsDestination(value, journey, upsert, complete)
+      case GoodsInVehicleRequest(value, journey, upsert, complete)           => goodsInVehicleController(value, journey, upsert, complete)
     }
 }
 
@@ -70,9 +71,8 @@ object NavigatorMapping {
   )
 
   def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
-    GoodsInVehicleController.onPageLoad().url -> goodsInVehicleController,
-    NewOrExistingController.onPageLoad().url  -> newOrExistingController,
-    VehicleSizeController.onPageLoad().url    -> vehicleSizeControllerSubmit
+    NewOrExistingController.onPageLoad().url -> newOrExistingController,
+    VehicleSizeController.onPageLoad().url   -> vehicleSizeControllerSubmit
   )
 
   def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
@@ -152,6 +152,18 @@ object NavigatorMapping {
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
 
+  def goodsInVehicleController(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case Yes => VehicleSizeController.onPageLoad()
+      case No  => CheckYourAnswersController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
   private def persistAndRedirect(
     updatedDeclarationJourney: DeclarationJourney,
     declarationRequiredAndComplete: Boolean,
@@ -160,12 +172,6 @@ object NavigatorMapping {
     upsert(updatedDeclarationJourney).map { _ =>
       if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad()
       else redirectIfNotComplete
-    }
-
-  private def goodsInVehicleController[T](value: T) =
-    value match {
-      case Yes => VehicleSizeController.onPageLoad()
-      case No  => CheckYourAnswersController.onPageLoad()
     }
 
   private def goodsTypeQuantityController(declarationType: DeclarationType, idx: Int): Call =
