@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
+import com.softwaremill.quicklens._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -66,13 +67,13 @@ class SearchGoodsCountryController @Inject()(
               .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
                 navigator
-                  .nextPageWithCallBack(SearchGoodsCountryRequest(
-                    request.declarationJourney,
-                    //TODO remove casting
-                    request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
-                    idx,
-                    repo.upsert
-                  ))
+                  .nextPageWithCallBack(
+                    SearchGoodsCountryRequest(
+                      request.declarationJourney,
+                      request.goodsEntry.modify(_.when[ExportGoodsEntry].maybeDestination).setTo(Some(country)),
+                      idx,
+                      repo.upsert
+                    ))
                   .map(Redirect)
             }
         )
