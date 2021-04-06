@@ -48,7 +48,7 @@
  </div>
 
  <h2 id="declarationDateId" class="govuk-heading-m">@messages("declarationConfirmation.date")</h2>
- <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}.</p>
+ <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}</p>
  <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
 
 
