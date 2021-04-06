@@ -40,7 +40,7 @@ h1: components.h1)
     @errorSummary(form.errors, notMatching)
     @h1(messages("enterEmail.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
-    <p class="govuk-hint">@messages("enterEmail.hint")</p>
+    <p class="govuk-hint" id="email-hint">@messages("enterEmail.hint")</p>
 
     @text(
         form = form,
@@ -49,7 +49,7 @@ h1: components.h1)
         inputType = "email",
         label = "enterEmail.email",
         isPageHeading = false,
-        attributes = Map("autocomplete" -> "email"),
+        attributes = Map("autocomplete" -> "email", "aria-describedby" -> "email-hint"),
         classes = Some("govuk-input--width-20")
     )
 

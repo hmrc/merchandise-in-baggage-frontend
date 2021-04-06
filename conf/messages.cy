@@ -195,12 +195,17 @@ reviewGoods.Amend.title = Adolygu’r nwyddau rydych wedi’u hychwanegu
 reviewGoods.New.heading = Adolygu’ch nwyddau
 reviewGoods.Amend.heading = Adolygu’r nwyddau rydych wedi’u hychwanegu
 reviewGoods.list.item = Math o nwyddau
+reviewGoods.goodsType.changeText=y math o nwyddau
 reviewGoods.list.quantity = Nifer o eitemau
+reviewGoods.quantity.changeText=nifer yr eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
 reviewGoods.list.producedInEu = Cynhyrchwyd yn yr UE
+reviewGoods.country.changeText=gwlad
 reviewGoods.list.destination = Cyrchfan
+reviewGoods.destination.changeText=cyrchfan
 reviewGoods.list.price = Swm a dalwyd
-reviewGoods.list.invoice = Invoice number
+reviewGoods.price.changeText=y pris a dalwyd
+reviewGoods.list.invoice=Rhif anfoneb
 reviewGoods.list.paymentMade = Taliad a wnaed
 reviewGoods.h2 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
 reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
@@ -462,6 +467,17 @@ checkYourAnswers.sendDeclaration.warning.Import.message = Os na fyddwch yn datga
 checkYourAnswers.sendDeclaration.warning.Export.message = Os na fyddwch yn datgan eich holl nwyddau cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch ac y bydd eich nwyddau’n cael eu cadw gan Lu’r Ffiniau.
 checkYourAnswers.payButton = Derbyn a thalu
 checkYourAnswers.makeDeclarationButton = Derbyn ac anfon y datganiad
+
+checkYourAnswers.change.customsAgentYesNo=eich ateb i p’un a ydych yn asiant tollau
+checkYourAnswers.change.customsAgentName=enw busnes cofrestredig yr asiant tollau
+checkYourAnswers.change.customsAgentAddress=cyfeiriad asiant tollau
+checkYourAnswers.change.eori=rhif EORI y busnes
+checkYourAnswers.change.nameOfPersonCarryingTheGoods=enw’r person sy’n cludo’r nwyddau
+checkYourAnswers.change.emailAddress=cyfeiriad e-bost
+checkYourAnswers.change.placeOfArrival=man cyrraedd
+checkYourAnswers.change.dateOfArrival=dyddiad cyrraedd
+checkYourAnswers.change.travellingByVehicle=ateb i deithio mewn cerbyd
+checkYourAnswers.change.vehicleRegistrationNumber=rhif cofrestru’r cerbyd
 
 # DeclarationConfirmation
 declarationConfirmation.title = Datganiad wedi’i gwblhau
