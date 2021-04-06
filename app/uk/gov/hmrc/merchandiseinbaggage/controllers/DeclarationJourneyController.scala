@@ -80,6 +80,4 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
     }
 }
 
-trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
-  def onSubmit(idx: Int): Action[AnyContent]
-}
+trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController
