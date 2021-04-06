@@ -53,7 +53,7 @@ class VehicleRegistrationNumberController @Inject()(
         vehicleReg =>
           navigator
             .nextPageWithCallBack(
-              VehicleRegistrationNumberControllerRequest(
+              VehicleRegistrationNumberRequest(
                 request.declarationJourney,
                 vehicleReg,
                 repo.upsert

@@ -55,7 +55,7 @@ class RemoveGoodsController @Inject()(
           removeGoods =>
             navigator
               .nextPageWithCallBack(
-                RemoveGoodsControllerRequest(
+                RemoveGoodsRequest(
                   idx,
                   request.declarationJourney,
                   removeGoods,

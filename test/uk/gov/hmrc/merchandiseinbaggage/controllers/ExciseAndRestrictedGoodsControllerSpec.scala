@@ -21,12 +21,12 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 
@@ -62,9 +62,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
           .withFormUrlEncodedBody("value" -> "No")
 
         (mockNavigator
-          .nextPage(_: RequestWithIndex))
-          .expects(RequestWithIndex(ExciseAndRestrictedGoodsController.onPageLoad().url, No, journey.journeyType, 1))
-          .returning(ValueWeightOfGoodsController.onPageLoad())
+          .nextPageWithCallBack(_: ExciseAndRestrictedGoodsRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(ValueWeightOfGoodsController.onPageLoad()))
           .once()
 
         controller(journey).onSubmit(request).futureValue
