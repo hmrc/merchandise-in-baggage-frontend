@@ -63,12 +63,9 @@ class GoodsTypeQuantityController @Inject()(
             case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
           }
 
-          persistAndRedirect(
-            updatedGoodsEntry,
-            idx,
-            navigator
-              .nextPage(GoodsTypeQuantityRequest(request.declarationType, idx))
-          )
+          navigator
+            .nextPageWithCallBack(GoodsTypeQuantityRequest(request.declarationType, idx))
+            .flatMap(redirectUrl => persistAndRedirect(updatedGoodsEntry, idx, redirectUrl))
         }
       )
   }

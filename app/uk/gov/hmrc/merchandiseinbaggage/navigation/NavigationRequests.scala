@@ -17,20 +17,17 @@
 package uk.gov.hmrc.merchandiseinbaggage.navigation
 
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, GoodsDestination, YesNo}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry, PurchaseDetailsInput}
 
 import scala.concurrent.Future
 
 //TODO remove the one with prefix Request
 sealed trait NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-final case class GoodsTypeQuantityRequest(declarationType: DeclarationType, idx: Int) extends NavigationRequests
 
 sealed trait NavigationRequestsAsync
-final case class RequestWithCallBack(
-  currentUrl: String,
+final case class ReviewGoodsRequest(
   value: YesNo,
-  updatedGoodsEntries: GoodsEntries,
   declarationJourney: DeclarationJourney,
   overThresholdCheck: Boolean,
   callBack: DeclarationJourney => Future[DeclarationJourney])
@@ -148,3 +145,5 @@ final case class PreviousDeclarationDetailsRequest(
   originalDeclaration: Declaration,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
+
+final case class GoodsTypeQuantityRequest(declarationType: DeclarationType, idx: Int) extends NavigationRequestsAsync

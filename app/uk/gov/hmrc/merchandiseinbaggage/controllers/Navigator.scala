@@ -33,12 +33,11 @@ class Navigator {
   import NavigatorMapping._
 
   def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPassWithIndex(url, idx)               => nextPageWithIndex(idx)(url)
-    case GoodsTypeQuantityRequest(declarationType, idx) => goodsTypeQuantity(declarationType, idx)
+    case RequestByPassWithIndex(url, idx) => nextPageWithIndex(idx)(url)
   }
 
   def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] = request match {
-    case r: RequestWithCallBack => reviewGoods(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
+    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert) => reviewGoods(value, journey, overThresholdCheck, upsert)
     case r: RequestWithIndexAndCallBack =>
       purchaseDetails(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
 
@@ -58,6 +57,7 @@ class Navigator {
     case NewOrExistingRequest(journey, upsert, complete)                   => newOrExisting(journey, upsert, complete)
     case AgentDetailsRequest(agentName, journey, upsert)                   => agentDetails(agentName, journey, upsert)
     case PreviousDeclarationDetailsRequest(journey, declaration, upsert)   => previousDeclarationDetails(journey, declaration, upsert)
+    case GoodsTypeQuantityRequest(declarationType, idx)                    => goodsTypeQuantity(declarationType, idx)
   }
 }
 
@@ -215,11 +215,12 @@ object NavigatorMapping {
       else redirectIfNotComplete
     }
 
-  def goodsTypeQuantity(declarationType: DeclarationType, idx: Int): Call =
+  def goodsTypeQuantity(declarationType: DeclarationType, idx: Int)(implicit ec: ExecutionContext): Future[Call] = Future {
     declarationType match {
       case Import => GoodsVatRateController.onPageLoad(idx)
       case Export => SearchGoodsCountryController.onPageLoad(idx)
     }
+  }
 
   def reviewGoods(
     declareMoreGoods: YesNo,

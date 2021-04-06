@@ -176,20 +176,21 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       if (importOrExport == Import) {
         s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${GoodsVatRateController
           .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
-          val result: Call = nextPage(GoodsTypeQuantityRequest(importOrExport, 1))
+          val result: Future[Call] = nextPageWithCallBack(GoodsTypeQuantityRequest(importOrExport, 1))
 
-          result mustBe GoodsVatRateController.onPageLoad(1)
+          result.futureValue mustBe GoodsVatRateController.onPageLoad(1)
         }
       }
 
       if (importOrExport == Export) {
         s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
           .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
-          val result: Call = nextPage(GoodsTypeQuantityRequest(importOrExport, 1))
+          val result: Future[Call] = nextPageWithCallBack(GoodsTypeQuantityRequest(importOrExport, 1))
 
-          result mustBe SearchGoodsCountryController.onPageLoad(1)
+          result.futureValue mustBe SearchGoodsCountryController.onPageLoad(1)
         }
       }
+
       s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
         .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
         val result: Call = nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
@@ -255,10 +256,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val expectedUpdatedEntries: Int = completedDeclarationJourney.goodsEntries.entries.size + 1
 
         val result: Future[Call] = nextPageWithCallBack(
-          RequestWithCallBack(
-            ReviewGoodsController.onPageLoad().url,
+          ReviewGoodsRequest(
             Yes,
-            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend),
             false,
             _ => Future.successful(updatedJourney)
@@ -270,10 +269,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${PaymentCalculationController
         .onPageLoad()} if answer No without updating goods entries for $newOrAmend & $importOrExport" in new Navigator {
         val result: Future[Call] = nextPageWithCallBack(
-          RequestWithCallBack(
-            ReviewGoodsController.onPageLoad().url,
+          ReviewGoodsRequest(
             No,
-            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
             incompleteDeclarationJourney.copy(declarationType = importOrExport),
             overThresholdCheck = false,
             _ => Future.successful(incompleteDeclarationJourney.copy(declarationType = importOrExport))
@@ -286,10 +283,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         .onPageLoad()} if answer No $newOrAmend & $importOrExport and over threshold" in new Navigator {
         val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPageWithCallBack(
-          RequestWithCallBack(
-            ReviewGoodsController.onPageLoad().url,
+          ReviewGoodsRequest(
             No,
-            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
             journey,
             true,
             _ => Future.successful(journey)
@@ -303,10 +298,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val journey: DeclarationJourney =
           importJourneyWithGoodsOverThreshold.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPageWithCallBack(
-          RequestWithCallBack(
-            ReviewGoodsController.onPageLoad().url,
+          ReviewGoodsRequest(
             Yes,
-            GoodsEntries(if (importOrExport == Import) startedImportGoods else startedExportGoods),
             journey,
             overThresholdCheck = true,
             _ => Future.successful(journey)
@@ -446,10 +439,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
     .onPageLoad()} if answer No & Export and over threshold" in new Navigator {
     val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = Export, journeyType = Amend)
     val result: Future[Call] = nextPageWithCallBack(
-      RequestWithCallBack(
-        ReviewGoodsController.onPageLoad().url,
+      ReviewGoodsRequest(
         No,
-        GoodsEntries(startedExportGoods),
         journey,
         overThresholdCheck = true,
         _ => Future.successful(journey)

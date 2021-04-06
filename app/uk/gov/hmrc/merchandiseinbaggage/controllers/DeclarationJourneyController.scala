@@ -85,6 +85,7 @@ trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourne
 
   val repo: DeclarationJourneyRepository
 
+  //TODO this is untested :-(
   def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)(
     implicit request: DeclarationGoodsRequest[AnyContent],
     ec: ExecutionContext): Future[Result] = {

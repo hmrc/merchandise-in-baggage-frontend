@@ -73,7 +73,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
           .withFormUrlEncodedBody("value" -> "Yes")
 
         (mockNavigator
-          .nextPageWithCallBack(_: RequestWithCallBack)(_: ExecutionContext))
+          .nextPageWithCallBack(_: ReviewGoodsRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(GoodsTypeQuantityController.onPageLoad(2)))
           .once()

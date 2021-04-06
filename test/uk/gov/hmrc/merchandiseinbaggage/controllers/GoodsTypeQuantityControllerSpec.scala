@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -66,9 +67,9 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
           else SearchGoodsCountryController.onPageLoad(1)
 
         (mockNavigator
-          .nextPage(_: GoodsTypeQuantityRequest))
-          .expects(GoodsTypeQuantityRequest(importOrExport, 1))
-          .returning(page)
+          .nextPageWithCallBack(_: GoodsTypeQuantityRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future successful page)
           .once()
 
         controller(journey).onSubmit(1)(request).futureValue
