@@ -41,7 +41,7 @@ class NewOrExistingController @Inject()(
     if (amendFlagConf.canBeAmended)
       Ok(
         view(
-          form.fill(request.declarationJourney.journeyType),
+          form,
           request.declarationJourney.declarationType
         ))
     else Redirect(GoodsDestinationController.onPageLoad())
