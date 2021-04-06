@@ -76,7 +76,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
 
         (mockNavigator
-          .nextPageWithCallBack(_: RequestWithIndexAndCallBack)(_: ExecutionContext))
+          .nextPageWithCallBack(_: PurchaseDetailsRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(ReviewGoodsController.onPageLoad()))
 

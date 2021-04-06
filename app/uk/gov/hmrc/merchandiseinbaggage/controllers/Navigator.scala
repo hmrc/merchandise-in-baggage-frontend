@@ -37,10 +37,8 @@ class Navigator {
   }
 
   def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] = request match {
-    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert) => reviewGoods(value, journey, overThresholdCheck, upsert)
-    case r: RequestWithIndexAndCallBack =>
-      purchaseDetails(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
-
+    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert)    => reviewGoods(value, journey, overThresholdCheck, upsert)
+    case PurchaseDetailsRequest(input, idx, journey, entries, upsert)      => purchaseDetails(input, idx, entries, journey, upsert)
     case RemoveGoodsRequest(idx, journey, value, upsert)                   => removeGoodOrRedirect(idx, journey, value, upsert)
     case RetrieveDeclarationRequest(declaration, journey, upsert)          => retrieveDeclaration(declaration, journey, upsert)
     case VehicleRegistrationNumberRequest(journey, regNumber, upsert)      => vehicleRegistrationNumber(journey, regNumber, upsert)

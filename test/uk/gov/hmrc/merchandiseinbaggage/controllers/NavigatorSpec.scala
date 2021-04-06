@@ -228,7 +228,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           _ => Future.successful(completedDeclarationJourney) //TODO make it work with mockFunction
 
         val result = nextPageWithCallBack(
-          RequestWithIndexAndCallBack(
+          PurchaseDetailsRequest(
             detailsInput,
             1,
             completedGoodsEntries(importOrExport).entries.head,

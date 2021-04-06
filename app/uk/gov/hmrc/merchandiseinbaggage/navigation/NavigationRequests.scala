@@ -33,7 +33,7 @@ final case class ReviewGoodsRequest(
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class RequestWithIndexAndCallBack(
+final case class PurchaseDetailsRequest(
   purchaseDetailsInput: PurchaseDetailsInput,
   index: Int,
   goodsEntry: GoodsEntry,
