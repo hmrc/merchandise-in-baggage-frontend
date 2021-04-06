@@ -73,7 +73,7 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
           )
 
         (mockNavigator
-          .nextPageWithCallBack(_: JourneyDetailsRequest)(_: ExecutionContext))
+          .nextPage(_: JourneyDetailsRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(GoodsInVehicleController.onPageLoad()))
 

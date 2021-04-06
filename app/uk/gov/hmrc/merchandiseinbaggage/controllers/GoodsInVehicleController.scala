@@ -57,7 +57,7 @@ class GoodsInVehicleController @Inject()(
         goodsInVehicle => {
           val updated = request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle))
           navigator
-            .nextPageWithCallBack(GoodsInVehicleRequest(goodsInVehicle, updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .nextPage(GoodsInVehicleRequest(goodsInVehicle, updated, repo.upsert, updated.declarationRequiredAndComplete))
             .map(Redirect)
         }
       )

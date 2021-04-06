@@ -61,7 +61,7 @@ class GoodsVatRateController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
             navigator
-              .nextPageWithCallBack(
+              .nextPage(
                 GoodsVatRateRequest(
                   request.declarationJourney,
                   request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),

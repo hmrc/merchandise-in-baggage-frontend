@@ -54,7 +54,7 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPageWithCallBack(_: GoodsOriginRequest)(_: ExecutionContext))
+        .nextPage(_: GoodsOriginRequest)(_: ExecutionContext))
         .expects(*, *)
         .returning(Future successful PurchaseDetailsController.onPageLoad(1))
         .once()

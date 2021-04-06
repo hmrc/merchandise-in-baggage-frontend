@@ -57,7 +57,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with
           .withFormUrlEncodedBody("value" -> "Yes")
 
         (mockNavigator
-          .nextPageWithCallBack(_: GoodsInVehicleRequest)(_: ExecutionContext))
+          .nextPage(_: GoodsInVehicleRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(VehicleSizeController.onPageLoad()))
           .once()

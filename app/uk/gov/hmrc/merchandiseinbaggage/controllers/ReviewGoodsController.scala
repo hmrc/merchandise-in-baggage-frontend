@@ -73,7 +73,7 @@ class ReviewGoodsController @Inject()(
     (for {
       check <- checkThresholdIfAmending(request.declarationJourney)
       call <- OptionT.liftF(
-               navigator.nextPageWithCallBack(
+               navigator.nextPage(
                  ReviewGoodsRequest(
                    declareMoreGoods,
                    request.declarationJourney,

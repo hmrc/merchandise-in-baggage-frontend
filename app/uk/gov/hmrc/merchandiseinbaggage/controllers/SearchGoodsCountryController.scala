@@ -67,7 +67,7 @@ class SearchGoodsCountryController @Inject()(
               .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
                 navigator
-                  .nextPageWithCallBack(
+                  .nextPage(
                     SearchGoodsCountryRequest(
                       request.declarationJourney,
                       request.goodsEntry.modify(_.when[ExportGoodsEntry].maybeDestination).setTo(Some(country)),

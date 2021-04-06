@@ -66,7 +66,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
         (mockNavigator
-          .nextPageWithCallBack(_: GoodsDestinationRequest)(_: ExecutionContext))
+          .nextPage(_: GoodsDestinationRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad()))
           .once()

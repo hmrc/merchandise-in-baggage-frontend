@@ -61,7 +61,7 @@ class GoodsOriginController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           producedInEu =>
             navigator
-              .nextPageWithCallBack(
+              .nextPage(
                 GoodsOriginRequest(
                   request.declarationJourney,
                   request.goodsEntry.modify(_.when[ImportGoodsEntry].maybeProducedInEu).setTo(Some(producedInEu)),

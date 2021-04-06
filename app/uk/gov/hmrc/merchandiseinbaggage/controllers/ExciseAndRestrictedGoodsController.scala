@@ -66,7 +66,7 @@ class ExciseAndRestrictedGoodsController @Inject()(
           import request._
           val updated = declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))
           navigator
-            .nextPageWithCallBack(ExciseAndRestrictedGoodsRequest(value, updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .nextPage(ExciseAndRestrictedGoodsRequest(value, updated, repo.upsert, updated.declarationRequiredAndComplete))
             .map(Redirect)
         }
       )

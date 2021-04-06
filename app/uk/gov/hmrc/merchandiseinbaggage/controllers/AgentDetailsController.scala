@@ -52,7 +52,7 @@ class AgentDetailsController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl, request.declarationType))),
         value => {
           navigator
-            .nextPageWithCallBack(AgentDetailsRequest(value, request.declarationJourney, repo.upsert))
+            .nextPage(AgentDetailsRequest(value, request.declarationJourney, repo.upsert))
             .map(Redirect)
         }
       )

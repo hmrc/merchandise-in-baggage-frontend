@@ -52,7 +52,7 @@ class EnterEmailController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         email => {
           val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
-          navigator.nextPageWithCallBack(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+          navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
         }.map(Redirect)
       )
   }

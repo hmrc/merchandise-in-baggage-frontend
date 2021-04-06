@@ -57,7 +57,7 @@ class GoodsDestinationController @Inject()(
         value => {
           val updated = request.declarationJourney.copy(maybeGoodsDestination = Some(value))
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               GoodsDestinationRequest(
                 value,
                 updated,

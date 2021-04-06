@@ -64,7 +64,7 @@ class ValueWeightOfGoodsController @Inject()(
             belowThreshold => {
               val updated = declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold))
               navigator
-                .nextPageWithCallBack(
+                .nextPage(
                   ValueWeightOfGoodsRequest(
                     belowThreshold,
                     declarationJourney.goodsEntries.entries.size,

@@ -81,7 +81,7 @@ class EoriNumberController @Inject()(
     if (response.valid) {
       val updated = request.declarationJourney.copy(maybeEori = Some(Eori(eori)))
       navigator
-        .nextPageWithCallBack(EoriNumberRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+        .nextPage(EoriNumberRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
         .map(Redirect)
     } else
       Future.successful(badRequestResult(isAgent, declarationType, eori))

@@ -67,7 +67,7 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
           else SearchGoodsCountryController.onPageLoad(1)
 
         (mockNavigator
-          .nextPageWithCallBack(_: GoodsTypeQuantityRequest)(_: ExecutionContext))
+          .nextPage(_: GoodsTypeQuantityRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future successful page)
           .once()

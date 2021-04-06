@@ -63,7 +63,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "Zero")
 
       (mockNavigator
-        .nextPageWithCallBack(_: GoodsVatRateRequest)(_: ExecutionContext))
+        .nextPage(_: GoodsVatRateRequest)(_: ExecutionContext))
         .expects(*, *)
         .returning(Future successful SearchGoodsCountryController.onPageLoad(1))
         .once()

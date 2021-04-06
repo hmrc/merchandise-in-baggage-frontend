@@ -54,7 +54,7 @@ class RemoveGoodsController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
           removeGoods =>
             navigator
-              .nextPageWithCallBack(
+              .nextPage(
                 RemoveGoodsRequest(
                   idx,
                   request.declarationJourney,
