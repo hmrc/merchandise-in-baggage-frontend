@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsOriginController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   view: GoodsOriginView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
@@ -60,13 +60,14 @@ class GoodsOriginController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           producedInEu =>
             navigator
-              .nextPageWithCallBack(GoodsOriginRequest(idx))
-              .flatMap(
-                redirectTo =>
-                  persistAndRedirect(
-                    request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
-                    idx,
-                    redirectTo))
+              .nextPageWithCallBack(
+                GoodsOriginRequest(
+                  request.declarationJourney,
+                  request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
+                  idx,
+                  repo.upsert
+                ))
+              .map(Redirect)
         )
     }
   }

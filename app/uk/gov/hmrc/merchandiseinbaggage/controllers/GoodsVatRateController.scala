@@ -33,7 +33,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class GoodsVatRateController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   view: GoodsVatRateView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.navigation
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, GoodsDestination, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Declaration, GoodsDestination, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry, PurchaseDetailsInput}
 
 import scala.concurrent.Future
@@ -146,9 +146,20 @@ final case class PreviousDeclarationDetailsRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class GoodsTypeQuantityRequest(declarationType: DeclarationType, idx: Int) extends NavigationRequestsAsync
+final case class GoodsTypeQuantityRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
 
-final case class SearchGoodsCountryRequest(idx: Int) extends NavigationRequestsAsync
+final case class SearchGoodsCountryRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
 
 final case class GoodsVatRateRequest(
   journey: DeclarationJourney,
@@ -157,4 +168,9 @@ final case class GoodsVatRateRequest(
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class GoodsOriginRequest(idx: Int) extends NavigationRequestsAsync
+final case class GoodsOriginRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync

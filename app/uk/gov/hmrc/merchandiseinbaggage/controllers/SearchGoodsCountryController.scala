@@ -16,24 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.SearchGoodsCountryForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SearchGoodsCountryController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   navigator: Navigator,
   view: SearchGoodsCountryView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -66,14 +66,14 @@ class SearchGoodsCountryController @Inject()(
               .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
                 navigator
-                  .nextPageWithCallBack(GoodsOriginRequest(idx))
-                  .flatMap(
-                    redirectTo =>
-                      persistAndRedirect(
-                        //TODO remove casting
-                        request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
-                        idx,
-                        redirectTo))
+                  .nextPageWithCallBack(SearchGoodsCountryRequest(
+                    request.declarationJourney,
+                    //TODO remove casting
+                    request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
+                    idx,
+                    repo.upsert
+                  ))
+                  .map(Redirect)
             }
         )
     }

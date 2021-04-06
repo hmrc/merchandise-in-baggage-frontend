@@ -30,7 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class RemoveGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   navigator: Navigator,
   view: RemoveGoodsView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)

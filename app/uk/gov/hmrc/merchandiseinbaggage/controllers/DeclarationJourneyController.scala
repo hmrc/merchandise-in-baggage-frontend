@@ -82,23 +82,4 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
 trait IndexedDeclarationJourneyUpdateController extends IndexedDeclarationJourneyController {
   def onSubmit(idx: Int): Action[AnyContent]
-
-  val repo: DeclarationJourneyRepository
-
-  //TODO this is untested :-(
-  def persistAndRedirect(updatedGoodsEntry: GoodsEntry, index: Int, redirectIfNotComplete: Call)(
-    implicit request: DeclarationGoodsRequest[AnyContent],
-    ec: ExecutionContext): Future[Result] = {
-    val updatedDeclarationJourney =
-      request.declarationJourney.copy(goodsEntries = request.declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
-
-    repo.upsert(updatedDeclarationJourney).map { _ =>
-      (updatedDeclarationJourney.declarationRequiredAndComplete, updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete) match {
-        case (true, true)   => Redirect(routes.CheckYourAnswersController.onPageLoad()) // user clicked change link from /check-your-answers
-        case (true, false)  => Redirect(redirectIfNotComplete) // user clicked add more goods from /check-your-answers
-        case (false, true)  => Redirect(routes.ReviewGoodsController.onPageLoad()) // user clicked change link from /review-goods
-        case (false, false) => Redirect(redirectIfNotComplete) // normal journey flow / user is adding more goods from /review-goods
-      }
-    }
-  }
 }

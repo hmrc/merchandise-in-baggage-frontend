@@ -34,7 +34,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class PurchaseDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   navigator: Navigator,
   importView: PurchaseDetailsImportView,
   exportView: PurchaseDetailsExportView,
