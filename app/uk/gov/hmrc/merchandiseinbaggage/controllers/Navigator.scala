@@ -228,7 +228,10 @@ object NavigatorMapping {
             .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
           PreviousDeclarationDetailsController.onPageLoad()
         }
-      case _ => Future successful DeclarationNotFoundController.onPageLoad()
+      case _ =>
+        upsert(declarationJourney) map { _ =>
+          DeclarationNotFoundController.onPageLoad()
+        }
     }
 
   private def isValid(declaration: Declaration) =
