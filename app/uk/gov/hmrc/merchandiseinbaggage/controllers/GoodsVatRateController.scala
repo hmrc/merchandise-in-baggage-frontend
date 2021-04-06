@@ -60,11 +60,15 @@ class GoodsVatRateController @Inject()(
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
-            persistAndRedirect(
-              request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
-              idx,
-              navigator.nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(idx).url, idx))
-          )
+            navigator
+              .nextPageWithCallBack(
+                GoodsVatRateRequest(
+                  request.declarationJourney,
+                  request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
+                  idx,
+                  repo.upsert
+                ))
+              .map(Redirect)
         )
     }
   }

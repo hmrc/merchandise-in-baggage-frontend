@@ -147,3 +147,14 @@ final case class PreviousDeclarationDetailsRequest(
     extends NavigationRequestsAsync
 
 final case class GoodsTypeQuantityRequest(declarationType: DeclarationType, idx: Int) extends NavigationRequestsAsync
+
+final case class SearchGoodsCountryRequest(idx: Int) extends NavigationRequestsAsync
+
+final case class GoodsVatRateRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class GoodsOriginRequest(idx: Int) extends NavigationRequestsAsync

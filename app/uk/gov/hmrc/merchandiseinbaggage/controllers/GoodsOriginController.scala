@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsOriginForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class GoodsOriginController @Inject()(
@@ -59,11 +59,14 @@ class GoodsOriginController @Inject()(
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, backButtonUrl(idx)))),
           producedInEu =>
-            persistAndRedirect(
-              request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
-              idx,
-              navigator.nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(idx).url, idx))
-          )
+            navigator
+              .nextPageWithCallBack(GoodsOriginRequest(idx))
+              .flatMap(
+                redirectTo =>
+                  persistAndRedirect(
+                    request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeProducedInEu = Some(producedInEu)),
+                    idx,
+                    redirectTo))
         )
     }
   }

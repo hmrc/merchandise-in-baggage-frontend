@@ -168,9 +168,9 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${GoodsOriginController.onPageLoad(1).url} navigates to ${PurchaseDetailsController
         .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
+        val result: Future[Call] = nextPageWithCallBack(GoodsOriginRequest(1))
 
-        result mustBe PurchaseDetailsController.onPageLoad(1)
+        result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
       }
 
       if (importOrExport == Import) {
@@ -193,16 +193,17 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
 
       s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
         .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
+        val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
+        val result: Future[Call] = nextPageWithCallBack(GoodsVatRateRequest(journey, startedImportGoods, 1, _ => Future(journey)))
 
-        result mustBe SearchGoodsCountryController.onPageLoad(1)
+        result.futureValue mustBe SearchGoodsCountryController.onPageLoad(1)
       }
 
       s"from ${SearchGoodsCountryController.onPageLoad(2).url} navigates to ${PurchaseDetailsController
         .onPageLoad(2)} for $newOrAmend & $importOrExport" in new Navigator {
-        val result: Call = nextPage(RequestByPassWithIndex(SearchGoodsCountryController.onPageLoad(2).url, 2))
+        val result: Future[Call] = nextPageWithCallBack(SearchGoodsCountryRequest(2))
 
-        result mustBe PurchaseDetailsController.onPageLoad(2)
+        result.futureValue mustBe PurchaseDetailsController.onPageLoad(2)
       }
 
       s"from ${JourneyDetailsController.onPageLoad().url} navigates to ${GoodsInVehicleController

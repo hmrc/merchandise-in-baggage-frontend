@@ -65,12 +65,15 @@ class SearchGoodsCountryController @Inject()(
             CountryService
               .getCountryByCode(countryCode)
               .fold(actionProvider.invalidRequestF(s"country [$countryCode] not found")) { country =>
-                persistAndRedirect(
-                  //TODO remove casting
-                  request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
-                  idx,
-                  navigator.nextPage(RequestByPassWithIndex(SearchGoodsCountryController.onPageLoad(idx).url, idx))
-                )
+                navigator
+                  .nextPageWithCallBack(GoodsOriginRequest(idx))
+                  .flatMap(
+                    redirectTo =>
+                      persistAndRedirect(
+                        //TODO remove casting
+                        request.goodsEntry.asInstanceOf[ExportGoodsEntry].copy(maybeDestination = Some(country)),
+                        idx,
+                        redirectTo))
             }
         )
     }
