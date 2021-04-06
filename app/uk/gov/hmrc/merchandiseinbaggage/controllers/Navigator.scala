@@ -33,7 +33,6 @@ class Navigator {
   import NavigatorMapping._
 
   def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPass(url)                             => toNextPage(url)
     case RequestByPassWithIndex(url, idx)               => nextPageWithIndex(idx)(url)
     case GoodsTypeQuantityRequest(declarationType, idx) => goodsTypeQuantity(declarationType, idx)
   }
@@ -57,16 +56,12 @@ class Navigator {
     case ValueWeightOfGoodsRequest(value, idx, journey, upsert, complete)  => valueWeightOfGoods(value, idx, journey, upsert, complete)
     case VehicleSizeRequest(value, journey, upsert, complete)              => vehicleSizeController(value, journey, upsert, complete)
     case NewOrExistingRequest(journey, upsert, complete)                   => newOrExisting(journey, upsert, complete)
+    case AgentDetailsRequest(agentName, journey, upsert)                   => agentDetails(agentName, journey, upsert)
+    case PreviousDeclarationDetailsRequest(journey, declaration, upsert)   => previousDeclarationDetails(journey, declaration, upsert)
   }
 }
 
 object NavigatorMapping {
-
-  //TODO remove both next Page
-  val toNextPage: Map[String, Call] = Map(
-    AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
-    PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
-  )
 
   def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
     GoodsOriginController.onPageLoad(idx).url        -> PurchaseDetailsController.onPageLoad(idx),
@@ -80,6 +75,27 @@ object NavigatorMapping {
       .map { _ =>
         CheckYourAnswersController.onPageLoad()
       }
+
+  def agentDetails(agentName: String, journey: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] =
+    upsert(journey.copy(maybeCustomsAgentName = Some(agentName)))
+      .map(_ => EnterAgentAddressController.onPageLoad())
+
+  def previousDeclarationDetails(
+    journey: DeclarationJourney,
+    originalDeclaration: Declaration,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedDeclaration =
+      DeclarationJourney(journey.sessionId, originalDeclaration.declarationType)
+        .copy(
+          declarationId = originalDeclaration.declarationId,
+          journeyType = Amend,
+          maybeGoodsDestination = Some(originalDeclaration.goodsDestination),
+          maybeRetrieveDeclaration = journey.maybeRetrieveDeclaration
+        )
+
+    upsert(updatedDeclaration).map(_ => ExciseAndRestrictedGoodsController.onPageLoad())
+  }
 
   def vehicleSizeController(
     value: YesNo,

@@ -20,10 +20,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.AgentDetailsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.navigation.AgentDetailsRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.navigation.RequestByPass
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -52,13 +51,9 @@ class AgentDetailsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl, request.declarationType))),
         value => {
-          repo
-            .upsert(
-              request.declarationJourney.copy(maybeCustomsAgentName = Some(value))
-            )
-            .map { _ =>
-              Redirect(navigator.nextPage(RequestByPass(AgentDetailsController.onPageLoad().url)))
-            }
+          navigator
+            .nextPageWithCallBack(AgentDetailsRequest(value, request.declarationJourney, repo.upsert))
+            .map(Redirect)
         }
       )
   }

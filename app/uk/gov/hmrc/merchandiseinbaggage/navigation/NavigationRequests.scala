@@ -23,7 +23,6 @@ import scala.concurrent.Future
 
 //TODO remove the one with prefix Request
 sealed trait NavigationRequests
-final case class RequestByPass(currentUrl: String) extends NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
 final case class GoodsTypeQuantityRequest(declarationType: DeclarationType, idx: Int) extends NavigationRequests
 
@@ -136,4 +135,16 @@ final case class NewOrExistingRequest(
   updatedDeclarationJourney: DeclarationJourney,
   upsert: DeclarationJourney => Future[DeclarationJourney],
   declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class AgentDetailsRequest(
+  agentName: String,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class PreviousDeclarationDetailsRequest(
+  journey: DeclarationJourney,
+  originalDeclaration: Declaration,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync

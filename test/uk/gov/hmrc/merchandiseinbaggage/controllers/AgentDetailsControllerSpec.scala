@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.AgentDetailsController
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -26,6 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -57,9 +59,9 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "business name")
 
       (mockNavigator
-        .nextPage(_: RequestByPass))
-        .expects(RequestByPass(AgentDetailsController.onPageLoad().url))
-        .returning(routes.EnterAgentAddressController.onPageLoad())
+        .nextPageWithCallBack(_: AgentDetailsRequest)(_: ExecutionContext))
+        .expects(*, *)
+        .returning(Future successful EnterAgentAddressController.onPageLoad())
         .once()
 
       controller(journey).onSubmit(request).futureValue
