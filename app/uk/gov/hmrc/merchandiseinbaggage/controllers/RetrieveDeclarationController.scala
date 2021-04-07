@@ -43,9 +43,10 @@ class RetrieveDeclarationController @Inject()(
     extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    if (amendFlagConf.canBeAmended)
-      Ok(view(form, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
-    else Redirect(routes.CannotAccessPageController.onPageLoad().url)
+    if (amendFlagConf.canBeAmended) {
+      val preFilledForm = request.declarationJourney.maybeRetrieveDeclaration.fold(form)(form.fill)
+      Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
+    } else Redirect(routes.CannotAccessPageController.onPageLoad().url)
   }
 
   override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -54,18 +55,24 @@ class RetrieveDeclarationController @Inject()(
       .fold(
         formWithErrors =>
           BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)).asFuture,
-        validData => processRequest(validData)
+        retrieveDeclaration => processRequest(retrieveDeclaration)
       )
   }
 
-  private def processRequest(
-    validData: RetrieveDeclaration)(implicit request: DeclarationJourneyRequest[AnyContent], hc: HeaderCarrier, ec: ExecutionContext) =
+  private def processRequest(retrieveDeclaration: RetrieveDeclaration)(
+    implicit request: DeclarationJourneyRequest[AnyContent],
+    hc: HeaderCarrier,
+    ec: ExecutionContext) =
     mibConnector
-      .findBy(validData.mibReference, validData.eori)
+      .findBy(retrieveDeclaration.mibReference, retrieveDeclaration.eori)
       .fold(
         error => Future successful InternalServerError(error), { maybeDeclaration =>
           navigator
-            .nextPageWithCallBack(RetrieveDeclarationControllerRequest(maybeDeclaration, request.declarationJourney, repo.upsert))
+            .nextPage(
+              RetrieveDeclarationRequest(
+                maybeDeclaration,
+                request.declarationJourney.copy(maybeRetrieveDeclaration = Some(retrieveDeclaration)),
+                repo.upsert))
             .map(Redirect)
         }
       )

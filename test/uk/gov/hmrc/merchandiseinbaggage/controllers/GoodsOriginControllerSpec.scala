@@ -18,12 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
-import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -53,9 +54,9 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPage(_: RequestByPassWithIndex))
-        .expects(RequestByPassWithIndex(GoodsOriginController.onPageLoad(1).url, 1))
-        .returning(PurchaseDetailsController.onPageLoad(1))
+        .nextPage(_: GoodsOriginRequest)(_: ExecutionContext))
+        .expects(*, *)
+        .returning(Future successful PurchaseDetailsController.onPageLoad(1))
         .once()
 
       controller(journey).onSubmit(1)(request).futureValue

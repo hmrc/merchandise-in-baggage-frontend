@@ -16,6 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Eori, MibReference}
 
 case class RetrieveDeclaration(mibReference: MibReference, eori: Eori)
+
+object RetrieveDeclaration {
+  implicit val format: Format[RetrieveDeclaration] = Json.format[RetrieveDeclaration]
+}

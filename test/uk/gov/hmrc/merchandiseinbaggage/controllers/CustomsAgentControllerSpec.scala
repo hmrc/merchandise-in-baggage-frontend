@@ -20,12 +20,12 @@ import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{AgentDetailsController, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -37,6 +37,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
 
   private val journey: DeclarationJourney = DeclarationJourney(aSessionId, DeclarationType.Import)
 
+  //TODO move content test in UI
   "onPageLoad" should {
     s"return 200 with radio buttons" in {
 
@@ -52,30 +53,14 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
   }
 
   "onSubmit" should {
-    s"redirect to /agent-details on submit if answer is Yes" in {
+    s"delegate to Navigator" in {
       val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPage(_: RequestWithAnswer[_]))
-        .expects(RequestWithAnswer(CustomsAgentController.onPageLoad().url, Yes))
-        .returning(AgentDetailsController.onPageLoad())
-        .once()
-
-      val eventualResult = controller(journey).onSubmit(request)
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(AgentDetailsController.onPageLoad().url)
-    }
-
-    //TODO move this test to NavigatorSpec
-    s"redirect to /eori-number on submit if answer is No" in {
-      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "No")
-
-      (mockNavigator
-        .nextPage(_: RequestWithAnswer[_]))
-        .expects(RequestWithAnswer(CustomsAgentController.onPageLoad().url, No))
-        .returning(EoriNumberController.onPageLoad())
+        .nextPage(_: CustomsAgentRequest)(_: ExecutionContext))
+        .expects(*, *)
+        .returning(Future successful AgentDetailsController.onPageLoad())
         .once()
 
       controller(journey).onSubmit(request).futureValue

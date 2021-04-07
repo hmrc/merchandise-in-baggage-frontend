@@ -50,23 +50,12 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to /vehicle-registration-number after successful form submit with Yes for $importOrExport" in {
-
         val request = buildPost(routes.VehicleSizeController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
         val eventualResult = controller(journey).onSubmit()(request)
 
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.VehicleRegistrationNumberController.onPageLoad().url)
-      }
-
-      s"redirect to /cannot-use-service after successful form submit with No for $importOrExport" in {
-
-        val request = buildPost(routes.VehicleSizeController.onSubmit().url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "No")
-        val eventualResult = controller(journey).onSubmit()(request)
-
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.CannotUseServiceController.onPageLoad().url)
       }
     }
 

@@ -43,6 +43,7 @@ h1: components.h1)
         name = "firstName",
         label = "travellerDetails.firstName",
         classes = Some("govuk-input--width-20"),
+        attributes = Map("aria-describedby" -> "travellerDetailsHintId"),
         isPageHeading = false
     )
 
@@ -51,6 +52,7 @@ h1: components.h1)
         id = "lastName",
         name = "lastName",
         label = "travellerDetails.lastName",
+        attributes = Map("aria-describedby" -> "travellerDetailsHintId"),
         classes = Some("govuk-input--width-20"),
         isPageHeading = false
     )

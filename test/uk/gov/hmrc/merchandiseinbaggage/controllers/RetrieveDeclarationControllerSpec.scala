@@ -92,7 +92,7 @@ class RetrieveDeclarationControllerSpec
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
       (mockNavigator
-        .nextPageWithCallBack(_: RetrieveDeclarationControllerRequest)(_: ExecutionContext))
+        .nextPage(_: RetrieveDeclarationRequest)(_: ExecutionContext))
         .expects(*, *)
         .returning(Future.successful(DeclarationNotFoundController.onPageLoad()))
 

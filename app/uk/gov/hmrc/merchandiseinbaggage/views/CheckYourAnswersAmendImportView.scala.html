@@ -54,14 +54,21 @@
    </div>
  </dl>
 
- <h2 class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.sendDeclaration")</h2>
+ <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendDeclaration")</h2>
 
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
   <li>@messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.1")</li>
-  <li>@messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.2")</li>
-  <li>@messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.3")</li>
+  @if(calculationResults.proofOfOriginNeeded) {
+    <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")</li>
+  }
+  @if(calculationResults.isNothingToPay) {
+    <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li>
+  } else {
+    <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")</li>
+  }
+  <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")</li>
  </ul>
 
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>

@@ -18,15 +18,15 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 
@@ -66,13 +66,12 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
         (mockNavigator
-          .nextPage(_: RequestWithAnswer[_]))
-          .expects(RequestWithAnswer(GoodsDestinationController.onPageLoad().url, GreatBritain))
-          .returning(ExciseAndRestrictedGoodsController.onPageLoad())
+          .nextPage(_: GoodsDestinationRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad()))
           .once()
 
-        val eventualResult = controller(journey).onSubmit(request)
-        status(eventualResult) mustBe 303
+        controller(journey).onSubmit(request).futureValue
       }
     }
 

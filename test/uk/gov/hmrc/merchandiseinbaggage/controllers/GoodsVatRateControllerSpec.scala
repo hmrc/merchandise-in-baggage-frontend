@@ -26,6 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[GoodsVatRateView]
@@ -61,9 +63,9 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "Zero")
 
       (mockNavigator
-        .nextPage(_: RequestByPassWithIndex))
-        .expects(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(1).url, 1))
-        .returning(SearchGoodsCountryController.onPageLoad(1))
+        .nextPage(_: GoodsVatRateRequest)(_: ExecutionContext))
+        .expects(*, *)
+        .returning(Future successful SearchGoodsCountryController.onPageLoad(1))
         .once()
 
       controller(journey).onSubmit(1)(request).futureValue

@@ -16,23 +16,22 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
 
-import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class GoodsTypeQuantityController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   view: GoodsTypeQuantityView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
@@ -58,17 +57,9 @@ class GoodsTypeQuantityController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl))),
         categoryQuantityOfGoods => {
-          val updatedGoodsEntry = request.goodsEntry match {
-            case entry: ImportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
-            case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
-          }
-
-          persistAndRedirect(
-            updatedGoodsEntry,
-            idx,
-            navigator
-              .nextPage(RequestWithDeclarationType(routes.GoodsTypeQuantityController.onPageLoad(idx).url, request.declarationType, idx))
-          )
+          navigator
+            .nextPage(GoodsTypeQuantityRequest(request.declarationJourney, request.goodsEntry, idx, categoryQuantityOfGoods, repo.upsert))
+            .map(Redirect)
         }
       )
   }

@@ -47,8 +47,8 @@
   <div id="mibReferenceId" class="govuk-panel__body">@messages("declarationConfirmation.yourReferenceNumber.label")<br><strong>@declaration.mibReference.value</strong></div>
  </div>
 
- <h2 id="declarationDateId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.date")</h2>
- <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}.</p>
+ <h2 id="declarationDateId" class="govuk-heading-m">@messages("declarationConfirmation.date")</h2>
+ <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}</p>
  <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
 
 
@@ -56,7 +56,7 @@
    <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")</a>
  </p>
 
- <h2 id="whatToDoNextId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.h2.1")</h2>
+ <h2 id="whatToDoNextId" class="govuk-heading-m">@messages("declarationConfirmation.h2.1")</h2>
  <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
  <ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
   @if(declaration.declarationType == Import) {
@@ -75,7 +75,7 @@
   <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.4")</li>
  </ul>
 
- <h2 id="goodsDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
+ <h2 id="goodsDetailsId" class="govuk-heading-m">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
   @for((goods, index) <- allGoods(declaration).zipWithIndex) {
    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
@@ -110,7 +110,7 @@
   }
 
  @if(declaration.declarationType == Import) {
-  <h2 id="amountDetailsId" class="govuk-heading-m" id="main-message">@messages("declarationConfirmation.amountPaid")</h2>
+  <h2 id="amountDetailsId" class="govuk-heading-m">@messages("declarationConfirmation.amountPaid")</h2>
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
     <dt id="customsDutyLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.customsDuty")</dt>
@@ -127,7 +127,7 @@
   </dl>
  }
 
-  <h2 id="personalDetailsId" class="govuk-heading-m" id="main-message">@messages("checkYourAnswers.personalDetails")</h2>
+  <h2 id="personalDetailsId" class="govuk-heading-m">@messages("checkYourAnswers.personalDetails")</h2>
 
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">

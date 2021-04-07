@@ -21,10 +21,11 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -36,6 +37,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
+  //TODO move content test in UI
   "onPageLoad" should {
     s"return 200 with correct content" in {
 
@@ -57,9 +59,9 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
         .withFormUrlEncodedBody("email" -> "test@email.com")
 
       (mockNavigator
-        .nextPage(_: RequestByPass))
-        .expects(RequestByPass(EnterEmailController.onPageLoad().url))
-        .returning(JourneyDetailsController.onPageLoad())
+        .nextPage(_: EnterEmailRequest)(_: ExecutionContext))
+        .expects(*, *)
+        .returning(Future.successful(JourneyDetailsController.onPageLoad()))
         .once()
 
       controller(journey).onSubmit()(request).futureValue
@@ -67,7 +69,6 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   }
 
   s"return 400 with any form errors" in {
-
     val request = buildPost(EnterEmailController.onSubmit().url, aSessionId)
       .withFormUrlEncodedBody("email" -> "in valid")
 

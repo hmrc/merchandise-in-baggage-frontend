@@ -21,13 +21,17 @@ import org.scalatest.Assertions.fail
 import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage._
 
 object CheckYourAnswersPage extends Page {
   val path = "/declare-commercial-goods/check-your-answers"
-  val title =
+  val newTitle =
     "Check your answers before making your declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+  val amendTitle =
+    "Check your answers before adding these goods to your declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 
   val expectedSectionHeaders =
     Seq("Details of the goods", "Personal details", "Journey details", "Now send your declaration")
@@ -45,8 +49,12 @@ object CheckYourAnswersPage extends Page {
 
 trait CheckYourAnswersPage extends BaseUiSpec { this: Suite =>
 
-  def goToCYAPage: Assertion = {
+  def goToCYAPage(journeyType: JourneyType = New): Assertion = {
     goto(path)
+    val title = journeyType match {
+      case New   => newTitle
+      case Amend => amendTitle
+    }
     pageTitle mustBe title
   }
 }

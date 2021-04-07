@@ -16,30 +16,24 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.navigation
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, JourneyType, YesNo}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, GoodsEntry, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Declaration, GoodsDestination, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry, PurchaseDetailsInput}
 
 import scala.concurrent.Future
 
+//TODO remove the one with prefix Request
 sealed trait NavigationRequests
-final case class RequestByPass(currentUrl: String) extends NavigationRequests
 final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-final case class RequestByPassWithIndexAndValue(value: YesNo, idx: Int) extends NavigationRequests
-final case class RequestWithAnswer[T](currentUrl: String, value: T) extends NavigationRequests
-final case class RequestWithIndex(currentUrl: String, value: YesNo, journeyType: JourneyType, idx: Int) extends NavigationRequests
-final case class RequestWithDeclarationType(currentUrl: String, declarationType: DeclarationType, idx: Int) extends NavigationRequests
 
 sealed trait NavigationRequestsAsync
-final case class RequestWithCallBack(
-  currentUrl: String,
+final case class ReviewGoodsRequest(
   value: YesNo,
-  updatedGoodsEntries: GoodsEntries,
   declarationJourney: DeclarationJourney,
   overThresholdCheck: Boolean,
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class RequestWithIndexAndCallBack(
+final case class PurchaseDetailsRequest(
   purchaseDetailsInput: PurchaseDetailsInput,
   index: Int,
   goodsEntry: GoodsEntry,
@@ -47,21 +41,136 @@ final case class RequestWithIndexAndCallBack(
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class RemoveGoodsControllerRequest(
+final case class RemoveGoodsRequest(
   idx: Int,
   declarationJourney: DeclarationJourney,
   removeGoods: YesNo,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class RetrieveDeclarationControllerRequest(
+final case class RetrieveDeclarationRequest(
   declaration: Option[Declaration],
   declarationJourney: DeclarationJourney,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
-final case class VehicleRegistrationNumberControllerRequest(
+final case class VehicleRegistrationNumberRequest(
   declarationJourney: DeclarationJourney,
   regNumber: String,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+//New Request to depracate all of above
+final case class CustomsAgentRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class EnterEmailRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class EoriNumberRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class ExciseAndRestrictedGoodsRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class GoodsDestinationRequest(
+  answer: GoodsDestination,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class GoodsInVehicleRequest(
+  answer: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class JourneyDetailsRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class TravellerDetailsRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class ValueWeightOfGoodsRequest(
+  value: YesNo,
+  idx: Int,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class VehicleSizeRequest(
+  value: YesNo,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class NewOrExistingRequest(
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  declarationRequiredAndComplete: Boolean)
+    extends NavigationRequestsAsync
+
+final case class AgentDetailsRequest(
+  agentName: String,
+  updatedDeclarationJourney: DeclarationJourney,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class PreviousDeclarationDetailsRequest(
+  journey: DeclarationJourney,
+  originalDeclaration: Declaration,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class GoodsTypeQuantityRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class SearchGoodsCountryRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class GoodsVatRateRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
+  upsert: DeclarationJourney => Future[DeclarationJourney])
+    extends NavigationRequestsAsync
+
+final case class GoodsOriginRequest(
+  journey: DeclarationJourney,
+  entries: GoodsEntry,
+  idx: Int,
   upsert: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync

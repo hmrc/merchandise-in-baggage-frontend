@@ -59,7 +59,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
         status(eventualResult) mustBe 200
         result must include(messages("purchaseDetails.title", "clothes"))
         result must include(messages("purchaseDetails.heading", "clothes"))
-        result must include(messages("purchaseDetails.price.label"))
+
         if (importOrExport == Import) {
           result must include(messages("purchaseDetails.price.hint"))
           result must include(messages("purchaseDetails.p.1"))
@@ -67,7 +67,6 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           result must include(messages("purchaseDetails.p.a.text"))
           result must include(messages("purchaseDetails.p.a.href"))
         }
-        result must include(messages("purchaseDetails.currency.label"))
       }
     }
 
@@ -77,7 +76,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
 
         (mockNavigator
-          .nextPageWithCallBack(_: RequestWithIndexAndCallBack)(_: ExecutionContext))
+          .nextPage(_: PurchaseDetailsRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(ReviewGoodsController.onPageLoad()))
 

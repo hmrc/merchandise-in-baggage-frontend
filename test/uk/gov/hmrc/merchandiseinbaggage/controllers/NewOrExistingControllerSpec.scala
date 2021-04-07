@@ -19,14 +19,14 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
 import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -67,9 +67,9 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
           .withFormUrlEncodedBody("value" -> "New")
 
         (mockNavigator
-          .nextPage(_: RequestWithAnswer[_]))
-          .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, New))
-          .returning(GoodsDestinationController.onPageLoad())
+          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(GoodsDestinationController.onPageLoad()))
           .once()
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -81,9 +81,9 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
           .withFormUrlEncodedBody("value" -> "Amend")
 
         (mockNavigator
-          .nextPage(_: RequestWithAnswer[_]))
-          .expects(RequestWithAnswer(NewOrExistingController.onPageLoad().url, Amend))
-          .returning(RetrieveDeclarationController.onPageLoad())
+          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(RetrieveDeclarationController.onPageLoad()))
           .once()
 
         val eventualResult = controller(journey).onSubmit(request)

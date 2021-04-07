@@ -32,117 +32,200 @@ import scala.concurrent.{ExecutionContext, Future}
 class Navigator {
   import NavigatorMapping._
 
-  def nextPage(request: NavigationRequests): Call = request match {
-    case RequestByPass(url)                                    => toNextPage(url)
-    case RequestByPassWithIndex(url, idx)                      => nextPageWithIndex(idx)(url)
-    case RequestByPassWithIndexAndValue(value, idx)            => valueWeightOfGoodsControllerSubmit(value, idx)
-    case RequestWithAnswer(url, value)                         => nextPageWithAnswer(url)(value)
-    case RequestWithIndex(url, value, journeyType, idx)        => nextPageWithIndex(url)(value, journeyType, idx)
-    case RequestWithDeclarationType(url, declarationType, idx) => nextPageWithIndexAndDeclarationType(declarationType, idx)(url)
+  def nextPage(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] = request match {
+    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert)    => reviewGoods(value, journey, overThresholdCheck, upsert)
+    case PurchaseDetailsRequest(input, idx, journey, entries, upsert)      => purchaseDetails(input, idx, entries, journey, upsert)
+    case RemoveGoodsRequest(idx, journey, value, upsert)                   => removeGoodOrRedirect(idx, journey, value, upsert)
+    case RetrieveDeclarationRequest(declaration, journey, upsert)          => retrieveDeclaration(declaration, journey, upsert)
+    case VehicleRegistrationNumberRequest(journey, regNumber, upsert)      => vehicleRegistrationNumber(journey, regNumber, upsert)
+    case CustomsAgentRequest(value, journey, upsert, complete)             => customsAgent(value, journey, upsert, complete)
+    case EnterEmailRequest(journey, upsert, complete)                      => enterEmail(journey, upsert, complete)
+    case EoriNumberRequest(journey, upsert, complete)                      => enterEori(journey, upsert, complete)
+    case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete) => exciseAndRestrictedGoods(value, journey, upsert, complete)
+    case GoodsDestinationRequest(value, journey, upsert, complete)         => goodsDestination(value, journey, upsert, complete)
+    case GoodsInVehicleRequest(value, journey, upsert, complete)           => goodsInVehicleController(value, journey, upsert, complete)
+    case JourneyDetailsRequest(journey, upsert, complete)                  => journeyDetails(journey, upsert, complete)
+    case TravellerDetailsRequest(journey, upsert, complete)                => travellerDetails(journey, upsert, complete)
+    case ValueWeightOfGoodsRequest(value, idx, journey, upsert, complete)  => valueWeightOfGoods(value, idx, journey, upsert, complete)
+    case VehicleSizeRequest(value, journey, upsert, complete)              => vehicleSizeController(value, journey, upsert, complete)
+    case NewOrExistingRequest(journey, upsert, complete)                   => newOrExisting(journey, upsert, complete)
+    case AgentDetailsRequest(agentName, journey, upsert)                   => agentDetails(agentName, journey, upsert)
+    case PreviousDeclarationDetailsRequest(journey, declaration, upsert)   => previousDeclarationDetails(journey, declaration, upsert)
+    case GoodsTypeQuantityRequest(journey, entries, idx, category, upsert) => goodsTypeQuantity(journey, entries, idx, category, upsert)
+    case GoodsOriginRequest(journey, entries, idx, upsert) =>
+      persistAndRedirect(journey, entries, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
+    case GoodsVatRateRequest(journey, entries, idx, upsert) =>
+      persistAndRedirect(journey, entries, idx, SearchGoodsCountryController.onPageLoad(idx), upsert)
+    case SearchGoodsCountryRequest(journey, entries, idx, upsert) =>
+      persistAndRedirect(journey, entries, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
-
-  def nextPageWithCallBack(request: NavigationRequestsAsync)(implicit ec: ExecutionContext): Future[Call] =
-    request match {
-      case r: RequestWithCallBack => reviewGoodsController(r.value, r.declarationJourney, r.overThresholdCheck, r.callBack)
-      case r: RequestWithIndexAndCallBack =>
-        purchaseDetailsController(r.purchaseDetailsInput, r.index, r.journey, r.goodsEntry, r.callBack)
-      case RemoveGoodsControllerRequest(idx, journey, value, upsert) =>
-        removeGoodOrRedirect(idx, journey, value, upsert)
-      case RetrieveDeclarationControllerRequest(declaration, journey, upsert) =>
-        retrieveDeclarationControllerSubmit(declaration, journey, upsert)
-      case VehicleRegistrationNumberControllerRequest(journey, regNumber, upsert) =>
-        vehicleRegistrationNumberControllerSubmit(journey, regNumber, upsert)
-    }
 }
 
 object NavigatorMapping {
 
-  val toNextPage: Map[String, Call] = Map(
-    AgentDetailsController.onPageLoad().url               -> EnterAgentAddressController.onPageLoad(),
-    EnterEmailController.onPageLoad().url                 -> JourneyDetailsController.onPageLoad(),
-    EoriNumberController.onPageLoad().url                 -> TravellerDetailsController.onPageLoad(),
-    JourneyDetailsController.onPageLoad().url             -> GoodsInVehicleController.onPageLoad(),
-    PreviousDeclarationDetailsController.onPageLoad().url -> ExciseAndRestrictedGoodsController.onPageLoad(),
-    TravellerDetailsController.onPageLoad().url           -> EnterEmailController.onPageLoad(),
-  )
-
-  def nextPageWithAnswer[T]: Map[String, T => Call] = Map(
-    GoodsDestinationController.onPageLoad().url -> goodsDestination,
-    CustomsAgentController.onPageLoad().url     -> customsAgent,
-    GoodsInVehicleController.onPageLoad().url   -> goodsInVehicleController,
-    NewOrExistingController.onPageLoad().url    -> newOrExistingController,
-    VehicleSizeController.onPageLoad().url      -> vehicleSizeControllerSubmit
-  )
-
-  val nextPageWithIndex: Map[String, (YesNo, JourneyType, Int) => Call] = Map(
-    ExciseAndRestrictedGoodsController.onPageLoad().url -> exciseAndRestrictedGoods
-  )
-
-  def nextPageWithIndex(idx: Int): Map[String, Call] = Map(
-    GoodsOriginController.onPageLoad(idx).url        -> PurchaseDetailsController.onPageLoad(idx),
-    GoodsVatRateController.onPageLoad(idx).url       -> SearchGoodsCountryController.onPageLoad(idx),
-    SearchGoodsCountryController.onPageLoad(idx).url -> PurchaseDetailsController.onPageLoad(idx)
-  )
-
-  def nextPageWithIndexAndDeclarationType(declarationType: DeclarationType, idx: Int): Map[String, Call] = Map(
-    GoodsTypeQuantityController.onPageLoad(idx).url -> goodsTypeQuantityController(declarationType, idx),
-  )
-
-  def valueWeightOfGoodsControllerSubmit(belowThreshold: YesNo, entriesSize: Int): Call = belowThreshold match {
-    case No  => CannotUseServiceController.onPageLoad()
-    case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
-  }
-
-  def vehicleRegistrationNumberControllerSubmit(
-    journey: DeclarationJourney,
-    vehicleReg: String,
-    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+  def vehicleRegistrationNumber(journey: DeclarationJourney, vehicleReg: String, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] =
     upsert(journey.copy(maybeRegistrationNumber = Some(vehicleReg)))
-      .map { _ =>
-        CheckYourAnswersController.onPageLoad()
-      }
+      .map(_ => CheckYourAnswersController.onPageLoad())
 
-  private def vehicleSizeControllerSubmit[T](isSmallVehicle: T): Call = isSmallVehicle match {
-    case Yes => VehicleRegistrationNumberController.onPageLoad()
-    case No  => CannotUseServiceController.onPageLoad()
+  def agentDetails(agentName: String, journey: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] =
+    upsert(journey.copy(maybeCustomsAgentName = Some(agentName)))
+      .map(_ => EnterAgentAddressController.onPageLoad())
+
+  def previousDeclarationDetails(
+    journey: DeclarationJourney,
+    originalDeclaration: Declaration,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedDeclaration =
+      DeclarationJourney(journey.sessionId, originalDeclaration.declarationType)
+        .copy(
+          declarationId = originalDeclaration.declarationId,
+          journeyType = Amend,
+          maybeGoodsDestination = Some(originalDeclaration.goodsDestination),
+          maybeRetrieveDeclaration = journey.maybeRetrieveDeclaration
+        )
+
+    upsert(updatedDeclaration).map(_ => ExciseAndRestrictedGoodsController.onPageLoad())
   }
 
-  private def exciseAndRestrictedGoods(value: YesNo, journeyType: JourneyType, idx: Int): Call =
-    value match {
+  def vehicleSizeController(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case Yes => VehicleRegistrationNumberController.onPageLoad()
+      case No  => CannotUseServiceController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  def exciseAndRestrictedGoods(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
       case Yes => CannotUseServiceController.onPageLoad()
       case No  => ValueWeightOfGoodsController.onPageLoad()
     }
-
-  private def customsAgent[T](value: T): Call = value match {
-    case Yes => AgentDetailsController.onPageLoad()
-    case No  => EoriNumberController.onPageLoad()
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
 
-  private def goodsDestination[T](value: T) =
-    value match {
+  def valueWeightOfGoods(
+    value: YesNo,
+    entriesSize: Int,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case No  => CannotUseServiceController.onPageLoad()
+      case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  def customsAgent(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
+      case Yes => AgentDetailsController.onPageLoad()
+      case No  => EoriNumberController.onPageLoad()
+    }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
+
+  def enterEmail(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, JourneyDetailsController.onPageLoad(), upsert)
+
+  def enterEori(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, TravellerDetailsController.onPageLoad(), upsert)
+
+  def goodsDestination(
+    value: GoodsDestination,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
       case NorthernIreland => CannotUseServiceIrelandController.onPageLoad()
       case GreatBritain    => ExciseAndRestrictedGoodsController.onPageLoad()
     }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
 
-  private def goodsInVehicleController[T](value: T) =
-    value match {
+  def goodsInVehicleController(
+    value: YesNo,
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = value match {
       case Yes => VehicleSizeController.onPageLoad()
       case No  => CheckYourAnswersController.onPageLoad()
     }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
 
-  private def goodsTypeQuantityController(declarationType: DeclarationType, idx: Int): Call =
-    declarationType match {
-      case Import => GoodsVatRateController.onPageLoad(idx)
-      case Export => SearchGoodsCountryController.onPageLoad(idx)
-    }
+  def journeyDetails(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, GoodsInVehicleController.onPageLoad(), upsert)
 
-  private def newOrExistingController[T](journeyType: T): Call =
-    journeyType match {
+  def travellerDetails(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] =
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, EnterEmailController.onPageLoad(), upsert)
+
+  def newOrExisting(
+    updatedDeclarationJourney: DeclarationJourney,
+    upsert: DeclarationJourney => Future[DeclarationJourney],
+    declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
+    val redirectTo = updatedDeclarationJourney.journeyType match {
       case New   => GoodsDestinationController.onPageLoad()
       case Amend => RetrieveDeclarationController.onPageLoad()
     }
+    persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
+  }
 
-  def reviewGoodsController(
+  private def persistAndRedirect(
+    updatedDeclarationJourney: DeclarationJourney,
+    declarationRequiredAndComplete: Boolean,
+    redirectIfNotComplete: Call,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
+    upsert(updatedDeclarationJourney).map { _ =>
+      if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad()
+      else redirectIfNotComplete
+    }
+
+  def goodsTypeQuantity(
+    journey: DeclarationJourney,
+    currentEntries: GoodsEntry,
+    idx: Int,
+    categoryQuantityOfGoods: CategoryQuantityOfGoods,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedGoodsEntry = currentEntries match {
+      case entry: ImportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
+      case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
+    }
+
+    val redirectTo = journey.declarationType match {
+      case Import => GoodsVatRateController.onPageLoad(idx)
+      case Export => SearchGoodsCountryController.onPageLoad(idx)
+    }
+    persistAndRedirect(journey, updatedGoodsEntry, idx, redirectTo, upsert)
+  }
+
+  def reviewGoods(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
     overThresholdCheck: Boolean,
@@ -168,7 +251,7 @@ object NavigatorMapping {
       GoodsTypeQuantityController.onPageLoad(declarationJourney.updateGoodsEntries().goodsEntries.entries.size)
     }
 
-  def purchaseDetailsController(
+  def purchaseDetails(
     purchaseDetailsInput: PurchaseDetailsInput,
     idx: Int,
     declarationJourney: DeclarationJourney,
@@ -217,7 +300,7 @@ object NavigatorMapping {
       Future successful CheckYourAnswersController.onPageLoad()
     else Future successful ReviewGoodsController.onPageLoad()
 
-  def retrieveDeclarationControllerSubmit(
+  def retrieveDeclaration(
     maybeDeclaration: Option[Declaration],
     declarationJourney: DeclarationJourney,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
@@ -228,7 +311,10 @@ object NavigatorMapping {
             .copy(declarationType = declaration.declarationType, declarationId = declaration.declarationId)) map { _ =>
           PreviousDeclarationDetailsController.onPageLoad()
         }
-      case _ => Future successful DeclarationNotFoundController.onPageLoad()
+      case _ =>
+        upsert(declarationJourney) map { _ =>
+          DeclarationNotFoundController.onPageLoad()
+        }
     }
 
   private def isValid(declaration: Declaration) =
@@ -236,4 +322,24 @@ object NavigatorMapping {
       case Export => true
       case Import => declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
     }
+
+  def persistAndRedirect(
+    declarationJourney: DeclarationJourney,
+    updatedGoodsEntry: GoodsEntry,
+    index: Int,
+    redirectIfNotComplete: Call,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedDeclarationJourney =
+      declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
+
+    //TODO improve these Boolean
+    upsert(updatedDeclarationJourney).map { _ =>
+      (updatedDeclarationJourney.declarationRequiredAndComplete, updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete) match {
+        case (true, true)   => CheckYourAnswersController.onPageLoad() // user clicked change link from /check-your-answers
+        case (false, true)  => ReviewGoodsController.onPageLoad() // user clicked change link from /review-goods
+        case (true, false)  => redirectIfNotComplete // user clicked add more goods from /check-your-answers
+        case (false, false) => redirectIfNotComplete // normal journey flow / user is adding more goods from /review-goods
+      }
+    }
+  }
 }

@@ -16,17 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.views.html.JourneyDetailsPage
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import java.time.LocalDate
 
 import org.scalamock.scalatest.MockFactory
+import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.JourneyDetailsPage
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import scala.concurrent.{ExecutionContext, Future}
 
 class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
@@ -72,9 +73,9 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
           )
 
         (mockNavigator
-          .nextPage(_: RequestByPass))
-          .expects(RequestByPass(JourneyDetailsController.onPageLoad().url))
-          .returning(GoodsInVehicleController.onPageLoad())
+          .nextPage(_: JourneyDetailsRequest)(_: ExecutionContext))
+          .expects(*, *)
+          .returning(Future.successful(GoodsInVehicleController.onPageLoad()))
 
         controller(journey).onSubmit(request).futureValue
       }

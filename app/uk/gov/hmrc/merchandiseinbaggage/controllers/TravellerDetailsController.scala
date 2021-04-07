@@ -47,11 +47,14 @@ class TravellerDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-        nameOfPersonCarryingTheGoods =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods)),
-            navigator.nextPage(RequestByPass(TravellerDetailsController.onPageLoad().url))
-        )
+        nameOfPersonCarryingTheGoods => {
+          val updated = request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods))
+          navigator
+            .nextPage(
+              TravellerDetailsRequest(updated, repo.upsert, updated.declarationRequiredAndComplete)
+            )
+            .map(Redirect)
+        }
       )
   }
 }

@@ -21,6 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{CheckYourAnswersPage, DeclarationConfirmationPage, ExciseAndRestrictedGoodsPage, GoodsTypeQuantityPage, NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, PurchaseDetailsExportPage, RetrieveDeclarationPage, ReviewGoodsPage, SearchGoodsCountryPage, StartExportPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NewOrExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import java.time.LocalDateTime
@@ -31,7 +32,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
     "work as expected" in {
       goto(StartExportPage.path)
 
-      submitPage(NeworExistingDeclarationPage, "Amend")
+      submitPage(NewOrExistingDeclarationPage, "Amend")
 
       val paidDeclaration = declaration.copy(paymentStatus = Some(Paid))
 

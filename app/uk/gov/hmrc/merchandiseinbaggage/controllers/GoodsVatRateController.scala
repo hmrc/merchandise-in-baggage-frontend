@@ -33,7 +33,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class GoodsVatRateController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   view: GoodsVatRateView,
   navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
@@ -60,11 +60,15 @@ class GoodsVatRateController @Inject()(
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
-            persistAndRedirect(
-              request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
-              idx,
-              navigator.nextPage(RequestByPassWithIndex(GoodsVatRateController.onPageLoad(idx).url, idx))
-          )
+            navigator
+              .nextPage(
+                GoodsVatRateRequest(
+                  request.declarationJourney,
+                  request.goodsEntry.asInstanceOf[ImportGoodsEntry].copy(maybeGoodsVatRate = Some(goodsVatRate)),
+                  idx,
+                  repo.upsert
+                ))
+              .map(Redirect)
         )
     }
   }

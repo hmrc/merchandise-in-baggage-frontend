@@ -53,11 +53,17 @@ class JourneyDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-        journeyDetailsEntry =>
-          persistAndRedirect(
-            request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry)),
-            navigator.nextPage(RequestByPass(JourneyDetailsController.onPageLoad().url))
-        )
+        journeyDetailsEntry => {
+          val updated = request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry))
+          navigator
+            .nextPage(
+              JourneyDetailsRequest(
+                updated,
+                repo.upsert,
+                updated.declarationRequiredAndComplete
+              ))
+            .map(Redirect)
+        }
       )
   }
 }
