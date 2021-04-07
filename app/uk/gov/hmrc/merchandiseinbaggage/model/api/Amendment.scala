@@ -26,7 +26,8 @@ case class Amendment(
   goods: DeclarationGoods,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentStatus: Option[PaymentStatus] = None,
-  source: Option[String] = Some("Digital")
+  source: Option[String] = Some("Digital"),
+  lang: String = "en"
 )
 
 object Amendment {
