@@ -16,9 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{CheckYourAnswersPage, DeclarationConfirmationPage, ExciseAndRestrictedGoodsPage, GoodsTypeQuantityPage, NeworExistingDeclarationPage, PreviousDeclarationDetailsPage, PurchaseDetailsExportPage, RetrieveDeclarationPage, ReviewGoodsPage, SearchGoodsCountryPage, StartExportPage, ValueWeightOfGoodsPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import java.time.LocalDateTime
@@ -47,11 +49,40 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
           declarationId = id)
 
       givenADeclarationJourneyIsPersisted(exportJourney)
+      givenDeclarationIsAmendedInBackend
       givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
-      webDriver.getCurrentUrl mustBe fullUrl(PreviousDeclarationDetailsPage.path)
+      webDriver.getPageSource must include("wine")
+      webDriver.getPageSource must include("99.99, Euro (EUR)")
+
+      submitPage(PreviousDeclarationDetailsPage, "continue")
+
+      // controlled or restricted goods
+      submitPage(ExciseAndRestrictedGoodsPage, No)
+
+      submitPage(ValueWeightOfGoodsPage, Yes)
+
+      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("sock", "one"))
+
+      submitPage(SearchGoodsCountryPage, "FR")
+
+      submitPage(PurchaseDetailsExportPage, "100.50")
+
+      // Review the goods added
+      webDriver.getPageSource must include("sock")
+      webDriver.getPageSource must include("France")
+      webDriver.getPageSource must include("£100.50")
+
+      submitPage(ReviewGoodsPage, "No")
+
+      webDriver.getPageSource must include("sock")
+      webDriver.getPageSource must include("France")
+
+      submitPage(CheckYourAnswersPage, Export)
+
+      webDriver.getCurrentUrl mustBe fullUrl(DeclarationConfirmationPage.path)
     }
   }
 }

@@ -17,9 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.wiremock
 
 import com.github.tomakehurst.wiremock.WireMockServer
+import com.github.tomakehurst.wiremock.common.{ConsoleNotifier, Slf4jNotifier}
+import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import org.scalatest.{BeforeAndAfterEach, Suite}
 
 trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
+//  val config = new WireMockConfiguration().notifier(new Slf4jNotifier(true)).port(WireMockSupport.port).notifier(new ConsoleNotifier(true))
+
+//  implicit val wireMockServer = new WireMockServer(config)
   implicit val wireMockServer = new WireMockServer(WireMockSupport.port)
 
   override def beforeEach(): Unit = {
