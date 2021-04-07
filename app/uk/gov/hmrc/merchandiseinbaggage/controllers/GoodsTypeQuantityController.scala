@@ -58,8 +58,7 @@ class GoodsTypeQuantityController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, idx, request.declarationJourney.declarationType, backButtonUrl))),
         categoryQuantityOfGoods => {
           navigator
-            .nextPage(
-              GoodsTypeQuantityRequest(request.declarationJourney, request.goodsEntry, idx, categoryQuantityOfGoods, repo.upsert))
+            .nextPage(GoodsTypeQuantityRequest(request.declarationJourney, request.goodsEntry, idx, categoryQuantityOfGoods, repo.upsert))
             .map(Redirect)
         }
       )

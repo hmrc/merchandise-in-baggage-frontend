@@ -69,8 +69,7 @@ class PurchaseDetailsController @Inject()(
       withGoodsCategory(request.goodsEntry) { category =>
         val requestWithIndexAndCallBack: PurchaseDetailsInput => Future[Result] = purchaseDetailsInput =>
           navigator
-            .nextPage(
-              PurchaseDetailsRequest(purchaseDetailsInput, idx, request.goodsEntry, request.declarationJourney, repo.upsert))
+            .nextPage(PurchaseDetailsRequest(purchaseDetailsInput, idx, request.goodsEntry, request.declarationJourney, repo.upsert))
             .map(Redirect)
 
         request.declarationJourney.declarationType match {
