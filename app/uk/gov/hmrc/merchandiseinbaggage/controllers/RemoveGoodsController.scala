@@ -30,7 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class RemoveGoodsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   navigator: Navigator,
   view: RemoveGoodsView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
@@ -54,7 +54,7 @@ class RemoveGoodsController @Inject()(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
           removeGoods =>
             navigator
-              .nextPageWithCallBack(
+              .nextPage(
                 RemoveGoodsRequest(
                   idx,
                   request.declarationJourney,

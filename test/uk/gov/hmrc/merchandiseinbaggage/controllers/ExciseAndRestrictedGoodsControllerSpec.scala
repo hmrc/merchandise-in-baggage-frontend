@@ -62,7 +62,7 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
           .withFormUrlEncodedBody("value" -> "No")
 
         (mockNavigator
-          .nextPageWithCallBack(_: ExciseAndRestrictedGoodsRequest)(_: ExecutionContext))
+          .nextPage(_: ExciseAndRestrictedGoodsRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(ValueWeightOfGoodsController.onPageLoad()))
           .once()

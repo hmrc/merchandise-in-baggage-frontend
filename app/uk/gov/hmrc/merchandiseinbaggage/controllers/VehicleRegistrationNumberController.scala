@@ -52,7 +52,7 @@ class VehicleRegistrationNumberController @Inject()(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         vehicleReg =>
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               VehicleRegistrationNumberRequest(
                 request.declarationJourney,
                 vehicleReg,

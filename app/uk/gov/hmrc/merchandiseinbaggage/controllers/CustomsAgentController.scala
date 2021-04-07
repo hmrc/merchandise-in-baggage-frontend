@@ -55,7 +55,7 @@ class CustomsAgentController @Inject()(
         isCustomsAgent => {
           val updatedJourney = request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent))
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               CustomsAgentRequest(isCustomsAgent, updatedJourney, repo.upsert, updatedJourney.declarationRequiredAndComplete)
             )
             .map(Redirect)

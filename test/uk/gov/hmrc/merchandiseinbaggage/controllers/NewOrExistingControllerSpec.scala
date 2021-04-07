@@ -67,7 +67,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
           .withFormUrlEncodedBody("value" -> "New")
 
         (mockNavigator
-          .nextPageWithCallBack(_: NewOrExistingRequest)(_: ExecutionContext))
+          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(GoodsDestinationController.onPageLoad()))
           .once()
@@ -81,7 +81,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
           .withFormUrlEncodedBody("value" -> "Amend")
 
         (mockNavigator
-          .nextPageWithCallBack(_: NewOrExistingRequest)(_: ExecutionContext))
+          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future.successful(RetrieveDeclarationController.onPageLoad()))
           .once()

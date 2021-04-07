@@ -59,7 +59,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
         .withFormUrlEncodedBody("email" -> "test@email.com")
 
       (mockNavigator
-        .nextPageWithCallBack(_: EnterEmailRequest)(_: ExecutionContext))
+        .nextPage(_: EnterEmailRequest)(_: ExecutionContext))
         .expects(*, *)
         .returning(Future.successful(JourneyDetailsController.onPageLoad()))
         .once()

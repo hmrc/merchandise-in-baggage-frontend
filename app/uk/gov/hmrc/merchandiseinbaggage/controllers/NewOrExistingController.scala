@@ -55,7 +55,7 @@ class NewOrExistingController @Inject()(
         journeyType => {
           val updated = request.declarationJourney.copy(journeyType = journeyType)
           navigator
-            .nextPageWithCallBack(NewOrExistingRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .nextPage(NewOrExistingRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
             .map(Redirect)
             .map(_.addingToSession("journeyType" -> s"${journeyType.toString.toLowerCase}"))
         }

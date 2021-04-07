@@ -58,7 +58,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
-        .nextPageWithCallBack(_: CustomsAgentRequest)(_: ExecutionContext))
+        .nextPage(_: CustomsAgentRequest)(_: ExecutionContext))
         .expects(*, *)
         .returning(Future successful AgentDetailsController.onPageLoad())
         .once()

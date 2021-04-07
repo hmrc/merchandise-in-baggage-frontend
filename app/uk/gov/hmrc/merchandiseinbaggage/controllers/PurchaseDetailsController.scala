@@ -34,7 +34,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 class PurchaseDetailsController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  override val repo: DeclarationJourneyRepository,
+  repo: DeclarationJourneyRepository,
   navigator: Navigator,
   importView: PurchaseDetailsImportView,
   exportView: PurchaseDetailsExportView,
@@ -69,8 +69,8 @@ class PurchaseDetailsController @Inject()(
       withGoodsCategory(request.goodsEntry) { category =>
         val requestWithIndexAndCallBack: PurchaseDetailsInput => Future[Result] = purchaseDetailsInput =>
           navigator
-            .nextPageWithCallBack(
-              RequestWithIndexAndCallBack(purchaseDetailsInput, idx, request.goodsEntry, request.declarationJourney, repo.upsert))
+            .nextPage(
+              PurchaseDetailsRequest(purchaseDetailsInput, idx, request.goodsEntry, request.declarationJourney, repo.upsert))
             .map(Redirect)
 
         request.declarationJourney.declarationType match {

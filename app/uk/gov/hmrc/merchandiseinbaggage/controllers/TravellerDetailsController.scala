@@ -50,7 +50,7 @@ class TravellerDetailsController @Inject()(
         nameOfPersonCarryingTheGoods => {
           val updated = request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods))
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               TravellerDetailsRequest(updated, repo.upsert, updated.declarationRequiredAndComplete)
             )
             .map(Redirect)

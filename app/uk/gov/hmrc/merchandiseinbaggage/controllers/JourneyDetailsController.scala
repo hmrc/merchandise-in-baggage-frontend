@@ -56,7 +56,7 @@ class JourneyDetailsController @Inject()(
         journeyDetailsEntry => {
           val updated = request.declarationJourney.copy(maybeJourneyDetailsEntry = Some(journeyDetailsEntry))
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               JourneyDetailsRequest(
                 updated,
                 repo.upsert,

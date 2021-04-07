@@ -57,7 +57,7 @@ class VehicleSizeController @Inject()(
         isSmallVehicle => {
           val updated = request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle))
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               VehicleSizeRequest(
                 isSmallVehicle,
                 updated,

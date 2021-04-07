@@ -42,7 +42,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
     val result: Future[Result] = controller.onSubmit(1)(postReq)
 
     (mockNavigator
-      .nextPageWithCallBack(_: RemoveGoodsRequest)(_: ExecutionContext))
+      .nextPage(_: RemoveGoodsRequest)(_: ExecutionContext))
       .expects(*, *)
       .returning(Future.successful(CheckYourAnswersController.onPageLoad()))
 

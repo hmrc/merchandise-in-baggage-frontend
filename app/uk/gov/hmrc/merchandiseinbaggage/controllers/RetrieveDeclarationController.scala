@@ -68,7 +68,7 @@ class RetrieveDeclarationController @Inject()(
       .fold(
         error => Future successful InternalServerError(error), { maybeDeclaration =>
           navigator
-            .nextPageWithCallBack(
+            .nextPage(
               RetrieveDeclarationRequest(
                 maybeDeclaration,
                 request.declarationJourney.copy(maybeRetrieveDeclaration = Some(retrieveDeclaration)),
