@@ -21,10 +21,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEnt
 
 import scala.concurrent.Future
 
-//TODO remove the one with prefix Request
-sealed trait NavigationRequests
-final case class RequestByPassWithIndex(currentUrl: String, idx: Int) extends NavigationRequests
-
 sealed trait NavigationRequestsAsync
 final case class ReviewGoodsRequest(
   value: YesNo,
