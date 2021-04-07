@@ -16,42 +16,65 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NewOrExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
+import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{CheckYourAnswersPage, ExciseAndRestrictedGoodsPage, GoodsOriginPage, GoodsTypeQuantityPage, GoodsVatRatePage, NewOrExistingDeclarationPage, PaymentCalculationPage, PreviousDeclarationDetailsPage, PurchaseDetailsPage, RetrieveDeclarationPage, ReviewGoodsPage, StartImportPage, ValueWeightOfGoodsPage}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Paid
+import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-
-import java.time.LocalDateTime
 
 class AdditionalDeclarationImportSpec extends BaseUiSpec {
 
   "Additional Declaration Import journey - happy path" should {
     "work as expected" in {
-      goto(StartExportPage.path)
+      goto(StartImportPage.path)
 
       submitPage(NewOrExistingDeclarationPage, "Amend")
 
-      val paidDeclaration = declaration.copy(paymentStatus = Some(Paid))
+      val paidDeclaration = declaration.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(aTotalCalculationResult),
+        eori = eori,
+        mibReference = mibReference)
 
       givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
-      val sessionId = SessionId()
-      val created = LocalDateTime.now
-      val id = paidDeclaration.declarationId
-      val exportJourney: DeclarationJourney = completedDeclarationJourney
-        .copy(
-          sessionId = sessionId,
-          declarationType = DeclarationType.Export,
-          maybeEori = Some(eori),
-          createdAt = created,
-          declarationId = id)
+      givenPersistedDeclarationIsFound(paidDeclaration, paidDeclaration.declarationId)
 
-      givenADeclarationJourneyIsPersisted(exportJourney)
-      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+      givenAPaymentCalculation(aCalculationResult)
+      givenEoriIsChecked(eori.toString)
 
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
       webDriver.getCurrentUrl mustBe fullUrl(PreviousDeclarationDetailsPage.path)
+
+      webDriver.getPageSource must include("wine")
+      webDriver.getPageSource must include("99.99, Euro (EUR)")
+
+      submitPage(PreviousDeclarationDetailsPage, "continue")
+
+      submitPage(ExciseAndRestrictedGoodsPage, No)
+
+      submitPage(ValueWeightOfGoodsPage, Yes)
+
+      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("sock", "one"))
+
+      submitPage(GoodsVatRatePage, "Five")
+
+      submitPage(GoodsOriginPage, "Yes")
+      submitPage(PurchaseDetailsPage, PurchaseDetailsInput("100.50", "EUR"))
+
+      webDriver.getPageSource must include("sock")
+      webDriver.getPageSource must include("Yes")
+      webDriver.getPageSource must include("100.50, Euro (EUR)")
+
+      submitPage(ReviewGoodsPage, "No")
+
+      submitPage(PaymentCalculationPage, "")
+
+      webDriver.getPageSource must include("payButton")
+      webDriver.getCurrentUrl mustBe fullUrl(CheckYourAnswersPage.path)
     }
   }
 }

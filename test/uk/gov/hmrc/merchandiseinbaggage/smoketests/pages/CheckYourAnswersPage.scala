@@ -43,8 +43,7 @@ object CheckYourAnswersPage extends Page {
       case _      => fail("invalid_input")
     }
 
-    val button = find(NameQuery(query)).get
-    click on button
+    click.on(NameQuery(query))
   }
 }
 

@@ -15,24 +15,18 @@
  */
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
+
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.{Assertion, Suite}
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDetailsPage._
 import org.scalatestplus.selenium.WebBrowser._
 
-object PreviousDeclarationDetailsPage extends Page {
-  val path = "/declare-commercial-goods/previous-declaration-details"
-  val title = "Details of your existing declaration"
+object PurchaseDetailsImportPage extends Page {
+  def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
+  def title(idx: Int) = "How much did you pay for the test good?"
 
-  override def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit =
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery("price")).get.underlying.sendKeys(formData.toString)
+    find(NameQuery("currency")).get.underlying.sendKeys(formData.toString)
     click.on(NameQuery("continue"))
-}
-
-trait PreviousDeclarationDetailsPage extends BaseUiSpec { this: Suite =>
-
-  def goToPreviousDeclarationDetailsPage: Assertion = {
-    goto(path)
-    pageTitle must startWith(title)
   }
+
 }
