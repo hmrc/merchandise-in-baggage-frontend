@@ -80,11 +80,11 @@
    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
      <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
-     <dd id="@{s"category_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.category</dd>
+     <dd id="@{s"category_$index"}" class="govuk-summary-list__value">@goods.categoryQuantityOfGoods.category</dd>
     </div>
     <div class="govuk-summary-list__row">
      <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
-     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.categoryQuantityOfGoods.quantity</dd>
+     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value">@goods.categoryQuantityOfGoods.quantity</dd>
     </div>
 
     @goods match {
@@ -132,11 +132,11 @@
   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
     <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
-    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
+    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value">@declaration.nameOfPersonCarryingTheGoods</dd>
    </div>
    <div class="govuk-summary-list__row">
     <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
-    <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+    <dd id="eori" class="govuk-summary-list__value">@declaration.eori</dd>
    </div>
   </dl>
 

@@ -72,7 +72,7 @@
    @declaration.maybeCustomsAgent.map { customsAgent =>
    <div class="govuk-summary-list__row">
      <dt id="customsAgentNameLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.name")</dt>
-     <dd id="customsAgentName" class="govuk-summary-list__value" style="text-transform: capitalize">@customsAgent.name</dd>
+     <dd id="customsAgentName" class="govuk-summary-list__value">@customsAgent.name</dd>
      <dd class="govuk-summary-list__actions">
       <a class="govuk-link" id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
        @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.customsAgentName")</span>
@@ -81,7 +81,7 @@
     </div>
     <div class="govuk-summary-list__row">
      <dt id="customsAgentAddressLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.customsAgent.address")</dt>
-     <dd id="customsAgentAddress" class="govuk-summary-list__value" style="text-transform: capitalize">
+     <dd id="customsAgentAddress" class="govuk-summary-list__value">
       @for(addressLine <- customsAgent.address.lines) {
        @addressLine
        <br>
@@ -98,7 +98,7 @@
   }
   <div class="govuk-summary-list__row">
    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
-   <dd id="eori" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.eori</dd>
+   <dd id="eori" class="govuk-summary-list__value">@declaration.eori</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="eoriChangeLink" href=@{s"${EoriNumberController.onPageLoad()}"}>
      @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.eori")</span>
@@ -107,7 +107,7 @@
   </div>
   <div class="govuk-summary-list__row">
    <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
-   <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.nameOfPersonCarryingTheGoods</dd>
+   <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value">@declaration.nameOfPersonCarryingTheGoods</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="nameOfPersonCarryingTheGoodsChangeLink" href=@{s"${TravellerDetailsController.onPageLoad()}"}>
      @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.nameOfPersonCarryingTheGoods")</span>
@@ -158,7 +158,7 @@
   @declaration.journeyDetails.maybeRegistrationNumber.fold(Html("")) { registrationNumber =>
    <div class="govuk-summary-list__row">
     <dt id="vehicleRegistrationNumberLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.journeyDetails.vehicleRegistrationNumber")</dt>
-    <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value" style="text-transform: capitalize">@registrationNumber</dd>
+    <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value">@registrationNumber</dd>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="vehicleRegistrationNumberChangeLink" href=@{s"${VehicleRegistrationNumberController.onPageLoad()}"}>
       @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.vehicleRegistrationNumber")</span>
