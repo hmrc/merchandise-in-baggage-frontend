@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, Declaration, NotRequired, Paid, TotalCalculationResult, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.CountryEnriched
-
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 object ViewUtils {
 
   def title(form: Form[_], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
@@ -45,10 +45,7 @@ object ViewUtils {
   def proofOfOriginNeeded(declaration: Declaration): Boolean = {
     def isOverLimit(maybeTotalCalculationResult: Option[TotalCalculationResult]): Boolean =
       maybeTotalCalculationResult.fold(false) {
-        _.calculationResults.calculationResults
-          .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
-          .map(_.gbpAmount.value)
-          .sum > 100000L // £1000 in pence
+        _.calculationResults.proofOfOriginNeeded
       }
 
     if (declaration.amendments.nonEmpty)
