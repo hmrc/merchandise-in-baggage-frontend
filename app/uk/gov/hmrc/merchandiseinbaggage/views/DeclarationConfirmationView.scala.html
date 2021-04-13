@@ -66,7 +66,7 @@
   }
   <li>@messages(s"declarationConfirmation.ul.2.${journeyType.entryName}")</li>
 
-  @if( ViewUtils.proofOfOriginNeeded(declaration) && declaration.declarationType == Import) {
+  @if( ViewUtils.proofOfOriginNeeded(declaration)) {
    <li>@messages("declarationConfirmation.ul.3")</li>
   }
 

@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.view
 import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.proofOfOriginNeeded
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{NotRequired, Paid}
 
 class ViewUtilsSpec extends BaseSpec with CoreTestData {
@@ -112,6 +113,14 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         .setTo(Some(NotRequired))
         .modify(_.amendments.at(2).maybeTotalCalculationResult)
         .setTo(Some(calculationResultsUnderLimit))
+
+      proofOfOriginNeeded(decl) mustBe false
+    }
+
+    "false if Declaration is Export" in {
+      val decl = declaration
+        .modify(_.declarationType)
+        .setTo(Export)
 
       proofOfOriginNeeded(decl) mustBe false
     }

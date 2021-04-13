@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.views
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, Declaration, NotRequired, Paid, TotalCalculationResult, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.CountryEnriched
@@ -48,13 +49,15 @@ object ViewUtils {
         _.calculationResults.proofOfOriginNeeded
       }
 
-    if (declaration.amendments.nonEmpty)
-      declaration.amendments
-        .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
-        .lastOption
-        .fold(false) { paid =>
-          isOverLimit(paid.maybeTotalCalculationResult)
-        } else
-      isOverLimit(declaration.maybeTotalCalculationResult)
+    if (declaration.declarationType == Import) {
+      if (declaration.amendments.nonEmpty)
+        declaration.amendments
+          .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
+          .lastOption
+          .fold(false) { paid =>
+            isOverLimit(paid.maybeTotalCalculationResult)
+          } else
+        isOverLimit(declaration.maybeTotalCalculationResult)
+    } else false
   }
 }
