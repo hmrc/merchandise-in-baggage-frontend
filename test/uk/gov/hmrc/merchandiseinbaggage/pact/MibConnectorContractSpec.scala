@@ -22,7 +22,7 @@ import com.itv.scalapact.ScalaPactForger._
 import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
 import org.json4s.DefaultFormats
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
@@ -49,7 +49,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .description("Persisting a declaration")
         .given("persistDeclarationTest")
         .uponReceiving(POST, s"$declarationsUrl", None, Map("Content-Type" -> "application/json"), Json.toJson(declaration).toString)
-        .willRespondWith(201)
+        .willRespondWith(201, s""""\\"${declaration.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
@@ -61,7 +61,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declarationWithAmendment).toString)
-        .willRespondWith(200)
+        .willRespondWith(200, s""""\\"${declarationWithAmendment.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
