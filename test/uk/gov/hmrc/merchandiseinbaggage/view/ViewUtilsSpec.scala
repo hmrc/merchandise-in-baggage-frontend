@@ -19,25 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.view
 import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.proofOfOriginNeeded
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import com.softwaremill.quicklens._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, NotRequired, Paid, TotalCalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{NotRequired, Paid}
 
 class ViewUtilsSpec extends BaseSpec with CoreTestData {
-
-  def createTotalCalculationResult(amount: Long): TotalCalculationResult =
-    TotalCalculationResult(
-      CalculationResults(
-        Seq(
-          CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
-        )),
-      AmountInPence(amount),
-      AmountInPence(100),
-      AmountInPence(100),
-      AmountInPence(100)
-    )
-
-  val calculationResultsOverLimit = createTotalCalculationResult(110000L)
-  val calculationResultsUnderLimit = createTotalCalculationResult(90000L)
 
   "proofOfOriginNeeded" should {
     "true if Declaration > £1000 paid and no Amendments" in {

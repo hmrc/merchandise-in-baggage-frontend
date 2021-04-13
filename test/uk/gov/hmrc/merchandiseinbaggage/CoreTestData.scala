@@ -343,4 +343,19 @@ trait CoreTestData {
       )
   }
 
+  def createTotalCalculationResult(amount: Long): TotalCalculationResult =
+    TotalCalculationResult(
+      CalculationResults(
+        Seq(
+          CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+        )),
+      AmountInPence(amount),
+      AmountInPence(100),
+      AmountInPence(100),
+      AmountInPence(100)
+    )
+
+  val calculationResultsOverLimit = createTotalCalculationResult(110000L)
+  val calculationResultsUnderLimit = createTotalCalculationResult(90000L)
+
 }
