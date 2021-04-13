@@ -61,7 +61,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declarationWithAmendment).toString)
-        .willRespondWith(200)
+        .willRespondWith(200, s""""\\"${declarationWithAmendment.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
