@@ -31,10 +31,18 @@ class CannotUseServiceController @Inject()(
 
   private val backUrl = Call("GET", "#")
 
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
+    val referer: String = request.headers.get(REFERER).getOrElse("")
+    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)) routes.ExciseAndRestrictedGoodsController.onPageLoad()
+    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad().url)) routes.ValueWeightOfGoodsController.onPageLoad()
+    else if (referer.contains(routes.VehicleSizeController.onPageLoad().url)) routes.VehicleSizeController.onPageLoad()
+    else backUrl
+  }
+
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     request.declarationJourney.maybeGoodsDestination
       .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
-        Ok(view(request.declarationJourney.declarationType, goodsDestination, backUrl))
+        Ok(view(request.declarationJourney.declarationType, goodsDestination, backButtonUrl))
       }
   }
 }

@@ -29,6 +29,6 @@ class CannotUseServiceIrelandController @Inject()(
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationType))
+    Ok(view(request.declarationType, routes.GoodsDestinationController.onPageLoad()))
   }
 }
