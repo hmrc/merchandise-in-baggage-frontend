@@ -305,6 +305,12 @@ trait CoreTestData {
 
   val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
 
+  val declarationWith3Amendment = declaration.copy(
+    amendments = Seq(
+      completedAmendment(declaration.declarationType),
+      completedAmendment(declaration.declarationType),
+      completedAmendment(declaration.declarationType)))
+
   val declarationWithPaidAmendment: Declaration = {
     val paidAmendment = completedAmendment(declaration.declarationType)
       .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult))
