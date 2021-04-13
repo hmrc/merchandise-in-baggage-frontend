@@ -305,6 +305,12 @@ trait CoreTestData {
 
   val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
 
+  val declarationWith3Amendment = declaration.copy(
+    amendments = Seq(
+      completedAmendment(declaration.declarationType),
+      completedAmendment(declaration.declarationType),
+      completedAmendment(declaration.declarationType)))
+
   val declarationWithPaidAmendment: Declaration = {
     val paidAmendment = completedAmendment(declaration.declarationType)
       .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult))
@@ -336,5 +342,20 @@ trait CoreTestData {
         MibReference("xx")
       )
   }
+
+  def createTotalCalculationResult(amount: Long): TotalCalculationResult =
+    TotalCalculationResult(
+      CalculationResults(
+        Seq(
+          CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+        )),
+      AmountInPence(amount),
+      AmountInPence(100),
+      AmountInPence(100),
+      AmountInPence(100)
+    )
+
+  val calculationResultsOverLimit = createTotalCalculationResult(110000L) // £1100
+  val calculationResultsUnderLimit = createTotalCalculationResult(40000L) // £400
 
 }

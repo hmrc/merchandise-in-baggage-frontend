@@ -19,10 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.views
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Country
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, Declaration, NotRequired, Paid, TotalCalculationResult, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.CountryEnriched
-
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 object ViewUtils {
 
   def title(form: Form[_], titleStr: String, section: Option[String] = None, titleMessageArgs: Seq[String] = Seq())(
@@ -41,4 +42,21 @@ object ViewUtils {
 
   lazy val exportCountries: List[Country] =
     CountryService.getAllCountries.filterNot(_.code == "GB")
+
+  def proofOfOriginNeeded(declaration: Declaration): Boolean = {
+    def calcAmount(maybeTotalCalculationResult: Option[TotalCalculationResult]): Long =
+      maybeTotalCalculationResult.fold(0L) {
+        _.calculationResults.calculationResults
+          .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
+          .map(_.gbpAmount.value)
+          .sum
+      }
+
+    if (declaration.declarationType == Import) {
+      (calcAmount(declaration.maybeTotalCalculationResult) + declaration.amendments
+        .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
+        .map(x => calcAmount(x.maybeTotalCalculationResult))
+        .sum) > 100000L
+    } else false
+  }
 }

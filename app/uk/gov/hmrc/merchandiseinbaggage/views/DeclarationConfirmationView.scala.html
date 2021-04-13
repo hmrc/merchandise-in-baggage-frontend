@@ -25,8 +25,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
+@import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
@@ -66,10 +66,8 @@
   }
   <li>@messages(s"declarationConfirmation.ul.2.${journeyType.entryName}")</li>
 
-  @for(calcResult <- declaration.maybeTotalCalculationResult) {
-    @if(calcResult.calculationResults.proofOfOriginNeeded && declaration.declarationType == Import) {
-      <li>@messages("declarationConfirmation.ul.3")</li>
-    }
+  @if( ViewUtils.proofOfOriginNeeded(declaration)) {
+   <li>@messages("declarationConfirmation.ul.3")</li>
   }
 
   <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.4")</li>
