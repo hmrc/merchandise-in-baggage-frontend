@@ -45,7 +45,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
       proofOfOriginNeeded(decl) mustBe false
     }
 
-    "true if Declaration paid and Amendments > £1000" in {
+    "true if Declaration and Amendments > £1000" in {
       val decl = declarationWithAmendment
         .modify(_.paymentStatus)
         .setTo(Some(Paid))
@@ -106,7 +106,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         .modify(_.amendments.at(0).maybeTotalCalculationResult)
         .setTo(Some(calculationResultsUnderLimit))
         .modify(_.amendments.at(1).paymentStatus)
-        .setTo(None)
+        .setTo(Some(Paid))
         .modify(_.amendments.at(1).maybeTotalCalculationResult)
         .setTo(Some(calculationResultsUnderLimit))
         .modify(_.amendments.at(2).paymentStatus)
@@ -114,7 +114,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         .modify(_.amendments.at(2).maybeTotalCalculationResult)
         .setTo(Some(calculationResultsUnderLimit))
 
-      proofOfOriginNeeded(decl) mustBe false
+      proofOfOriginNeeded(decl) mustBe true
     }
 
     "false if Declaration is Export" in {

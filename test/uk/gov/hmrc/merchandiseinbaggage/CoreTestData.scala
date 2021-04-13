@@ -355,7 +355,7 @@ trait CoreTestData {
       AmountInPence(100)
     )
 
-  val calculationResultsOverLimit = createTotalCalculationResult(110000L)
-  val calculationResultsUnderLimit = createTotalCalculationResult(90000L)
+  val calculationResultsOverLimit = createTotalCalculationResult(110000L) // £1100
+  val calculationResultsUnderLimit = createTotalCalculationResult(40000L) // £400
 
 }
