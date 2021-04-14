@@ -20,13 +20,14 @@ error.date.month_blank = Mae’n rhaid i’r dyddiad gynnwys mis
 error.date.month_invalid = Mae’n rhaid i’r mis fod rhwng 1 a 12
 error.date.year_blank = Mae’n rhaid i’r dyddiad gynnwys blwyddyn
 error.date.year_invalid = Nodwch flwyddyn ddilys, er enghraifft, 2020
-error.yesNo = Please enter Yes or No
+error.yesNo = Nodwch ‘Iawn’ neu ‘Na’
+error.yesNoDontKnow = Nodwch ‘Iawn’, ‘Na’, neu ‘Nid wyf yn gwybod’
 
 site.yes = Iawn
 site.no = Na
 site.continue = Yn eich blaen
-site.confirm = Confirm
-site.start = Start now
+site.confirm = Cadarnhau
+site.start = Dechrau nawr
 site.startAgain = Dechrau eto
 site.change = Newid
 site.remove = Dileu
@@ -44,8 +45,8 @@ date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
 
-payment.button = Pay now
-next.button = Next
+payment.button = Talu nawr
+next.button = Nesaf
 
 language.cymraeg = Cymraeg
 language.change.cymraeg = Newid yr iaith i’r Gymraeg
@@ -84,7 +85,7 @@ previousDeclarationDetails.journey = Manylion y siwrnai
 previousDeclarationDetails.journey.arrival = Man cyrraedd
 previousDeclarationDetails.journey.date = Dyddiad cyrraedd
 previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
-previousDeclarationDetails.expired = You cannot add to an old declaration.
+previousDeclarationDetails.expired = Ni allwch ychwanegu at hen ddatganiad.
 previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £1,500.
 previousDeclarationDetails.add.button.text = Ychwanegu rhagor o nwyddau
 
@@ -118,12 +119,12 @@ goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o 
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.NorthernIreland.title = A yw cyfanswm gwerth y nwyddau o dan £873 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
-valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.NorthernIreland.heading = A yw cyfanswm gwerth y nwyddau o dan £873 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £1,500 ac os ydynt yn pwyso llai na 1,000 cilogram
-valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
 
 # SearchGoods
 goodsTypeQuantity.title = Nodwch y math cyntaf o nwyddau
@@ -173,7 +174,7 @@ goodsOrigin.error.required = Dewiswch ‘Iawn’ os cafodd y nwyddau hyn eu cynh
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.heading = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.error.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
-searchGoodsCountry.error.invalid = Select a valid country
+searchGoodsCountry.error.invalid = Dewiswch wlad ddilys
 
 # PurchaseDetails
 purchaseDetails.title = Faint y gwnaethoch ei dalu am y {0}?
@@ -226,8 +227,8 @@ goodsOverThreshold.NorthernIreland.title = Mae cyfanswm gwerth eich nwyddau dros
 goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £1,500
 goodsOverThreshold.NorthernIreland.heading = TMae cyfanswm gwerth eich nwyddau dros £873
 goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £1,500
-goodsOverThreshold.NorthernIreland.Import.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of £873.
-goodsOverThreshold.NorthernIreland.Export.p1 = You cannot use this service to declare goods you are taking out of Northern Ireland that are over the value of £873.
+goodsOverThreshold.NorthernIreland.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sydd werth dros £873 yr ydych yn dod â nhw i mewn i Ogledd Iwerddon.
+goodsOverThreshold.NorthernIreland.Export.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sy’n werth dros £873 yr ydych yn mynd â nhw allan o Ogledd Iwerddon.
 goodsOverThreshold.GreatBritain.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau rydych yn dod â nhw gyda chi i Brydain Fawr sydd â gwerth dros £1,500.
 goodsOverThreshold.GreatBritain.Export.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sy’n werth dros £1,500 yr ydych yn eu cymryd allan o Brydain Fawr.
 goodsOverThreshold.p2 = Er mwyn datgan eich nwyddau bydd angen i chi
@@ -317,7 +318,7 @@ journeyDetails.port.error.Export.invalid = Nodwch eich man ymadael ym Mhrydain F
 journeyDetails.dateOfTravel.Import.label = Dyddiad cyrraedd
 journeyDetails.dateOfTravel.Export.label = Dyddiad ymadael
 journeyDetails.dateOfTravel.hint = Er enghraifft, 12 05 2021
-journeyDetails.dateOfTravel.error.invalid = Please enter a valid date
+journeyDetails.dateOfTravel.error.invalid = Nodwch ddyddiad dilys
 journeyDetails.dateOfTravel.error.notWithinTheNext5Days = Nodwch ddyddiad cyn pen y 5 diwrnod nesaf
 journeyDetails.dateOfTravel.error.Import.dateInPast = Mae’n rhaid i’r dyddiad cyrraedd fod ar ôl 1 Ionawr 2021
 journeyDetails.dateOfTravel.error.Export.dateInPast = Mae’n rhaid i’r dyddiad gadael fod ar ôl 1 Ionawr 2021
@@ -419,9 +420,9 @@ cannotUseServiceIreland.p2.a.text = fasnachu neu symud nwyddau i mewn i Ogledd I
 cannotUseServiceIreland.p2.a.href = https://www.gov.uk/guidance/trading-and-moving-goods-in-and-out-of-northern-ireland-from-1-january-2021#moving-commercial-goods-in-your-baggage
 
 # NoDeclarationNeeded
-noDeclarationNeeded.title = You do not need to make a declaration
-noDeclarationNeeded.heading = You do not need to make a declaration
-noDeclarationNeeded.p = Goods that are going to Europe from Northern Ireland do not need to be declared.
+noDeclarationNeeded.title = Nid oes rhaid i chi wneud datganiad
+noDeclarationNeeded.heading = Nid oes rhaid i chi wneud datganiad
+noDeclarationNeeded.p = Nid oes angen datgan nwyddau sy’n mynd i Ewrop o Ogledd Iwerddon.
 
 # CheckYourAnswers
 checkYourAnswers.title = Gwirio’ch atebion cyn cyflwyno’ch datganiad
