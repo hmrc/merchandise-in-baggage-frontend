@@ -35,6 +35,7 @@ case class Declaration(
   mibReference: MibReference,
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentStatus: Option[PaymentStatus] = None,
+  emailsSent: Boolean = false,
   lang: String = "en",
   source: Option[String] = Some("Digital"),
   amendments: Seq[Amendment] = Seq.empty)
