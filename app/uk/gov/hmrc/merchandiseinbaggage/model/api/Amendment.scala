@@ -27,7 +27,8 @@ case class Amendment(
   maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
   paymentStatus: Option[PaymentStatus] = None,
   source: Option[String] = Some("Digital"),
-  lang: String = "en"
+  lang: String = "en",
+  emailsSent: Boolean = false
 )
 
 object Amendment {
