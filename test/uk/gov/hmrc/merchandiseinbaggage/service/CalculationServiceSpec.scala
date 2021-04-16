@@ -21,6 +21,7 @@ import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults}
@@ -45,10 +46,10 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(expected.calculationResults.map(_.goods.calculationRequest), *)
+      .expects(expected.calculationResults.map(_.goods.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(Seq(stubbedResult)))
 
-    service.paymentCalculations(Seq(aGoods)).futureValue mustBe expected
+    service.paymentCalculations(Seq(aGoods), GreatBritain).futureValue mustBe expected
   }
 
   "check if over threshold for amend journey" in {
@@ -65,7 +66,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest), *)
+      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(Seq(stubbedResult)))
 
     (mockConnector
@@ -92,7 +93,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest), *)
+      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(Seq(expectedResult)))
 
     (mockConnector

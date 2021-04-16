@@ -98,8 +98,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
       (mockCalculationService
-        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
-        .expects(*, *)
+        .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
+        .expects(*, *, *)
         .returning(Future.successful(aCalculationResults))
 
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
@@ -146,8 +146,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenDeclarationIsPersistedInBackend
 
       (mockCalculationService
-        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
-        .expects(*, *)
+        .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
+        .expects(*, *, *)
         .returning(Future.successful(aCalculationResults))
 
       val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
@@ -169,8 +169,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         .returning(Future.successful(Some(declarationWithResult)))
 
       (mockCalculationService
-        .paymentCalculations(_: Seq[ImportGoods])(_: HeaderCarrier))
-        .expects(*, *)
+        .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
+        .expects(*, *, *)
         .returning(Future.successful(aTotalCalculationResult.calculationResults))
 
       (mockCalculationService

@@ -22,9 +22,10 @@ import com.itv.scalapact.ScalaPactForger._
 import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
 import org.json4s.DefaultFormats
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -79,8 +80,8 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           s"$calculationsUrl",
           None,
           Map("Content-Type" -> "application/json"),
-          Json.toJson(List(aGoods).map(_.calculationRequest)).toString)
-        .willRespondWith(200, Json.toJson(List(aGoods).map(_.calculationRequest)).toString)
+          Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString)
+        .willRespondWith(200, Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString)
     )
     .addInteraction(
       interaction
