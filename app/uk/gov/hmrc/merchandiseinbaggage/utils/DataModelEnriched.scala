@@ -52,7 +52,8 @@ object DataModelEnriched {
   }
 
   implicit class GoodsEnriched(importGoods: ImportGoods) {
-    def calculationRequest(destination: GoodsDestination): CalculationRequest = CalculationRequest(importGoods, destination)
+    def calculationRequest(destination: GoodsDestination): CalculationRequest =
+      CalculationRequest(importGoods, destination)
   }
 
   implicit class DeclarationGoodsEnriched(goods: DeclarationGoods) {

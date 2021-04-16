@@ -17,12 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggage
 
 import java.time.{LocalDate, LocalDateTime}
+
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
@@ -34,7 +35,6 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
-
 import java.util.UUID
 
 trait CoreTestData {
@@ -195,9 +195,9 @@ trait CoreTestData {
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
-  val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult))
+  val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult), WithinThreshold)
 
-  val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
+  val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax), WithinThreshold)
 
   val aEoriNumber: String = "GB025115110987654"
   val aCheckEoriAddress: CheckEoriAddress = CheckEoriAddress("999 High Street", "CityName", "SS99 1AA")
@@ -254,18 +254,21 @@ trait CoreTestData {
     def totalCalculationResult: TotalCalculationResult =
       TotalCalculationResult(
         CalculationResults(
-          Seq(CalculationResult(
-            ImportGoods(
-              CategoryQuantityOfGoods("sock", "1"),
-              GoodsVatRates.Twenty,
-              YesNoDontKnow.Yes,
-              PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
-            ),
-            AmountInPence(purchaseAmount),
-            dummyAmount,
-            dummyAmount,
-            None
-          ))),
+          Seq(
+            CalculationResult(
+              ImportGoods(
+                CategoryQuantityOfGoods("sock", "1"),
+                GoodsVatRates.Twenty,
+                YesNoDontKnow.Yes,
+                PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
+              ),
+              AmountInPence(purchaseAmount),
+              dummyAmount,
+              dummyAmount,
+              None
+            )),
+          WithinThreshold
+        ),
         AmountInPence(purchaseAmount),
         dummyAmount,
         dummyAmount,
@@ -348,7 +351,8 @@ trait CoreTestData {
       CalculationResults(
         Seq(
           CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
-        )),
+        ),
+        WithinThreshold),
       AmountInPence(amount),
       AmountInPence(100),
       AmountInPence(100),
