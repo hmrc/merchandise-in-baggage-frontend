@@ -24,7 +24,7 @@ import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
 
 object MibBackendStub extends MibConfiguration with CoreTestData {
@@ -79,19 +79,22 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
           .willReturn(status(aStatus)))
 
-  def givenAPaymentCalculations(requests: Seq[CalculationRequest], results: Seq[CalculationResult])(
-    implicit server: WireMockServer): StubMapping =
+  def givenAPaymentCalculations(
+    requests: Seq[CalculationRequest],
+    results: Seq[CalculationResult],
+    thresholdCheck: ThresholdCheck = WithinThreshold)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
           .withRequestBody(equalToJson(toJson(requests).toString, true, false))
-          .willReturn(okJson(Json.toJson(results).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResults(results, thresholdCheck)).toString)))
 
-  def givenAPaymentCalculation(result: CalculationResult)(implicit server: WireMockServer): StubMapping =
+  def givenAPaymentCalculation(result: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
+    implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
-          .willReturn(okJson(Json.toJson(List(result)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResults(List(result), thresholdCheck)).toString)))
 
   def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
     server

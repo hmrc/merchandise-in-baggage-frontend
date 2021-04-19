@@ -61,7 +61,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
     } yield
       AmendCalculationResult(
         (totalGbpAmount * 100) > originalDeclaration.goodsDestination.threshold.value,
-        CalculationResults(Seq.empty, WithinThreshold))
+        CalculationResults(Seq.empty, WithinThreshold)) //TODO remove hard coded and swap with thresholdCheck
 
   private def amendCalculation(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
