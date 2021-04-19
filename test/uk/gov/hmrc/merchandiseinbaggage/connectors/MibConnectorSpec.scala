@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -37,22 +38,22 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   }
 
   "send a calculation request to backend for payment" in {
-    val calculationRequest = List(aGoods).map(_.calculationRequest)
+    val calculationRequest = List(aGoods).map(_.calculationRequest(GreatBritain))
     val stubbedResult = List(CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
 
     givenAPaymentCalculations(calculationRequest, stubbedResult)
 
-    client.calculatePayments(calculationRequest).futureValue mustBe stubbedResult
+    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResults(stubbedResult, WithinThreshold)
   }
 
   "send a calculation requests to backend for payment" in {
-    val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest)
+    val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest(GreatBritain))
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 
     givenAPaymentCalculations(calculationRequests, stubbedResults)
 
-    client.calculatePayments(calculationRequests).futureValue mustBe stubbedResults
+    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResults(stubbedResults, WithinThreshold)
   }
 
   "find a persisted declaration from backend by declarationId" in {

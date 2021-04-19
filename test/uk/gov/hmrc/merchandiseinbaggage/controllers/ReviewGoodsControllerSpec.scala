@@ -24,11 +24,12 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -115,7 +116,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     (mockCalculationService
       .isAmendPlusOriginalOverThresholdExport(_: DeclarationJourney)(_: HeaderCarrier))
       .expects(*, *)
-      .returning(OptionT.pure[Future](AmendCalculationResult(false, CalculationResults(Seq.empty))))
+      .returning(OptionT.pure[Future](AmendCalculationResult(false, CalculationResults(Seq.empty, WithinThreshold))))
 
     val request = buildPost(ReviewGoodsController.onSubmit().url, id)
       .withFormUrlEncodedBody("value" -> "No")

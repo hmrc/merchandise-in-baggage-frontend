@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.content
 import org.openqa.selenium.{By, WebElement}
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
@@ -57,7 +58,8 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
 
   private def setUp(calculationResult: CalculationResult)(fn: List[WebElement] => Any): Any = fn {
     givenAPaymentCalculation(calculationResult)
-    givenAJourneyWithSession(Amend, declarationJourney = completedAmendedJourney(Import).copy(declarationId = aDeclarationId))
+    val journey = completedAmendedJourney(Import).copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
+    givenAJourneyWithSession(Amend, declarationJourney = journey)
     givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), aDeclarationId)
     goToCYAPage(Amend)
 

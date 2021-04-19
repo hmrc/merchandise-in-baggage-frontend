@@ -36,7 +36,8 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = calculationResults =>
     new CalculationService(mibConnector) {
-      override def paymentCalculations(importGoods: Seq[ImportGoods])(implicit hc: HeaderCarrier): Future[CalculationResults] =
+      override def paymentCalculations(importGoods: Seq[ImportGoods], destination: GoodsDestination)(
+        implicit hc: HeaderCarrier): Future[CalculationResults] =
         Future.successful(calculationResults)
   }
 

@@ -49,10 +49,11 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def onPageLoadImport(
     declaration: Declaration)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService.paymentCalculations(declaration.declarationGoods.importGoods).map { calculationResults =>
-      if (calculationResults.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
-        Redirect(routes.GoodsOverThresholdController.onPageLoad())
-      } else Ok(importView(form, declaration, calculationResults))
+    calculationService.paymentCalculations(declaration.declarationGoods.importGoods, declaration.goodsDestination).map {
+      calculationResults =>
+        if (calculationResults.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
+          Redirect(routes.GoodsOverThresholdController.onPageLoad())
+        } else Ok(importView(form, declaration, calculationResults))
     }
 
   private def onPageLoadExport(declaration: Declaration)(implicit request: Request[_], messages: Messages): Future[Result] =
@@ -75,7 +76,7 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.importGoods)
+      taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.importGoods, declaration.goodsDestination)
       _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
       redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, taxDue)
 
