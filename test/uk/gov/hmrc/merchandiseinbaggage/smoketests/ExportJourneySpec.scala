@@ -37,9 +37,9 @@ class ExportJourneySpec extends BaseUiSpec {
 
       submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("shoes", "one pair"))
 
-      submitPage(SearchGoodsCountryPage, "FR")
-
       submitPage(PurchaseDetailsExportPage, "100.50")
+
+      submitPage(SearchGoodsCountryPage, "FR")
 
       submitPage(ReviewGoodsPage, Yes)
 
@@ -75,7 +75,7 @@ class ExportJourneySpec extends BaseUiSpec {
 
   private def addMoreGoods(): Unit = {
     submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("wine", "one bottle"))
-    submitPage(SearchGoodsCountryPage, "FR")
     submitPage(PurchaseDetailsExportPage, "100.50")
+    submitPage(SearchGoodsCountryPage, "FR")
   }
 }

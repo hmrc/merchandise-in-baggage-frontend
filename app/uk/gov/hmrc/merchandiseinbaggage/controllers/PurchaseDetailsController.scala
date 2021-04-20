@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.PurchaseDetailsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGoodsEntry, PurchaseDetailsInput}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class PurchaseDetailsController @Inject()(
@@ -42,12 +42,7 @@ class PurchaseDetailsController @Inject()(
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    request.goodsEntry match {
-      case _: ImportGoodsEntry =>
-        checkYourAnswersOrReviewGoodsElse(GoodsOriginController.onPageLoad(index), index)
-      case _: ExportGoodsEntry =>
-        checkYourAnswersOrReviewGoodsElse(SearchGoodsCountryController.onPageLoad(index), index)
-    }
+    checkYourAnswersOrReviewGoodsElse(GoodsTypeQuantityController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
