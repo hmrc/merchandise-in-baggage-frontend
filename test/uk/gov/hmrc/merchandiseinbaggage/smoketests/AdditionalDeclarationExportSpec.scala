@@ -67,9 +67,9 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
       submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("sock", "one"))
 
-      submitPage(SearchGoodsCountryPage, "FR")
-
       submitPage(PurchaseDetailsExportPage, "100.50")
+
+      submitPage(SearchGoodsCountryPage, "FR")
 
       // Review the goods added
       webDriver.getPageSource must include("sock")

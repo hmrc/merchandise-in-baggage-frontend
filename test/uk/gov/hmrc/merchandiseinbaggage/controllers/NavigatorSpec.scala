@@ -172,7 +172,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val entries = if (importOrExport == Import) startedImportGoods else startedExportGoods
         val result: Future[Call] = nextPage(GoodsOriginRequest(journey, entries, 1, _ => Future(journey)))
 
-        result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
+        result.futureValue mustBe GoodsVatRateController.onPageLoad(1)
       }
 
       if (importOrExport == Import) {
@@ -182,7 +182,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           val result: Future[Call] =
             nextPage(GoodsTypeQuantityRequest(journey, startedImportGoods, 1, aCategoryQuantityOfGoods, _ => Future(journey)))
 
-          result.futureValue mustBe GoodsVatRateController.onPageLoad(1)
+          result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
         }
       }
 
@@ -193,7 +193,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           val result: Future[Call] =
             nextPage(GoodsTypeQuantityRequest(journey, startedExportGoods, 1, aCategoryQuantityOfGoods, _ => Future(journey)))
 
-          result.futureValue mustBe SearchGoodsCountryController.onPageLoad(1)
+          result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
         }
       }
 
@@ -202,7 +202,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPage(GoodsVatRateRequest(journey, startedImportGoods, 1, _ => Future(journey)))
 
-        result.futureValue mustBe SearchGoodsCountryController.onPageLoad(1)
+        result.futureValue mustBe ReviewGoodsController.onPageLoad()
       }
 
       s"from ${SearchGoodsCountryController.onPageLoad(2).url} navigates to ${PurchaseDetailsController
@@ -244,7 +244,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             completedDeclarationJourney,
             stubUpsert))
 
-        result.futureValue mustBe ReviewGoodsController.onPageLoad()
+        result.futureValue mustBe GoodsOriginController.onPageLoad(1)
       }
 
       if (newOrAmend == New) {

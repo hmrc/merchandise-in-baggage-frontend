@@ -39,7 +39,7 @@ class GoodsOriginController @Inject()(
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
-    checkYourAnswersOrReviewGoodsElse(GoodsVatRateController.onPageLoad(index), index)
+    checkYourAnswersOrReviewGoodsElse(PurchaseDetailsController.onPageLoad(index), index)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>

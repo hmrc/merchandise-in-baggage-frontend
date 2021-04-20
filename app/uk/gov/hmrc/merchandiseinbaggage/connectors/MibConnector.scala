@@ -22,11 +22,11 @@ import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
-import javax.inject.{Inject, Named, Singleton}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
 
+import javax.inject.{Inject, Named, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton

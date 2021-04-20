@@ -60,10 +60,11 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
 
       submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("sock", "one"))
 
-      submitPage(GoodsVatRatePage, "Five")
+      submitPage(PurchaseDetailsPage, PurchaseDetailsInput("100.50", "EUR"))
 
       submitPage(GoodsOriginPage, "Yes")
-      submitPage(PurchaseDetailsPage, PurchaseDetailsInput("100.50", "EUR"))
+
+      submitPage(GoodsVatRatePage, "Five")
 
       webDriver.getPageSource must include("sock")
       webDriver.getPageSource must include("Yes")

@@ -46,7 +46,10 @@ class ReviewGoodsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    PurchaseDetailsController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+    request.declarationJourney.declarationType match {
+      case Import => GoodsVatRateController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+      case Export => SearchGoodsCountryController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
+    }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     import request.declarationJourney._
