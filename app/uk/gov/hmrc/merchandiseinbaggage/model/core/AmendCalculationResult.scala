@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, ThresholdCheck}
 
-case class AmendCalculationResult(isOverThreshold: Boolean, calculationResult: CalculationResults)
+//TODO to be removed as CalculationResults has all the required info now
+case class AmendCalculationResult(isOverThreshold: ThresholdCheck, calculationResult: CalculationResults)

@@ -89,7 +89,7 @@ class ReviewGoodsController @Inject()(
   private def checkThresholdIfAmending(declarationJourney: DeclarationJourney)(
     implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
     declarationJourney.amendmentIfRequiredAndComplete
-      .fold(OptionT.pure[Future](AmendCalculationResult(isOverThreshold = false, CalculationResults(Seq.empty, WithinThreshold)))) { _ =>
+      .fold(OptionT.pure[Future](AmendCalculationResult(WithinThreshold, CalculationResults(Seq.empty, WithinThreshold)))) { _ =>
         overThresholdCheck(declarationJourney)
       }
 

@@ -116,7 +116,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     (mockCalculationService
       .isAmendPlusOriginalOverThresholdExport(_: DeclarationJourney)(_: HeaderCarrier))
       .expects(*, *)
-      .returning(OptionT.pure[Future](AmendCalculationResult(false, CalculationResults(Seq.empty, WithinThreshold))))
+      .returning(OptionT.pure[Future](AmendCalculationResult(WithinThreshold, CalculationResults(Seq.empty, WithinThreshold))))
 
     val request = buildPost(ReviewGoodsController.onSubmit().url, id)
       .withFormUrlEncodedBody("value" -> "No")

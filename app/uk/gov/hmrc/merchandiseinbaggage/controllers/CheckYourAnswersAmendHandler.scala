@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
@@ -43,6 +44,7 @@ class CheckYourAnswersAmendHandler @Inject()(
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
+  //TODO make BE do ThresholdCheck for amend too so we will need one pattern match
   def onPageLoad(
     declarationJourney: DeclarationJourney,
     amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
@@ -57,9 +59,10 @@ class CheckYourAnswersAmendHandler @Inject()(
     calculationService
       .isAmendPlusOriginalOverThresholdImport(declarationJourney)
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
-        if (res.isOverThreshold) {
-          Redirect(GoodsOverThresholdController.onPageLoad())
-        } else Ok(amendImportView(form, amendment, res.calculationResult))
+        res.isOverThreshold match {
+          case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
+          case WithinThreshold => Ok(amendImportView(form, amendment, res.calculationResult))
+        }
       }
 
   private def onPageLoadExport(
@@ -68,8 +71,10 @@ class CheckYourAnswersAmendHandler @Inject()(
     calculationService
       .isAmendPlusOriginalOverThresholdExport(declarationJourney)
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { amendCalculationResult =>
-        if (amendCalculationResult.isOverThreshold) Redirect(GoodsOverThresholdController.onPageLoad())
-        else Ok(amendExportView(form, amendment))
+        amendCalculationResult.isOverThreshold match {
+          case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
+          case WithinThreshold => Ok(amendExportView(form, amendment))
+        }
       }
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =

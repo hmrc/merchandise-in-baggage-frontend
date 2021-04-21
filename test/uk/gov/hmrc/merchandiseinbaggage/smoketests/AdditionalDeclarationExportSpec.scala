@@ -23,8 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, Retrieve
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{CheckYourAnswersPage, DeclarationConfirmationPage, ExciseAndRestrictedGoodsPage, GoodsTypeQuantityPage, PurchaseDetailsExportPage, ReviewGoodsPage, SearchGoodsCountryPage, ValueWeightOfGoodsPage}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{NewOrExistingDeclarationPage, PreviousDeclarationDetailsPage, RetrieveDeclarationPage, StartExportPage}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-
 import java.time.LocalDateTime
+
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 
 class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
@@ -76,6 +77,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       webDriver.getPageSource must include("France")
       webDriver.getPageSource must include("£100.50")
 
+      givenAPaymentCalculation(aCalculationResult, WithinThreshold)
       submitPage(ReviewGoodsPage, "No")
 
       webDriver.getPageSource must include("sock")

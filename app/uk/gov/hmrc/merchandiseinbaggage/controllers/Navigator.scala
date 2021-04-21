@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
@@ -236,21 +237,22 @@ object NavigatorMapping {
   def reviewGoods(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
-    overThresholdCheck: Boolean,
+    overThresholdCheck: ThresholdCheck,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    if (overThresholdCheck) Future.successful(GoodsOverThresholdController.onPageLoad())
-    else {
-      val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
-        case (Export, New)   => declarationJourney.declarationRequiredAndComplete
-        case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
-        case (Import, _)     => false
-      }
+    overThresholdCheck match {
+      case OverThreshold => Future.successful(GoodsOverThresholdController.onPageLoad())
+      case WithinThreshold =>
+        val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
+          case (Export, New)   => declarationJourney.declarationRequiredAndComplete
+          case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
+          case (Import, _)     => false
+        }
 
-      (redirectToCya, declareMoreGoods) match {
-        case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
-        case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
-        case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
-      }
+        (redirectToCya, declareMoreGoods) match {
+          case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+          case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
+          case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
+        }
     }
 
   private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
