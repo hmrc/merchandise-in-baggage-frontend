@@ -55,7 +55,7 @@ class Navigator {
     case GoodsOriginRequest(journey, entries, idx, upsert) =>
       persistAndRedirect(journey, entries, idx, GoodsVatRateController.onPageLoad(idx), upsert)
     case GoodsVatRateRequest(journey, entries, idx, upsert) =>
-      persistAndRedirect(journey, entries, idx, ReviewGoodsController.onPageLoad(), upsert)
+      goodsVatRate(journey, entries, idx, upsert)
     case SearchGoodsCountryRequest(journey, entries, idx, upsert) =>
       persistAndRedirect(journey, entries, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
@@ -221,6 +221,18 @@ object NavigatorMapping {
     persistAndRedirect(journey, updatedGoodsEntry, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
 
+  def goodsVatRate(
+    declarationJourney: DeclarationJourney,
+    currentEntries: GoodsEntry,
+    index: Int,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedDeclarationJourney =
+      declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(index, currentEntries))
+    upsert(updatedDeclarationJourney).map { _ =>
+      ReviewGoodsController.onPageLoad()
+    }
+  }
+
   def reviewGoods(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
@@ -257,12 +269,7 @@ object NavigatorMapping {
       .getCurrencyByCode(purchaseDetailsInput.currency)
       .fold(Future(CannotAccessPageController.onPageLoad())) { currency =>
         val updatedGoodsEntry: GoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency, goodsEntry)
-        val updatedDeclarationJourney =
-          declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
-
-        upsert(updatedDeclarationJourney).map { _ =>
-          GoodsOriginController.onPageLoad(idx)
-        }
+        persistAndRedirect(declarationJourney, updatedGoodsEntry, idx, GoodsOriginController.onPageLoad(idx), upsert)
       }
 
   def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =

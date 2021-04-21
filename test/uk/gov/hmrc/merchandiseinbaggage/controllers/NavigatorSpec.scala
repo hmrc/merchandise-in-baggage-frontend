@@ -230,19 +230,13 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result.futureValue mustBe ExciseAndRestrictedGoodsController.onPageLoad()
       }
 
-      s"from ${PurchaseDetailsController.onPageLoad(1).url} navigates to ${ReviewGoodsController
-        .onPageLoad()} for $newOrAmend & $importOrExport updating goods entries" in new Navigator {
+      s"from ${PurchaseDetailsController.onPageLoad(1).url} navigates to ${GoodsOriginController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport updating goods entries" in new Navigator {
         val detailsInput: PurchaseDetailsInput = PurchaseDetailsInput("123", "EUR")
         val stubUpsert: DeclarationJourney => Future[DeclarationJourney] =
           _ => Future.successful(completedDeclarationJourney) //TODO make it work with mockFunction
 
-        val result = nextPage(
-          PurchaseDetailsRequest(
-            detailsInput,
-            1,
-            completedGoodsEntries(importOrExport).entries.head,
-            completedDeclarationJourney,
-            stubUpsert))
+        val result = nextPage(PurchaseDetailsRequest(detailsInput, 1, startedImportGoods, importJourneyWithStartedGoodsEntry, stubUpsert))
 
         result.futureValue mustBe GoodsOriginController.onPageLoad(1)
       }
