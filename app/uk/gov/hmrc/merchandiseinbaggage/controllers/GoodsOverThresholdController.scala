@@ -43,8 +43,13 @@ class GoodsOverThresholdController @Inject()(
             request.declarationType match {
               case Import =>
                 calculationService.paymentCalculations(goods.goods, destination).map { calculations =>
-                  import calculations._
-                  Ok(view(destination, calculations.totalGbpValue, calculationResults.flatMap(_.conversionRatePeriod).distinct, Import))
+                  import calculations.results._
+                  Ok(
+                    view(
+                      destination,
+                      calculations.results.totalGbpValue,
+                      calculationResults.flatMap(_.conversionRatePeriod).distinct,
+                      Import))
                 }
               case Export =>
                 val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal

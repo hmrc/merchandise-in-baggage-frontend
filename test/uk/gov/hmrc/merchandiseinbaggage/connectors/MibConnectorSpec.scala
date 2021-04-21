@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -43,7 +43,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
     givenAPaymentCalculations(calculationRequest, stubbedResult)
 
-    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResults(stubbedResult, WithinThreshold)
+    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResponse(CalculationResults(stubbedResult), WithinThreshold)
   }
 
   "send a calculation requests to backend for payment" in {
@@ -53,7 +53,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
     givenAPaymentCalculations(calculationRequests, stubbedResults)
 
-    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResults(stubbedResults, WithinThreshold)
+    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResponse(CalculationResults(stubbedResults), WithinThreshold)
   }
 
   "find a persisted declaration from backend by declarationId" in {

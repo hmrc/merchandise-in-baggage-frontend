@@ -16,18 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, YesNoDontKnow}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
-import com.softwaremill.quicklens._
 
 class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
   "Calculate each total tax due" in {
     val calculationResult: CalculationResult =
       CalculationResult(aGoods, AmountInPence(20L), AmountInPence(10), AmountInPence(30), None)
-    val calculations = CalculationResults(Seq(calculationResult), WithinThreshold)
+    val calculations = CalculationResults(Seq(calculationResult))
 
     calculations.totalTaxDue mustBe AmountInPence(10 + 30)
     calculations.totalDutyDue mustBe AmountInPence(10)
@@ -46,7 +46,7 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
         AmountInPence(30),
         None)
 
-    val calculations = CalculationResults(Seq(calculationResultEU, calculationResultUSA), WithinThreshold)
+    val calculations = CalculationResults(Seq(calculationResultEU, calculationResultUSA))
 
     calculations.proofOfOriginNeeded mustBe true
     calculations

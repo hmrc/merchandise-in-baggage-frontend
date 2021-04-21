@@ -50,10 +50,10 @@ class PaymentCalculationController @Inject()(
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { declarationGoods =>
         request.declarationJourney.maybeGoodsDestination
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResults =>
-              (calculationResults.thresholdCheck, request.declarationJourney.declarationType) match {
+            calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
+              (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
                 case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
-                case (WithinThreshold, Import) => importView(calculationResults)
+                case (WithinThreshold, Import) => importView(calculationResponse.results)
                 case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()))
 
               }

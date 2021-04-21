@@ -21,7 +21,7 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Goods, GoodsDestination}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResults] =
+  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
     mibConnector.calculatePayments(goods.map(_.calculationRequest(destination))).map(withLogging)
 
   def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
@@ -43,27 +43,28 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   //TODO both logic to be moved to BE
   def isAmendPlusOriginalOverThresholdImport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
     for {
       amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       destination         <- OptionT.fromOption[Future](declarationJourney.maybeGoodsDestination)
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
-      calculationResults <- OptionT.liftF(paymentCalculations(totalGoods, destination))
-    } yield calculationResults
+      calculationResponse <- OptionT.liftF(paymentCalculations(totalGoods, destination))
+    } yield calculationResponse
 
   def isAmendPlusOriginalOverThresholdExport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
     for {
       amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
-      calculationResults <- OptionT.liftF(
-                             mibConnector.calculatePayments(totalGoods.map(_.calculationRequest(originalDeclaration.goodsDestination))))
-    } yield calculationResults
+      calculationResponse <- OptionT.liftF(
+                              mibConnector.calculatePayments(totalGoods.map(_.calculationRequest(originalDeclaration.goodsDestination))))
+    } yield calculationResponse
 
-  private def withLogging(results: CalculationResults): CalculationResults = {
-    results.calculationResults.foreach(result => logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))
-    results
+  private def withLogging(response: CalculationResponse): CalculationResponse = {
+    response.results.calculationResults.foreach(result =>
+      logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))
+    response
   }
 }

@@ -24,7 +24,7 @@ import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults, ThresholdCheck, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
 
 object MibBackendStub extends MibConfiguration with CoreTestData {
@@ -87,14 +87,14 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
           .withRequestBody(equalToJson(toJson(requests).toString, true, false))
-          .willReturn(okJson(Json.toJson(CalculationResults(results, thresholdCheck)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString)))
 
   def givenAPaymentCalculation(result: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
     implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
-          .willReturn(okJson(Json.toJson(CalculationResults(List(result), thresholdCheck)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(List(result)), thresholdCheck)).toString)))
 
   def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
     server
