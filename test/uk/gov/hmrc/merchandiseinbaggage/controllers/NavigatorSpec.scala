@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
@@ -262,7 +263,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             Yes,
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend),
-            false,
+            WithinThreshold,
             _ => Future.successful(updatedJourney)
           ))
 
@@ -275,7 +276,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             No,
             incompleteDeclarationJourney.copy(declarationType = importOrExport),
-            overThresholdCheck = false,
+            WithinThreshold,
             _ => Future.successful(incompleteDeclarationJourney.copy(declarationType = importOrExport))
           ))
 
@@ -289,7 +290,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             No,
             journey,
-            true,
+            OverThreshold,
             _ => Future.successful(journey)
           ))
 
@@ -304,7 +305,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             Yes,
             journey,
-            overThresholdCheck = true,
+            OverThreshold,
             _ => Future.successful(journey)
           ))
 
@@ -445,7 +446,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       ReviewGoodsRequest(
         No,
         journey,
-        overThresholdCheck = true,
+        OverThreshold,
         _ => Future.successful(journey)
       ))
 

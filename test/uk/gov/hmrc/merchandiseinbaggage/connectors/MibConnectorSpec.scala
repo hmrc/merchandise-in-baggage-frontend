@@ -47,7 +47,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
   }
 
   "send a calculation requests to backend for payment" in {
-    val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest(GreatBritain))
+    val calculationRequests = aDeclarationGood.goods.map(_.calculationRequest(GreatBritain))
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 

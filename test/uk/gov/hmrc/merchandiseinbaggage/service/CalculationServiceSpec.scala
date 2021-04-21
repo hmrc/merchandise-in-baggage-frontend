@@ -16,16 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -65,68 +62,18 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
           Some(TotalCalculationResult(expected, expected.totalGbpValue, expected.totalTaxDue, expected.totalDutyDue, expected.totalVatDue)))
 
     (mockConnector
+      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+      .expects(amended.declarationId, *)
+      .returning(Future.successful(Some(declaration)))
+
+    val originalAndAmendGoods: Seq[Goods] = declaration.declarationGoods.goods ++ amended.goodsEntries.declarationGoodsIfComplete.get.goods
+
+    (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
+      .expects(originalAndAmendGoods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(CalculationResults(Seq(stubbedResult), WithinThreshold)))
 
-    (mockConnector
-      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-      .expects(amended.declarationId, *)
-      .returning(Future.successful(Some(declaration)))
-
-    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.isOverThreshold mustBe false
-  }
-
-  "returns true if over threshold for amend journey" in {
-    val stubbedResult =
-      CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = CalculationResults(List(stubbedResult), WithinThreshold)
-    val amended = completedImportJourneyWithGoodsOverThreshold
-      .copy(journeyType = Amend)
-
-    val declaration = amended.toDeclaration
-      .copy(
-        maybeTotalCalculationResult =
-          Some(TotalCalculationResult(expected, expected.totalGbpValue, expected.totalTaxDue, expected.totalDutyDue, expected.totalVatDue)))
-
-    val expectedResult = stubbedResult.copy(gbpAmount = AmountInPence(150000))
-
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
-      .returning(Future.successful(CalculationResults(Seq(expectedResult), WithinThreshold)))
-
-    (mockConnector
-      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-      .expects(amended.declarationId, *)
-      .returning(Future.successful(Some(declaration)))
-
-    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue mustBe Some(
-      AmendCalculationResult(isOverThreshold = true, expected.modify(_.calculationResults.each).setTo(expectedResult)))
-  }
-
-  "returns true if over threshold for amend export journey" in {
-    import com.softwaremill.quicklens._
-    val amended: DeclarationJourney = startedExportFromGreatBritain
-      .modify(_.goodsEntries)
-      .setTo(
-        overThresholdGoods(Export)
-          .modify(_.entries.each.maybePurchaseDetails.each.amount)
-          .setTo("1450"))
-      .modify(_.journeyType)
-      .setTo(Amend)
-
-    val declaration = amended.toDeclaration
-      .modify(_.declarationGoods.goods.each.purchaseDetails.amount)
-      .setTo("51")
-
-    (mockConnector
-      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-      .expects(amended.declarationId, *)
-      .returning(Future.successful(Some(declaration)))
-
-    service.isAmendPlusOriginalOverThresholdExport(amended).value.futureValue mustBe Some(
-      AmendCalculationResult(isOverThreshold = true, CalculationResults(Seq.empty, WithinThreshold)))
+    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.thresholdCheck mustBe WithinThreshold
   }
 
   "return None for any journey that are NOT amendmentRequiredAndComplete" in {

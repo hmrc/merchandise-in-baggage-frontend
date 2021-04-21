@@ -21,9 +21,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, GoodsDestination, ImportGoods}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Goods, GoodsDestination}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,9 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentCalculations(importGoods: Seq[ImportGoods], destination: GoodsDestination)(
-    implicit hc: HeaderCarrier): Future[CalculationResults] =
-    mibConnector.calculatePayments(importGoods.map(_.calculationRequest(destination))).map(withLogging)
+  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResults] =
+    mibConnector.calculatePayments(goods.map(_.calculationRequest(destination))).map(withLogging)
 
   def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
     mibConnector.amendDeclaration(declaration)
@@ -42,32 +41,25 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
     mibConnector.findDeclaration(declarationId)
 
+  //TODO both logic to be moved to BE
   def isAmendPlusOriginalOverThresholdImport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
-      calculationResults         <- amendCalculation(declarationJourney)
-      originalDeclaration        <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
-      originalCalculationResults <- OptionT.fromOption[Future](originalDeclaration.maybeTotalCalculationResult)
-      totalGbpAmount = calculationResults.totalGbpValue.value + originalCalculationResults.totalGbpValue.value
-    } yield AmendCalculationResult(totalGbpAmount > originalDeclaration.goodsDestination.threshold.value, calculationResults)
+      amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
+      destination         <- OptionT.fromOption[Future](declarationJourney.maybeGoodsDestination)
+      originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
+      totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
+      calculationResults <- OptionT.liftF(paymentCalculations(totalGoods, destination))
+    } yield calculationResults
 
   def isAmendPlusOriginalOverThresholdExport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
       amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
-      totalGbpAmount = originalDeclaration.declarationGoods.goods.map(_.purchaseDetails.numericAmount).sum +
-        amendments.goods.goods.map(_.purchaseDetails.numericAmount).sum
-    } yield
-      AmendCalculationResult(
-        (totalGbpAmount * 100) > originalDeclaration.goodsDestination.threshold.value,
-        CalculationResults(Seq.empty, WithinThreshold)) //TODO remove hard coded and swap with thresholdCheck
-
-  private def amendCalculation(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
-    for {
-      amendments         <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
-      destination        <- OptionT.fromOption[Future](declarationJourney.maybeGoodsDestination)
-      calculationResults <- OptionT.liftF(paymentCalculations(amendments.goods.importGoods, destination))
+      totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
+      calculationResults <- OptionT.liftF(
+                             mibConnector.calculatePayments(totalGoods.map(_.calculationRequest(originalDeclaration.goodsDestination))))
     } yield calculationResults
 
   private def withLogging(results: CalculationResults): CalculationResults = {

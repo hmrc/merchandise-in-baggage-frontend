@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney, URL}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
@@ -116,7 +116,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       (mockCalculationService
         .isAmendPlusOriginalOverThresholdImport(_: DeclarationJourney)(_: HeaderCarrier))
         .expects(*, *)
-        .returning(OptionT.pure[Future](AmendCalculationResult(false, aTotalCalculationResult.calculationResults)))
+        .returning(OptionT.pure[Future](aTotalCalculationResult.calculationResults))
 
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)

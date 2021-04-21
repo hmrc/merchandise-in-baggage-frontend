@@ -19,9 +19,10 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
@@ -36,13 +37,17 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
   private lazy val stubbedCalculation: CalculationResults => CalculationService = calculationResults =>
     new CalculationService(mibConnector) {
-      override def paymentCalculations(importGoods: Seq[ImportGoods], destination: GoodsDestination)(
+      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResults] =
         Future.successful(calculationResults)
   }
 
-  def controller(declarationJourney: DeclarationJourney) =
-    new PaymentCalculationController(controllerComponents, stubProvider(declarationJourney), stubbedCalculation(aCalculationResults), view)
+  def controller(declarationJourney: DeclarationJourney, thresholdCheck: ThresholdCheck = WithinThreshold) =
+    new PaymentCalculationController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubbedCalculation(aCalculationResults.copy(thresholdCheck = thresholdCheck)),
+      view)
 
   declarationTypes.foreach { importOrExport =>
     "onPageLoad" should {
@@ -54,7 +59,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
           maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
           goodsEntries = completedGoodsEntries(importOrExport))
 
-        val request = buildGet(routes.PaymentCalculationController.onPageLoad().url, aSessionId)
+        val request = buildGet(PaymentCalculationController.onPageLoad().url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -74,23 +79,24 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
           case Export =>
             status(eventualResult) mustBe 303
-            redirectLocation(eventualResult) mustBe Some(routes.CustomsAgentController.onPageLoad().url)
+            redirectLocation(eventualResult) mustBe Some(CustomsAgentController.onPageLoad().url)
         }
       }
 
       s"redirect to /goods-over-threshold for $importOrExport if its over threshold" in {
-        val journey = DeclarationJourney(
-          SessionId("123"),
-          DeclarationType.Export,
-          maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
-          goodsEntries = overThresholdGoods(importOrExport)
-        )
+        val journey =
+          DeclarationJourney(
+            SessionId("123"),
+            importOrExport,
+            maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
+            goodsEntries = overThresholdGoods(importOrExport)
+          )
 
-        val request = buildGet(routes.PaymentCalculationController.onPageLoad().url, aSessionId)
-        val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onPageLoad()(request)
+        val request = buildGet(PaymentCalculationController.onPageLoad().url, aSessionId)
+        val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad().url)
       }
     }
   }

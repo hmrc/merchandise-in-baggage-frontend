@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.navigation
 
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.ThresholdCheck
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Declaration, GoodsDestination, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntry, PurchaseDetailsInput}
 
@@ -25,7 +26,7 @@ sealed trait NavigationRequestsAsync
 final case class ReviewGoodsRequest(
   value: YesNo,
   declarationJourney: DeclarationJourney,
-  overThresholdCheck: Boolean,
+  overThresholdCheck: ThresholdCheck,
   callBack: DeclarationJourney => Future[DeclarationJourney])
     extends NavigationRequestsAsync
 
