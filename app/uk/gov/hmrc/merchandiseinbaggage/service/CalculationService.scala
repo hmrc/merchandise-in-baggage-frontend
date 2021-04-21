@@ -22,7 +22,7 @@ import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, GoodsDestination, ImportGoods}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Goods, GoodsDestination}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
@@ -32,9 +32,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("CalculationService")
 
-  def paymentCalculations(importGoods: Seq[ImportGoods], destination: GoodsDestination)(
-    implicit hc: HeaderCarrier): Future[CalculationResults] =
-    mibConnector.calculatePayments(importGoods.map(_.calculationRequest(destination))).map(withLogging)
+  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResults] =
+    mibConnector.calculatePayments(goods.map(_.calculationRequest(destination))).map(withLogging)
 
   def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
     mibConnector.amendDeclaration(declaration)
@@ -67,7 +66,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
     for {
       amendments         <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       destination        <- OptionT.fromOption[Future](declarationJourney.maybeGoodsDestination)
-      calculationResults <- OptionT.liftF(paymentCalculations(amendments.goods.importGoods, destination))
+      calculationResults <- OptionT.liftF(paymentCalculations(amendments.goods.goods, destination))
     } yield calculationResults
 
   private def withLogging(results: CalculationResults): CalculationResults = {

@@ -66,7 +66,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
+      .expects(declaration.declarationGoods.goods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(CalculationResults(Seq(stubbedResult), WithinThreshold)))
 
     (mockConnector
@@ -93,7 +93,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(declaration.declarationGoods.importGoods.map(_.calculationRequest(GreatBritain)), *)
+      .expects(declaration.declarationGoods.goods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(CalculationResults(Seq(expectedResult), WithinThreshold)))
 
     (mockConnector

@@ -91,18 +91,17 @@ class CheckYourAnswersAmendHandler @Inject()(
 
   private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
     implicit hc: HeaderCarrier): Future[Result] =
-    calculationService.paymentCalculations(amendment.goods.importGoods, originalDeclaration.goodsDestination).flatMap {
-      calculationResults =>
-        val amendmentRef = originalDeclaration.amendments.size + 1
-        val updatedAmendment =
-          amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.totalCalculationResult))
+    calculationService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
+      val amendmentRef = originalDeclaration.amendments.size + 1
+      val updatedAmendment =
+        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.totalCalculationResult))
 
-        val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+      val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
-        for {
-          _ <- calculationService.amendDeclaration(updatedDeclaration)
-          redirectUrl <- paymentService
-                          .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults)
-        } yield Redirect(redirectUrl)
+      for {
+        _ <- calculationService.amendDeclaration(updatedDeclaration)
+        redirectUrl <- paymentService
+                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults)
+      } yield Redirect(redirectUrl)
     }
 }
