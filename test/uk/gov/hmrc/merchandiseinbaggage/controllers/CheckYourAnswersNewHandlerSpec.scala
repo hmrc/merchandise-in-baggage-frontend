@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
@@ -55,14 +55,14 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(DeclarationId("abc"))
   }
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
+  private lazy val stubbedCalculation: CalculationResponse => CalculationService = calculationResponse =>
     new CalculationService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResults] =
-        Future.successful(aPaymentCalculations)
+        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+        Future.successful(calculationResponse)
   }
 
-  private def newHandler(paymentCalcs: CalculationResults = aCalculationResults) =
+  private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
       new PaymentService(testPaymentConnector),
@@ -99,7 +99,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        val overThresholdGoods = aCalculationResults
+        val overThresholdGoods = aCalculationResponse
           .modify(_.thresholdCheck)
           .setTo(OverThreshold)
 
@@ -138,7 +138,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      val eventualResult = newHandler(aCalculationResultsWithNoTax).onSubmit(declaration)
+      val eventualResult = newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
 
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)

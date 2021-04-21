@@ -43,10 +43,10 @@ class CheckYourAnswersNewHandler @Inject()(
 )(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
   def onPageLoad(declaration: Declaration)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResults =>
-      (calculationResults.thresholdCheck, declaration.declarationType) match {
+    calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
+      (calculationResponse.thresholdCheck, declaration.declarationType) match {
         case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
-        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResults))
+        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results))
         case (WithinThreshold, Export) => Ok(exportView(form, declaration))
       }
     }
@@ -64,9 +64,9 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
-      _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, taxDue)
-
+      calculationResponse <- calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      _ <- mibConnector.persistDeclaration(
+            declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)))
+      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 }

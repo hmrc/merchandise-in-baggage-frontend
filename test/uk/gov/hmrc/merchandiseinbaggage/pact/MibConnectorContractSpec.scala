@@ -27,7 +27,7 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, ConversionRatePeriod, Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -88,11 +88,9 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .willRespondWith(
           200,
           Json
-            .toJson(
-              CalculationResults(
-                Seq(CalculationResult(aGoods, AmountInPence(18181), AmountInPence(0), AmountInPence(3636), Some(period))),
-                WithinThreshold
-              ))
+            .toJson(CalculationResponse(
+              CalculationResults(Seq(CalculationResult(aGoods, AmountInPence(18181), AmountInPence(0), AmountInPence(3636), Some(period)))),
+              WithinThreshold))
             .toString
         )
     )

@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -39,12 +39,12 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   "retrieve payment calculations from mib backend" in {
     val stubbedResult =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = CalculationResults(List(stubbedResult), WithinThreshold)
+    val expected = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(expected.calculationResults.map(_.goods.calculationRequest(GreatBritain)), *)
-      .returning(Future.successful(CalculationResults(Seq(stubbedResult), WithinThreshold)))
+      .expects(expected.results.calculationResults.map(_.goods.calculationRequest(GreatBritain)), *)
+      .returning(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
 
     service.paymentCalculations(Seq(aGoods), GreatBritain).futureValue mustBe expected
   }
@@ -52,14 +52,15 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   "check if over threshold for amend journey" in {
     val stubbedResult =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = CalculationResults(List(stubbedResult), WithinThreshold)
+    val expected = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
     val amended = completedImportJourneyWithGoodsOverThreshold
       .copy(journeyType = Amend)
 
+    import expected._
     val declaration = amended.toDeclaration
       .copy(
         maybeTotalCalculationResult =
-          Some(TotalCalculationResult(expected, expected.totalGbpValue, expected.totalTaxDue, expected.totalDutyDue, expected.totalVatDue)))
+          Some(TotalCalculationResult(results, results.totalGbpValue, results.totalTaxDue, results.totalDutyDue, results.totalVatDue)))
 
     (mockConnector
       .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
@@ -71,7 +72,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
       .expects(originalAndAmendGoods.map(_.calculationRequest(GreatBritain)), *)
-      .returning(Future.successful(CalculationResults(Seq(stubbedResult), WithinThreshold)))
+      .returning(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
 
     service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.thresholdCheck mustBe WithinThreshold
   }

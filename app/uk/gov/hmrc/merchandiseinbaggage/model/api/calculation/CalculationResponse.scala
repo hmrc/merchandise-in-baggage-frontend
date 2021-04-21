@@ -18,8 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
 import play.api.libs.json.{Json, OFormat}
 
-case class CalculationResults(calculationResults: Seq[CalculationResult])
+case class CalculationResponse(results: CalculationResults, thresholdCheck: ThresholdCheck)
 
-object CalculationResults {
-  implicit val format: OFormat[CalculationResults] = Json.format[CalculationResults]
+object CalculationResponse {
+  implicit val format: OFormat[CalculationResponse] = Json.format[CalculationResponse]
 }

@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
@@ -50,8 +50,8 @@ class CheckYourAnswersAmendHandlerSpec
   private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
     new CalculationService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResults] =
-        Future.successful(aPaymentCalculations)
+        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+        Future.successful(aCalculationResponse)
   }
 
   private def amendHandler(paymentCalcs: CalculationResults = aCalculationResults) =

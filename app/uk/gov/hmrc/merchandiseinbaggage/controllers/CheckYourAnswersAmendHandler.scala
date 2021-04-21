@@ -61,7 +61,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
         res.thresholdCheck match {
           case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
-          case WithinThreshold => Ok(amendImportView(form, amendment, res))
+          case WithinThreshold => Ok(amendImportView(form, amendment, res.results))
         }
       }
 
@@ -99,14 +99,14 @@ class CheckYourAnswersAmendHandler @Inject()(
     calculationService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
       val amendmentRef = originalDeclaration.amendments.size + 1
       val updatedAmendment =
-        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.totalCalculationResult))
+        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.results.totalCalculationResult))
 
       val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
       for {
         _ <- calculationService.amendDeclaration(updatedDeclaration)
         redirectUrl <- paymentService
-                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults)
+                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults.results)
       } yield Redirect(redirectUrl)
     }
 }

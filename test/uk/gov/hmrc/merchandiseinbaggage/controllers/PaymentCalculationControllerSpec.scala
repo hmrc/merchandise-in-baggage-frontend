@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, ThresholdCheck, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
@@ -35,10 +35,10 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
   private val view = app.injector.instanceOf[PaymentCalculationView]
   lazy val mibConnector = injector.instanceOf[MibConnector]
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = calculationResults =>
+  private lazy val stubbedCalculation: CalculationResponse => CalculationService = calculationResults =>
     new CalculationService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResults] =
+        implicit hc: HeaderCarrier): Future[CalculationResponse] =
         Future.successful(calculationResults)
   }
 
@@ -46,7 +46,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
     new PaymentCalculationController(
       controllerComponents,
       stubProvider(declarationJourney),
-      stubbedCalculation(aCalculationResults.copy(thresholdCheck = thresholdCheck)),
+      stubbedCalculation(aCalculationResponse.copy(thresholdCheck = thresholdCheck)),
       view)
 
   declarationTypes.foreach { importOrExport =>
