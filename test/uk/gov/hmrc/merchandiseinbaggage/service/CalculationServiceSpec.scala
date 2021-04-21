@@ -73,7 +73,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(originalAndAmendGoods.map(_.calculationRequest(GreatBritain)), *)
       .returning(Future.successful(CalculationResults(Seq(stubbedResult), WithinThreshold)))
 
-    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.isOverThreshold mustBe WithinThreshold
+    service.isAmendPlusOriginalOverThresholdImport(amended).value.futureValue.get.thresholdCheck mustBe WithinThreshold
   }
 
   "return None for any journey that are NOT amendmentRequiredAndComplete" in {

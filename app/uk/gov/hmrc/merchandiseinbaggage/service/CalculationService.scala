@@ -23,7 +23,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Goods, GoodsDestination}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,25 +43,24 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   //TODO both logic to be moved to BE
   def isAmendPlusOriginalOverThresholdImport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
       amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       destination         <- OptionT.fromOption[Future](declarationJourney.maybeGoodsDestination)
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
       calculationResults <- OptionT.liftF(paymentCalculations(totalGoods, destination))
-    } yield AmendCalculationResult(calculationResults.thresholdCheck, calculationResults)
+    } yield calculationResults
 
   def isAmendPlusOriginalOverThresholdExport(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResults] =
     for {
       amendments          <- OptionT.fromOption[Future](declarationJourney.amendmentIfRequiredAndComplete)
       originalDeclaration <- OptionT(mibConnector.findDeclaration(declarationJourney.declarationId))
       totalGoods = amendments.goods.goods ++ originalDeclaration.declarationGoods.goods
-      calculations <- OptionT.liftF(
-                       mibConnector.calculatePayments(totalGoods.map(_.calculationRequest(originalDeclaration.goodsDestination))))
-    } yield
-      AmendCalculationResult(calculations.thresholdCheck, CalculationResults(Seq.empty, calculations.thresholdCheck)) //TODO this should be now only CalculationResult
+      calculationResults <- OptionT.liftF(
+                             mibConnector.calculatePayments(totalGoods.map(_.calculationRequest(originalDeclaration.goodsDestination))))
+    } yield calculationResults
 
   private def withLogging(results: CalculationResults): CalculationResults = {
     results.calculationResults.foreach(result => logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))
