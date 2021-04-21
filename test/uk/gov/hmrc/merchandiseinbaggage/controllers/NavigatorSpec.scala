@@ -197,8 +197,8 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
       }
 
-      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
-        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${ReviewGoodsController
+        .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
         val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPage(GoodsVatRateRequest(journey, startedImportGoods, 1, _ => Future(journey)))
 
