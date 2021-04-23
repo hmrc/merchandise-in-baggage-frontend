@@ -127,10 +127,14 @@ valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfan
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
 
 # SearchGoods
-goodsType.title = Nodwch gategori eich eitem gyntaf
-goodsType.next.title = Nodwch y math nesaf o nwyddau
-goodsType.heading = Nodwch gategori eich eitem gyntaf
-goodsType.next.heading = Nodwch y math nesaf o nwyddau
+goodsType.New.title = Nodwch gategori eich eitem gyntaf
+goodsType.Amend.title = Enter the category of your additional item
+goodsType.New.next.title = Nodwch y math nesaf o nwyddau
+goodsType.Amend.next.title = Enter the category of your additional item
+goodsType.New.heading = Nodwch gategori eich eitem gyntaf
+goodsType.Amend.heading = Enter the category of your additional item
+goodsType.New.next.heading = Nodwch y math nesaf o nwyddau
+goodsType.Amend.next.heading = Enter the category of your additional item
 goodsType.p = Dyma’r math o gynnyrch neu’r categori. Gallwch ychwanegu rhagor yn nes ymlaen.
 goodsType.category = Math o nwyddau
 goodsType.category.hint = Er enghraifft, dillad
