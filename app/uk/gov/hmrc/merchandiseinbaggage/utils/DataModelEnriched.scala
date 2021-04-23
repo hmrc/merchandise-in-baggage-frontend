@@ -126,7 +126,7 @@ object DataModelEnriched {
 
         Seq(
           TableRow(
-            Text(goods.categoryQuantityOfGoods.category)
+            Text(goods.category)
           ),
           TableRow(
             Text(tc.gbpAmount.formattedInPounds)

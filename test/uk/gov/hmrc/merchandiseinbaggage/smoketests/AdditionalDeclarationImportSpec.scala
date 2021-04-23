@@ -16,12 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
-import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{CheckYourAnswersPage, ExciseAndRestrictedGoodsPage, GoodsOriginPage, GoodsTypeQuantityPage, GoodsVatRatePage, NewOrExistingDeclarationPage, PaymentCalculationPage, PreviousDeclarationDetailsPage, PurchaseDetailsPage, RetrieveDeclarationPage, ReviewGoodsPage, StartImportPage, ValueWeightOfGoodsPage}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Paid
-import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{PurchaseDetailsInput, RetrieveDeclaration}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class AdditionalDeclarationImportSpec extends BaseUiSpec {
@@ -58,7 +56,7 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
 
       submitPage(ValueWeightOfGoodsPage, Yes)
 
-      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("sock", "one"))
+      submitPage(GoodsTypePage, "sock")
 
       submitPage(PurchaseDetailsPage, PurchaseDetailsInput("100.50", "EUR"))
 

@@ -31,11 +31,10 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
 
     elementText(findByTagName("h2")) must include(messages("reviewGoods.h2"))
 
-    rowTest(0, "reviewGoods.list.item", "wine", "/goods-type-quantity/1")
-    rowTest(1, "reviewGoods.list.quantity", "1", "/goods-type-quantity/1")
-    rowTest(2, "reviewGoods.list.vatRate", "20%", "/goods-vat-rate/1")
-    rowTest(3, "reviewGoods.list.producedInEu", "Yes", "/goods-origin/1")
-    rowTest(4, "reviewGoods.list.price", "99.99, Euro (EUR)", "/purchase-details/1")
+    rowTest(0, "reviewGoods.list.item", "wine", "/goods-type/1")
+    rowTest(1, "reviewGoods.list.vatRate", "20%", "/goods-vat-rate/1")
+    rowTest(2, "reviewGoods.list.producedInEu", "Yes", "/goods-origin/1")
+    rowTest(3, "reviewGoods.list.price", "99.99, Euro (EUR)", "/purchase-details/1")
 
     findByTagName("a").getAttribute("href") must include("review-goods#main-content")
     radioButtonTest

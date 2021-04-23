@@ -23,51 +23,45 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeQuantityView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  private val view = app.injector.instanceOf[GoodsTypeQuantityView]
+  private val view = app.injector.instanceOf[GoodsTypeView]
   val mockNavigator = mock[Navigator]
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsTypeQuantityController(
-      controllerComponents,
-      stubProvider(declarationJourney),
-      stubRepo(declarationJourney),
-      view,
-      mockNavigator)
+    new GoodsTypeController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(GoodsTypeQuantityController.onPageLoad(1).url, aSessionId)
+        val request = buildGet(GoodsTypeController.onPageLoad(1).url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(1)(request)
         val result = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
-        result must include(messageApi(s"goodsTypeQuantity.title"))
-        result must include(messageApi(s"goodsTypeQuantity.heading"))
-        result must include(messageApi("goodsTypeQuantity.p"))
-        result must include(messageApi("goodsTypeQuantity.quantity"))
+        result must include(messageApi(s"goodsType.title"))
+        result must include(messageApi(s"goodsType.heading"))
+        result must include(messageApi("goodsType.p"))
       }
     }
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
-        val request = buildPost(GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
-          .withFormUrlEncodedBody("category" -> "clothes", "quantity" -> "1")
+        val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
+          .withFormUrlEncodedBody("category" -> "clothes")
         val page =
           if (importOrExport == Import)
             GoodsVatRateController.onPageLoad(1)
           else SearchGoodsCountryController.onPageLoad(1)
 
         (mockNavigator
-          .nextPage(_: GoodsTypeQuantityRequest)(_: ExecutionContext))
+          .nextPage(_: GoodsTypeRequest)(_: ExecutionContext))
           .expects(*, *)
           .returning(Future successful page)
           .once()
@@ -76,7 +70,7 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        val request = buildPost(GoodsTypeQuantityController.onSubmit(1).url, aSessionId)
+        val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("xyz" -> "clothes", "abc" -> "1")
 
         val eventualResult = controller(journey).onSubmit(1)(request)
@@ -84,10 +78,9 @@ class GoodsTypeQuantityControllerSpec extends DeclarationJourneyControllerSpec w
 
         status(eventualResult) mustBe 400
         result must include(messageApi("error.summary.title"))
-        result must include(messageApi(s"goodsTypeQuantity.title"))
-        result must include(messageApi(s"goodsTypeQuantity.heading"))
-        result must include(messageApi("goodsTypeQuantity.p"))
-        result must include(messageApi("goodsTypeQuantity.quantity"))
+        result must include(messageApi(s"goodsType.title"))
+        result must include(messageApi(s"goodsType.heading"))
+        result must include(messageApi("goodsType.p"))
       }
     }
   }

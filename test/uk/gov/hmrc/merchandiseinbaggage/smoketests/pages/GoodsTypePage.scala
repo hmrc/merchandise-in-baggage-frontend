@@ -17,22 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatest.Assertions.fail
 import org.scalatestplus.selenium.WebBrowser._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.CategoryQuantityOfGoods
 
-object GoodsTypeQuantityPage extends Page {
-  def path(idx: Int): String = s"/declare-commercial-goods/goods-type-quantity/$idx"
+object GoodsTypePage extends Page {
+  def path(idx: Int): String = s"/declare-commercial-goods/goods-type/$idx"
   def title(idx: Int) = s"Enter the ${if (idx == 1) "first" else "next"} type of goods"
 
-  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
-    val cqg = formData match {
-      case c: CategoryQuantityOfGoods => c
-      case _                          => fail("invalid_input")
-    }
-
-    find(NameQuery("category")).get.underlying.sendKeys(cqg.category)
-    find(NameQuery("quantity")).get.underlying.sendKeys(cqg.quantity)
+  def submitPage[T](category: T)(implicit webDriver: HtmlUnitDriver): Unit = {
+    find(NameQuery("category")).get.underlying.sendKeys(category.toString)
     click.on(NameQuery("continue"))
   }
 }

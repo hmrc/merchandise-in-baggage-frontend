@@ -127,18 +127,14 @@ valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfan
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
 
 # SearchGoods
-goodsTypeQuantity.title = Nodwch gategori eich eitem gyntaf
-goodsTypeQuantity.next.title = Nodwch y math nesaf o nwyddau
-goodsTypeQuantity.heading = Nodwch gategori eich eitem gyntaf
-goodsTypeQuantity.next.heading = Nodwch y math nesaf o nwyddau
-goodsTypeQuantity.p = Dyma’r math o gynnyrch neu’r categori. Gallwch ychwanegu rhagor yn nes ymlaen.
-goodsTypeQuantity.category = Math o nwyddau
-goodsTypeQuantity.category.hint = Er enghraifft, dillad
-goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
-goodsTypeQuantity.quantity = Nifer o eitemau
-goodsTypeQuantity.quantity.hint = Er enghraifft, 2 flwch
-goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
-goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
+goodsType.title = Nodwch gategori eich eitem gyntaf
+goodsType.next.title = Nodwch y math nesaf o nwyddau
+goodsType.heading = Nodwch gategori eich eitem gyntaf
+goodsType.next.heading = Nodwch y math nesaf o nwyddau
+goodsType.p = Dyma’r math o gynnyrch neu’r categori. Gallwch ychwanegu rhagor yn nes ymlaen.
+goodsType.category = Math o nwyddau
+goodsType.category.hint = Er enghraifft, dillad
+goodsType.category.error.required = Nodwch y math o nwyddau
 
 # GoodsVatRate
 goodsVatRate.title = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
@@ -197,8 +193,6 @@ reviewGoods.New.heading = Adolygu’ch nwyddau
 reviewGoods.Amend.heading = Adolygu’r nwyddau rydych wedi’u hychwanegu
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.goodsType.changeText=y math o nwyddau
-reviewGoods.list.quantity = Nifer o eitemau
-reviewGoods.quantity.changeText=nifer yr eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
 reviewGoods.list.producedInEu = Cynhyrchwyd yn yr UE
 reviewGoods.country.changeText=gwlad
@@ -430,7 +424,6 @@ checkYourAnswers.amend.title = Gwiriwch eich atebion cyn ychwanegu’r nwyddau h
 checkYourAnswers.change = Newid
 checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
-checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = Cyfradd TAW
 checkYourAnswers.detailsOfTheGoods.producedInEu = Cynhyrchwyd yn yr UE
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan

@@ -30,35 +30,27 @@ p: components.p)
 
 @(form: Form[_], idx: Int, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, if(idx == 1) s"goodsTypeQuantity.title" else s"goodsTypeQuantity.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, if(idx == 1) s"goodsType.title" else s"goodsType.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
-  @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = GoodsTypeController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 
-    @h1(messages(if(idx == 1) s"goodsTypeQuantity.heading" else s"goodsTypeQuantity.next.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
+    @h1(messages(if(idx == 1) s"goodsType.heading" else s"goodsType.next.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
-    @p(Html(messages("goodsTypeQuantity.p")))
+    @p(Html(messages("goodsType.p")))
 
     @text(
         form = form,
         id = "category",
         name = "category",
-        label = "goodsTypeQuantity.category",
+        label = "goodsType.category",
         isPageHeading = false,
         classes = Some("govuk-input--width-10"),
-        hint = Some("goodsTypeQuantity.category.hint")
+        hint = Some("goodsType.category.hint")
     )
 
-    @text(
-        form = form,
-        id = "quantity",
-        name = "quantity",
-        label = "goodsTypeQuantity.quantity",
-        isPageHeading = false,
-        classes = Some("govuk-input--width-5"),
-        hint = Some("goodsTypeQuantity.quantity.hint")
-    )
+
 
     @button("site.continue", name = Some("continue"))
   }

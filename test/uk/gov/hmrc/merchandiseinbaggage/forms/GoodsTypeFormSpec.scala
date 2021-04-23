@@ -18,24 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeQuantityForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeForm.form
 
-class GoodsTypeQuantityFormSpec extends FieldBehaviours {
+class GoodsTypeFormSpec extends FieldBehaviours {
 
   ".category" must {
     val fieldName = "category"
-    val requiredKey = "goodsTypeQuantity.category.error.required"
-
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
-  }
-
-  ".quantity" must {
-    val fieldName = "quantity"
-    val requiredKey = "goodsTypeQuantity.quantity.error.required"
+    val requiredKey = "goodsType.category.error.required"
 
     behave like mandatoryField(
       form,

@@ -48,14 +48,14 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     "onSubmit" should {
-      s"redirect to /goods-type-quantity after successful form submit with Yes for $importOrExport" in {
+      s"redirect to /goods-type after successful form submit with Yes for $importOrExport" in {
         val request = buildPost(routes.ValueWeightOfGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
         val eventualResult = controller(journey).onSubmit(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsTypeQuantityController.onPageLoad(1).url)
+        redirectLocation(eventualResult) mustBe Some(routes.GoodsTypeController.onPageLoad(1).url)
       }
     }
 

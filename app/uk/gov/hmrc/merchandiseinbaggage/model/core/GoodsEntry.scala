@@ -20,7 +20,7 @@ import play.api.libs.json._
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 
 sealed trait GoodsEntry {
-  val maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods]
+  val maybeCategory: Option[String]
   val maybePurchaseDetails: Option[PurchaseDetails]
 
   def goodsIfComplete: Option[Goods]
@@ -29,18 +29,18 @@ sealed trait GoodsEntry {
 }
 
 final case class ImportGoodsEntry(
-  override val maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
+  override val maybeCategory: Option[String] = None,
   maybeGoodsVatRate: Option[GoodsVatRate] = None,
   maybeProducedInEu: Option[YesNoDontKnow] = None,
   override val maybePurchaseDetails: Option[PurchaseDetails] = None
 ) extends GoodsEntry {
   override def goodsIfComplete: Option[ImportGoods] =
     for {
-      categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
-      goodsVatRate            <- maybeGoodsVatRate
-      producedInEu            <- maybeProducedInEu
-      purchaseDetails         <- maybePurchaseDetails
-    } yield ImportGoods(categoryQuantityOfGoods, goodsVatRate, producedInEu, purchaseDetails)
+      category        <- maybeCategory
+      goodsVatRate    <- maybeGoodsVatRate
+      producedInEu    <- maybeProducedInEu
+      purchaseDetails <- maybePurchaseDetails
+    } yield ImportGoods(category, goodsVatRate, producedInEu, purchaseDetails)
 }
 
 object ImportGoodsEntry {
@@ -52,16 +52,16 @@ object ImportGoodsEntry {
 }
 
 final case class ExportGoodsEntry(
-  override val maybeCategoryQuantityOfGoods: Option[CategoryQuantityOfGoods] = None,
+  override val maybeCategory: Option[String] = None,
   maybeDestination: Option[Country] = None,
   override val maybePurchaseDetails: Option[PurchaseDetails] = None
 ) extends GoodsEntry {
   override def goodsIfComplete: Option[ExportGoods] =
     for {
-      categoryQuantityOfGoods <- maybeCategoryQuantityOfGoods
-      destination             <- maybeDestination
-      purchaseDetails         <- maybePurchaseDetails
-    } yield ExportGoods(categoryQuantityOfGoods, destination, purchaseDetails)
+      category        <- maybeCategory
+      destination     <- maybeDestination
+      purchaseDetails <- maybePurchaseDetails
+    } yield ExportGoods(category, destination, purchaseDetails)
 }
 
 object ExportGoodsEntry {

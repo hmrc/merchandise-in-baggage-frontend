@@ -68,7 +68,7 @@ class CheckYourAnswersController @Inject()(
     val updatedGoodsEntries: GoodsEntries = request.declarationJourney.goodsEntries.addEmptyIfNecessary()
 
     repo.upsert(request.declarationJourney.copy(goodsEntries = updatedGoodsEntries)).map { _ =>
-      Redirect(routes.GoodsTypeQuantityController.onPageLoad(updatedGoodsEntries.entries.size))
+      Redirect(routes.GoodsTypeController.onPageLoad(updatedGoodsEntries.entries.size))
     }
   }
 }

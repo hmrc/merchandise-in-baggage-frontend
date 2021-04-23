@@ -78,18 +78,14 @@
    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
     <div class="govuk-summary-list__row">
      <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
-     <dd id="@{s"category_$index"}" class="govuk-summary-list__value">@goods.categoryQuantityOfGoods.category</dd>
-    </div>
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.quantity")</dt>
-     <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value">@goods.categoryQuantityOfGoods.quantity</dd>
+     <dd id="@{s"category_$index"}" class="govuk-summary-list__value">@goods.category</dd>
     </div>
 
     @goods match {
      case good:ImportGoods => {
       <div class="govuk-summary-list__row">
-       <dt id="@{s"quantityLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
-       <dd id="@{s"quantity_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
+       <dt id="@{s"producedInEu_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
+       <dd id="@{s"producedInEu_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
       </div>
      }
      case good:ExportGoods => {
