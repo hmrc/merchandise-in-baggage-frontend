@@ -36,51 +36,53 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with Mock
     new GoodsTypeController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
-    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
-    "onPageLoad" should {
-      s"return 200 with radio buttons for $importOrExport" in {
+    journeyTypes.foreach { journeyType =>
+      val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport).copy(journeyType = journeyType)
+      "onPageLoad" should {
+        s"return 200 with radio buttons for $importOrExport for journeyType $journeyType" in {
 
-        val request = buildGet(GoodsTypeController.onPageLoad(1).url, aSessionId)
-        val eventualResult = controller(journey).onPageLoad(1)(request)
-        val result = contentAsString(eventualResult)
+          val request = buildGet(GoodsTypeController.onPageLoad(1).url, aSessionId)
+          val eventualResult = controller(journey).onPageLoad(1)(request)
+          val result = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
-        result must include(messageApi(s"goodsType.title"))
-        result must include(messageApi(s"goodsType.heading"))
-        result must include(messageApi("goodsType.p"))
-      }
-    }
-
-    "onSubmit" should {
-      s"redirect to next page after successful form submit for $importOrExport" in {
-        val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
-          .withFormUrlEncodedBody("category" -> "clothes")
-        val page =
-          if (importOrExport == Import)
-            GoodsVatRateController.onPageLoad(1)
-          else SearchGoodsCountryController.onPageLoad(1)
-
-        (mockNavigator
-          .nextPage(_: GoodsTypeRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future successful page)
-          .once()
-
-        controller(journey).onSubmit(1)(request).futureValue
+          status(eventualResult) mustBe 200
+          result must include(messageApi(s"goodsType.$journeyType.title"))
+          result must include(messageApi(s"goodsType.$journeyType.heading"))
+          result must include(messageApi("goodsType.p"))
+        }
       }
 
-      s"return 400 with any form errors for $importOrExport" in {
-        val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
-          .withFormUrlEncodedBody("xyz" -> "clothes", "abc" -> "1")
+      "onSubmit" should {
+        s"redirect to next page after successful form submit for $importOrExport for journeyType $journeyType" in {
+          val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
+            .withFormUrlEncodedBody("category" -> "clothes")
+          val page =
+            if (importOrExport == Import)
+              GoodsVatRateController.onPageLoad(1)
+            else SearchGoodsCountryController.onPageLoad(1)
 
-        val eventualResult = controller(journey).onSubmit(1)(request)
-        val result = contentAsString(eventualResult)
+          (mockNavigator
+            .nextPage(_: GoodsTypeRequest)(_: ExecutionContext))
+            .expects(*, *)
+            .returning(Future successful page)
+            .once()
 
-        status(eventualResult) mustBe 400
-        result must include(messageApi("error.summary.title"))
-        result must include(messageApi(s"goodsType.title"))
-        result must include(messageApi(s"goodsType.heading"))
-        result must include(messageApi("goodsType.p"))
+          controller(journey).onSubmit(1)(request).futureValue
+        }
+
+        s"return 400 with any form errors for $importOrExport for journeyType $journeyType" in {
+          val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
+            .withFormUrlEncodedBody("xyz" -> "clothes", "abc" -> "1")
+
+          val eventualResult = controller(journey).onSubmit(1)(request)
+          val result = contentAsString(eventualResult)
+
+          status(eventualResult) mustBe 400
+          result must include(messageApi("error.summary.title"))
+          result must include(messageApi(s"goodsType.$journeyType.title"))
+          result must include(messageApi(s"goodsType.$journeyType.heading"))
+          result must include(messageApi("goodsType.p"))
+        }
       }
     }
   }

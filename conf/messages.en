@@ -127,10 +127,14 @@ valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value o
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
 # GoodsType
-goodsType.title = Enter the category of your first item
-goodsType.next.title = Enter the next category of goods
-goodsType.heading = Enter the category of your first item
-goodsType.next.heading = Enter the next category of goods
+goodsType.New.title = Enter the category of your first item
+goodsType.Amend.title = Enter the category of your additional item
+goodsType.New.next.title = Enter the next category of goods
+goodsType.Amend.next.title = Enter the category of your additional item
+goodsType.New.heading = Enter the category of your first item
+goodsType.Amend.heading = Enter the category of your additional item
+goodsType.New.next.heading = Enter the next category of goods
+goodsType.Amend.next.heading = Enter the category of your additional item
 goodsType.p = This is the product type or category. You can add more later.
 goodsType.category = Goods type
 goodsType.category.hint = For example, clothes
