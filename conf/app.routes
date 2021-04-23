@@ -40,8 +40,8 @@ GET        /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggage.contro
 POST       /value-weight-of-goods        uk.gov.hmrc.merchandiseinbaggage.controllers.ValueWeightOfGoodsController.onSubmit
 
 # SearchGoods
-GET        /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeQuantityController.onPageLoad(idx: Int)
-POST       /goods-type-quantity/:idx     uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeQuantityController.onSubmit(idx: Int)
+GET        /goods-type/:idx              uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeController.onPageLoad(idx: Int)
+POST       /goods-type/:idx              uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsTypeController.onSubmit(idx: Int)
 
 # GoodsVatRate
 GET        /goods-vat-rate/:idx          uk.gov.hmrc.merchandiseinbaggage.controllers.GoodsVatRateController.onPageLoad(idx: Int)

@@ -126,19 +126,15 @@ valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less t
 valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £1,500 and they weigh less than 1,000 kilograms
 valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
 
-# GoodsTypeQuantity
-goodsTypeQuantity.title = Enter the category of your first item
-goodsTypeQuantity.next.title = Enter the next category of goods
-goodsTypeQuantity.heading = Enter the category of your first item
-goodsTypeQuantity.next.heading = Enter the next category of goods
-goodsTypeQuantity.p = This is the product type or category. You can add more later.
-goodsTypeQuantity.category = Goods type
-goodsTypeQuantity.category.hint = For example, clothes
-goodsTypeQuantity.category.error.required = Enter a type of goods
-goodsTypeQuantity.quantity = Number of items
-goodsTypeQuantity.quantity.hint = For example, 2 boxes
-goodsTypeQuantity.quantity.error.required = Enter the number of items
-goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
+# GoodsType
+goodsType.title = Enter the category of your first item
+goodsType.next.title = Enter the next category of goods
+goodsType.heading = Enter the category of your first item
+goodsType.next.heading = Enter the next category of goods
+goodsType.p = This is the product type or category. You can add more later.
+goodsType.category = Goods type
+goodsType.category.hint = For example, clothes
+goodsType.category.error.required = Enter a type of goods
 
 # GoodsVatRate
 goodsVatRate.title = Check which VAT rate applies to the {0}
@@ -197,8 +193,6 @@ reviewGoods.New.heading = Review your goods
 reviewGoods.Amend.heading = Review the goods you are adding
 reviewGoods.list.item = Type of goods
 reviewGoods.goodsType.changeText = type of goods
-reviewGoods.list.quantity = Number of items
-reviewGoods.quantity.changeText = number of items
 reviewGoods.list.vatRate = VAT rate
 reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.country.changeText=country
@@ -430,7 +424,6 @@ checkYourAnswers.amend.title = Check your answers before adding these goods to y
 checkYourAnswers.change = Change
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
-checkYourAnswers.detailsOfTheGoods.quantity = Number of items
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
 checkYourAnswers.detailsOfTheGoods.producedInEu = Produced in EU
 checkYourAnswers.detailsOfTheGoods.destination = Destination

@@ -28,13 +28,10 @@ class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage wit
     goToConfirmationPage
 
     findById("category_0").getText mustBe "wine"
-    findById("quantity_0").getText mustBe "1"
 
     findById("category_1").getText mustBe "cheese"
-    findById("quantity_1").getText mustBe "3"
 
     findById("category_2").getText mustBe "wine"
-    findById("quantity_2").getText mustBe "1"
 
     findById("customsDuty").getText mustBe "£2"
     findById("vat").getText mustBe "£2"

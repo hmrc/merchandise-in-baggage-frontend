@@ -76,7 +76,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         (mockNavigator
           .nextPage(_: ReviewGoodsRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(GoodsTypeQuantityController.onPageLoad(2)))
+          .returning(Future.successful(GoodsTypeController.onPageLoad(2)))
           .once()
 
         controller(journey).onSubmit(request).futureValue

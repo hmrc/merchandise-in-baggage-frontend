@@ -53,7 +53,9 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
     givenAPaymentCalculations(calculationRequests, stubbedResults)
 
-    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResponse(CalculationResults(stubbedResults), WithinThreshold)
+    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResponse(
+      CalculationResults(stubbedResults),
+      WithinThreshold)
   }
 
   "find a persisted declaration from backend by declarationId" in {

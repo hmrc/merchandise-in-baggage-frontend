@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{CategoryQuantityOfGoods, Email, Name}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Name}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 class ExportJourneySpec extends BaseUiSpec {
@@ -36,7 +36,7 @@ class ExportJourneySpec extends BaseUiSpec {
 
       submitPage(ValueWeightOfGoodsPage, Yes)
 
-      submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("shoes", "one pair"))
+      submitPage(GoodsTypePage, "shoes")
 
       submitPage(PurchaseDetailsExportPage, "100.50")
 
@@ -76,7 +76,7 @@ class ExportJourneySpec extends BaseUiSpec {
   }
 
   private def addMoreGoods(): Unit = {
-    submitPage(GoodsTypeQuantityPage, CategoryQuantityOfGoods("wine", "one bottle"))
+    submitPage(GoodsTypePage, "wine")
     submitPage(PurchaseDetailsExportPage, "100.50")
     submitPage(SearchGoodsCountryPage, "FR")
   }
