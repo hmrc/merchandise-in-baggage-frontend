@@ -98,32 +98,36 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     }
   }
 
-  s"redirect to next page after successful form submit with No for $Export" in {
-    val id = aSessionId
-    val journey: DeclarationJourney =
-      DeclarationJourney(id, Export, goodsEntries = completedGoodsEntries(Export))
-        .copy(journeyType = Amend)
+  forAll(declarationTypesTable) { importOrExport =>
+    s"redirect to next page after successful form submit with No for $importOrExport" in {
+      val id = aSessionId
+      val journey: DeclarationJourney =
+        DeclarationJourney(id, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
+          .copy(journeyType = Amend)
 
-    val controller =
-      new ReviewGoodsController(
-        controllerComponents,
-        stubProvider(journey),
-        stubRepo(journey),
-        view,
-        mockCalculationService,
-        injector.instanceOf[Navigator])
+      val controller =
+        new ReviewGoodsController(
+          controllerComponents,
+          stubProvider(journey),
+          stubRepo(journey),
+          view,
+          mockCalculationService,
+          injector.instanceOf[Navigator])
 
-    (mockCalculationService
-      .isAmendPlusOriginalOverThresholdExport(_: DeclarationJourney)(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))
+      (mockCalculationService
+        .amendPlusOriginalCalculations(_: DeclarationJourney)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))
 
-    val request = buildPost(ReviewGoodsController.onSubmit().url, id)
-      .withFormUrlEncodedBody("value" -> "No")
+      val request = buildPost(ReviewGoodsController.onSubmit().url, id)
+        .withFormUrlEncodedBody("value" -> "No")
 
-    val eventualResult = controller.onSubmit()(request)
-
-    status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(CheckYourAnswersController.onPageLoad().url)
+      val eventualResult = controller.onSubmit()(request)
+      val expectedRedirect =
+        if (importOrExport == Export) Some(CheckYourAnswersController.onPageLoad().url)
+        else Some(PaymentCalculationController.onPageLoad().url)
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe expectedRedirect
+    }
   }
 }

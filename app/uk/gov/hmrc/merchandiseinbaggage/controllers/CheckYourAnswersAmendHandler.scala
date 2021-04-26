@@ -57,7 +57,7 @@ class CheckYourAnswersAmendHandler @Inject()(
     amendment: Amendment,
     declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService
-      .isAmendPlusOriginalOverThresholdImport(declarationJourney)
+      .amendPlusOriginalCalculations(declarationJourney)
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
         res.thresholdCheck match {
           case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
@@ -69,7 +69,7 @@ class CheckYourAnswersAmendHandler @Inject()(
     amendment: Amendment,
     declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService
-      .isAmendPlusOriginalOverThresholdExport(declarationJourney)
+      .amendPlusOriginalCalculations(declarationJourney)
       .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { amendCalculationResult =>
         amendCalculationResult.thresholdCheck match {
           case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())

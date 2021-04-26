@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import java.time.LocalDateTime
+
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
@@ -23,8 +25,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, Sessio
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-
-import java.time.LocalDateTime
 
 class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
@@ -76,7 +76,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       webDriver.getPageSource must include("France")
       webDriver.getPageSource must include("£100.50")
 
-      givenAPaymentCalculation(aCalculationResult, WithinThreshold)
+      givenAnAmendPaymentCalculations(Seq.empty, WithinThreshold)
       submitPage(ReviewGoodsPage, "No")
 
       webDriver.getPageSource must include("sock")

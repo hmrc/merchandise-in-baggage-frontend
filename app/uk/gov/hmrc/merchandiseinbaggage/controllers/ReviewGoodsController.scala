@@ -90,12 +90,6 @@ class ReviewGoodsController @Inject()(
     implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
     declarationJourney.amendmentIfRequiredAndComplete
       .fold(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold))) { _ =>
-        overThresholdCheck(declarationJourney)
+        calculationService.amendPlusOriginalCalculations(declarationJourney)
       }
-
-  private def overThresholdCheck(declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
-    declarationJourney.declarationType match {
-      case Import => calculationService.isAmendPlusOriginalOverThresholdImport(declarationJourney)
-      case Export => calculationService.isAmendPlusOriginalOverThresholdExport(declarationJourney)
-    }
 }

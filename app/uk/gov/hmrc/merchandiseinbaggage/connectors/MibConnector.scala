@@ -23,7 +23,7 @@ import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
 
@@ -64,6 +64,9 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
 
   def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[CalculationResponse] =
     httpClient.POST[Seq[CalculationRequest], CalculationResponse](s"$base$calculationsUrl", calculationRequests)
+
+  def calculatePaymentsAmendPlusExisting(amendRequest: CalculationAmendRequest)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+    httpClient.POST[CalculationAmendRequest, CalculationResponse](s"$base$amendsPlusExistingCalculationsUrl", amendRequest)
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
     httpClient.GET[CheckResponse](s"$base$checkEoriUrl$eori")

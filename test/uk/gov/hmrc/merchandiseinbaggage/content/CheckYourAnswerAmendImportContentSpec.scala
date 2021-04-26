@@ -21,16 +21,16 @@ import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import scala.collection.JavaConverters._
 
 class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with CoreTestData {
 
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
-    setUp(aCalculationResultOverThousand) { bulletPoints =>
+    setUp(aCalculationResultOverThousand, WithinThreshold) { bulletPoints =>
       bulletPoints.size mustBe 4
       elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")}"
@@ -56,11 +56,11 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     }
   }
 
-  private def setUp(calculationResult: CalculationResult)(fn: List[WebElement] => Any): Any = fn {
-    givenAPaymentCalculation(calculationResult)
+  private def setUp(calculationResult: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
+    fn: List[WebElement] => Any): Any = fn {
+    givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
     val journey = completedAmendedJourney(Import).copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
     givenAJourneyWithSession(Amend, declarationJourney = journey)
-    givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), aDeclarationId)
     goToCYAPage(Amend)
 
     findByXPath("//ul[@name='declarationAcknowledgement']")
