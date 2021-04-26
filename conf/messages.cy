@@ -143,6 +143,7 @@ goodsType.category.error.required = Nodwch y math o nwyddau
 # GoodsVatRate
 goodsVatRate.title = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
 goodsVatRate.heading = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
+goodsVatRate.hint = Math o nwyddau:
 goodsVatRate.p = Mae gan y Doll Dramor ar y rhan fwyaf o nwyddau gyfradd safonol TAW o 20%, ond mae gan rai nwyddau, megis dillad plant, gyfradd is.
 goodsVatRate.table.head.col1 = % TAW
 goodsVatRate.table.head.col2 = Ar gyfer beth mae’r gyfradd yn berthnasol
