@@ -26,7 +26,8 @@ formHelper: FormWithCSRF,
 errorSummary: components.errorSummary,
 h1: components.h1,
 inputRadio: components.inputRadio,
-button: components.button
+button: components.button,
+details: components.details
 )
 
 @(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -49,13 +50,28 @@ button: components.button
             items = YesNoDontKnow.options(form)
         )
 
-        <p class="govuk-body">
-            @messages("goodsOrigin.p")
-            <a class="govuk-link" href="@messages("goodsOrigin.p.href")" target="_blank">
-                @messages("goodsOrigin.p.link")
-            </a>
-            .
-        </p>
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">@messages("goodsOrigin.warning")</span>
+                @messages("goodsOrigin.warning")
+            </strong>
+        </div>
+
+        @details(
+             summaryText = Messages("goodsOrigin.proof.summary")
+        ) {
+            <p>@Messages("goodsOrigin.proof.summary.p1")</p>
+
+            <ul>
+                <li>@Messages("goodsOrigin.proof.summary.p1.l1")</li>
+                <li>@Messages("goodsOrigin.proof.summary.p1.l2")</li>
+                <li>@Messages("goodsOrigin.proof.summary.p1.l3")</li>
+                <li>@Messages("goodsOrigin.proof.summary.p1.l4")</li>
+            </ul>
+
+            <p>@Messages("goodsOrigin.proof.summary.p2")</p>
+        }
 
         @button("site.continue", name = Some("continue"))
     }

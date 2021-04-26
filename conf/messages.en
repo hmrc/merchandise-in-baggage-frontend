@@ -34,9 +34,12 @@ site.remove = Remove
 site.govuk = GOV.UK
 site.back = Back
 
-yndk.Yes = Yes
-yndk.No = No
-yndk.DontKnow = I do not know
+yesNoDontKnow.Yes = Yes
+yesNoDontKnow.Yes.hint = Customs Duty is not charged
+yesNoDontKnow.No = No
+yesNoDontKnow.No.hint = From 1 Jan 2021, Customs Duty is charged at 3.3%
+yesNoDontKnow.DontKnow = I do not know
+yesNoDontKnow.DontKnow.hint = From 1 Jan 2021, Customs Duty is charged at 3.3%
 
 journeyType.New = Make a new declaration
 journeyType.Amend = Add goods to an existing declaration
@@ -163,13 +166,18 @@ goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # GoodsOrigin
-goodsOrigin.title = Were these goods produced in the EU?
-goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.title = Were these goods made in the EU?
+goodsOrigin.heading = Were these goods made in the EU?
 goodsOrigin.inset = Type of goods:
-goodsOrigin.p = Check if your goods meet the
-goodsOrigin.p.link = rules of origin (opens in new tab)
-goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
 goodsOrigin.error.required = Select yes if the goods were produced in the EU
+goodsOrigin.warning = You must carry proof your goods were made in the EU if they have a total value of more than £1,000.
+goodsOrigin.proof.summary = What you can use as proof
+goodsOrigin.proof.summary.p1 = Evidence can be include one of the following:
+goodsOrigin.proof.summary.p1.l1 = packaging or a label attached to the item showing that it was produced or made in the EU
+goodsOrigin.proof.summary.p1.l2 = evidence the item is handmade or homegrown in the EU
+goodsOrigin.proof.summary.p1.l3 = documents given to you by the seller that show the item was produced or made in the EU
+goodsOrigin.proof.summary.p1.l4 = a ‘statement on origin’ from the supplier of the item
+goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you will have to pay customs duty on this item.
 
 # SearchGoodsCountry
 searchGoodsCountry.title = What country are you taking the {0} to?

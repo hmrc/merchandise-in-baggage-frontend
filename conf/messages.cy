@@ -34,9 +34,12 @@ site.remove = Dileu
 site.govuk = GOV.UK
 site.back = Yn ôl
 
-yndk.Yes = Iawn
-yndk.No = Na
-yndk.DontKnow = Nid wyf yn gwybod
+yesNoDontKnow.Yes = Iawn
+yesNoDontKnow.Yes.hint = Ni chodir Toll Dramor
+yesNoDontKnow.No = Na
+yesNoDontKnow.No.hint = O 1 Ionawr 2021 ymlaen, codir Toll Dramor ar gyfradd o 3.3%
+yesNoDontKnow.DontKnow = Nid wyf yn gwybod
+yesNoDontKnow.DontKnow.hint = O 1 Ionawr 2021 ymlaen, codir Toll Dramor ar gyfradd o 3.3%
 
 journeyType.New = Gwneud datganiad newydd
 journeyType.Amend = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
@@ -163,13 +166,18 @@ goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
 # GoodsOrigin
-goodsOrigin.title = A gynhyrchwyd y nwyddau hyn yn yr UE?
-goodsOrigin.heading = A gynhyrchwyd y nwyddau hyn yn yr UE?
+goodsOrigin.title = A wnaed y nwyddau hyn yn yr UE?
+goodsOrigin.heading = A wnaed y nwyddau hyn yn yr UE?
 goodsOrigin.inset = Math o nwyddau:
-goodsOrigin.p = Gwiriwch a yw’ch nwyddau’n bodloni’r
-goodsOrigin.p.link = rheolau o ran tarddiad (yn agor tab newydd)
-goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
 goodsOrigin.error.required = Dewiswch ‘Iawn’ os cafodd y nwyddau hyn eu cynhyrchu yn yr UE
+goodsOrigin.warning = Mae’n rhaid i chi gario tystiolaeth sy’n dangos y cafodd eich nwyddau eu gwneud yn yr UE os yw cyfanswm eu gwerth dros £1,000.
+goodsOrigin.proof.summary = Yr hyn y gallwch ei ddefnyddio fel tystiolaeth
+goodsOrigin.proof.summary.p1 = Gall tystiolaeth gynnwys y canlynol:
+goodsOrigin.proof.summary.p1.l1 = deunydd pecynnu neu label i ddangos bod y nwyddau wedi’u tyfu, eu gwneud neu eu cynhyrchu yn yr UE
+goodsOrigin.proof.summary.p1.l2 = evidence the item is handmade or homegrown in the EU
+goodsOrigin.proof.summary.p1.l3 = documents given to you by the seller that show the item was produced or made in the EU
+goodsOrigin.proof.summary.p1.l4 = a ‘statement on origin’ from the supplier of the item
+goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you will have to pay customs duty on this item.
 
 # SearchGoodsCountry
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
