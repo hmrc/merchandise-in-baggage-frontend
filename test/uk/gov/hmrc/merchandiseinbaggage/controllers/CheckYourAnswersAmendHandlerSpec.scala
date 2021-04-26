@@ -47,7 +47,7 @@ class CheckYourAnswersAmendHandlerSpec
   private val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
+  private lazy val stubbedCalculation: CalculationResults => CalculationService = _ =>
     new CalculationService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResponse] =
