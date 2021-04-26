@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
@@ -44,36 +44,16 @@ class CheckYourAnswersAmendHandler @Inject()(
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  //TODO make BE do ThresholdCheck for amend too so we will need one pattern match
   def onPageLoad(
     declarationJourney: DeclarationJourney,
     amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    declarationJourney.declarationType match {
-      case Import => onPageLoadImport(amendment, declarationJourney)
-      case Export => onPageLoadExport(amendment, declarationJourney)
-    }
-
-  private def onPageLoadImport(
-    amendment: Amendment,
-    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService
-      .isAmendPlusOriginalOverThresholdImport(declarationJourney)
-      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
-        res.thresholdCheck match {
-          case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
-          case WithinThreshold => Ok(amendImportView(form, amendment, res.results))
-        }
-      }
-
-  private def onPageLoadExport(
-    amendment: Amendment,
-    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService
-      .isAmendPlusOriginalOverThresholdExport(declarationJourney)
-      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { amendCalculationResult =>
-        amendCalculationResult.thresholdCheck match {
-          case OverThreshold   => Redirect(GoodsOverThresholdController.onPageLoad())
-          case WithinThreshold => Ok(amendExportView(form, amendment))
+      .amendPlusOriginalCalculations(declarationJourney)
+      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { calculations =>
+        (declarationJourney.declarationType, calculations.thresholdCheck) match {
+          case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
+          case (Import, _)        => Ok(amendImportView(form, amendment, calculations.results))
+          case (Export, _)        => Ok(amendExportView(form, amendment))
         }
       }
 

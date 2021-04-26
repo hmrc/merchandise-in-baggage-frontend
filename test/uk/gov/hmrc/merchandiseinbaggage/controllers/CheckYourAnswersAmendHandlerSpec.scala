@@ -31,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
@@ -47,7 +47,7 @@ class CheckYourAnswersAmendHandlerSpec
   private val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
+  private lazy val stubbedCalculation: CalculationResults => CalculationService = _ =>
     new CalculationService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResponse] =
@@ -72,7 +72,7 @@ class CheckYourAnswersAmendHandlerSpec
         val journey: DeclarationJourney = completedDeclarationJourney
           .copy(sessionId = sessionId, declarationType = importOrExport, createdAt = created, declarationId = id, journeyType = Amend)
 
-        givenAPaymentCalculation(aCalculationResult, WithinThreshold)
+        givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
         givenADeclarationJourneyIsPersisted(journey)
         givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), id)
 
