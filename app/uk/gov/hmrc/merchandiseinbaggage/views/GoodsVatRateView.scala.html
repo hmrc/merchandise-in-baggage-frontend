@@ -40,6 +40,8 @@ button: components.button
 
         @h1(messages("goodsVatRate.heading", goodsCategory), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
+        <div class="govuk-inset-text">@Html(s"""${messages("goodsVatRate.hint")} <span class="govuk-!-font-weight-bold">$goodsCategory</span>""")</div>
+
         @p(Html(messages("goodsVatRate.p")))
 
         @table(Table(
