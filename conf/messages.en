@@ -198,6 +198,7 @@ purchaseDetails.p.2 = and the rate of the month in which you make your declarati
 purchaseDetails.price.error.required = Enter the amount you paid for the goods
 purchaseDetails.price.error.invalid = Price paid must be a number
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
+purchaseDetails.type.of.goods = Type of goods:
 
 # ReviewGoods
 reviewGoods.New.title = Review your goods
