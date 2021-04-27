@@ -144,8 +144,8 @@ goodsType.category.hint = For example, clothes
 goodsType.category.error.required = Enter a type of goods
 
 # GoodsVatRate
-goodsVatRate.title = Check which VAT rate applies to the {0}
-goodsVatRate.heading = Check which VAT rate applies to the {0}
+goodsVatRate.title = Check which VAT rate applies to the goods
+goodsVatRate.heading = Check which VAT rate applies to the goods
 goodsVatRate.hint = Type of goods:
 goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as children’s clothes have a lower rate.
 goodsVatRate.table.head.col1 = % of VAT
