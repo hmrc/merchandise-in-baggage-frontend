@@ -34,9 +34,12 @@ site.remove = Dileu
 site.govuk = GOV.UK
 site.back = Yn ôl
 
-yndk.Yes = Iawn
-yndk.No = Na
-yndk.DontKnow = Nid wyf yn gwybod
+yesNoDontKnow.Yes = Iawn
+yesNoDontKnow.Yes.hint = Ni chodir Toll Dramor
+yesNoDontKnow.No = Na
+yesNoDontKnow.No.hint = O 1 Ionawr 2021 ymlaen, codir Toll Dramor ar gyfradd o 3.3%
+yesNoDontKnow.DontKnow = Nid wyf yn gwybod
+yesNoDontKnow.DontKnow.hint = O 1 Ionawr 2021 ymlaen, codir Toll Dramor ar gyfradd o 3.3%
 
 journeyType.New = Gwneud datganiad newydd
 journeyType.Amend = Ychwanegu nwyddau i ddatganiad sy’n bodoli eisoes
@@ -131,22 +134,23 @@ valueWeightOfGoods.rate.3=a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch da
 
 
 # SearchGoods
-goodsTypeQuantity.title = Nodwch y math cyntaf o nwyddau
-goodsTypeQuantity.next.title = Nodwch y math nesaf o nwyddau
-goodsTypeQuantity.heading = Nodwch y math cyntaf o nwyddau
-goodsTypeQuantity.next.heading = Nodwch y math nesaf o nwyddau
-goodsTypeQuantity.p = Nodwch un math yn unig. Gallwch ychwanegu rhagor yn nes ymlaen.
-goodsTypeQuantity.category = Math o nwyddau
-goodsTypeQuantity.category.hint = Er enghraifft, dillad
-goodsTypeQuantity.category.error.required = Nodwch y math o nwyddau
-goodsTypeQuantity.quantity = Nifer o eitemau
-goodsTypeQuantity.quantity.hint = Er enghraifft, 2 flwch
-goodsTypeQuantity.quantity.error.required = Nodwch nifer yr eitemau
-goodsTypeQuantity.quantity.error.invalid = Mae’n rhaid i nifer yr eitemau gynnwys rhifau neu lythrennau’n unig
+goodsType.New.title = Nodwch gategori eich eitem gyntaf
+goodsType.Amend.title = Enter the category of your additional item
+goodsType.New.next.title = Nodwch y math nesaf o nwyddau
+goodsType.Amend.next.title = Enter the category of your additional item
+goodsType.New.heading = Nodwch gategori eich eitem gyntaf
+goodsType.Amend.heading = Enter the category of your additional item
+goodsType.New.next.heading = Nodwch y math nesaf o nwyddau
+goodsType.Amend.next.heading = Enter the category of your additional item
+goodsType.p = Dyma’r math o gynnyrch neu’r categori. Gallwch ychwanegu rhagor yn nes ymlaen.
+goodsType.category = Math o nwyddau
+goodsType.category.hint = Er enghraifft, dillad
+goodsType.category.error.required = Nodwch y math o nwyddau
 
 # GoodsVatRate
-goodsVatRate.title = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
-goodsVatRate.heading = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r {0}
+goodsVatRate.title = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r nwyddau
+goodsVatRate.heading = Gwiriwch ba gyfradd TAW sy’n berthnasol i’r nwyddau
+goodsVatRate.hint = Math o nwyddau:
 goodsVatRate.p = Mae gan y Doll Dramor ar y rhan fwyaf o nwyddau gyfradd safonol TAW o 20%, ond mae gan rai nwyddau, megis dillad plant, gyfradd is.
 goodsVatRate.table.head.col1 = % TAW
 goodsVatRate.table.head.col2 = Ar gyfer beth mae’r gyfradd yn berthnasol
@@ -166,13 +170,18 @@ goodsVatRate.Twenty = 20% TAW
 goodsVatRate.error.required = Dewiswch pa gyfradd TAW sy’n berthnasol i’r nwyddau
 
 # GoodsOrigin
-goodsOrigin.title = A gynhyrchwyd y nwyddau hyn yn yr UE?
-goodsOrigin.heading = A gynhyrchwyd y nwyddau hyn yn yr UE?
+goodsOrigin.title = A wnaed y nwyddau hyn yn yr UE?
+goodsOrigin.heading = A wnaed y nwyddau hyn yn yr UE?
 goodsOrigin.inset = Math o nwyddau:
-goodsOrigin.p = Gwiriwch a yw’ch nwyddau’n bodloni’r
-goodsOrigin.p.link = rheolau o ran tarddiad (yn agor tab newydd)
-goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
 goodsOrigin.error.required = Dewiswch ‘Iawn’ os cafodd y nwyddau hyn eu cynhyrchu yn yr UE
+goodsOrigin.warning = Mae’n rhaid i chi gario tystiolaeth sy’n dangos y cafodd eich nwyddau eu gwneud yn yr UE os yw cyfanswm eu gwerth dros £1,000.
+goodsOrigin.proof.summary = Yr hyn y gallwch ei ddefnyddio fel tystiolaeth
+goodsOrigin.proof.summary.p1 = Gall tystiolaeth gynnwys y canlynol:
+goodsOrigin.proof.summary.p1.l1 = deunydd pecynnu neu label i ddangos bod y nwyddau wedi’u tyfu, eu gwneud neu eu cynhyrchu yn yr UE
+goodsOrigin.proof.summary.p1.l2 = evidence the item is handmade or homegrown in the EU
+goodsOrigin.proof.summary.p1.l3 = documents given to you by the seller that show the item was produced or made in the EU
+goodsOrigin.proof.summary.p1.l4 = a ‘statement on origin’ from the supplier of the item
+goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you will have to pay customs duty on this item.
 
 # SearchGoodsCountry
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
@@ -193,6 +202,7 @@ purchaseDetails.p.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad y
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rhif
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
+purchaseDetails.type.of.goods = Math o nwyddau:
 
 # ReviewGoods
 reviewGoods.New.title = Adolygu’ch nwyddau
@@ -201,8 +211,6 @@ reviewGoods.New.heading = Adolygu’ch nwyddau
 reviewGoods.Amend.heading = Adolygu’r nwyddau rydych wedi’u hychwanegu
 reviewGoods.list.item = Math o nwyddau
 reviewGoods.goodsType.changeText=y math o nwyddau
-reviewGoods.list.quantity = Nifer o eitemau
-reviewGoods.quantity.changeText=nifer yr eitemau
 reviewGoods.list.vatRate = Cyfradd TAW
 reviewGoods.list.producedInEu = Cynhyrchwyd yn yr UE
 reviewGoods.country.changeText=gwlad
@@ -434,7 +442,6 @@ checkYourAnswers.amend.title = Gwiriwch eich atebion cyn ychwanegu’r nwyddau h
 checkYourAnswers.change = Newid
 checkYourAnswers.detailsOfTheGoods = Manylion y nwyddau
 checkYourAnswers.detailsOfTheGoods.category = Math o nwyddau
-checkYourAnswers.detailsOfTheGoods.quantity = Nifer o eitemau
 checkYourAnswers.detailsOfTheGoods.vatRate = Cyfradd TAW
 checkYourAnswers.detailsOfTheGoods.producedInEu = Cynhyrchwyd yn yr UE
 checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan

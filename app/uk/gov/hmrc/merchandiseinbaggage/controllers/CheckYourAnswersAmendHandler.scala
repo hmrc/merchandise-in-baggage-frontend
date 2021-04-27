@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
@@ -46,30 +47,14 @@ class CheckYourAnswersAmendHandler @Inject()(
   def onPageLoad(
     declarationJourney: DeclarationJourney,
     amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    declarationJourney.declarationType match {
-      case Import => onPageLoadImport(amendment, declarationJourney)
-      case Export => onPageLoadExport(amendment, declarationJourney)
-    }
-
-  private def onPageLoadImport(
-    amendment: Amendment,
-    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService
-      .isAmendPlusOriginalOverThresholdImport(declarationJourney)
-      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { res =>
-        if (res.isOverThreshold) {
-          Redirect(GoodsOverThresholdController.onPageLoad())
-        } else Ok(amendImportView(form, amendment, res.calculationResult))
-      }
-
-  private def onPageLoadExport(
-    amendment: Amendment,
-    declarationJourney: DeclarationJourney)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService
-      .isAmendPlusOriginalOverThresholdExport(declarationJourney)
-      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { amendCalculationResult =>
-        if (amendCalculationResult.isOverThreshold) Redirect(GoodsOverThresholdController.onPageLoad())
-        else Ok(amendExportView(form, amendment))
+      .amendPlusOriginalCalculations(declarationJourney)
+      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { calculations =>
+        (declarationJourney.declarationType, calculations.thresholdCheck) match {
+          case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
+          case (Import, _)        => Ok(amendImportView(form, amendment, calculations.results))
+          case (Export, _)        => Ok(amendExportView(form, amendment))
+        }
       }
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
@@ -91,18 +76,17 @@ class CheckYourAnswersAmendHandler @Inject()(
 
   private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
     implicit hc: HeaderCarrier): Future[Result] =
-    calculationService.paymentCalculations(amendment.goods.importGoods, originalDeclaration.goodsDestination).flatMap {
-      calculationResults =>
-        val amendmentRef = originalDeclaration.amendments.size + 1
-        val updatedAmendment =
-          amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.totalCalculationResult))
+    calculationService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
+      val amendmentRef = originalDeclaration.amendments.size + 1
+      val updatedAmendment =
+        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.results.totalCalculationResult))
 
-        val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+      val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
-        for {
-          _ <- calculationService.amendDeclaration(updatedDeclaration)
-          redirectUrl <- paymentService
-                          .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults)
-        } yield Redirect(redirectUrl)
+      for {
+        _ <- calculationService.amendDeclaration(updatedDeclaration)
+        redirectUrl <- paymentService
+                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults.results)
+      } yield Redirect(redirectUrl)
     }
 }

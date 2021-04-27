@@ -17,16 +17,16 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import cats.data.EitherT
+import javax.inject.{Inject, Named, Singleton}
 import play.api.Logging
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, ExchangeRateURL, MibReference}
 
-import javax.inject.{Inject, Named, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -62,8 +62,11 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
       }
     )
 
-  def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[CalculationResults] =
-    httpClient.POST[Seq[CalculationRequest], CalculationResults](s"$base$calculationsUrl", calculationRequests)
+  def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+    httpClient.POST[Seq[CalculationRequest], CalculationResponse](s"$base$calculationsUrl", calculationRequests)
+
+  def calculatePaymentsAmendPlusExisting(amendRequest: CalculationAmendRequest)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+    httpClient.POST[CalculationAmendRequest, CalculationResponse](s"$base$amendsPlusExistingCalculationsUrl", amendRequest)
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
     httpClient.GET[CheckResponse](s"$base$checkEoriUrl$eori")

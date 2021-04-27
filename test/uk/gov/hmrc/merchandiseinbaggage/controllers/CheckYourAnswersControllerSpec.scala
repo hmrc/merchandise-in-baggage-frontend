@@ -24,9 +24,10 @@ import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney, URL}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
@@ -100,7 +101,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       (mockCalculationService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
-        .returning(Future.successful(aCalculationResults))
+        .returning(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))
 
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
@@ -114,9 +115,9 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
 
       (mockCalculationService
-        .isAmendPlusOriginalOverThresholdImport(_: DeclarationJourney)(_: HeaderCarrier))
+        .amendPlusOriginalCalculations(_: DeclarationJourney)(_: HeaderCarrier))
         .expects(*, *)
-        .returning(OptionT.pure[Future](AmendCalculationResult(false, aTotalCalculationResult.calculationResults)))
+        .returning(OptionT.pure[Future](CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
@@ -148,7 +149,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       (mockCalculationService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
-        .returning(Future.successful(aCalculationResults))
+        .returning(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))
 
       val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
@@ -171,7 +172,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       (mockCalculationService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
-        .returning(Future.successful(aTotalCalculationResult.calculationResults))
+        .returning(Future.successful(CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
       (mockCalculationService
         .amendDeclaration(_: Declaration)(_: HeaderCarrier))

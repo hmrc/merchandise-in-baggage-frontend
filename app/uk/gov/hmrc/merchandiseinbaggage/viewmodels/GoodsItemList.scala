@@ -45,11 +45,7 @@ object GoodsItemList {
       rows = Seq(
         rowWithOutChange(
           "reviewGoods.list.item",
-          goods.categoryQuantityOfGoods.category
-        ),
-        rowWithOutChange(
-          "reviewGoods.list.quantity",
-          goods.categoryQuantityOfGoods.quantity
+          goods.category
         ),
         rowWithOutChange(
           "reviewGoods.list.producedInEu",
@@ -68,11 +64,7 @@ object GoodsItemList {
       rows = Seq(
         rowWithOutChange(
           "reviewGoods.list.item",
-          goods.categoryQuantityOfGoods.category
-        ),
-        rowWithOutChange(
-          "reviewGoods.list.quantity",
-          goods.categoryQuantityOfGoods.quantity
+          goods.category
         ),
         rowWithOutChange(
           "reviewGoods.list.destination",

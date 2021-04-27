@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, PurchaseDetailsInput}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
@@ -93,11 +94,11 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           result.futureValue mustBe CannotUseServiceController.onPageLoad()
         }
 
-        s"navigates to ${GoodsTypeQuantityController.onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+        s"navigates to ${GoodsTypeController.onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
           val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result = nextPage(ValueWeightOfGoodsRequest(Yes, 1, journey, _ => Future(journey), false))
 
-          result.futureValue mustBe GoodsTypeQuantityController.onPageLoad(1)
+          result.futureValue mustBe GoodsTypeController.onPageLoad(1)
         }
       }
 
@@ -176,29 +177,29 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       }
 
       if (importOrExport == Import) {
-        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${GoodsVatRateController
+        s"from ${GoodsTypeController.onPageLoad(1).url} navigates to ${GoodsVatRateController
           .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
           val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result: Future[Call] =
-            nextPage(GoodsTypeQuantityRequest(journey, startedImportGoods, 1, aCategoryQuantityOfGoods, _ => Future(journey)))
+            nextPage(GoodsTypeRequest(journey, startedImportGoods, 1, aCategoryOfGoods, _ => Future(journey)))
 
           result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
         }
       }
 
       if (importOrExport == Export) {
-        s"from ${GoodsTypeQuantityController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
+        s"from ${GoodsTypeController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
           .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
           val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result: Future[Call] =
-            nextPage(GoodsTypeQuantityRequest(journey, startedExportGoods, 1, aCategoryQuantityOfGoods, _ => Future(journey)))
+            nextPage(GoodsTypeRequest(journey, startedExportGoods, 1, aCategoryOfGoods, _ => Future(journey)))
 
           result.futureValue mustBe PurchaseDetailsController.onPageLoad(1)
         }
       }
 
-      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${SearchGoodsCountryController
-        .onPageLoad(1)} for $newOrAmend & $importOrExport" in new Navigator {
+      s"from ${GoodsVatRateController.onPageLoad(1).url} navigates to ${ReviewGoodsController
+        .onPageLoad()} for $newOrAmend & $importOrExport" in new Navigator {
         val journey: DeclarationJourney = completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
         val result: Future[Call] = nextPage(GoodsVatRateRequest(journey, startedImportGoods, 1, _ => Future(journey)))
 
@@ -230,19 +231,13 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         result.futureValue mustBe ExciseAndRestrictedGoodsController.onPageLoad()
       }
 
-      s"from ${PurchaseDetailsController.onPageLoad(1).url} navigates to ${ReviewGoodsController
-        .onPageLoad()} for $newOrAmend & $importOrExport updating goods entries" in new Navigator {
+      s"from ${PurchaseDetailsController.onPageLoad(1).url} navigates to ${GoodsOriginController
+        .onPageLoad(1)} for $newOrAmend & $importOrExport updating goods entries" in new Navigator {
         val detailsInput: PurchaseDetailsInput = PurchaseDetailsInput("123", "EUR")
         val stubUpsert: DeclarationJourney => Future[DeclarationJourney] =
           _ => Future.successful(completedDeclarationJourney) //TODO make it work with mockFunction
 
-        val result = nextPage(
-          PurchaseDetailsRequest(
-            detailsInput,
-            1,
-            completedGoodsEntries(importOrExport).entries.head,
-            completedDeclarationJourney,
-            stubUpsert))
+        val result = nextPage(PurchaseDetailsRequest(detailsInput, 1, startedImportGoods, importJourneyWithStartedGoodsEntry, stubUpsert))
 
         result.futureValue mustBe GoodsOriginController.onPageLoad(1)
       }
@@ -257,7 +252,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
       }
 
-      s"from ${ReviewGoodsController.onPageLoad().url} navigates to /declare-commercial-goods/goods-type-quantity/idx + 1 " +
+      s"from ${ReviewGoodsController.onPageLoad().url} navigates to /declare-commercial-goods/goods-type/idx + 1 " +
         s"for $newOrAmend & $importOrExport" in new Navigator {
         val updatedJourney: DeclarationJourney = completedDeclarationJourney
           .updateGoodsEntries()
@@ -268,11 +263,11 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             Yes,
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend),
-            false,
+            WithinThreshold,
             _ => Future.successful(updatedJourney)
           ))
 
-        result.futureValue mustBe GoodsTypeQuantityController.onPageLoad(expectedUpdatedEntries)
+        result.futureValue mustBe GoodsTypeController.onPageLoad(expectedUpdatedEntries)
       }
 
       s"from ${ReviewGoodsController.onPageLoad().url} navigates to ${PaymentCalculationController
@@ -281,7 +276,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             No,
             incompleteDeclarationJourney.copy(declarationType = importOrExport),
-            overThresholdCheck = false,
+            WithinThreshold,
             _ => Future.successful(incompleteDeclarationJourney.copy(declarationType = importOrExport))
           ))
 
@@ -295,7 +290,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             No,
             journey,
-            true,
+            OverThreshold,
             _ => Future.successful(journey)
           ))
 
@@ -310,7 +305,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           ReviewGoodsRequest(
             Yes,
             journey,
-            overThresholdCheck = true,
+            OverThreshold,
             _ => Future.successful(journey)
           ))
 
@@ -451,7 +446,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
       ReviewGoodsRequest(
         No,
         journey,
-        overThresholdCheck = true,
+        OverThreshold,
         _ => Future.successful(journey)
       ))
 

@@ -19,12 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 import play.api.libs.json._
 
 sealed trait Goods {
-  val categoryQuantityOfGoods: CategoryQuantityOfGoods
+  val category: String
   val purchaseDetails: PurchaseDetails
 }
 
 final case class ImportGoods(
-  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  val category: String,
   goodsVatRate: GoodsVatRate,
   producedInEu: YesNoDontKnow,
   purchaseDetails: PurchaseDetails
@@ -35,7 +35,7 @@ object ImportGoods {
 }
 
 final case class ExportGoods(
-  categoryQuantityOfGoods: CategoryQuantityOfGoods,
+  val category: String,
   destination: Country,
   purchaseDetails: PurchaseDetails
 ) extends Goods

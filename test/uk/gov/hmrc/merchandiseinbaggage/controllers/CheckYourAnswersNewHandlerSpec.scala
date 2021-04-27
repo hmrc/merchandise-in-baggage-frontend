@@ -16,14 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import java.time.LocalDateTime
+
 import com.softwaremill.quicklens._
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
@@ -31,7 +34,6 @@ import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentServ
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,14 +55,14 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(DeclarationId("abc"))
   }
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = aPaymentCalculations =>
+  private lazy val stubbedCalculation: CalculationResponse => CalculationService = calculationResponse =>
     new CalculationService(mibConnector) {
-      override def paymentCalculations(importGoods: Seq[ImportGoods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResults] =
-        Future.successful(aPaymentCalculations)
+      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
+        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+        Future.successful(calculationResponse)
   }
 
-  private def newHandler(paymentCalcs: CalculationResults = aCalculationResults) =
+  private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
       new PaymentService(testPaymentConnector),
@@ -80,7 +82,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
 
         val eventualResult = newHandler().onPageLoad(declaration)
 
@@ -97,16 +99,16 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        val overThresholdGoods = aCalculationResults
-          .modify(_.calculationResults.each)
-          .setTo(aCalculationResult.modify(_.gbpAmount).setTo(AmountInPence(150000001)))
+        val overThresholdGoods = aCalculationResponse
+          .modify(_.thresholdCheck)
+          .setTo(OverThreshold)
 
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
 
         val eventualResult = newHandler(overThresholdGoods).onPageLoad(declaration)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.GoodsOverThresholdController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad().url)
       }
     }
   }
@@ -136,10 +138,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      val eventualResult = newHandler(aCalculationResultsWithNoTax).onSubmit(declaration)
+      val eventualResult = newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)
     }
 
     "will redirect to declaration-confirmation for Export" in {
@@ -154,7 +156,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       val eventualResult = newHandler().onSubmit(declaration.copy(declarationType = Export))
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)
     }
   }
 }

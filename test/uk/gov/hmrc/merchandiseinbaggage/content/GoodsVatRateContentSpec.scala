@@ -14,8 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.core
+package uk.gov.hmrc.merchandiseinbaggage.content
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsVatRatePage
 
-case class AmendCalculationResult(isOverThreshold: Boolean, calculationResult: CalculationResults)
+class GoodsVatRateContentSpec extends GoodsVatRatePage with CoreTestData {
+
+  "GoodsVatRate" should {
+    "display the hint text about type of goods" in {
+      givenAJourneyWithSession()
+      goToGoodsVatRate(1)
+
+      findByClassName("govuk-inset-text").getText mustBe "Type of goods: wine"
+    }
+  }
+}

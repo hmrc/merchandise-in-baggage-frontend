@@ -28,7 +28,7 @@
       <a id="remove_@idx" class="govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
           @messages("site.remove")
           <span class="govuk-visually-hidden">
-              @declarationGoods.goods(idx).categoryQuantityOfGoods.category
+              @declarationGoods.goods(idx).category
               @declarationGoods.goods(idx).purchaseDetails.formatted
           </span>
       </a>

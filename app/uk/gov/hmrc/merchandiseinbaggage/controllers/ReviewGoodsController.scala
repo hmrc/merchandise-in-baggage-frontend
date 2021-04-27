@@ -26,8 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{AmendCalculationResult, DeclarationJourney}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ReviewGoodsRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
@@ -80,23 +80,16 @@ class ReviewGoodsController @Inject()(
                  ReviewGoodsRequest(
                    declareMoreGoods,
                    request.declarationJourney,
-                   check.isOverThreshold,
+                   check.thresholdCheck,
                    repo.upsert
                  )
                ))
     } yield call).fold(actionProvider.invalidRequest(declarationNotFoundMessage))(Redirect)
 
   private def checkThresholdIfAmending(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
+    implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
     declarationJourney.amendmentIfRequiredAndComplete
-      .fold(OptionT.pure[Future](AmendCalculationResult(isOverThreshold = false, CalculationResults(Seq.empty, WithinThreshold)))) { _ =>
-        overThresholdCheck(declarationJourney)
+      .fold(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold))) { _ =>
+        calculationService.amendPlusOriginalCalculations(declarationJourney)
       }
-
-  private def overThresholdCheck(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, AmendCalculationResult] =
-    declarationJourney.declarationType match {
-      case Import => calculationService.isAmendPlusOriginalOverThresholdImport(declarationJourney)
-      case Export => calculationService.isAmendPlusOriginalOverThresholdExport(declarationJourney)
-    }
 }

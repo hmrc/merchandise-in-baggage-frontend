@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
@@ -42,26 +43,13 @@ class CheckYourAnswersNewHandler @Inject()(
 )(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
   def onPageLoad(declaration: Declaration)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    declaration.declarationType match {
-      case Import => onPageLoadImport(declaration)
-      case Export => onPageLoadExport(declaration)
+    calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
+      (calculationResponse.thresholdCheck, declaration.declarationType) match {
+        case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
+        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results))
+        case (WithinThreshold, Export) => Ok(exportView(form, declaration))
+      }
     }
-
-  private def onPageLoadImport(
-    declaration: Declaration)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService.paymentCalculations(declaration.declarationGoods.importGoods, declaration.goodsDestination).map {
-      calculationResults =>
-        if (calculationResults.totalGbpValue.value > declaration.goodsDestination.threshold.value) {
-          Redirect(routes.GoodsOverThresholdController.onPageLoad())
-        } else Ok(importView(form, declaration, calculationResults))
-    }
-
-  private def onPageLoadExport(declaration: Declaration)(implicit request: Request[_], messages: Messages): Future[Result] =
-    if (declaration.declarationGoods.goods
-          .map(_.purchaseDetails.numericAmount)
-          .sum > declaration.goodsDestination.threshold.inPounds)
-      Future successful Redirect(routes.GoodsOverThresholdController.onPageLoad())
-    else Future successful Ok(exportView(form, declaration))
 
   def onSubmit(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     declaration.declarationType match {
@@ -76,9 +64,9 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      taxDue      <- calculationService.paymentCalculations(declaration.declarationGoods.importGoods, declaration.goodsDestination)
-      _           <- mibConnector.persistDeclaration(declaration.copy(maybeTotalCalculationResult = Some(taxDue.totalCalculationResult)))
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, taxDue)
-
+      calculationResponse <- calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      _ <- mibConnector.persistDeclaration(
+            declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)))
+      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 }

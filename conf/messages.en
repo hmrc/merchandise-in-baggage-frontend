@@ -34,9 +34,12 @@ site.remove = Remove
 site.govuk = GOV.UK
 site.back = Back
 
-yndk.Yes = Yes
-yndk.No = No
-yndk.DontKnow = I do not know
+yesNoDontKnow.Yes = Yes
+yesNoDontKnow.Yes.hint = Customs Duty is not charged
+yesNoDontKnow.No = No
+yesNoDontKnow.No.hint = From 1 Jan 2021, Customs Duty is charged at 3.3%
+yesNoDontKnow.DontKnow = I do not know
+yesNoDontKnow.DontKnow.hint = From 1 Jan 2021, Customs Duty is charged at 3.3%
 
 journeyType.New = Make a new declaration
 journeyType.Amend = Add goods to an existing declaration
@@ -130,23 +133,24 @@ valueWeightOfGoods.rate.2=HMRC's monthly exchange rates (opens in new tab)
 valueWeightOfGoods.rate.3=and the rate in the month in which you make your declaration.
 
 
-# GoodsTypeQuantity
-goodsTypeQuantity.title = Enter the first type of goods
-goodsTypeQuantity.next.title = Enter the next type of goods
-goodsTypeQuantity.heading = Enter the first type of goods
-goodsTypeQuantity.next.heading = Enter the next type of goods
-goodsTypeQuantity.p = Enter only one type. You can add more later.
-goodsTypeQuantity.category = Goods type
-goodsTypeQuantity.category.hint = For example, clothes
-goodsTypeQuantity.category.error.required = Enter a type of goods
-goodsTypeQuantity.quantity = Number of items
-goodsTypeQuantity.quantity.hint = For example, 2 boxes
-goodsTypeQuantity.quantity.error.required = Enter the number of items
-goodsTypeQuantity.quantity.error.invalid = Number of items must only include numbers or letters
+# GoodsType
+goodsType.New.title = Enter the category of your first item
+goodsType.Amend.title = Enter the category of your additional item
+goodsType.New.next.title = Enter the next category of goods
+goodsType.Amend.next.title = Enter the category of your additional item
+goodsType.New.heading = Enter the category of your first item
+goodsType.Amend.heading = Enter the category of your additional item
+goodsType.New.next.heading = Enter the next category of goods
+goodsType.Amend.next.heading = Enter the category of your additional item
+goodsType.p = This is the product type or category. You can add more later.
+goodsType.category = Goods type
+goodsType.category.hint = For example, clothes
+goodsType.category.error.required = Enter a type of goods
 
 # GoodsVatRate
-goodsVatRate.title = Check which VAT rate applies to the {0}
-goodsVatRate.heading = Check which VAT rate applies to the {0}
+goodsVatRate.title = Check which VAT rate applies to the goods
+goodsVatRate.heading = Check which VAT rate applies to the goods
+goodsVatRate.hint = Type of goods:
 goodsVatRate.p = The Customs Duty on most goods has a standard rate of 20% VAT applied to it, but some goods such as children’s clothes have a lower rate.
 goodsVatRate.table.head.col1 = % of VAT
 goodsVatRate.table.head.col2 = What the rate applies to
@@ -166,13 +170,18 @@ goodsVatRate.Twenty = 20% VAT
 goodsVatRate.error.required = Select which VAT rate applies to the goods
 
 # GoodsOrigin
-goodsOrigin.title = Were these goods produced in the EU?
-goodsOrigin.heading = Were these goods produced in the EU?
+goodsOrigin.title = Were these goods made in the EU?
+goodsOrigin.heading = Were these goods made in the EU?
 goodsOrigin.inset = Type of goods:
-goodsOrigin.p = Check if your goods meet the
-goodsOrigin.p.link = rules of origin (opens in new tab)
-goodsOrigin.p.href = https://www.gov.uk/guidance/check-your-goods-meet-the-rules-of-origin
 goodsOrigin.error.required = Select yes if the goods were produced in the EU
+goodsOrigin.warning = You must carry proof your goods were made in the EU if they have a total value of more than £1,000.
+goodsOrigin.proof.summary = What you can use as proof
+goodsOrigin.proof.summary.p1 = Evidence can be include one of the following:
+goodsOrigin.proof.summary.p1.l1 = packaging or a label attached to the item showing that it was produced or made in the EU
+goodsOrigin.proof.summary.p1.l2 = evidence the item is handmade or homegrown in the EU
+goodsOrigin.proof.summary.p1.l3 = documents given to you by the seller that show the item was produced or made in the EU
+goodsOrigin.proof.summary.p1.l4 = a ‘statement on origin’ from the supplier of the item
+goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you will have to pay customs duty on this item.
 
 # SearchGoodsCountry
 searchGoodsCountry.title = What country are you taking the {0} to?
@@ -193,6 +202,7 @@ purchaseDetails.p.2 = and the rate of the month in which you make your declarati
 purchaseDetails.price.error.required = Enter the amount you paid for the goods
 purchaseDetails.price.error.invalid = Price paid must be a number
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
+purchaseDetails.type.of.goods = Type of goods:
 
 # ReviewGoods
 reviewGoods.New.title = Review your goods
@@ -201,8 +211,6 @@ reviewGoods.New.heading = Review your goods
 reviewGoods.Amend.heading = Review the goods you are adding
 reviewGoods.list.item = Type of goods
 reviewGoods.goodsType.changeText = type of goods
-reviewGoods.list.quantity = Number of items
-reviewGoods.quantity.changeText = number of items
 reviewGoods.list.vatRate = VAT rate
 reviewGoods.list.producedInEu = Produced in EU
 reviewGoods.country.changeText=country
@@ -434,7 +442,6 @@ checkYourAnswers.amend.title = Check your answers before adding these goods to y
 checkYourAnswers.change = Change
 checkYourAnswers.detailsOfTheGoods = Details of the goods
 checkYourAnswers.detailsOfTheGoods.category = Type of goods
-checkYourAnswers.detailsOfTheGoods.quantity = Number of items
 checkYourAnswers.detailsOfTheGoods.vatRate = VAT rate
 checkYourAnswers.detailsOfTheGoods.producedInEu = Produced in EU
 checkYourAnswers.detailsOfTheGoods.destination = Destination

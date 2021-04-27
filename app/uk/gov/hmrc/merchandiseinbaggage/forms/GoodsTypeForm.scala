@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
+package uk.gov.hmrc.merchandiseinbaggage.forms
 
-import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Goods, GoodsDestination}
+import play.api.data.Form
+import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 
-case class CalculationRequest(goods: Goods, destination: GoodsDestination)
+object GoodsTypeForm extends Mappings {
 
-object CalculationRequest {
-  implicit val format: OFormat[CalculationRequest] = Json.format[CalculationRequest]
+  val form: Form[String] =
+    Form(
+      "category" -> text("goodsType.category.error.required")
+    )
+
 }

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api
+package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
 import play.api.libs.json.{Json, OFormat}
 
-case class CategoryQuantityOfGoods(category: String, quantity: String)
+case class CalculationResponse(results: CalculationResults, thresholdCheck: ThresholdCheck)
 
-object CategoryQuantityOfGoods {
-  implicit val format: OFormat[CategoryQuantityOfGoods] = Json.format[CategoryQuantityOfGoods]
+object CalculationResponse {
+  implicit val format: OFormat[CalculationResponse] = Json.format[CalculationResponse]
 }

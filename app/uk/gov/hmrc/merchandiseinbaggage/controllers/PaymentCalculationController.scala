@@ -20,16 +20,14 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationGoods
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class PaymentCalculationController @Inject()(
@@ -40,46 +38,35 @@ class PaymentCalculationController @Inject()(
     extends DeclarationJourneyController {
 
   private val backButtonUrl: Call =
-    routes.ReviewGoodsController.onPageLoad()
+    ReviewGoodsController.onPageLoad()
 
   private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend)
-      routes.CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad()
     else default
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
-      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
+      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { declarationGoods =>
         request.declarationJourney.maybeGoodsDestination
           .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            request.declarationJourney.declarationType match {
-              case Import =>
-                calculationService
-                  .paymentCalculations(goods.importGoods, destination)
-                  .map(calculations => redirectIfOverThreshold(destination, calculations))
-              case Export =>
-                Future successful exportRedirectIfOverThreshold(goods, destination)
+            calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
+              (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
+                case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
+                case (WithinThreshold, Import) => importView(calculationResponse.results)
+                case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()))
+
+              }
             }
           }
       }
   }
 
-  private def exportRedirectIfOverThreshold(goods: DeclarationGoods, destination: GoodsDestination)(
-    implicit request: DeclarationJourneyRequest[_]): Result =
-    if (goods.goods.map(_.purchaseDetails.numericAmount).sum > destination.threshold.inPounds)
-      Redirect(routes.GoodsOverThresholdController.onPageLoad())
-    else
-      Redirect(checkYourAnswersIfComplete(routes.CustomsAgentController.onPageLoad()))
-
-  private def redirectIfOverThreshold(destination: GoodsDestination, paymentCalculations: CalculationResults)(
-    implicit request: DeclarationJourneyRequest[_]): Result =
-    if (paymentCalculations.totalGbpValue.value > destination.threshold.value)
-      Redirect(routes.GoodsOverThresholdController.onPageLoad())
-    else
-      Ok(
-        view(
-          paymentCalculations,
-          checkYourAnswersIfComplete(routes.CustomsAgentController.onPageLoad()),
-          backButtonUrl
-        ))
+  private def importView(calculationResults: CalculationResults)(implicit request: DeclarationJourneyRequest[_]): Result =
+    Ok(
+      view(
+        calculationResults,
+        checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()),
+        backButtonUrl
+      ))
 }

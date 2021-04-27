@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.model.api._
 
 @this(
 layout: Layout,
@@ -28,37 +28,29 @@ text: components.inputText,
 h1: components.h1,
 p: components.p)
 
-@(form: Form[_], idx: Int, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, declarationType: DeclarationType, journeyType: JourneyType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, if(idx == 1) s"goodsTypeQuantity.title" else s"goodsTypeQuantity.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, if(idx == 1) s"goodsType.$journeyType.title" else s"goodsType.$journeyType.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
-  @formHelper(action = GoodsTypeQuantityController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = GoodsTypeController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
     @errorSummary(form.errors)
 
-    @h1(messages(if(idx == 1) s"goodsTypeQuantity.heading" else s"goodsTypeQuantity.next.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
+    @h1(messages(if(idx == 1) s"goodsType.$journeyType.heading" else s"goodsType.$journeyType.next.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
-    @p(Html(messages("goodsTypeQuantity.p")))
+    @p(Html(messages("goodsType.p")))
 
     @text(
         form = form,
         id = "category",
         name = "category",
-        label = "goodsTypeQuantity.category",
+        label = "goodsType.category",
         isPageHeading = false,
         classes = Some("govuk-input--width-10"),
-        hint = Some("goodsTypeQuantity.category.hint")
+        hint = Some("goodsType.category.hint")
     )
 
-    @text(
-        form = form,
-        id = "quantity",
-        name = "quantity",
-        label = "goodsTypeQuantity.quantity",
-        isPageHeading = false,
-        classes = Some("govuk-input--width-5"),
-        hint = Some("goodsTypeQuantity.quantity.hint")
-    )
+
 
     @button("site.continue", name = Some("continue"))
   }

@@ -16,16 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
+import java.time.LocalDateTime
+
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport {
+class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport with MibConfiguration {
 
   private val client = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -43,17 +46,20 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Wi
 
     givenAPaymentCalculations(calculationRequest, stubbedResult)
 
-    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResults(stubbedResult, WithinThreshold)
+    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResponse(CalculationResults(stubbedResult), WithinThreshold)
   }
 
-  "send a calculation requests to backend for payment" in {
-    val calculationRequests = aDeclarationGood.importGoods.map(_.calculationRequest(GreatBritain))
+  "send a calculation requests to backend for amend payment" in {
+    val amend = Amendment(111, LocalDateTime.now, DeclarationGoods(Seq(aImportGoods)))
+    val amendRequest = CalculationAmendRequest(Some(amend), Some(GreatBritain), aDeclarationId)
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 
-    givenAPaymentCalculations(calculationRequests, stubbedResults)
+    givenAnAmendPaymentCalculationsRequest(amendRequest, stubbedResults)
 
-    client.calculatePayments(calculationRequests).futureValue mustBe CalculationResults(stubbedResults, WithinThreshold)
+    client.calculatePaymentsAmendPlusExisting(amendRequest).futureValue mustBe CalculationResponse(
+      CalculationResults(stubbedResults),
+      WithinThreshold)
   }
 
   "find a persisted declaration from backend by declarationId" in {

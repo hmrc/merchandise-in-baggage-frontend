@@ -17,25 +17,25 @@
 package uk.gov.hmrc.merchandiseinbaggage
 
 import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID
 
-import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry}
 import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
-import java.util.UUID
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = payapi.PayApiRequest(
@@ -72,17 +72,17 @@ trait CoreTestData {
 
   val completedImportGoods: ImportGoodsEntry = TestOnlyController.completedGoodsEntry
 
-  val aCategoryQuantityOfGoods: CategoryQuantityOfGoods = CategoryQuantityOfGoods("test good", "123")
+  val aCategoryOfGoods: String = "test good"
 
   val completedExportGoods: ExportGoodsEntry = ExportGoodsEntry(
-    Some(aCategoryQuantityOfGoods),
+    Some(aCategoryOfGoods),
     Some(Country("FR", "title.france", "FR", isEu = true, Nil)),
     Some(PurchaseDetails("99.99", Currency("GBP", "title.british_pounds_gbp", Some("GBP"), Nil)))
   )
 
   val aImportGoods =
     ImportGoods(
-      completedImportGoods.maybeCategoryQuantityOfGoods.get,
+      completedImportGoods.maybeCategory.get,
       completedImportGoods.maybeGoodsVatRate.get,
       completedImportGoods.maybeProducedInEu.get,
       completedImportGoods.maybePurchaseDetails.get
@@ -90,7 +90,7 @@ trait CoreTestData {
 
   val aExportGoods =
     ExportGoods(
-      completedExportGoods.maybeCategoryQuantityOfGoods.get,
+      completedExportGoods.maybeCategory.get,
       completedExportGoods.maybeDestination.get,
       completedExportGoods.maybePurchaseDetails.get
     )
@@ -112,9 +112,9 @@ trait CoreTestData {
 
   val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
 
-  val startedImportGoods: ImportGoodsEntry = ImportGoodsEntry(Some(aCategoryQuantityOfGoods))
+  val startedImportGoods: ImportGoodsEntry = ImportGoodsEntry(Some(aCategoryOfGoods))
 
-  val startedExportGoods: ExportGoodsEntry = ExportGoodsEntry(Some(aCategoryQuantityOfGoods))
+  val startedExportGoods: ExportGoodsEntry = ExportGoodsEntry(Some(aCategoryOfGoods))
 
   val importJourneyWithStartedGoodsEntry: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(startedImportGoods))
@@ -166,7 +166,7 @@ trait CoreTestData {
 
   val aPurchaseDetails: PurchaseDetails =
     PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  val aGoods: ImportGoods = ImportGoods(aCategoryQuantityOfGoods, Twenty, YesNoDontKnow.Yes, aPurchaseDetails)
+  val aGoods: ImportGoods = ImportGoods(aCategoryOfGoods, Twenty, YesNoDontKnow.Yes, aPurchaseDetails)
 
   val aConversionRatePeriod: ConversionRatePeriod = ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
   val aCalculationResult: CalculationResult =
@@ -195,9 +195,10 @@ trait CoreTestData {
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
-  val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult), WithinThreshold)
+  val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult))
+  val aCalculationResponse: CalculationResponse = CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
 
-  val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax), WithinThreshold)
+  val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
 
   val aEoriNumber: String = "GB025115110987654"
   val aCheckEoriAddress: CheckEoriAddress = CheckEoriAddress("999 High Street", "CityName", "SS99 1AA")
@@ -208,7 +209,7 @@ trait CoreTestData {
   val aAmendment = Amendment(
     1,
     LocalDateTime.now,
-    DeclarationGoods(aGoods.copy(categoryQuantityOfGoods = CategoryQuantityOfGoods("more cheese", "123")) :: Nil),
+    DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
     Some(TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))),
     None,
     Some("Digital")
@@ -257,7 +258,7 @@ trait CoreTestData {
           Seq(
             CalculationResult(
               ImportGoods(
-                CategoryQuantityOfGoods("sock", "1"),
+                "sock",
                 GoodsVatRates.Twenty,
                 YesNoDontKnow.Yes,
                 PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
@@ -266,8 +267,7 @@ trait CoreTestData {
               dummyAmount,
               dummyAmount,
               None
-            )),
-          WithinThreshold
+            ))
         ),
         AmountInPence(purchaseAmount),
         dummyAmount,
@@ -351,8 +351,7 @@ trait CoreTestData {
       CalculationResults(
         Seq(
           CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
-        ),
-        WithinThreshold),
+        )),
       AmountInPence(amount),
       AmountInPence(100),
       AmountInPence(100),

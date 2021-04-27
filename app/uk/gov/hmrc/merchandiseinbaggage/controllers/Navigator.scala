@@ -23,6 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
@@ -51,11 +52,11 @@ class Navigator {
     case NewOrExistingRequest(journey, upsert, complete)                   => newOrExisting(journey, upsert, complete)
     case AgentDetailsRequest(agentName, journey, upsert)                   => agentDetails(agentName, journey, upsert)
     case PreviousDeclarationDetailsRequest(journey, declaration, upsert)   => previousDeclarationDetails(journey, declaration, upsert)
-    case GoodsTypeQuantityRequest(journey, entries, idx, category, upsert) => goodsTypeQuantity(journey, entries, idx, category, upsert)
+    case GoodsTypeRequest(journey, entries, idx, category, upsert)         => goodsType(journey, entries, idx, category, upsert)
     case GoodsOriginRequest(journey, entries, idx, upsert) =>
       persistAndRedirect(journey, entries, idx, GoodsVatRateController.onPageLoad(idx), upsert)
     case GoodsVatRateRequest(journey, entries, idx, upsert) =>
-      persistAndRedirect(journey, entries, idx, ReviewGoodsController.onPageLoad(), upsert)
+      goodsVatRate(journey, entries, idx, upsert)
     case SearchGoodsCountryRequest(journey, entries, idx, upsert) =>
       persistAndRedirect(journey, entries, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
@@ -121,7 +122,7 @@ object NavigatorMapping {
     declarationRequiredAndComplete: Boolean)(implicit ec: ExecutionContext): Future[Call] = {
     val redirectTo = value match {
       case No  => CannotUseServiceController.onPageLoad()
-      case Yes => GoodsTypeQuantityController.onPageLoad(entriesSize)
+      case Yes => GoodsTypeController.onPageLoad(entriesSize)
     }
     persistAndRedirect(updatedDeclarationJourney, declarationRequiredAndComplete, redirectTo, upsert)
   }
@@ -207,44 +208,57 @@ object NavigatorMapping {
       else redirectIfNotComplete
     }
 
-  def goodsTypeQuantity(
+  def goodsType(
     journey: DeclarationJourney,
     currentEntries: GoodsEntry,
     idx: Int,
-    categoryQuantityOfGoods: CategoryQuantityOfGoods,
+    category: String,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
     val updatedGoodsEntry = currentEntries match {
-      case entry: ImportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
-      case entry: ExportGoodsEntry => entry.copy(maybeCategoryQuantityOfGoods = Some(categoryQuantityOfGoods))
+      case entry: ImportGoodsEntry => entry.copy(maybeCategory = Some(category))
+      case entry: ExportGoodsEntry => entry.copy(maybeCategory = Some(category))
     }
 
     persistAndRedirect(journey, updatedGoodsEntry, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
 
+  def goodsVatRate(
+    declarationJourney: DeclarationJourney,
+    currentEntries: GoodsEntry,
+    index: Int,
+    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
+    val updatedDeclarationJourney =
+      declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(index, currentEntries))
+    upsert(updatedDeclarationJourney).map { _ =>
+      ReviewGoodsController.onPageLoad()
+    }
+  }
+
   def reviewGoods(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
-    overThresholdCheck: Boolean,
+    overThresholdCheck: ThresholdCheck,
     upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] =
-    if (overThresholdCheck) Future.successful(GoodsOverThresholdController.onPageLoad())
-    else {
-      val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
-        case (Export, New)   => declarationJourney.declarationRequiredAndComplete
-        case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
-        case (Import, _)     => false
-      }
+    overThresholdCheck match {
+      case OverThreshold => Future.successful(GoodsOverThresholdController.onPageLoad())
+      case WithinThreshold =>
+        val redirectToCya: Boolean = (declarationJourney.declarationType, declarationJourney.journeyType) match {
+          case (Export, New)   => declarationJourney.declarationRequiredAndComplete
+          case (Export, Amend) => declarationJourney.amendmentRequiredAndComplete
+          case (Import, _)     => false
+        }
 
-      (redirectToCya, declareMoreGoods) match {
-        case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
-        case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
-        case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
-      }
+        (redirectToCya, declareMoreGoods) match {
+          case (_, Yes)    => updateEntriesAndRedirect(declarationJourney, upsert)
+          case (false, No) => Future.successful(PaymentCalculationController.onPageLoad())
+          case (true, No)  => Future.successful(CheckYourAnswersController.onPageLoad())
+        }
     }
 
   private def updateEntriesAndRedirect(declarationJourney: DeclarationJourney, upsert: DeclarationJourney => Future[DeclarationJourney])(
     implicit ec: ExecutionContext): Future[Call] =
     upsert(declarationJourney.updateGoodsEntries()).map { _ =>
-      GoodsTypeQuantityController.onPageLoad(declarationJourney.updateGoodsEntries().goodsEntries.entries.size)
+      GoodsTypeController.onPageLoad(declarationJourney.updateGoodsEntries().goodsEntries.entries.size)
     }
 
   def purchaseDetails(
@@ -257,12 +271,7 @@ object NavigatorMapping {
       .getCurrencyByCode(purchaseDetailsInput.currency)
       .fold(Future(CannotAccessPageController.onPageLoad())) { currency =>
         val updatedGoodsEntry: GoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency, goodsEntry)
-        val updatedDeclarationJourney =
-          declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(idx, updatedGoodsEntry))
-
-        upsert(updatedDeclarationJourney).map { _ =>
-          GoodsOriginController.onPageLoad(idx)
-        }
+        persistAndRedirect(declarationJourney, updatedGoodsEntry, idx, GoodsOriginController.onPageLoad(idx), upsert)
       }
 
   def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =

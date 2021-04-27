@@ -58,17 +58,10 @@ object GoodsSummaryList {
       rows = Seq(
         rowWithChange(
           "reviewGoods.list.item",
-          goods.categoryQuantityOfGoods.category,
-          routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+          goods.category,
+          routes.GoodsTypeController.onPageLoad(idx).url,
           s"categoryChangeLink_$idx",
           "reviewGoods.goodsType.changeText"
-        ),
-        rowWithChange(
-          "reviewGoods.list.quantity",
-          goods.categoryQuantityOfGoods.quantity,
-          routes.GoodsTypeQuantityController.onPageLoad(idx).url,
-          s"quantityChangeLink_$idx",
-          "reviewGoods.quantity.changeText"
         ),
         rowWithChange(
           "reviewGoods.list.vatRate",
@@ -101,17 +94,10 @@ object GoodsSummaryList {
       rows = Seq(
         rowWithChange(
           "reviewGoods.list.item",
-          goods.categoryQuantityOfGoods.category,
-          routes.GoodsTypeQuantityController.onPageLoad(idx).url,
+          goods.category,
+          routes.GoodsTypeController.onPageLoad(idx).url,
           s"categoryChangeLink_$idx",
           "reviewGoods.goodsType.changeText"
-        ),
-        rowWithChange(
-          "reviewGoods.list.quantity",
-          goods.categoryQuantityOfGoods.quantity,
-          routes.GoodsTypeQuantityController.onPageLoad(idx).url,
-          s"quantityChangeLink_$idx",
-          "reviewGoods.quantity.changeText"
         ),
         rowWithChange(
           "reviewGoods.list.destination",
