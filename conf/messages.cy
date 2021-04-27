@@ -125,6 +125,10 @@ valueWeightOfGoods.NorthernIreland.heading = A yw cyfanswm gwerth y nwyddau o da
 valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £1,500 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
+valueWeightOfGoods.rate.1=Byddwn yn cyfrifo cyfanswm gwerth gan ddefnyddio
+valueWeightOfGoods.rate.2= cyfraddau cyfnewid misol CThEM (yn agor tab newydd)
+valueWeightOfGoods.rate.3=a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datganiad.
+
 
 # SearchGoods
 goodsTypeQuantity.title = Nodwch y math cyntaf o nwyddau
