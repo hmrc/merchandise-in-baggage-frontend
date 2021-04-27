@@ -19,8 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
 import org.scalatest.Assertions.fail
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser.{find, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage._
 
 object PurchaseDetailsPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
@@ -38,5 +41,13 @@ object PurchaseDetailsPage extends Page {
     selectCurrency.selectByValue(pd.currency)
     click.on(NameQuery("continue"))
   }
+}
 
+trait PurchaseDetailsPage extends BaseUiSpec { this: Suite =>
+
+  def goToPurchaseDetailsPage(idx: Int): Assertion = {
+    goto(path(idx))
+    pageTitle must startWith(messages(s"purchaseDetails.title", "wine"))
+    elementText(findByTagName("h1")) must startWith(messages(s"purchaseDetails.heading", "wine"))
+  }
 }

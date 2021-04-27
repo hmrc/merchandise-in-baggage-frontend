@@ -198,6 +198,7 @@ purchaseDetails.p.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad y
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rhif
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
+purchaseDetails.type.of.goods = Math o nwyddau:
 
 # ReviewGoods
 reviewGoods.New.title = Adolygu’ch nwyddau
