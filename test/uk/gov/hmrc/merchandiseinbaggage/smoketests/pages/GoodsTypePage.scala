@@ -27,7 +27,6 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsTypePage._
 object GoodsTypePage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/goods-type/$idx"
 
-
   def submitPage[T](category: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     find(NameQuery("category")).get.underlying.sendKeys(category.toString)
     click.on(NameQuery("continue"))
