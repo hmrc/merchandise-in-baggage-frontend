@@ -176,12 +176,12 @@ goodsOrigin.inset = Math o nwyddau:
 goodsOrigin.error.required = Dewiswch ‘Iawn’ os cafodd y nwyddau hyn eu cynhyrchu yn yr UE
 goodsOrigin.warning = Mae’n rhaid i chi gario tystiolaeth sy’n dangos y cafodd eich nwyddau eu gwneud yn yr UE os yw cyfanswm eu gwerth dros £1,000.
 goodsOrigin.proof.summary = Yr hyn y gallwch ei ddefnyddio fel tystiolaeth
-goodsOrigin.proof.summary.p1 = Gall tystiolaeth gynnwys y canlynol:
-goodsOrigin.proof.summary.p1.l1 = deunydd pecynnu neu label i ddangos bod y nwyddau wedi’u tyfu, eu gwneud neu eu cynhyrchu yn yr UE
-goodsOrigin.proof.summary.p1.l2 = evidence the item is handmade or homegrown in the EU
-goodsOrigin.proof.summary.p1.l3 = documents given to you by the seller that show the item was produced or made in the EU
-goodsOrigin.proof.summary.p1.l4 = a ‘statement on origin’ from the supplier of the item
-goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you will have to pay customs duty on this item.
+goodsOrigin.proof.summary.p1 = Gall y dystiolaeth gynnwys un o’r canlynol:
+goodsOrigin.proof.summary.p1.l1 = pecynnu neu label ynghlwm wrth yr eitem sy’n dangos ei bod wedi’i chynhyrchu neu ei gwneud yn yr UE
+goodsOrigin.proof.summary.p1.l2 = tystiolaeth bod yr eitem wedi’i gwneud â llaw neu wedi’i thyfu gartref yn yr UE
+goodsOrigin.proof.summary.p1.l3 = dogfennau a roddwyd i chi gan y gwerthwr sy’n dangos bod yr eitem wedi’i chynhyrchu neu ei gwneud yn yr UE
+goodsOrigin.proof.summary.p1.l4 = ‘datganiad tarddiad’ gan gyflenwr yr eitem
+goodsOrigin.proof.summary.p2 = Os nad oes gennych y dystiolaeth briodol, bydd yn rhaid i chi dalu toll dramor ar yr eitem hon.
 
 # SearchGoodsCountry
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
