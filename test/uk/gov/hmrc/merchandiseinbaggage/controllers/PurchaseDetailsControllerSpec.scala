@@ -18,19 +18,23 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with WireMockSupport {
 
   private val importView = app.injector.instanceOf[PurchaseDetailsImportView]
   private val exportView = app.injector.instanceOf[PurchaseDetailsExportView]
+  private val mibConnector = injector.instanceOf[MibConnector]
   private val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
@@ -39,10 +43,13 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       mockNavigator,
+      mibConnector,
       importView,
       exportView)
 
   declarationTypes.foreach { importOrExport =>
+    givenExchangeRateURL("http://something")
+
     val journey: DeclarationJourney = DeclarationJourney(
       aSessionId,
       importOrExport,
@@ -65,7 +72,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
           result must include(messages("purchaseDetails.p.1"))
           result must include(messages("purchaseDetails.p.2"))
           result must include(messages("purchaseDetails.p.a.text"))
-          result must include(messages("purchaseDetails.p.a.href"))
+          result must include("http://something")
         }
       }
     }
