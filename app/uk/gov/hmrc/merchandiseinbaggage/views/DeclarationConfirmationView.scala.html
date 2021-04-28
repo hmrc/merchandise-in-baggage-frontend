@@ -84,7 +84,7 @@
     @goods match {
      case good:ImportGoods => {
       <div class="govuk-summary-list__row">
-       <dt id="@{s"producedInEu_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
+       <dt id="@{s"producedInEuLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
        <dd id="@{s"producedInEu_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
       </div>
      }
