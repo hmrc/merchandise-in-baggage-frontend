@@ -64,11 +64,11 @@ object GoodsSummaryList {
           "reviewGoods.goodsType.changeText"
         ),
         rowWithChange(
-          "reviewGoods.list.vatRate",
-          s"${goods.goodsVatRate.value}%",
-          routes.GoodsVatRateController.onPageLoad(idx).url,
-          s"vatRateChangeLink_$idx",
-          "reviewGoods.list.vatRate"
+          "reviewGoods.list.price",
+          goods.purchaseDetails.formatted,
+          routes.PurchaseDetailsController.onPageLoad(idx).url,
+          s"priceChangeLink_$idx",
+          "reviewGoods.price.changeText"
         ),
         rowWithChange(
           "reviewGoods.list.producedInEu",
@@ -78,11 +78,11 @@ object GoodsSummaryList {
           "reviewGoods.country.changeText"
         ),
         rowWithChange(
-          "reviewGoods.list.price",
-          goods.purchaseDetails.formatted,
-          routes.PurchaseDetailsController.onPageLoad(idx).url,
-          s"priceChangeLink_$idx",
-          "reviewGoods.price.changeText"
+          "reviewGoods.list.vatRate",
+          s"${goods.goodsVatRate.value}%",
+          routes.GoodsVatRateController.onPageLoad(idx).url,
+          s"vatRateChangeLink_$idx",
+          "reviewGoods.list.vatRate"
         )
       ),
       classes = "govuk-!-margin-bottom-1",
@@ -100,18 +100,18 @@ object GoodsSummaryList {
           "reviewGoods.goodsType.changeText"
         ),
         rowWithChange(
-          "reviewGoods.list.destination",
-          messages(goods.destination.countryName),
-          routes.SearchGoodsCountryController.onPageLoad(idx).url,
-          s"destinationChangeLink_$idx",
-          "reviewGoods.destination.changeText"
-        ),
-        rowWithChange(
           "reviewGoods.list.price",
           goods.purchaseDetails.formatted,
           routes.PurchaseDetailsController.onPageLoad(idx).url,
           s"priceChangeLink_$idx",
           "reviewGoods.price.changeText"
+        ),
+        rowWithChange(
+          "reviewGoods.list.destination",
+          messages(goods.destination.countryName),
+          routes.SearchGoodsCountryController.onPageLoad(idx).url,
+          s"destinationChangeLink_$idx",
+          "reviewGoods.destination.changeText"
         )
       ),
       classes = "govuk-!-margin-bottom-1"
