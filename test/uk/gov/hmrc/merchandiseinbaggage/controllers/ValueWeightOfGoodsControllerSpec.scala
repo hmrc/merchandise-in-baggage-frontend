@@ -17,21 +17,33 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec {
+class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
 
   private val view = injector.instanceOf[ValueWeightOfGoodsView]
   private val navigator = injector.instanceOf[Navigator]
+  private val mibConnector = injector.instanceOf[MibConnector]
   def controller(declarationJourney: DeclarationJourney) =
-    new ValueWeightOfGoodsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), navigator, view)
+    new ValueWeightOfGoodsController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      navigator,
+      mibConnector,
+      view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
+    givenExchangeRateURL("http://something")
+
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport).copy(maybeGoodsDestination = Some(GreatBritain))
     "onPageLoad" should {

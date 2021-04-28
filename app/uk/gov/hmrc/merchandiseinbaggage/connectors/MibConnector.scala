@@ -25,7 +25,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, ExchangeRateURL, MibReference}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,4 +70,7 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
     httpClient.GET[CheckResponse](s"$base$checkEoriUrl$eori")
+
+  def findExchangeRateURL()(implicit hc: HeaderCarrier): Future[ExchangeRateURL] =
+    httpClient.GET[ExchangeRateURL](s"$base$exchangeRateUrl")
 }
