@@ -46,6 +46,8 @@ button: components.button
             <label for="price">@messages("purchaseDetails.heading", goodsCategory)</label>
         </h1>
 
+        <div class="govuk-inset-text">@messages("purchaseDetails.type.of.goods")<strong> @goodsCategory</strong></div>
+
         @currencyInput(
             CurrencyInput(
                 id = "price", name = "price",
