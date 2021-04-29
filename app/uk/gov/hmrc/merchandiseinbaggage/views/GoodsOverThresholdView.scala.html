@@ -25,7 +25,7 @@
 @this(
 layout: Layout,
 h1: components.h1,
-h3: components.h3,
+h2: components.h2,
 p: components.p
 )
 
@@ -57,7 +57,7 @@ p: components.p
         </a>
     </p>
 
-    @h3("goodsOverThreshold.h3")
+    @h2("goodsOverThreshold.h3", classes = Some("govuk-heading-m"))
 
     @p(Html(messages("goodsOverThreshold.p6", totalValue.formattedInPounds)))
 
