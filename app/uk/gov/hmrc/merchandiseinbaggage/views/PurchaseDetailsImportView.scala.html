@@ -50,7 +50,7 @@ button: components.button
 }
 
 @layout(
-    pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
+    pageTitle = Some(title(form, "purchaseDetails.title")),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import)
@@ -59,7 +59,7 @@ button: components.button
 
         @errorSummary(form.errors)
 
-        @h1(messages("purchaseDetails.heading", goodsCategory), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
+        @h1(messages("purchaseDetails.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
 
         <div class="govuk-inset-text">@messages("purchaseDetails.type.of.goods")<strong> @goodsCategory</strong></div>
 

@@ -190,8 +190,8 @@ searchGoodsCountry.error.required = Select the country the goods are going to
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
-purchaseDetails.title = How much did you pay for the {0}?
-purchaseDetails.heading = How much did you pay for the {0}?
+purchaseDetails.title = How much did you pay for the goods?
+purchaseDetails.heading = How much did you pay for the goods?
 purchaseDetails.price.label = Amount paid
 purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency

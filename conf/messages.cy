@@ -190,8 +190,8 @@ searchGoodsCountry.error.required = Dewiswch y wlad y mae’r nwyddau’n mynd i
 searchGoodsCountry.error.invalid = Dewiswch wlad ddilys
 
 # PurchaseDetails
-purchaseDetails.title = Faint y gwnaethoch ei dalu am y {0}?
-purchaseDetails.heading = Faint y gwnaethoch ei dalu am y {0}?
+purchaseDetails.title = Faint y gwnaethoch ei dalu am y nwyddau?
+purchaseDetails.heading = Faint y gwnaethoch ei dalu am y nwyddau?
 purchaseDetails.price.label = Swm a dalwyd
 purchaseDetails.price.hint = Nodwch y swm o dan yr arian cyfred a ddefnyddir
 purchaseDetails.currency.label = Arian cyfred
