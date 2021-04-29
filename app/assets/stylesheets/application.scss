@@ -10,6 +10,12 @@ $hmrc-assets-path: "/declare-commercial-goods/assets/lib/hmrc-frontend/hmrc/";
   margin-top: 0;
 }
 
+.govuk-summary-list__row--noaction:after {
+content: "";
+display: table-cell;
+border-bottom: 1px solid #b1b4b6;
+}
+
 @media print {
   /* styles go here */
   .govuk-panel--confirmation {
