@@ -38,6 +38,7 @@ object GoodsItemList {
     SummaryListRow(
       key = Key(Text(messages(key))),
       value = Value(Text(value)),
+      classes = "govuk-summary-list__row--noaction"
     )
 
   private def importSummary(goods: ImportGoods, idx: Int)(implicit messages: Messages): SummaryList =
