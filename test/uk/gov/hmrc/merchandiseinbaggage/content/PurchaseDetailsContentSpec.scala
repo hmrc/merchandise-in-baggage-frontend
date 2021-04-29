@@ -31,8 +31,8 @@ class PurchaseDetailsContentSpec extends PurchaseDetailsPage with CoreTestData w
       givenAJourneyWithSession(declarationType = importOrExport)
       goToPurchaseDetailsPage(1)
 
-      elementText(findByTagName("h1")) must include(messages("purchaseDetails.heading", "wine"))
-      elementText(findByClassName("govuk-inset-text")) must include(messages("purchaseDetails.type.of.goods", "wine"))
+      elementText(findByTagName("h1")) must include(messages("purchaseDetails.heading"))
+      elementText(findByClassName("govuk-inset-text")) must include(messages("purchaseDetails.type.of.goods"))
     }
   }
 }

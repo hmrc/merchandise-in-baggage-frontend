@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsTypePage._
 
