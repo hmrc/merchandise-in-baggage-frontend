@@ -44,13 +44,45 @@
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
 
-    @goodsItemList(allGoods(declaration))
+    <div class="govuk-summary-list govuk-!-margin-bottom-9 govuk-summary-list--wide">
+        @allGoods(declaration).map { good =>
+        <p class="govuk-summary-list__row">
+            <span class="govuk-summary-list__key">@messages("reviewGoods.list.item")</span>
+            <span class="govuk-summary-list__value">@good.category</span>
+            <span class="govuk-summary-list__actions"></span>
+        </p>
+
+        @good match {
+            case importGood: ImportGoods => {
+                <p class="govuk-summary-list__row">
+                    <span class="govuk-summary-list__key">@messages("reviewGoods.list.producedInEu")</span>
+                    <span class="govuk-summary-list__value">@messages(importGood.producedInEu.messageKey)</span>
+                    <span class="govuk-summary-list__actions"></span>
+                </p>
+            }
+            case exportGood: ExportGoods => {
+                <p class="govuk-summary-list__row">
+                    <span class="govuk-summary-list__key">@messages("reviewGoods.list.destination")</span>
+                    <span class="govuk-summary-list__value">@messages(exportGood.destination.countryName)</span>
+                    <span class="govuk-summary-list__actions"></span>
+                </p>
+            }
+        }
+
+        <p class="govuk-summary-list__row">
+            <span class="govuk-summary-list__key">@messages("reviewGoods.list.price")</span>
+            <span class="govuk-summary-list__value">@good.purchaseDetails.formatted</span>
+            <span class="govuk-summary-list__actions"></span>
+        </p>
+        }
+    </div>
 
     @if(declaration.declarationType == Import) {
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
             <div class="govuk-summary-list__row">
-                <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</dt>
-                <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue(declaration).formattedInPounds</dd>
+                <span class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</span>
+                <span class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue(declaration).formattedInPounds</span>
+                <span class="govuk-summary-list__actions"></span>
             </div>
         </dl>
     }
@@ -58,12 +90,14 @@
     @h2("previousDeclarationDetails.journey", Some("govuk-heading-m"))
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
-            <dt  class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.arrival")</dt>
-            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.port.displayName)</dd>
+            <span class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.arrival")</span>
+            <span class="govuk-summary-list__value">@messages(declaration.journeyDetails.port.displayName)</span>
+            <span class="govuk-summary-list__actions"></span>
         </div>
         <div class="govuk-summary-list__row">
-            <dt  class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.date")</dt>
-            <dd  class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.dateOfTravel.formattedDate</dd>
+            <span class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.date")</span>
+            <span class="govuk-summary-list__value"  style="text-transform: capitalize">@declaration.journeyDetails.dateOfTravel.formattedDate</span>
+            <span class="govuk-summary-list__actions"></span>
         </div>
     </dl>
 
