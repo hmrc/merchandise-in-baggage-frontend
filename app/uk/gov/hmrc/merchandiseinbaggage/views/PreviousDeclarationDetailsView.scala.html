@@ -49,7 +49,6 @@
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("reviewGoods.list.item")</dt>
             <dd class="govuk-summary-list__value">@good.category</dd>
-            <span class="govuk-summary-list__actions"></span>
         </div>
 
         @good match {
@@ -57,14 +56,12 @@
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">@messages("reviewGoods.list.producedInEu")</dt>
                     <dd class="govuk-summary-list__value">@messages(importGood.producedInEu.messageKey)</dd>
-                    <span class="govuk-summary-list__actions"></span>
                 </div>
             }
             case exportGood: ExportGoods => {
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">@messages("reviewGoods.list.destination")</dt>
                     <dd class="govuk-summary-list__value">@messages(exportGood.destination.countryName)</dd>
-                    <span class="govuk-summary-list__actions"></span>
                 </div>
             }
         }
@@ -72,7 +69,6 @@
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("reviewGoods.list.price")</dt>
             <dd class="govuk-summary-list__value">@good.purchaseDetails.formatted</dd>
-            <span class="govuk-summary-list__actions"></span>
         </div>
  </dl>
 }
@@ -82,7 +78,6 @@
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">@messages("reviewGoods.list.paymentMade")</dt>
                 <dd class="govuk-summary-list__value" style="text-transform: capitalize">@totalTaxDue(declaration).formattedInPounds</dd>
-                <span class="govuk-summary-list__actions"></span>
             </div>
         </dl>
     }
@@ -92,12 +87,10 @@
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.arrival")</dt>
             <dd class="govuk-summary-list__value">@messages(declaration.journeyDetails.port.displayName)</dd>
-            <span class="govuk-summary-list__actions"></span>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("previousDeclarationDetails.journey.date")</dt>
             <dd class="govuk-summary-list__value"  style="text-transform: capitalize">@declaration.journeyDetails.dateOfTravel.formattedDate</dd>
-            <span class="govuk-summary-list__actions"></span>
         </div>
     </dl>
 
