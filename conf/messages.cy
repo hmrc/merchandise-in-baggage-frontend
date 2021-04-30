@@ -135,13 +135,13 @@ valueWeightOfGoods.rate.3=a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch da
 
 # SearchGoods
 goodsType.New.title = Nodwch gategori eich eitem gyntaf
-goodsType.Amend.title = Enter the category of your additional item
+goodsType.Amend.title = Nodwch gategori eich eitem ychwanegol
 goodsType.New.next.title = Nodwch y math nesaf o nwyddau
-goodsType.Amend.next.title = Enter the category of your additional item
+goodsType.Amend.next.title = Nodwch gategori eich eitem ychwanegol
 goodsType.New.heading = Nodwch gategori eich eitem gyntaf
-goodsType.Amend.heading = Enter the category of your additional item
+goodsType.Amend.heading = Nodwch gategori eich eitem ychwanegol
 goodsType.New.next.heading = Nodwch y math nesaf o nwyddau
-goodsType.Amend.next.heading = Enter the category of your additional item
+goodsType.Amend.next.heading = Nodwch gategori eich eitem ychwanegol
 goodsType.p = Dyma’r math o gynnyrch neu’r categori. Gallwch ychwanegu rhagor yn nes ymlaen.
 goodsType.category = Math o nwyddau
 goodsType.category.hint = Er enghraifft, dillad
@@ -447,7 +447,7 @@ checkYourAnswers.detailsOfTheGoods.destination = Cyrchfan
 checkYourAnswers.detailsOfTheGoods.price = Swm a dalwyd
 checkYourAnswers.detailsOfTheGoods.paymentDue = Taliad sy’n ddyledus
 checkYourAnswers.addMoreGoods = Ychwanegu rhagor o nwyddau
-checkYourAnswers.personalDetails = Trader details
+checkYourAnswers.personalDetails = Manylion y masnachwr
 checkYourAnswers.customsAgent.name = Enw’r asiant tollau
 checkYourAnswers.customsAgent.address = Cyfeiriad yr asiant tollau
 checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods = Enw’r person sy’n cario’r nwyddau
