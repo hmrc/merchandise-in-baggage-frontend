@@ -44,38 +44,38 @@
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
 
-<div class="govuk-summary-list govuk-!-margin-bottom-9 govuk-summary-list--wide">
-        @allGoods(declaration).map { good =>
-        <p class="govuk-summary-list__row">
+@allGoods(declaration).map { good =>
+ <dl class="govuk-summary-list govuk-!-margin-bottom-7 govuk-summary-list--wide">
+        <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("reviewGoods.list.item")</dt>
             <dd class="govuk-summary-list__value">@good.category</dd>
             <span class="govuk-summary-list__actions"></span>
-        </p>
+        </div>
 
         @good match {
             case importGood: ImportGoods => {
-                <p class="govuk-summary-list__row">
+                <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">@messages("reviewGoods.list.producedInEu")</dt>
                     <dd class="govuk-summary-list__value">@messages(importGood.producedInEu.messageKey)</dd>
                     <span class="govuk-summary-list__actions"></span>
-                </p>
+                </div>
             }
             case exportGood: ExportGoods => {
-                <p class="govuk-summary-list__row">
+                <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">@messages("reviewGoods.list.destination")</dt>
                     <dd class="govuk-summary-list__value">@messages(exportGood.destination.countryName)</dd>
                     <span class="govuk-summary-list__actions"></span>
-                </p>
+                </div>
             }
         }
 
-        <p class="govuk-summary-list__row">
+        <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">@messages("reviewGoods.list.price")</dt>
             <dd class="govuk-summary-list__value">@good.purchaseDetails.formatted</dd>
             <span class="govuk-summary-list__actions"></span>
-        </p>
-        }
-    </div>
+        </div>
+ </dl>
+}
 
     @if(declaration.declarationType == Import) {
         <dl class="govuk-summary-list govuk-!-margin-bottom-9">
