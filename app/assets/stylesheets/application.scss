@@ -24,3 +24,22 @@ $hmrc-assets-path: "/declare-commercial-goods/assets/lib/hmrc-frontend/hmrc/";
     display: none;
   }
 }
+
+/* IE 11 */
+@media (-ms-high-contrast: active) {
+  .autocomplete__option--focused,
+  .autocomplete__option:hover {
+    -ms-high-contrast-adjust: none;
+    background-color: highlight;
+    color: highlightText;
+  }
+}
+/* Edge 18+ */
+@media (forced-colors: active) {
+  .autocomplete__option--focused,
+  .autocomplete__option:hover {
+    -ms-high-contrast-adjust: none;
+    background-color: highlight;
+    color: highlightText;
+  }
+}
