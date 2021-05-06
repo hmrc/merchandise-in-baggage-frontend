@@ -37,7 +37,6 @@
 @defaultHead = {
     @headBlock
         @{if(timeOut) hmrcTimeoutDialog(TimeoutDialog(
-                            name="timeOutDialog",
                             timeout= Some(appConfig.timeout),
                             countdown= Some(appConfig.countdown),
                             message= Some(messages("sessionExpired.message")),

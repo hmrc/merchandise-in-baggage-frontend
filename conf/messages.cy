@@ -4,6 +4,8 @@ service.name.Import.a.href = https://www.gov.uk/guidance/declare-commercial-good
 service.name.Export.a.href = https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles
 service.name.govuk.a.href = https://www.gov.uk/
 
+service.skip-to-main = Ewch yn syth i‘r prif gynnwys
+
 # Alpha/Beta Banner
 feedback.before = Gwasanaeth newydd yn hwn – bydd eich
 feedback.link = adborth

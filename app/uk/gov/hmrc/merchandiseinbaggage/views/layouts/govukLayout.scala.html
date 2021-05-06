@@ -32,7 +32,8 @@
         hmrcReportTechnicalIssueHelper: hmrcReportTechnicalIssueHelper,
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
         appConfig: AppConfig,
-        hmrcStandardFooter: HmrcStandardFooter
+        hmrcStandardFooter: HmrcStandardFooter,
+        govukSkipLink: GovukSkipLink
 )
 
 @(
@@ -102,6 +103,13 @@
     </div>
 }
 
+@skipLink = @{
+    govukSkipLink(SkipLink(
+        href = "#main-content",
+        content = HtmlContent(messages("service.skip-to-main"))
+    ))
+}
+
 @govukTemplate(
     htmlLang = Some(messages.lang.code),
     pageTitle = pageTitle,
@@ -111,4 +119,5 @@
     footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
     bodyEndBlock = Some(bodyEndDefault),
+    skipLinkBlock = Some(skipLink)
 )(mainContentDefault)
