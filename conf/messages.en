@@ -174,6 +174,7 @@ goodsOrigin.title = Were these goods made in the EU?
 goodsOrigin.heading = Were these goods made in the EU?
 goodsOrigin.inset = Type of goods:
 goodsOrigin.error.required = Select Yes, No or I do not know
+goodsOrigin.warning.warning = Warning
 goodsOrigin.warning = You must carry proof your goods were made in the EU if they have a total value of more than £1,000.
 goodsOrigin.proof.summary = What you can use as proof
 goodsOrigin.proof.summary.p1 = Evidence can be include one of the following:

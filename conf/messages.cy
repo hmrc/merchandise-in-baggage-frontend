@@ -174,6 +174,7 @@ goodsOrigin.title = A wnaed y nwyddau hyn yn yr UE?
 goodsOrigin.heading = A wnaed y nwyddau hyn yn yr UE?
 goodsOrigin.inset = Math o nwyddau:
 goodsOrigin.error.required = Dewiswch ‘Iawn’, ‘Na’, neu ‘Nid wyf yn gwybod’
+goodsOrigin.warning.warning = Rhybudd
 goodsOrigin.warning = Mae’n rhaid i chi gario tystiolaeth sy’n dangos y cafodd eich nwyddau eu gwneud yn yr UE os yw cyfanswm eu gwerth dros £1,000.
 goodsOrigin.proof.summary = Yr hyn y gallwch ei ddefnyddio fel tystiolaeth
 goodsOrigin.proof.summary.p1 = Gall y dystiolaeth gynnwys un o’r canlynol:
