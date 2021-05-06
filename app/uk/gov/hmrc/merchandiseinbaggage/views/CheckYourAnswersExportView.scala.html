@@ -54,7 +54,8 @@
     <dt id="customsAgentYesNo" class="govuk-summary-list__value">@declaration.maybeCustomsAgent.fold("No")(_ => "Yes")</dt>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="customsAgentYesNoChangeLink" href=@{s"${CustomsAgentController.onPageLoad()}"}>
-      @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.customsAgentYesNo")</span>
+      <span aria-hidden="true">@change</span>
+      <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.customsAgentYesNo")</span>
      </a>
     </dd>
    </div>
@@ -64,7 +65,8 @@
     <dd id="customsAgentName" class="govuk-summary-list__value">@customsAgent.name</dd>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="customsAgentNameChangeLink" href=@{s"${AgentDetailsController.onPageLoad()}"}>
-       @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.customsAgentName")</span>
+      <span aria-hidden="true">@change</span>
+      <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.customsAgentName")</span>
      </a>
     </dd>
    </div>
@@ -80,7 +82,8 @@
     </dd>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="customsAgentAddressChangeLink" href=@{s"${EnterAgentAddressController.onPageLoad()}"}>
-       @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.customsAgentAddress")</span>
+      <span aria-hidden="true">@change</span>
+      <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.customsAgentAddress")</span>
      </a>
     </dd>
    </div>
@@ -90,7 +93,8 @@
    <dd id="eori" class="govuk-summary-list__value">@declaration.eori</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="eoriChangeLink" href=@{s"${EoriNumberController.onPageLoad()}"}>
-      @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.eori")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.eori")</span>
     </a>
    </dd>
   </div>
@@ -99,7 +103,8 @@
    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value">@declaration.nameOfPersonCarryingTheGoods</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="nameOfPersonCarryingTheGoodsChangeLink" href=@{s"${TravellerDetailsController.onPageLoad()}"}>
-     @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.nameOfPersonCarryingTheGoods")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.nameOfPersonCarryingTheGoods")</span>
     </a>
    </dd>
   </div>
@@ -108,7 +113,8 @@
    <dd id="emailAddress" class="govuk-summary-list__value">@declaration.email.map(_.email).getOrElse("")</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="emailAddressChangeLink" href=@{s"${EnterEmailController.onPageLoad()}"}>
-     @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.emailAddress")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.emailAddress")</span>
     </a>
    </dd>
   </div>
@@ -122,7 +128,8 @@
    <dd id="placeOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.port.displayName)</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="placeOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
-     @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.placeOfArrival")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.placeOfArrival")</span>
     </a>
    </dd>
   </div>
@@ -131,7 +138,8 @@
    <dd id="dateOfArrival" class="govuk-summary-list__value" style="text-transform: capitalize">@declaration.journeyDetails.dateOfTravel.formattedDate</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="dateOfArrivalChangeLink" href=@{s"${JourneyDetailsController.onPageLoad()}"}>
-     @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.dateOfArrival")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.dateOfArrival")</span>
     </a>
    </dd>
   </div>
@@ -140,7 +148,8 @@
    <dd id="travellingByVehicle" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(declaration.journeyDetails.travellingByVehicle.messageKey)</dd>
    <dd class="govuk-summary-list__actions">
     <a class="govuk-link" id="travellingByVehicleChangeLink" href=@{s"${GoodsInVehicleController.onPageLoad()}"}>
-     @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.travellingByVehicle")</span>
+     <span aria-hidden="true">@change</span>
+     <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.travellingByVehicle")</span>
     </a>
    </dd>
   </div>
@@ -150,7 +159,8 @@
     <dd id="vehicleRegistrationNumber" class="govuk-summary-list__value">@registrationNumber</dd>
     <dd class="govuk-summary-list__actions">
      <a class="govuk-link" id="vehicleRegistrationNumberChangeLink" href=@{s"${VehicleRegistrationNumberController.onPageLoad()}"}>
-       @change<span class="govuk-visually-hidden"> @messages("checkYourAnswers.change.vehicleRegistrationNumber")</span>
+      <span aria-hidden="true">@change</span>
+      <span class="govuk-visually-hidden">@messages("checkYourAnswers.change.vehicleRegistrationNumber")</span>
      </a>
     </dd>
    </div>
