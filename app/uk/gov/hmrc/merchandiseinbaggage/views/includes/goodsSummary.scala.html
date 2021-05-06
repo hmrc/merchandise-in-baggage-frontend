@@ -26,7 +26,7 @@
     @summaryList(list)
     <p class="govuk-body-m">
       <a id="remove_@idx" class="govuk-link" href="@RemoveGoodsController.onPageLoad(idx + 1).url">
-          @messages("site.remove")
+          <span aria-hidden="true">@messages("site.remove")</span>
           <span class="govuk-visually-hidden">
               @declarationGoods.goods(idx).category
               @declarationGoods.goods(idx).purchaseDetails.formatted
