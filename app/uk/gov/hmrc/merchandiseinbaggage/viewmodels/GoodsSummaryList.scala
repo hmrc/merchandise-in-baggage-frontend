@@ -46,7 +46,7 @@ object GoodsSummaryList {
             ActionItem(
               href = changeUrl,
               content = HtmlContent(s"""<span aria-hidden="true">${messages("site.change")}</span>"""),
-              visuallyHiddenText = Some(messages(hiddenTxt, hiddenTxtArgs)),
+              visuallyHiddenText = Some(s"""${messages("site.change")} ${messages(hiddenTxt, hiddenTxtArgs)}"""),
               attributes = Map("id" -> s"$changeId")
             )
           )
