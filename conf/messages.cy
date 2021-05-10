@@ -302,7 +302,7 @@ agentDetails.error.required = Nodwch enw’ch busnes cofrestredig
 # TraderDetails
 travellerDetails.title = Beth yw enw’r person sy’n cario’r nwyddau?
 travellerDetails.heading = Beth yw enw’r person sy’n cario’r nwyddau?
-travellerDetails.hint = Nodwch ei enw cyfreithiol llawn fel y mae’n ymddangos ar ei basbort neu dystysgrif geni.
+travellerDetails.hint = Nodwch yr enw cyntaf a’r enw olaf fel y mae’n ymddangos ar y pasbort neu’r dystysgrif geni.
 travellerDetails.firstName = Enw cyntaf
 travellerDetails.lastName = Enw olaf
 travellerDetails.firstName.error.required = Nodwch enw cyntaf y person sy’n cludo’r nwyddau

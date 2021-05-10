@@ -303,7 +303,7 @@ agentDetails.error.required = Enter your registered business name
 # TraderDetails
 travellerDetails.title = What is the name of the person carrying the goods?
 travellerDetails.heading = What is the name of the person carrying the goods?
-travellerDetails.hint = Enter their full legal name as it appears on their passport or birth certificate.
+travellerDetails.hint = Enter their first and last name as it appears on their passport or birth certificate.
 travellerDetails.firstName = First name
 travellerDetails.lastName = Last name
 travellerDetails.firstName.error.required = Enter the first name of the person carrying the goods
