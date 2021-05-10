@@ -19,10 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -61,5 +63,20 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .returning(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
 
     service.amendPlusOriginalCalculations(amended).value.futureValue.get.thresholdCheck mustBe WithinThreshold
+  }
+
+  "check threshold allowance" in {
+    val entries = completedGoodsEntries(Import)
+    val stubbedResult =
+      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
+
+    (mockConnector
+      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
+      .expects(*, *)
+      .returning(Future.successful(calculationResponse))
+
+    val actual = service.thresholdAllowance(Some(GreatBritain), entries).value.futureValue
+    actual mustBe Some(ThresholdAllowance(DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
   }
 }
