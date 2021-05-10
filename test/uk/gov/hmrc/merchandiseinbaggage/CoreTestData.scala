@@ -33,7 +33,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
 
@@ -197,6 +197,7 @@ trait CoreTestData {
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
   val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult))
   val aCalculationResponse: CalculationResponse = CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
+  val aThresholdAllowance = ThresholdAllowance(aDeclarationGood, aCalculationResponse, GreatBritain)
 
   val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
 

@@ -44,6 +44,7 @@ class ImportJourneySpec extends BaseUiSpec {
 
       submitPage(GoodsOriginPage, Yes)
 
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(GoodsVatRatePage, "Five")
 
       givenAPaymentCalculation(aCalculationResult)

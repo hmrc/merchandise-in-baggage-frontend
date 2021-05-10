@@ -31,7 +31,7 @@ case class GoodsEntries(entries: Seq[GoodsEntry]) {
   if (entries.isEmpty) throw new RuntimeException("GoodsEntries cannot be empty: use apply()")
 
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
-    val goods = entries.flatMap(_.goodsIfComplete)
+    val goods: Seq[Goods] = entries.flatMap(_.goodsIfComplete)
 
     if (goods.nonEmpty) Some(DeclarationGoods(goods))
     else None

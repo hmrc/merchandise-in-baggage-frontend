@@ -23,15 +23,17 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import com.softwaremill.quicklens._
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
 
@@ -49,13 +51,22 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       mockNavigator)
 
   forAll(declarationTypesTable) { importOrExport =>
+    val entries = completedGoodsEntries(importOrExport)
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
+      DeclarationJourney(aSessionId, importOrExport, goodsEntries = entries)
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-
         val request = buildGet(ReviewGoodsController.onPageLoad().url, aSessionId)
+        val allowance =
+          if (importOrExport == Export) aThresholdAllowance.modify(_.goods).setTo(entries.declarationGoodsIfComplete.get)
+          else aThresholdAllowance
+        (mockCalculationService
+          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries)(_: HeaderCarrier))
+          .expects(*, *, *)
+          .returning(OptionT.pure[Future](allowance))
+          .once()
+
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -73,6 +84,12 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
+        (mockCalculationService
+          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries)(_: HeaderCarrier))
+          .expects(*, *, *)
+          .returning(OptionT.pure[Future](aThresholdAllowance))
+          .once()
+
         (mockNavigator
           .nextPage(_: ReviewGoodsRequest)(_: ExecutionContext))
           .expects(*, *)
@@ -84,9 +101,14 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-
       val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
+
+      (mockCalculationService
+        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries)(_: HeaderCarrier))
+        .expects(*, *, *)
+        .returning(OptionT.pure[Future](aThresholdAllowance))
+        .once()
 
       val eventualResult = controller(journey).onSubmit(request)
       val result = contentAsString(eventualResult)
@@ -113,6 +135,12 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
           view,
           mockCalculationService,
           injector.instanceOf[Navigator])
+
+      (mockCalculationService
+        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries)(_: HeaderCarrier))
+        .expects(*, *, *)
+        .returning(OptionT.pure[Future](aThresholdAllowance))
+        .once()
 
       (mockCalculationService
         .amendPlusOriginalCalculations(_: DeclarationJourney)(_: HeaderCarrier))

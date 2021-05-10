@@ -60,6 +60,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       webDriver.getPageSource must include("wine")
       webDriver.getPageSource must include("99.99, Euro (EUR)")
 
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(PreviousDeclarationDetailsPage, "continue")
 
       // controlled or restricted goods
