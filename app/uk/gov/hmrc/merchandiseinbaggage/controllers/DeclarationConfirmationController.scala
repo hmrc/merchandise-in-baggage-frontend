@@ -20,7 +20,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, NotRequired, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyType, NotRequired}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
@@ -41,15 +42,12 @@ class DeclarationConfirmationController @Inject()(
     val declarationId = request.declarationJourney.declarationId
     val journeyType = request.declarationJourney.journeyType
     connector.findDeclaration(declarationId).map {
-      case Some(declaration) if showConfirmation(declaration) =>
+      case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
         clearAnswers()
         Ok(view(declaration, journeyType))
-      case Some(declaration) =>
+      case Some(_) =>
         clearAnswers()
-        val message =
-          s"can't show confirmation page due to declarationType: ${declaration.declarationType}, paymentStatus: ${declaration.paymentStatus} and totalTaxDue: ${declaration.maybeTotalCalculationResult
-            .map(_.totalTaxDue)}"
-        actionProvider.invalidRequest(message)
+        actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation")
       case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
     }
   }
@@ -61,15 +59,23 @@ class DeclarationConfirmationController @Inject()(
     }
   }
 
+  val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
+    import request.declarationJourney._
+    repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
+      Redirect(routes.RetrieveDeclarationController.onPageLoad())
+    }
+  }
+
   private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[DeclarationJourney] = {
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType).copy(declarationId = declarationId))
   }
 
-  private def showConfirmation(declaration: Declaration): Boolean = {
-
-    def paymentSuccess = declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
-
-    declaration.declarationType == Export || (declaration.declarationType == Import && paymentSuccess)
-  }
+  //In case of Imports with payment needed, the confirmation page will be hosted by the Payments service
+  private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType): Boolean =
+    (declaration.declarationType, journeyType) match {
+      case (Export, _)     => true
+      case (Import, New)   => declaration.paymentStatus.contains(NotRequired)
+      case (Import, Amend) => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
+    }
 }

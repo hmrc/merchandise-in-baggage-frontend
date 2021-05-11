@@ -20,7 +20,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
@@ -40,7 +39,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   private val controller =
     new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
 
-  "on page load return 200 if declaration exists and resets the journey" in {
+  "on page load return 200 if declaration exists and resets the journey for Exports" in {
     val sessionId = SessionId()
     val id = DeclarationId("456")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
@@ -63,6 +62,46 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
   }
 
+  "on page load return 200 if declaration exists and resets the journey for Import with no payment required" in {
+    val sessionId = SessionId()
+    val id = DeclarationId("456")
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+
+    val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
+    val declarationWithNoPaymentRequired = importJourney.declarationIfRequiredAndComplete.get.copy(paymentStatus = Some(NotRequired))
+
+    givenADeclarationJourneyIsPersisted(importJourney)
+
+    givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
+
+    val eventualResult = controller.onPageLoad()(request)
+    status(eventualResult) mustBe 200
+
+    import importJourney._
+    val resetJourney = DeclarationJourney(sessionId, declarationType)
+
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
+    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+  }
+
+  "on page load return 200 return an invalid request for Import with payment required as the confirmation is hosted by payments team" in {
+    val sessionId = SessionId()
+    val id = DeclarationId("456")
+    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+
+    val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
+
+    givenADeclarationJourneyIsPersisted(importJourney)
+
+    givenPersistedDeclarationIsFound(declarationWithPaidAmendment, id)
+
+    val eventualResult = controller.onPageLoad()(request)
+    status(eventualResult) mustBe 303
+    redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
+  }
+
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val connector = new MibConnector(client, "") {
       override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
@@ -77,35 +116,4 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe 303
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
-
-  "Import with value over 1000gbp, add an 'take proof' line" in {
-    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 111111)
-
-    result must include(messageApi("declarationConfirmation.ul.3"))
-  }
-
-  "Import with value under 1000gbp, DONOT add an 'take proof' line" in {
-    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 100)
-
-    result mustNot include(messageApi("declarationConfirmation.ul.3"))
-  }
-
-  "Export with value over 1000gbp, DONOT add an 'take proof' line" in {
-    val result = generateDeclarationConfirmationPage(DeclarationType.Export, 111111)
-
-    result mustNot include(messageApi("declarationConfirmation.ul.3"))
-  }
-
-  "New declaration displays 'take this declaration with you'" in {
-    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 111111, New)
-
-    result must include(messageApi("declarationConfirmation.ul.2.New"))
-  }
-
-  "Amended declaration displays 'take this UPDATED declaration with you'" in {
-    val result = generateDeclarationConfirmationPage(DeclarationType.Import, 111111, Amend)
-
-    result must include(messageApi("declarationConfirmation.ul.2.Amend"))
-  }
-
 }

@@ -16,25 +16,94 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.content
 
+import org.openqa.selenium.By
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, NotRequired}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.LocalDateTimeOps
+import scala.collection.JavaConverters._
 
 class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage with CoreTestData {
 
-  "it should show all goods & full payment summary considering amendments" in {
+  "it should show the confirmation content as expected for exports" in {
     val journey = givenAJourneyWithSession()
-    givenPersistedDeclarationIsFound(declarationWithPaidAmendment, journey.declarationId)
+    givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export), journey.declarationId)
     goToConfirmationPage
 
-    findById("category_0").getText mustBe "wine"
+    findById("serviceLabel").getText mustBe "Declaration"
+    findById("service").getText mustBe "Commercial goods"
 
-    findById("category_1").getText mustBe "cheese"
+    findById("dateOfDeclarationLabel").getText mustBe "Date"
+    findById("dateOfDeclaration").getText mustBe declarationWithPaidAmendment.dateOfDeclaration.formattedDateNoTime
 
-    findById("category_2").getText mustBe "wine"
+    findById("amountLabel").getText mustBe "Amount"
+    findById("amount").getText mustBe "Nothing to pay"
 
-    findById("customsDuty").getText mustBe "£2"
-    findById("vat").getText mustBe "£2"
-    findById("totalTax").getText mustBe "£2"
+    findById("printDeclarationId").getText mustBe "Print or save a copy of this page"
+
+    findById("whatToDoNextId").getText mustBe "What you need to do next"
+
+    val bulletPoints = findBullets()
+
+    bulletPoints.size mustBe 2
+    elementText(bulletPoints.head) mustBe s"${messages("declarationConfirmation.ul.2")}"
+    elementText(bulletPoints(1)) mustBe s"${messages("declarationConfirmation.ul.3")}"
+
+    findById("makeAnotherDeclarationId").getText mustBe "Make another declaration"
+    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/make-another-declaration")
+    findById("changeDeclarationId").getText mustBe "Add goods to an existing declaration"
+    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/add-goods-to-an-existing-declaration")
   }
+
+  "it should show the confirmation content as expected for Imports" in {
+    val journey = givenAJourneyWithSession()
+    val calcResult =
+      CalculationResult(aImportGoods, AmountInPence(111000L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+    givenPersistedDeclarationIsFound(
+      declaration.copy(
+        paymentStatus = Some(NotRequired),
+        maybeTotalCalculationResult = Some(aTotalCalculationResult.copy(calculationResults = CalculationResults(Seq(calcResult))))
+      ),
+      journey.declarationId
+    )
+
+    goToConfirmationPage
+
+    findById("serviceLabel").getText mustBe "Declaration"
+    findById("service").getText mustBe "Commercial goods"
+
+    findById("dateOfDeclarationLabel").getText mustBe "Date"
+    findById("dateOfDeclaration").getText mustBe declarationWithPaidAmendment.dateOfDeclaration.formattedDateNoTime
+
+    findById("amountLabel").getText mustBe "Amount"
+    findById("amount").getText mustBe "Nothing to pay"
+
+    findById("printDeclarationId").getText mustBe "Print or save a copy of this page"
+
+    findById("whatToDoNextId").getText mustBe "What you need to do next"
+
+    val bulletPoints = findBullets()
+
+    bulletPoints.size mustBe 4
+    elementText(bulletPoints.head) mustBe "go through the green channel (nothing to declare) at customs"
+    elementText(bulletPoints(1)) mustBe "take the declaration sent to the email provided"
+    elementText(bulletPoints(2)) mustBe "take the receipts or invoices for all the declared goods"
+    elementText(bulletPoints(3)) mustBe "take proof which shows where the EU goods were produced"
+
+    findById("bringingEUGoodsId").getText mustBe "Bringing EU goods"
+
+    findById("makeAnotherDeclarationId").getText mustBe "Make another declaration"
+    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/make-another-declaration")
+    findById("changeDeclarationId").getText mustBe "Add goods to an existing declaration"
+    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/add-goods-to-an-existing-declaration")
+  }
+
+  private def findBullets() =
+    findByXPath("//ul[@id='whatToDoNextUlId']")
+      .findElements(By.tagName("li"))
+      .asScala
+      .toList
 }
