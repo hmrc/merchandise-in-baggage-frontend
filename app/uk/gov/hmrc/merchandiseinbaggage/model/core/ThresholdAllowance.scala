@@ -19,15 +19,20 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, GoodsDestination}
 
+import scala.util.Try
+
 case class ThresholdAllowance(goods: DeclarationGoods, calculationResponse: CalculationResponse, destination: GoodsDestination)
 
 object ThresholdAllowance {
 
-  val formatter = java.text.NumberFormat.getInstance
+  val formatter = "%,.2f"
 
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
-    def allowanceLeft =
-      (destination.threshold.value - calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum) / 100
+    def allowanceLeft: Double =
+      Try {
+        val sum = calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum
+        (destination.threshold.value.toDouble - sum.toDouble) / 100
+      }.getOrElse((destination.threshold.value - calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum) / 100)
   }
 }
