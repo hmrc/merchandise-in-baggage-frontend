@@ -494,7 +494,7 @@ checkYourAnswers.change.vehicleRegistrationNumber=rhif cofrestru’r cerbyd
 # DeclarationConfirmation
 declarationConfirmation.title = Datganiad wedi’i gwblhau
 declarationConfirmation.banner.title = Datganiad wedi’i gwblhau
-declarationConfirmation.yourReferenceNumber.label = Eich cyfeirnod
+declarationConfirmation.yourReferenceNumber.label = Cyfeirnod
 declarationConfirmation.h2.1 = Yr hyn y mae angen i chi ei wneud nesaf
 declarationConfirmation.ul.p = Gwnewch yn siŵr eich bod yn:
 declarationConfirmation.ul.1 = mynd drwy’r
