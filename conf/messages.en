@@ -226,7 +226,7 @@ reviewGoods.list.paymentMade = Payment made
 reviewGoods.h2 = Do you need to declare more types of commercial goods?
 reviewGoods.allowance.declared = You have £
 reviewGoods.allowance.left = left of your £1,500 allowance.
-reviewGoods.allowance.over = You cannot add more than £1,500 of goods to this declaration. Remove or change the goods to continue.
+reviewGoods.allowance.over = You cannot add more than £1,500 of goods to this declaration.
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods

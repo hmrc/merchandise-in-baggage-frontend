@@ -28,6 +28,6 @@ object ThresholdAllowance {
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
     def allowanceLeft =
-      destination.threshold.value / 100 - calculationResponse.results.calculationResults.map(_.taxDue.value).sum
+      (destination.threshold.value - calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum) / 100
   }
 }

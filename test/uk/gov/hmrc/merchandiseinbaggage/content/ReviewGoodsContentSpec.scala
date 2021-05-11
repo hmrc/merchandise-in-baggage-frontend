@@ -39,7 +39,7 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
     rowTest(2, "reviewGoods.list.producedInEu", "Yes", "/goods-origin/1")
     rowTest(3, "reviewGoods.list.vatRate", "20%", "/goods-vat-rate/1")
 
-    findByClassName("govuk-inset-text").getText mustBe s"${messages("reviewGoods.allowance.declared")}1,488 ${messages("reviewGoods.allowance.left")}"
+    findByClassName("govuk-inset-text").getText mustBe s"${messages("reviewGoods.allowance.declared")}1,499 ${messages("reviewGoods.allowance.left")}"
     findByTagName("a").getAttribute("href") must include("review-goods#main-content")
     radioButtonTest
     elementText(findByTagName("button")) mustBe "Continue"
