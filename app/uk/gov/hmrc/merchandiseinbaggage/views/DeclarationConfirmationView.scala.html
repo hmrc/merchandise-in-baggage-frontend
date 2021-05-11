@@ -47,10 +47,22 @@
   <div id="mibReferenceId" class="govuk-panel__body">@messages("declarationConfirmation.yourReferenceNumber.label")<br><strong>@declaration.mibReference.value</strong></div>
  </div>
 
- <h2 id="declarationDateId" class="govuk-heading-m">@messages("declarationConfirmation.date")</h2>
- <p id="declarationDateFormattedId" class="govuk-body">@{declaration.dateOfDeclaration.formattedDate}</p>
  <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
 
+<dl class="govuk-summary-list govuk-!-margin-bottom-7">
+ <div class="govuk-summary-list__row">
+  <dt id="serviceLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.declaration.label")</dt>
+  <dd id="service" class="govuk-summary-list__value" style="text-transform: capitalize">@messages("declarationConfirmation.declaration.text")</dd>
+ </div>
+ <div class="govuk-summary-list__row">
+  <dt id="dateOfDeclarationLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.date.label")</dt>
+  <dd id="dateOfDeclaration" class="govuk-summary-list__value" style="text-transform: capitalize">@{declaration.dateOfDeclaration.formattedDateNoTime}</dd>
+ </div>
+ <div class="govuk-summary-list__row">
+  <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
+  <dd id="amount" class="govuk-summary-list__value" style="text-transform: capitalize">@messages("declarationConfirmation.nothingtopay.label")</dd>
+ </div>
+</dl>
 
  <p id="printLink" class="govuk-!-display-none" aria-hidden="true">
    <a id="printDeclarationId" class="govuk-link" href="javascript:window.print();">@messages("declarationConfirmation.printOrSave.label")</a>
@@ -64,78 +76,24 @@
   } else {
    @Html("")
   }
-  <li>@messages(s"declarationConfirmation.ul.2.${journeyType.entryName}")</li>
+   <li>@messages(s"declarationConfirmation.ul.2")</li>
+   <li>@messages(s"declarationConfirmation.ul.3")</li>
 
   @if( ViewUtils.proofOfOriginNeeded(declaration)) {
-   <li>@messages("declarationConfirmation.ul.3")</li>
+  <li>@messages("declarationConfirmation.ul.4")</li>
   }
 
-  <li>@messages(s"declarationConfirmation.${declaration.declarationType}.ul.4")</li>
  </ul>
 
- <h2 id="goodsDetailsId" class="govuk-heading-m">@messages("checkYourAnswers.detailsOfTheGoods")</h2>
-  @for((goods, index) <- allGoods(declaration).zipWithIndex) {
-   <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"categoryLabel_$index"}"  class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.category")</dt>
-     <dd id="@{s"category_$index"}" class="govuk-summary-list__value">@goods.category</dd>
-    </div>
-
-    @goods match {
-     case good:ImportGoods => {
-      <div class="govuk-summary-list__row">
-       <dt id="@{s"producedInEuLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.producedInEu")</dt>
-       <dd id="@{s"producedInEu_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.producedInEu.messageKey)</dd>
-      </div>
-     }
-     case good:ExportGoods => {
-      <div class="govuk-summary-list__row">
-       <dt id="@{s"countryLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.destination")</dt>
-       <dd id="@{s"country_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@messages(good.destination.countryName)</dd>
-      </div>
-     }
-    }
-
-    <div class="govuk-summary-list__row">
-     <dt id="@{s"priceLabel_$index"}" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.price")</dt>
-     <dd id="@{s"price_$index"}" class="govuk-summary-list__value" style="text-transform: capitalize">@goods.purchaseDetails.formatted</dd>
-    </div>
-   </dl>
-  }
-
- @if(declaration.declarationType == Import) {
-  <h2 id="amountDetailsId" class="govuk-heading-m">@messages("declarationConfirmation.amountPaid")</h2>
-  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-   <div class="govuk-summary-list__row">
-    <dt id="customsDutyLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.customsDuty")</dt>
-    <dd id="customsDuty" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalDutyDue(declaration).formattedInPounds}</dd>
-   </div>
-   <div class="govuk-summary-list__row">
-    <dt id="vatLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.vat")</dt>
-    <dd id="vat" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalVatDue(declaration).formattedInPounds}</dd>
-   </div>
-   <div class="govuk-summary-list__row">
-    <dt id="totalTaxLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amountPaid.totalTax")</dt>
-    <dd id="totalTax" class="govuk-summary-list__value" style="text-transform: capitalize">@{totalTaxDue(declaration).formattedInPounds}</dd>
-   </div>
-  </dl>
- }
-
-  <h2 id="personalDetailsId" class="govuk-heading-m">@messages("checkYourAnswers.personalDetails")</h2>
-
-  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-   <div class="govuk-summary-list__row">
-    <dt id="nameOfPersonCarryingTheGoodsLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.nameOfPersonCarryingTheGoods")</dt>
-    <dd id="nameOfPersonCarryingTheGoods" class="govuk-summary-list__value">@declaration.nameOfPersonCarryingTheGoods</dd>
-   </div>
-   <div class="govuk-summary-list__row">
-    <dt id="eoriLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.personalDetails.eori")</dt>
-    <dd id="eori" class="govuk-summary-list__value">@declaration.eori</dd>
-   </div>
-  </dl>
+ <h2 id="bringingEUGoodsId" class="govuk-heading-m">@messages("declarationConfirmation.bringing.eu.goods.label")</h2>
+ <p class="govuk-body">@messages("declarationConfirmation.bringing.eu.goods.p1")</p>
 
   <p class="govuk-body govuk-!-display-none-print">
    <a id="makeAnotherDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.makeAnotherDeclaration.url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
+  </p>
+
+  <p class="govuk-body govuk-!-display-none-print">
+   <a id="changeDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.addGoodsToAnExistingDeclaration.url">@messages("declarationConfirmation.changeDeclaration.label")</a>
   </p>
 
  <p class="govuk-body govuk-!-display-none-print">

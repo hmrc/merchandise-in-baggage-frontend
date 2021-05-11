@@ -56,7 +56,7 @@ object ViewUtils {
       (calcAmount(declaration.maybeTotalCalculationResult) + declaration.amendments
         .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
         .map(x => calcAmount(x.maybeTotalCalculationResult))
-        .sum) > 100000L
+        .sum) > 100000L //amount in pence so 100000L == £1000
     } else false
   }
 }
