@@ -92,6 +92,8 @@ previousDeclarationDetails.journey.date = Date of arrival
 previousDeclarationDetails.add = Add more goods to this declaration
 previousDeclarationDetails.expired = You cannot add to an old declaration.
 previousDeclarationDetails.add_goods = You can only add more goods to this declaration, you cannot change any other details. Make sure the total value of all the goods is less than £1,500 and the weight is less than 1,000kg.
+previousDeclarationDetails.allowance.declared = You have £
+previousDeclarationDetails.allowance.left = left of your £1,500 allowance.
 previousDeclarationDetails.add.button.text = Add more goods
 
 # ExciseAndRestrictedGoods

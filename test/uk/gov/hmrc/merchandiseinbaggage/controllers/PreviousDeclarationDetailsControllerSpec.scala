@@ -18,22 +18,26 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class PreviousDeclarationDetailsControllerSpec
     extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration with MockFactory {
 
   val mockNavigator: Navigator = mock[Navigator]
+  val mockCalculationService: CalculationService = mock[CalculationService]
   val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
   val mibConnector = injector.instanceOf[MibConnector]
   val controller =
@@ -43,6 +47,7 @@ class PreviousDeclarationDetailsControllerSpec
       declarationJourneyRepository,
       mibConnector,
       mockNavigator,
+      mockCalculationService,
       view)
 
   "creating a page" should {
@@ -55,6 +60,10 @@ class PreviousDeclarationDetailsControllerSpec
           declarationId = aDeclarationId)
 
       givenADeclarationJourneyIsPersisted(importJourney)
+      (mockCalculationService
+        .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aThresholdAllowance))
 
       val persistedDeclaration = importJourney.declarationIfRequiredAndComplete.map { declaration =>
         declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
@@ -97,6 +106,11 @@ class PreviousDeclarationDetailsControllerSpec
           createdAt = journeyDate.atStartOfDay,
           declarationId = aDeclarationId)
 
+      (mockCalculationService
+        .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aThresholdAllowance))
+
       givenADeclarationJourneyIsPersisted(importJourney)
 
       val persistedDeclaration = importJourney.declarationIfRequiredAndComplete.map { declaration =>
@@ -123,6 +137,11 @@ class PreviousDeclarationDetailsControllerSpec
           declarationType = DeclarationType.Export,
           createdAt = journeyDate.atStartOfDay,
           declarationId = aDeclarationId)
+
+      (mockCalculationService
+        .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
+        .expects(*, *)
+        .returning(Future.successful(aThresholdAllowance))
 
       givenADeclarationJourneyIsPersisted(exportJourney)
 

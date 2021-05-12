@@ -57,10 +57,16 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
   def thresholdAllowance(maybeGoodsDestination: Option[GoodsDestination], goodsEntries: GoodsEntries)(
     implicit hc: HeaderCarrier): OptionT[Future, ThresholdAllowance] =
     for {
-      entries     <- OptionT.fromOption(goodsEntries.declarationGoodsIfComplete)
-      destination <- OptionT.fromOption(maybeGoodsDestination)
-      calculation <- OptionT.liftF(paymentCalculations(entries.goods, destination))
-    } yield ThresholdAllowance(entries, calculation, destination)
+      declarationGoods <- OptionT.fromOption(goodsEntries.declarationGoodsIfComplete)
+      destination      <- OptionT.fromOption(maybeGoodsDestination)
+      calculation      <- OptionT.liftF(paymentCalculations(declarationGoods.goods, destination))
+    } yield ThresholdAllowance(declarationGoods, calculation, destination)
+
+  def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
+    import declaration._
+    paymentCalculations(declarationGoods.goods, goodsDestination).map(calculation =>
+      ThresholdAllowance(declarationGoods, calculation, goodsDestination))
+  }
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>

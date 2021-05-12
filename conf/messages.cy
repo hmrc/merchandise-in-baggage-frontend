@@ -92,6 +92,8 @@ previousDeclarationDetails.journey.date = Dyddiad cyrraedd
 previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
 previousDeclarationDetails.expired = Ni allwch ychwanegu at hen ddatganiad.
 previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £1,500.
+previousDeclarationDetails.allowance.declared = Mae gennych £
+previousDeclarationDetails.allowance.left = yn weddill o’ch lwfans o £1,500.
 previousDeclarationDetails.add.button.text = Ychwanegu rhagor o nwyddau
 
 # ExciseAndRestrictedGoods
