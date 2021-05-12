@@ -16,12 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
+import cats.instances.future._
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
+import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 
 import scala.concurrent.ExecutionContext
@@ -33,14 +36,17 @@ class PreviousDeclarationDetailsController @Inject()(
   override val repo: DeclarationJourneyRepository,
   mibConnector: MibConnector,
   navigator: Navigator,
+  calculationService: CalculationService,
   view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    mibConnector.findDeclaration(request.declarationJourney.declarationId).map {
-      _.fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}"))(
-        declaration => Ok(view(declaration)))
-    }
+    import request.declarationJourney._
+    (for {
+      declaration <- OptionT(mibConnector.findDeclaration(declarationId))
+      allowance   <- OptionT.liftF(calculationService.thresholdAllowance(declaration))
+    } yield Ok(view(declaration, allowance)))
+      .fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}"))(view => view)
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>

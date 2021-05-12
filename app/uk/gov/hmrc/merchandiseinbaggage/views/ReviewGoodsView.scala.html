@@ -48,7 +48,7 @@ button: components.button
     @allowance.calculationResponse.thresholdCheck match {
         case WithinThreshold => {
             @h2(messages("reviewGoods.h2"), classes = Some("govuk-heading-m"))
-            <div class="govuk-inset-text">@messages("reviewGoods.allowance.declared")<span class="govuk-!-font-weight-bold">@formatter.format(allowance.allowanceLeft) </span>@messages("reviewGoods.allowance.left")</div>
+            <div class="govuk-inset-text">@messages("reviewGoods.allowance.declared")<span class="govuk-!-font-weight-bold">@allowance.toUIString </span>@messages("reviewGoods.allowance.left")</div>
     }
         case OverThreshold   => {
             <div class="govuk-inset-text">@messages("reviewGoods.allowance.over")</div>

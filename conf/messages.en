@@ -92,6 +92,8 @@ previousDeclarationDetails.journey.date = Date of arrival
 previousDeclarationDetails.add = Add more goods to this declaration
 previousDeclarationDetails.expired = You cannot add to an old declaration.
 previousDeclarationDetails.add_goods = You can only add more goods to this declaration, you cannot change any other details. Make sure the total value of all the goods is less than £1,500 and the weight is less than 1,000kg.
+previousDeclarationDetails.allowance.p1 = You have
+previousDeclarationDetails.allowance.p2 = left of your £1,500 allowance.
 previousDeclarationDetails.add.button.text = Add more goods
 
 # ExciseAndRestrictedGoods
@@ -224,7 +226,7 @@ reviewGoods.price.changeText = amount paid for {0}
 reviewGoods.list.invoice = Invoice number
 reviewGoods.list.paymentMade = Payment made
 reviewGoods.h2 = Do you need to declare more types of commercial goods?
-reviewGoods.allowance.declared = You have £
+reviewGoods.allowance.declared = You have
 reviewGoods.allowance.left = left of your £1,500 allowance.
 reviewGoods.allowance.over = You cannot add more than £1,500 of goods to this declaration.
 reviewGoods.error.required = Select yes if you want to declare more goods

@@ -25,7 +25,7 @@ case class ThresholdAllowance(goods: DeclarationGoods, calculationResponse: Calc
 
 object ThresholdAllowance {
 
-  val formatter = "%,.2f"
+  private[core] val formatter = "%,.2f"
 
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
@@ -34,5 +34,7 @@ object ThresholdAllowance {
         val sum = calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum
         (destination.threshold.value.toDouble - sum.toDouble) / 100
       }.getOrElse((destination.threshold.value - calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum) / 100)
+
+    def toUIString: String = s"£${formatter.format(allowanceLeft)}"
   }
 }

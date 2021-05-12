@@ -54,6 +54,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       givenADeclarationJourneyIsPersisted(exportJourney)
       givenDeclarationIsAmendedInBackend
       givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+      givenAPaymentCalculation(aCalculationResult)
 
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 

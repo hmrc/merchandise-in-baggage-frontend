@@ -15,11 +15,13 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.Layout
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
+@import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
@@ -37,7 +39,7 @@
         summaryList: GovukSummaryList
 )
 
-@(declaration: Declaration)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration, allowance: ThresholdAllowance)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = Some(declaration.declarationType)) {
     @h1(("previousDeclarationDetails.heading"))
@@ -94,7 +96,9 @@
         </div>
     </dl>
 
-    @h2(("previousDeclarationDetails.add"), Some("govuk-heading-m"))
+    @h2("previousDeclarationDetails.add", Some("govuk-heading-m"), Some("add_h2"))
+
+    <div class="govuk-inset-text">@messages("previousDeclarationDetails.allowance.p1")<span class="govuk-!-font-weight-bold">@allowance.toUIString </span>@messages("previousDeclarationDetails.allowance.p2")</div>
 
 
     @if(journeyDateWithInAllowedRange(declaration)) {
