@@ -51,22 +51,25 @@ class ReviewGoodsController @Inject()(
       case Export => SearchGoodsCountryController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
     }
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    goodsEntries.declarationGoodsIfComplete
-      .fold(actionProvider.invalidRequest(goodsDeclarationIncompleteMessage)) { goods =>
-        Ok(view(form, goods, backButtonUrl, declarationType, journeyType))
+    calculationService
+      .thresholdAllowance(maybeGoodsDestination, goodsEntries)
+      .fold(actionProvider.invalidRequest(goodsDeclarationIncompleteMessage)) { allowance =>
+        Ok(view(form, allowance, backButtonUrl, declarationType, journeyType))
       }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    goodsEntries.declarationGoodsIfComplete
-      .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
+    calculationService
+      .thresholdAllowance(maybeGoodsDestination, goodsEntries)
+      .foldF(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { thresholdAllowance =>
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goods, backButtonUrl, declarationType, journeyType))),
+            formWithErrors =>
+              Future.successful(BadRequest(view(formWithErrors, thresholdAllowance, backButtonUrl, declarationType, journeyType))),
             redirectTo
           )
       }

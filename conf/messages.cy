@@ -223,6 +223,9 @@ reviewGoods.price.changeText= swm a dalwyd ar gyfer {0}
 reviewGoods.list.invoice=Rhif anfoneb
 reviewGoods.list.paymentMade = Taliad a wnaed
 reviewGoods.h2 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
+reviewGoods.allowance.declared = Mae gennych £
+reviewGoods.allowance.left = yn weddill o’ch lwfans o £1,500.
+reviewGoods.allowance.over = Ni allwch ychwanegu nwyddau sydd werth cyfanswm o fwy na £1,500 at y datganiad hwn.
 reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
 
 # RemoveGoods

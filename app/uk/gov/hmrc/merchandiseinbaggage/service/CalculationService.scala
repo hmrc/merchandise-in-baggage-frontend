@@ -17,13 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import cats.data.OptionT
+import cats.instances.future._
 import javax.inject.{Inject, Singleton}
 import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Goods, GoodsDestination}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,6 +53,14 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
           declarationId
         )))
   }
+
+  def thresholdAllowance(maybeGoodsDestination: Option[GoodsDestination], goodsEntries: GoodsEntries)(
+    implicit hc: HeaderCarrier): OptionT[Future, ThresholdAllowance] =
+    for {
+      entries     <- OptionT.fromOption(goodsEntries.declarationGoodsIfComplete)
+      destination <- OptionT.fromOption(maybeGoodsDestination)
+      calculation <- OptionT.liftF(paymentCalculations(entries.goods, destination))
+    } yield ThresholdAllowance(entries, calculation, destination)
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>
