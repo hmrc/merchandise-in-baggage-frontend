@@ -85,9 +85,12 @@
 
  </ul>
 
- <h2 id="bringingEUGoodsId" class="govuk-heading-m">@messages("declarationConfirmation.bringing.eu.goods.label")</h2>
- <p class="govuk-body">@messages("declarationConfirmation.bringing.eu.goods.p1")</p>
-
+  @if(declaration.declarationType == Import) {
+    <h2 id="bringingEUGoodsId" class="govuk-heading-m">@messages("declarationConfirmation.bringing.eu.goods.label")</h2>
+    <p class="govuk-body">@messages("declarationConfirmation.bringing.eu.goods.p1")</p>
+  }else {
+    @Html("")
+  }
   <p class="govuk-body govuk-!-display-none-print">
    <a id="makeAnotherDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.makeAnotherDeclaration.url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
   </p>
