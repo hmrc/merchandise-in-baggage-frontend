@@ -48,6 +48,8 @@ button: components.button
 @layout(pageTitle = Some(title), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
  @h1(heading)
 
+ @p(Html(s"""${messages("paymentCalculation.greenchannel.p1")} <span class="govuk-!-font-weight-bold">${messages("paymentCalculation.greenchannel.p2")}</span> ${messages("paymentCalculation.greenchannel.p3")}"""))
+
  @table(calculationResults.toTable)
 
  @if(calculationResults.isNothingToPay) {
