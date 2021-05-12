@@ -67,6 +67,9 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
           case Import =>
             status(eventualResult) mustBe 200
 
+            result must include(messages("paymentCalculation.greenchannel.p1"))
+            result must include(messages("paymentCalculation.greenchannel.p2"))
+            result must include(messages("paymentCalculation.greenchannel.p3"))
             result must include(messages("paymentCalculation.title", "£0.12"))
             result must include(messages("paymentCalculation.heading", "£0.12"))
             result must include(messages("paymentCalculation.table.col1.head"))
