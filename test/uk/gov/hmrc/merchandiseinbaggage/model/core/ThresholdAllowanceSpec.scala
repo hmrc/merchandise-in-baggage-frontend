@@ -32,5 +32,7 @@ class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
   "format correctly" in {
     formatter.format(1428.20) mustBe "1,428.20"
     formatter.format(100000428.200) mustBe "100,000,428.20"
+
+    aThresholdAllowance.toUIString mustBe "£1,499.90"
   }
 }

@@ -64,7 +64,7 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
     goToPreviousDeclarationDetailsPage
 
     val expected =
-      s"${messages("previousDeclarationDetails.allowance.declared")}1,499.90 ${messages("previousDeclarationDetails.allowance.left")}"
+      s"${messages("previousDeclarationDetails.allowance.p1")}1,499.90 ${messages("previousDeclarationDetails.allowance.p2")}"
 
     findById("add_h2").getText mustBe messages("previousDeclarationDetails.add")
     findByClassName("govuk-inset-text").getText mustBe expected

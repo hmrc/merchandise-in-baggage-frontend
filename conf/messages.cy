@@ -92,8 +92,8 @@ previousDeclarationDetails.journey.date = Dyddiad cyrraedd
 previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
 previousDeclarationDetails.expired = Ni allwch ychwanegu at hen ddatganiad.
 previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £1,500.
-previousDeclarationDetails.allowance.declared = Mae gennych £
-previousDeclarationDetails.allowance.left = yn weddill o’ch lwfans o £1,500.
+previousDeclarationDetails.allowance.p1 = Mae gennych £
+previousDeclarationDetails.allowance.p2 = yn weddill o’ch lwfans o £1,500.
 previousDeclarationDetails.add.button.text = Ychwanegu rhagor o nwyddau
 
 # ExciseAndRestrictedGoods
@@ -225,7 +225,7 @@ reviewGoods.price.changeText= swm a dalwyd ar gyfer {0}
 reviewGoods.list.invoice=Rhif anfoneb
 reviewGoods.list.paymentMade = Taliad a wnaed
 reviewGoods.h2 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
-reviewGoods.allowance.declared = Mae gennych £
+reviewGoods.allowance.declared = Mae gennych
 reviewGoods.allowance.left = yn weddill o’ch lwfans o £1,500.
 reviewGoods.allowance.over = Ni allwch ychwanegu nwyddau sydd werth cyfanswm o fwy na £1,500 at y datganiad hwn.
 reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
