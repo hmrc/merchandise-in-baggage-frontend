@@ -200,7 +200,6 @@ purchaseDetails.price.hint = Enter the amount in the currency used
 purchaseDetails.currency.label = Currency
 purchaseDetails.p.1 = To convert the amount paid we will use
 purchaseDetails.p.a.text = HMRC’s monthly exchange rates (opens in new tab)
-purchaseDetails.p.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 purchaseDetails.p.2 = and the rate of the month in which you make your declaration.
 purchaseDetails.price.error.required = Enter the amount you paid for the goods
 purchaseDetails.price.error.invalid = Amount paid must be a number
@@ -263,7 +262,6 @@ goodsOverThreshold.p7 = We converted this amount at a rate of:
 goodsOverThreshold.li = {0} to 1 (GBP).
 goodsOverThreshold.p8.1 = We use
 goodsOverThreshold.p8.a.text = HMRC’s monthly exchange rates (opens in new tab)
-goodsOverThreshold.p8.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 goodsOverThreshold.p8.2 = and the rates of the month in which you make your declaration.
 
 # PaymentCalculation
@@ -290,7 +288,6 @@ paymentCalculation.p2 = We converted the total amount at a rate of:
 paymentCalculation.li = {0} to 1 (GBP)
 paymentCalculation.p3.1 = We used
 paymentCalculation.p3.a.text = HMRC’s monthly exchange rates (opens in new tab)
-paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 paymentCalculation.p3.2 = and the rate in the month in which you make your declaration.
 paymentCalculation.zero.button = Declare goods
 

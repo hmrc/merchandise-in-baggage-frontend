@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
@@ -32,30 +33,34 @@ class GoodsOverThresholdController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
+  mibConnector: MibConnector,
   view: GoodsOverThresholdView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
-        request.declarationJourney.maybeGoodsDestination
-          .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            request.declarationType match {
-              case Import =>
-                calculationService.paymentCalculations(goods.goods, destination).map { calculations =>
-                  import calculations.results._
-                  Ok(
-                    view(
-                      destination,
-                      calculations.results.totalGbpValue,
-                      calculationResults.flatMap(_.conversionRatePeriod).distinct,
-                      Import))
-                }
-              case Export =>
-                val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal
-                Future successful Ok(view(destination, amount, Seq.empty, Export))
+        mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
+          request.declarationJourney.maybeGoodsDestination
+            .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
+              request.declarationType match {
+                case Import =>
+                  calculationService.paymentCalculations(goods.goods, destination).map { calculations =>
+                    import calculations.results._
+                    Ok(
+                      view(
+                        destination,
+                        calculations.results.totalGbpValue,
+                        calculationResults.flatMap(_.conversionRatePeriod).distinct,
+                        exchangeUrl.url,
+                        Import))
+                  }
+                case Export =>
+                  val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal
+                  Future successful Ok(view(destination, amount, Seq.empty, exchangeUrl.url, Export))
+              }
             }
-          }
+        }
       }
   }
 }

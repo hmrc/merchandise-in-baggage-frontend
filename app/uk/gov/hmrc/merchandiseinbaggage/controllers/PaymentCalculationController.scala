@@ -19,9 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.ExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
@@ -34,6 +36,7 @@ class PaymentCalculationController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
+  mibConnector: MibConnector,
   view: PaymentCalculationView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
 
@@ -48,25 +51,29 @@ class PaymentCalculationController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { declarationGoods =>
-        request.declarationJourney.maybeGoodsDestination
-          .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-            calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
-              (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
-                case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
-                case (WithinThreshold, Import) => importView(calculationResponse.results)
-                case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()))
+        mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
+          request.declarationJourney.maybeGoodsDestination
+            .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
+              calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
+                (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
+                  case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
+                  case (WithinThreshold, Import) => importView(calculationResponse.results, exchangeUrl)
+                  case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()))
 
+                }
               }
             }
-          }
+        }
       }
   }
 
-  private def importView(calculationResults: CalculationResults)(implicit request: DeclarationJourneyRequest[_]): Result =
+  private def importView(calculationResults: CalculationResults, exchangeUrl: ExchangeRateURL)(
+    implicit request: DeclarationJourneyRequest[_]): Result =
     Ok(
       view(
         calculationResults,
         checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()),
+        exchangeUrl.url,
         backButtonUrl
       ))
 }
