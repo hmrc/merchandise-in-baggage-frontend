@@ -56,7 +56,7 @@
  </div>
  <div class="govuk-summary-list__row">
   <dt id="dateOfDeclarationLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.date.label")</dt>
-  <dd id="dateOfDeclaration" class="govuk-summary-list__value" style="text-transform: capitalize">@{declaration.dateOfDeclaration.formattedDateNoTime}</dd>
+  <dd id="dateOfDeclaration" class="govuk-summary-list__value" style="text-transform: capitalize">@latestDateFormatted(declaration)</dd>
  </div>
  <div class="govuk-summary-list__row">
   <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
