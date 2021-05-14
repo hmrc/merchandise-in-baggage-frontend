@@ -21,7 +21,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
@@ -76,7 +76,29 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(*, *)
       .returning(Future.successful(calculationResponse))
 
-    val actual = service.thresholdAllowance(Some(GreatBritain), entries).value.futureValue
+    val actual = service.thresholdAllowance(Some(GreatBritain), entries, New, aDeclarationId).value.futureValue
     actual mustBe Some(ThresholdAllowance(DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
+  }
+
+  "check threshold allowance including existing declaration for amends" in {
+    val entries = completedGoodsEntries(Import)
+    val declarationId = aDeclarationId
+    val stubbedResult =
+      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
+
+    (mockConnector
+      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+      .expects(*, *)
+      .returning(Future.successful(Some(declaration)))
+
+    (mockConnector
+      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
+      .expects(*, *)
+      .returning(Future.successful(calculationResponse))
+
+    val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
+    actual mustBe Some(
+      ThresholdAllowance(DeclarationGoods(declaration.declarationGoods.goods.+:(aImportGoods)), calculationResponse, GreatBritain))
   }
 }
