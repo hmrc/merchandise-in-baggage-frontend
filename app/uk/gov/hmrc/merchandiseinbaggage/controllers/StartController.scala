@@ -18,14 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Action, AnyContent}
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggage.config.AmendDeclarationConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 
 import scala.concurrent.ExecutionContext
 
-trait StartController extends DeclarationJourneyController with AmendDeclarationConfiguration {
+trait StartController extends DeclarationJourneyController {
   val declarationType: DeclarationType
   val repo: DeclarationJourneyRepository
   implicit val ec: ExecutionContext
@@ -34,8 +33,7 @@ trait StartController extends DeclarationJourneyController with AmendDeclaration
     val sessionId = SessionId(request.session(SessionKeys.sessionId))
 
     repo.upsert(DeclarationJourney(sessionId, declarationType)).map { _ =>
-      if (amendFlagConf.canBeAmended) Redirect(routes.NewOrExistingController.onPageLoad())
-      else Redirect(routes.GoodsDestinationController.onPageLoad())
+      Redirect(routes.NewOrExistingController.onPageLoad())
     }
   }
 }

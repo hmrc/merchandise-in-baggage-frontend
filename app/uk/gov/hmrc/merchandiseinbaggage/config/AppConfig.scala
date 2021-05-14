@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @Singleton
-class AppConfig() extends MongoConfiguration with MibConfiguration with AmendDeclarationConfiguration {
+class AppConfig() extends MongoConfiguration with MibConfiguration {
 
   val serviceIdentifier = "mib"
 
@@ -79,9 +79,3 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
-
-trait AmendDeclarationConfiguration {
-  lazy val amendFlagConf: AmendFlagConf = configSource("features.declaration-amend").loadOrThrow[AmendFlagConf]
-}
-
-final case class AmendFlagConf(canBeAmended: Boolean)

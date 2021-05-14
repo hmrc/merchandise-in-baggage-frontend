@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -32,10 +31,8 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
 
   private val view = injector.instanceOf[NewOrExistingView]
   private val mockNavigator = mock[Navigator]
-  def controller(declarationJourney: DeclarationJourney, amendFlag: Boolean = true) =
-    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator) {
-      override lazy val amendFlagConf: AmendFlagConf = AmendFlagConf(amendFlag)
-    }
+  def controller(declarationJourney: DeclarationJourney) =
+    new NewOrExistingController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
@@ -50,14 +47,6 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
         result must include(messageApi(s"newOrExisting.title"))
         result must include(messageApi(s"newOrExisting.heading"))
         result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
-      }
-
-      s"redirect to ${GoodsDestinationController.onPageLoad().url} if flag is false for $importOrExport" in {
-        val request = buildGet(NewOrExistingController.onPageLoad.url, aSessionId)
-        val eventualResult = controller(journey, false).onPageLoad(request)
-
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(GoodsDestinationController.onPageLoad().url)
       }
     }
 

@@ -18,17 +18,16 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers.{status, _}
-import uk.gov.hmrc.merchandiseinbaggage.config.AmendFlagConf
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenFindByDeclarationReturnStatus
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -40,16 +39,14 @@ class RetrieveDeclarationControllerSpec
   val connector = injector.instanceOf[MibConnector]
   val mockNavigator = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney, amendFlag: Boolean = true) =
+  def controller(declarationJourney: DeclarationJourney) =
     new RetrieveDeclarationController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       connector,
       mockNavigator,
-      view) {
-      override lazy val amendFlagConf: AmendFlagConf = AmendFlagConf(amendFlag)
-    }
+      view)
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
@@ -73,14 +70,6 @@ class RetrieveDeclarationControllerSpec
 
         result must include(messageApi(s"retrieveDeclaration.eori.label"))
         result must include(messageApi(s"retrieveDeclaration.eori.hint"))
-      }
-
-      s"redirect to ${CannotAccessPageController.onPageLoad().url} if flag is false for $importOrExport" in {
-        val request = buildGet(NewOrExistingController.onPageLoad.url, aSessionId)
-        val eventualResult = controller(journey, false).onPageLoad(request)
-
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(CannotAccessPageController.onPageLoad().url)
       }
     }
   }

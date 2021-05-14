@@ -19,17 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import cats.implicits._
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.{AmendDeclarationConfiguration, AppConfig}
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
+import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
 class RetrieveDeclarationController @Inject()(
@@ -40,13 +40,11 @@ class RetrieveDeclarationController @Inject()(
   navigator: Navigator,
   view: RetrieveDeclarationView
 )(implicit appConfig: AppConfig, val ec: ExecutionContext)
-    extends DeclarationJourneyUpdateController with AmendDeclarationConfiguration {
+    extends DeclarationJourneyUpdateController {
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    if (amendFlagConf.canBeAmended) {
-      val preFilledForm = request.declarationJourney.maybeRetrieveDeclaration.fold(form)(form.fill)
-      Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
-    } else Redirect(routes.CannotAccessPageController.onPageLoad().url)
+    val preFilledForm = request.declarationJourney.maybeRetrieveDeclaration.fold(form)(form.fill)
+    Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
   }
 
   override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
