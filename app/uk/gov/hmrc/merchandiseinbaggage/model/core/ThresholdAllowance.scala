@@ -17,7 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResponse
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, GoodsDestination}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, ExportGoods, Goods, GoodsDestination, ImportGoods}
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.util.Try
 
@@ -27,14 +28,32 @@ object ThresholdAllowance {
 
   private[core] val formatter = "%,.2f"
 
+  //TODO this should be all done in BE
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
     def allowanceLeft: Double =
-      Try {
-        val sum = calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum
-        (destination.threshold.value.toDouble - sum.toDouble) / 100
-      }.getOrElse((destination.threshold.value - calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum) / 100)
+      goods.goods.headOption
+        .map { g =>
+          calculateAllowanceLeft(goods, calculationResponse, destination, g)
+        }
+        .getOrElse(0)
 
     def toUIString: String = s"£${formatter.format(allowanceLeft)}"
   }
+
+  private def calculateAllowanceLeft(
+    goods: DeclarationGoods,
+    calculationResponse: CalculationResponse,
+    destination: GoodsDestination,
+    good: Goods): Double =
+    Try {
+      good match {
+        case _: ImportGoods =>
+          val sum = calculationResponse.results.calculationResults.map(_.gbpAmount.value).sum
+          (destination.threshold.value.toDouble - sum.toDouble) / 100
+        case _: ExportGoods =>
+          val sum = goods.goods.map(_.purchaseDetails.numericAmount.toDouble).sum
+          (destination.threshold.value.toDouble - sum) / 100
+      }
+    }.getOrElse(0.0)
 }

@@ -19,14 +19,24 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
 
 class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
 
-  "return threshold allowance left" in {
+  "return threshold allowance left for import" in {
     val allowance = aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7179)
     val allowanceTwo = aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7180)
     allowance.allowanceLeft mustBe 1428.21
     allowanceTwo.allowanceLeft mustBe 1428.20
+  }
+
+  "return threshold allowance left for export" in {
+    val allowance = aThresholdAllowance
+      .modify(_.goods.goods.each)
+      .setTo(aExportGoods)
+      .modify(_.goods.goods.each.when[ExportGoods].purchaseDetails.amount)
+      .setTo("7175")
+    allowance.allowanceLeft mustBe 1428.25
   }
 
   "format correctly" in {
