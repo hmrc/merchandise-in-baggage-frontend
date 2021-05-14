@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 import play.api.i18n.Messages
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 
 import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, LocalDateTime}
@@ -58,4 +59,7 @@ object DateUtils {
       translatedDate(dateFormatted)
     }
   }
+
+  def latestDateFormatted(declaration: Declaration)(implicit messages: Messages): String =
+    declaration.amendments.lastOption.map(_.dateOfAmendment).getOrElse(declaration.dateOfDeclaration).formattedDateNoTime
 }
