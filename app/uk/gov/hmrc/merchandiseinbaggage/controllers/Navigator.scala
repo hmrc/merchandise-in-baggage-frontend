@@ -56,9 +56,9 @@ class Navigator {
     case GoodsOriginRequest(journey, entries, idx, upsert) =>
       persistAndRedirect(journey, entries, idx, GoodsVatRateController.onPageLoad(idx), upsert)
     case GoodsVatRateRequest(journey, entries, idx, upsert) =>
-      goodsVatRate(journey, entries, idx, upsert)
+      persistAndRedirect(journey, entries, idx, ReviewGoodsController.onPageLoad(), upsert)
     case SearchGoodsCountryRequest(journey, entries, idx, upsert) =>
-      persistAndRedirect(journey, entries, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
+      persistAndRedirect(journey, entries, idx, ReviewGoodsController.onPageLoad(), upsert)
   }
 }
 
@@ -222,18 +222,6 @@ object NavigatorMapping {
     persistAndRedirect(journey, updatedGoodsEntry, idx, PurchaseDetailsController.onPageLoad(idx), upsert)
   }
 
-  def goodsVatRate(
-    declarationJourney: DeclarationJourney,
-    currentEntries: GoodsEntry,
-    index: Int,
-    upsert: DeclarationJourney => Future[DeclarationJourney])(implicit ec: ExecutionContext): Future[Call] = {
-    val updatedDeclarationJourney =
-      declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(index, currentEntries))
-    upsert(updatedDeclarationJourney).map { _ =>
-      ReviewGoodsController.onPageLoad()
-    }
-  }
-
   def reviewGoods(
     declareMoreGoods: YesNo,
     declarationJourney: DeclarationJourney,
@@ -337,13 +325,12 @@ object NavigatorMapping {
     val updatedDeclarationJourney =
       declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.patch(index, updatedGoodsEntry))
 
-    //TODO improve these Boolean
     upsert(updatedDeclarationJourney).map { _ =>
-      (updatedDeclarationJourney.declarationRequiredAndComplete, updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete) match {
-        case (true, true)   => CheckYourAnswersController.onPageLoad() // user clicked change link from /check-your-answers
-        case (false, true)  => ReviewGoodsController.onPageLoad() // user clicked change link from /review-goods
-        case (true, false)  => redirectIfNotComplete // user clicked add more goods from /check-your-answers
-        case (false, false) => redirectIfNotComplete // normal journey flow / user is adding more goods from /review-goods
+      val goodsCycleComplete = updatedDeclarationJourney.goodsEntries.entries(index - 1).isComplete
+      if (goodsCycleComplete) {
+        ReviewGoodsController.onPageLoad()
+      } else {
+        redirectIfNotComplete
       }
     }
   }
