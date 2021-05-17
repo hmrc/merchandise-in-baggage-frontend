@@ -16,7 +16,7 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.Amendment
+@import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 @import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.taxDue
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -24,7 +24,7 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], amendment: Amendment, calculationResults: CalculationResults)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], amendment: Amendment, calculationResults: CalculationResults, outstandingBalance: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Import)) {
 
@@ -50,7 +50,7 @@
  <dl class="govuk-summary-list govuk-!-margin-bottom-9">
    <div class="govuk-summary-list__row">
      <dt id="taxDueLabel" class="govuk-summary-list__key">@messages("checkYourAnswers.detailsOfTheGoods.paymentDue")</dt>
-     <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@calculationResults.totalTaxDue.formattedInPounds</dd>
+     <dd id="taxDueValue" class="govuk-summary-list__value" style="text-transform: capitalize">@outstandingBalance.formattedInPounds</dd>
    </div>
  </dl>
 
@@ -63,7 +63,7 @@
   @if(calculationResults.proofOfOriginNeeded) {
     <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")</li>
   }
-  @if(calculationResults.isNothingToPay) {
+  @if(outstandingBalance.value == 0L) {
     <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li>
   } else {
     <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")</li>
@@ -81,9 +81,9 @@
   </strong>
  </div>
 
-  <input id="@taxDue" type="hidden" name="@taxDue" value="@calculationResults.totalTaxDue.value">
+  <input id="@taxDue" type="hidden" name="@taxDue" value="@outstandingBalance.value">
 
-  @if(calculationResults.totalTaxDue.isPaymentRequired) {
+  @if(outstandingBalance.isPaymentRequired) {
    @button(messages("checkYourAnswers.payButton"), name = Some("payButton"))
   } else {
    @button(messages("checkYourAnswers.makeDeclarationButton"), name = Some("makeDeclarationButton"))

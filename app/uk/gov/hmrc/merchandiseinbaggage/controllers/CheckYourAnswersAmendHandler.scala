@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import cats.data.OptionT
+import cats.instances.future._
 import com.google.inject.{Inject, Singleton}
 import play.api.i18n.Messages
 import play.api.mvc.Results._
@@ -47,15 +49,17 @@ class CheckYourAnswersAmendHandler @Inject()(
   def onPageLoad(
     declarationJourney: DeclarationJourney,
     amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService
-      .amendPlusOriginalCalculations(declarationJourney)
-      .fold(actionProvider.invalidRequest(declarationNotFoundMessage)) { calculations =>
-        (declarationJourney.declarationType, calculations.thresholdCheck) match {
-          case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
-          case (Import, _)        => Ok(amendImportView(form, amendment, calculations.results))
-          case (Export, _)        => Ok(amendExportView(form, amendment))
-        }
-      }
+    (for {
+      amendPlusOriginal <- calculationService.amendPlusOriginalCalculations(declarationJourney)
+      goods             <- OptionT.fromOption(declarationJourney.goodsEntries.declarationGoodsIfComplete)
+      destination       <- OptionT.fromOption(declarationJourney.maybeGoodsDestination)
+      outstanding       <- OptionT.liftF(calculationService.paymentCalculations(goods.goods, destination))
+    } yield
+      (declarationJourney.declarationType, outstanding.thresholdCheck) match {
+        case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
+        case (Import, _)        => Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue))
+        case (Export, _)        => Ok(amendExportView(form, amendment))
+      }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     calculationService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
