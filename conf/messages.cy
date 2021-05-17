@@ -264,7 +264,6 @@ goodsOverThreshold.p7 = Gwnaethom drosi’r swm hwn ar gyfradd o:
 goodsOverThreshold.li = {0} i 1 (GBP).
 goodsOverThreshold.p8.1 = Rydym yn defnyddio
 goodsOverThreshold.p8.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
-goodsOverThreshold.p8.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 goodsOverThreshold.p8.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.
 
 # PaymentCalculation
@@ -291,7 +290,6 @@ paymentCalculation.p2 = Gwnaethom gyfnewid y cyfanswm ar gyfradd o:
 paymentCalculation.li = {0} i 1 (GBP).
 paymentCalculation.p3.1 = Gwnaethom ddefnyddio
 paymentCalculation.p3.a.text =  cyfraddau cyfnewid misol CThEM (yn agor tab newydd).
-paymentCalculation.p3.a.href = https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat
 paymentCalculation.p3.2 = a’r cyfraddau yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 paymentCalculation.zero.button = Datgan nwyddau
 

@@ -25,12 +25,14 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec {
+class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
 
   private val view = app.injector.instanceOf[PaymentCalculationView]
   lazy val mibConnector = injector.instanceOf[MibConnector]
@@ -47,11 +49,13 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
       controllerComponents,
       stubProvider(declarationJourney),
       stubbedCalculation(aCalculationResponse.copy(thresholdCheck = thresholdCheck)),
+      mibConnector,
       view)
 
   declarationTypes.foreach { importOrExport =>
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
+        givenExchangeRateURL("http://something")
 
         val journey = DeclarationJourney(
           aSessionId,

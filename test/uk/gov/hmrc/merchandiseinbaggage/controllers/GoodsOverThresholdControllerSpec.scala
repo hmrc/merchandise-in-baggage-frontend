@@ -17,11 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
@@ -31,9 +33,10 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
 
   private val view = app.injector.instanceOf[GoodsOverThresholdView]
   private val calculatorService = app.injector.instanceOf[CalculationService]
+  private val mibConnector = app.injector.instanceOf[MibConnector]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsOverThresholdController(controllerComponents, stubProvider(declarationJourney), calculatorService, view)
+    new GoodsOverThresholdController(controllerComponents, stubProvider(declarationJourney), calculatorService, mibConnector, view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney =
@@ -42,6 +45,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
+        givenExchangeRateURL("https://something")
         givenAPaymentCalculation(aCalculationResult)
 
         val request = buildGet(routes.GoodsOverThresholdController.onPageLoad().url, aSessionId)
@@ -54,7 +58,9 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
         result must include(messageApi(s"goodsOverThreshold.GreatBritain.$importOrExport.p1"))
         result must include(messageApi(s"goodsOverThreshold.p2"))
         result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.text"))
-        result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.href"))
+        if (importOrExport == Import) {
+          result must include("https://something")
+        }
       }
     }
   }
