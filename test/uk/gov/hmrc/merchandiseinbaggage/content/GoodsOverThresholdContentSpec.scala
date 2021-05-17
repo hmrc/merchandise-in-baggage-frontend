@@ -16,55 +16,43 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.content
 
-import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.controllers.{DeclarationJourneyControllerSpec, GoodsOverThresholdController, routes}
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
-import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
-class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
-
-  private val view = app.injector.instanceOf[GoodsOverThresholdView]
-  private val calculatorService = app.injector.instanceOf[CalculationService]
-  private val mibConnector = injector.instanceOf[MibConnector]
-
-  def controller(declarationJourney: DeclarationJourney) =
-    new GoodsOverThresholdController(controllerComponents, stubProvider(declarationJourney), calculatorService, mibConnector, view)
+class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData with WireMockSupport {
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
-    val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport)
-        .copy(maybeGoodsDestination = Some(GreatBritain), goodsEntries = completedGoodsEntries(importOrExport))
-
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        givenExchangeRateURL("http://something")
+        givenAJourneyWithSession(declarationType = importOrExport)
+        givenExchangeRateURL("https://something")
 
         givenAPaymentCalculation(aCalculationResult)
 
-        val request = buildGet(routes.GoodsOverThresholdController.onPageLoad().url, aSessionId)
-        val eventualResult = controller(journey).onPageLoad()(request)
-        val result = contentAsString(eventualResult)
+        goToGoodsOverThresholdPage()
 
-        status(eventualResult) mustBe 200
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.title"))
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.heading"))
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.$importOrExport.p1"))
-        result must include(messageApi(s"goodsOverThreshold.p2"))
-        result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.text"))
-        result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.href"))
+        pageTitle must startWith(title)
+
+        elementText(findByTagName("h1")) mustBe messages("goodsOverThreshold.GreatBritain.heading")
+
+        findByXPath("""//*[@id="main-content"]/div/div/p[1]""").getText mustBe messages(
+          s"goodsOverThreshold.GreatBritain.$importOrExport.p1")
+
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]""").getText must startWith(messages("goodsOverThreshold.p2"))
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(s"goodsOverThreshold.p2.$importOrExport.a.text")
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getAttribute("href") mustBe messages(
+          s"goodsOverThreshold.p2.$importOrExport.a.href")
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(s"goodsOverThreshold.p2.$importOrExport.a.text")
+
         if (importOrExport == Import) {
-          result must include(messageApi(s"goodsOverThreshold.p8.1"))
-          result must include("http://something")
-          result must include(messageApi(s"goodsOverThreshold.p8.a.text"))
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]""").getText must startWith(messages(s"goodsOverThreshold.p8.1"))
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getAttribute("href") mustBe "https://something"
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getText must startWith(messages("goodsOverThreshold.p8.a.text"))
         }
       }
     }
