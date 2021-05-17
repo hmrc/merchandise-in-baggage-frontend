@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with PropertyBaseTables {
 
@@ -47,6 +47,7 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
 
   s"render different title&header for amending an existing declaration" in {
     givenAJourneyWithSession(Amend)
+    givenPersistedDeclarationIsFound()
     goToReviewGoodsPagePage(Amend)
   }
 
