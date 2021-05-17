@@ -35,7 +35,7 @@ class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
       .modify(_.goods.goods.each)
       .setTo(aExportGoods)
       .modify(_.goods.goods.each.when[ExportGoods].purchaseDetails.amount)
-      .setTo("7175")
+      .setTo("71.75")
     allowance.allowanceLeft mustBe 1428.25
   }
 
