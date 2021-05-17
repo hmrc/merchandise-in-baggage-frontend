@@ -53,7 +53,7 @@ object ThresholdAllowance {
           (destination.threshold.value.toDouble - sum.toDouble) / 100
         case _: ExportGoods =>
           val sum = goods.goods.map(_.purchaseDetails.numericAmount.toDouble).sum
-          (destination.threshold.value.toDouble - sum) / 100
+          destination.threshold.inPounds.toDouble - sum
       }
     }.getOrElse(0.0)
 }
