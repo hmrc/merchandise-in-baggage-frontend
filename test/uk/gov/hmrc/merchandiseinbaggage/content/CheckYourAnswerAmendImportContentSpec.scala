@@ -59,6 +59,7 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
   private def setUp(calculationResult: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
     fn: List[WebElement] => Any): Any = fn {
     givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
+    givenAPaymentCalculation(calculationResult)
     val journey = completedAmendedJourney(Import).copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
     givenAJourneyWithSession(Amend, declarationJourney = journey)
     goToCYAPage(Amend)

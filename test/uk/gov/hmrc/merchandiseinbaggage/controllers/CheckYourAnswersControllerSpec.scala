@@ -119,6 +119,11 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         .expects(*, *)
         .returning(OptionT.pure[Future](CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
+      (mockCalculationService
+        .paymentCalculations(_: Seq[Goods], _: GoodsDestination)(_: HeaderCarrier))
+        .expects(*, *, *)
+        .returning(Future.successful(CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
+
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
