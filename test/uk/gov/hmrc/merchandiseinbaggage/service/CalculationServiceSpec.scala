@@ -24,13 +24,14 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import com.softwaremill.quicklens._
 
 class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with MockFactory {
 
@@ -81,8 +82,9 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   }
 
   "check threshold allowance including existing declaration for amends" in {
-    val entries = completedGoodsEntries(Import)
+    val entries: GoodsEntries = completedGoodsEntries(Import)
     val declarationId = aDeclarationId
+    val existingDeclaration = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
     val stubbedResult =
       CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
     val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
@@ -90,7 +92,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
     (mockConnector
       .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
       .expects(*, *)
-      .returning(Future.successful(Some(declaration)))
+      .returning(Future.successful(Some(existingDeclaration)))
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
@@ -98,7 +100,29 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .returning(Future.successful(calculationResponse))
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
-    actual mustBe Some(
-      ThresholdAllowance(DeclarationGoods(declaration.declarationGoods.goods.+:(aImportGoods)), calculationResponse, GreatBritain))
+    actual mustBe Some(ThresholdAllowance(DeclarationGoods(Seq(aImportGoods)), calculationResponse, GreatBritain))
+  }
+
+  s"add only goods in $Paid or $NotRequired status" in {
+    val declarationId = aDeclarationId
+    val unknown = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
+    val expectedGoods = Seq(aImportGoods)
+    val plusUnsetStatus = declaration
+      .copy(declarationId = declarationId)
+      .modify(_.amendments)
+      .using(_ ++ Seq(unknown))
+
+    (mockConnector
+      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+      .expects(*, *)
+      .returning(Future.successful(Some(plusUnsetStatus)))
+
+    service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(expectedGoods)
+  }
+
+  s"filters $Paid & $NotRequired" in {
+    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+
+    service.paidAndNotRequired(amendments) mustBe aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
   }
 }

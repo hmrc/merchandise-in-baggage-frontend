@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationGoods, DeclarationId, Goods, GoodsDestination, JourneyType}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
@@ -69,16 +69,24 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
-    paymentCalculations(declarationGoods.goods, goodsDestination).map(calculation =>
+    paymentCalculations(paidAndNotRequired(amendments), goodsDestination).map(calculation =>
       ThresholdAllowance(declarationGoods, calculation, goodsDestination))
   }
 
-  private def addGoods(journeyType: JourneyType, declarationId: DeclarationId, goods: Seq[Goods])(
+  private[service] def addGoods(journeyType: JourneyType, declarationId: DeclarationId, goods: Seq[Goods])(
     implicit hc: HeaderCarrier): OptionT[Future, Seq[Goods]] =
     journeyType match {
-      case New   => OptionT.pure(goods)
-      case Amend => OptionT(findDeclaration(declarationId)).map(dec => goods ++ dec.declarationGoods.goods)
+      case New => OptionT.pure(goods)
+      case Amend =>
+        OptionT(findDeclaration(declarationId)).map { declaration =>
+          goods ++ paidAndNotRequired(declaration.amendments)
+        }
     }
+
+  private[service] def paidAndNotRequired(amendments: Seq[Amendment]): Seq[Goods] =
+    amendments
+      .filter(amendment => amendment.paymentStatus.contains(Paid) || amendment.paymentStatus.contains(NotRequired))
+      .flatMap(_.goods.goods)
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>
