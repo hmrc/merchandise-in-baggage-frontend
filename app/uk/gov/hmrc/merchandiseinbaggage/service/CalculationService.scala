@@ -70,8 +70,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
-    val totalGoods = declarationGoods.goods ++ DeclarationView.validAmendments(declaration).flatMap(_.goods.goods)
-    paymentCalculations(totalGoods, goodsDestination).map(calculation =>
+    paymentCalculations(DeclarationView.allGoods(declaration), goodsDestination).map(calculation =>
       ThresholdAllowance(declarationGoods, calculation, goodsDestination))
   }
 

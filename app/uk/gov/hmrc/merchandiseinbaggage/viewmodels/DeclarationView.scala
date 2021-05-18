@@ -44,7 +44,7 @@ object DeclarationView {
     AmountInPence(originalTax + allAmendmentsTax)
   }
 
-  def validAmendments(declaration: Declaration) =
+  private def validAmendments(declaration: Declaration) =
     declaration.declarationType match {
       case Export => declaration.amendments
       case Import => declaration.amendments.filter(a => a.paymentStatus.contains(Paid) || a.paymentStatus.contains(NotRequired))
