@@ -163,7 +163,6 @@ class PreviousDeclarationDetailsControllerSpec
   }
 
   "on submit update and redirect" in {
-
     val postRequest = buildPost(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
 
     val result = controller.onSubmit()(postRequest)

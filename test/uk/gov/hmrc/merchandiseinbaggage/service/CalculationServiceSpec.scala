@@ -125,4 +125,21 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
 
     service.paidAndNotRequired(amendments) mustBe aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
   }
+
+  s"send a request for calculation including declared goods plus amendments goods" in {
+    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration = declaration.modify(_.amendments).setTo(amendments)
+    val expectedTotalGoods = declaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
+
+    (mockConnector
+      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
+      .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
+        calculationRequests
+          .map(_.goods) == expectedTotalGoods
+      })
+      .returning(Future.successful(aCalculationResponse))
+
+    val actual = service.thresholdAllowance(foundDeclaration).futureValue
+    actual mustBe a[ThresholdAllowance]
+  }
 }

@@ -23,8 +23,8 @@ import play.api.Logger
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
@@ -69,7 +69,8 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
-    paymentCalculations(paidAndNotRequired(amendments), goodsDestination).map(calculation =>
+    val totalGoods = declarationGoods.goods ++ paidAndNotRequired(amendments)
+    paymentCalculations(totalGoods, goodsDestination).map(calculation =>
       ThresholdAllowance(declarationGoods, calculation, goodsDestination))
   }
 
