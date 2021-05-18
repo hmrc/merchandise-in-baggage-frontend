@@ -32,6 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 
 class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with MockFactory {
 
@@ -100,7 +101,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .returning(Future.successful(calculationResponse))
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
-    actual mustBe Some(ThresholdAllowance(DeclarationGoods(Seq(aImportGoods)), calculationResponse, GreatBritain))
+    actual mustBe Some(ThresholdAllowance(DeclarationGoods(aImportGoods +: DeclarationView.allGoods(existingDeclaration)), calculationResponse, GreatBritain))
   }
 
   s"add only goods in $Paid or $NotRequired status" in {
@@ -117,13 +118,7 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(*, *)
       .returning(Future.successful(Some(plusUnsetStatus)))
 
-    service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(expectedGoods)
-  }
-
-  s"filters $Paid & $NotRequired" in {
-    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-
-    service.paidAndNotRequired(amendments) mustBe aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
+    service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus))
   }
 
   s"send a request for calculation including declared goods plus amendments goods" in {
