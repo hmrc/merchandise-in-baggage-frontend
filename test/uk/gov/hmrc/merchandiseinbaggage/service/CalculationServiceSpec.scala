@@ -101,7 +101,11 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .returning(Future.successful(calculationResponse))
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
-    actual mustBe Some(ThresholdAllowance(DeclarationGoods(aImportGoods +: DeclarationView.allGoods(existingDeclaration)), calculationResponse, GreatBritain))
+    actual mustBe Some(
+      ThresholdAllowance(
+        DeclarationGoods(aImportGoods +: DeclarationView.allGoods(existingDeclaration)),
+        calculationResponse,
+        GreatBritain))
   }
 
   s"add only goods in $Paid or $NotRequired status" in {
@@ -118,7 +122,8 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
       .expects(*, *)
       .returning(Future.successful(Some(plusUnsetStatus)))
 
-    service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus))
+    service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(
+      expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus))
   }
 
   s"send a request for calculation including declared goods plus amendments goods" in {
@@ -141,15 +146,18 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   s"send a request for calculation including declared goods plus amendments goods for export" in {
     val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
     val foundDeclaration = declaration
-      .modify(_.declarationType).setTo(Export)
-      .modify(_.amendments).setTo(amendments)
+      .modify(_.declarationType)
+      .setTo(Export)
+      .modify(_.amendments)
+      .setTo(amendments)
     val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ amendments.map(_.goods.goods)
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
       .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
         calculationRequests
-          .map(_.goods).size == expectedTotalGoods.size
+          .map(_.goods)
+          .size == expectedTotalGoods.size
       })
       .returning(Future.successful(aCalculationResponse))
 
