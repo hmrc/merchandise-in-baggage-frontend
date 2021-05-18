@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import org.scalamock.scalatest.MockFactory
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -129,13 +129,32 @@ class CalculationServiceSpec extends BaseSpecWithApplication with WireMockSuppor
   s"send a request for calculation including declared goods plus amendments goods" in {
     val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
     val foundDeclaration = declaration.modify(_.amendments).setTo(amendments)
-    val expectedTotalGoods = declaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
+    val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
       .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
         calculationRequests
           .map(_.goods) == expectedTotalGoods
+      })
+      .returning(Future.successful(aCalculationResponse))
+
+    val actual = service.thresholdAllowance(foundDeclaration).futureValue
+    actual mustBe a[ThresholdAllowance]
+  }
+
+  s"send a request for calculation including declared goods plus amendments goods for export" in {
+    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration = declaration
+      .modify(_.declarationType).setTo(Export)
+      .modify(_.amendments).setTo(amendments)
+    val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ amendments.map(_.goods.goods)
+
+    (mockConnector
+      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
+      .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
+        calculationRequests
+          .map(_.goods).size == expectedTotalGoods.size
       })
       .returning(Future.successful(aCalculationResponse))
 
