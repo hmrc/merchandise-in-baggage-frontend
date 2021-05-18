@@ -27,6 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,7 +70,7 @@ class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: Exec
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
-    val totalGoods = declarationGoods.goods ++ paidAndNotRequired(amendments)
+    val totalGoods = declarationGoods.goods ++ DeclarationView.validAmendments(declaration).flatMap(_.goods.goods)
     paymentCalculations(totalGoods, goodsDestination).map(calculation =>
       ThresholdAllowance(declarationGoods, calculation, goodsDestination))
   }
