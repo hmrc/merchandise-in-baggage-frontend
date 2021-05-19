@@ -49,7 +49,7 @@ class CheckYourAnswersNewHandler @Inject()(
       (calculationResponse.thresholdCheck, declaration.declarationType) match {
         case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
         case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
-        case (WithinThreshold, Export) => Ok(exportView(form, declaration))
+        case (WithinThreshold, Export) => Ok(exportView(form, declaration, isAgent))
       }
     }
 
