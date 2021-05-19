@@ -21,8 +21,10 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-
 import javax.inject.{Inject, Singleton}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
+
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -39,7 +41,7 @@ class CheckYourAnswersController @Inject()(
       case New =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            newHandler.onPageLoad(declaration)
+            newHandler.onPageLoad(declaration, request.declarationJourney.maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
           }
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
