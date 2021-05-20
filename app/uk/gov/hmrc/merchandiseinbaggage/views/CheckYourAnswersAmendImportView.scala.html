@@ -24,7 +24,9 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], amendment: Amendment, calculationResults: CalculationResults, outstandingBalance: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], amendment: Amendment, calculationResults: CalculationResults, outstandingBalance: AmountInPence, isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
 @layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Import)) {
 
@@ -54,7 +56,7 @@
    </div>
  </dl>
 
- <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendDeclaration")</h2>
+ <h2 class="govuk-heading-m">@messages(s"checkYourAnswers.${agentOrTrader}.sendDeclaration")</h2>
 
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
@@ -66,9 +68,9 @@
   @if(outstandingBalance.value == 0L) {
     <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li>
   } else {
-    <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")</li>
+    <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1")</li>
   }
-  <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")</li>
+  <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.2")</li>
  </ul>
 
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>

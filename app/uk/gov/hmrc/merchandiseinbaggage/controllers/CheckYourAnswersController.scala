@@ -37,16 +37,18 @@ class CheckYourAnswersController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    request.declarationJourney.journeyType match {
+    import request.declarationJourney._
+    journeyType match {
       case New =>
-        request.declarationJourney.declarationIfRequiredAndComplete
+        declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            newHandler.onPageLoad(declaration, request.declarationJourney.maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
+            newHandler.onPageLoad(declaration, maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
           }
       case Amend =>
-        request.declarationJourney.amendmentIfRequiredAndComplete
+        amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            amendHandler.onPageLoad(request.declarationJourney, amendment)
+            amendHandler
+              .onPageLoad(request.declarationJourney, amendment, maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
           }
     }
   }

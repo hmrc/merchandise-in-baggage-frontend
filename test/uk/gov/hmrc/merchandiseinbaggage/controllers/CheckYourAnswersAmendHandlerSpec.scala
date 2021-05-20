@@ -80,7 +80,7 @@ class CheckYourAnswersAmendHandlerSpec
 
         val amendment = completedAmendment(importOrExport)
 
-        val eventualResult = amendHandler().onPageLoad(journey, amendment)
+        val eventualResult = amendHandler().onPageLoad(journey, amendment, YesNo.No)
 
         status(eventualResult) mustBe OK
         contentAsString(eventualResult) must include(messageApi("checkYourAnswers.amend.title"))

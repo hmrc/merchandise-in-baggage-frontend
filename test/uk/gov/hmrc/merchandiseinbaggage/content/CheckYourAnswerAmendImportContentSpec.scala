@@ -21,7 +21,9 @@ import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, ThresholdCheck, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
@@ -34,9 +36,27 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
       bulletPoints.size mustBe 4
       elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")}"
-      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")}"
-      elementText(bulletPoints(3)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")}"
+      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
+      elementText(bulletPoints(3)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
+    }
+  }
+
+  "render different bullet points for CustomAgent" in {
+    setUp(
+      aCalculationResult,
+      journey = completedAmendedJourney(Import)
+        .copy(
+          declarationId = aDeclarationId,
+          maybeGoodsDestination = Some(GreatBritain),
+          maybeIsACustomsAgent = Some(Yes),
+          maybeCustomsAgentName = Some("Mr"),
+          maybeCustomsAgentAddress = Some(anAddress)
+        )
+    ) { bulletPoints =>
+      bulletPoints.size mustBe 3
+      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.1")}"
+      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.2")}"
     }
   }
 
@@ -44,8 +64,8 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     setUp(aCalculationResult) { bulletPoints =>
       bulletPoints.size mustBe 3
       elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.1")}"
-      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")}"
-      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")}"
+      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
+      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
     }
   }
@@ -56,11 +76,13 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     }
   }
 
-  private def setUp(calculationResult: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
-    fn: List[WebElement] => Any): Any = fn {
+  private def setUp(
+    calculationResult: CalculationResult,
+    thresholdCheck: ThresholdCheck = WithinThreshold,
+    journey: DeclarationJourney = completedAmendedJourney(Import)
+      .copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain)))(fn: List[WebElement] => Any): Any = fn {
     givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
     givenAPaymentCalculation(calculationResult)
-    val journey = completedAmendedJourney(Import).copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
     givenAJourneyWithSession(Amend, declarationJourney = journey)
     goToCYAPage(Amend)
 
