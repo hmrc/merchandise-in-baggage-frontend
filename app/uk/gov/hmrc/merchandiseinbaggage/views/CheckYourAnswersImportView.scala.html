@@ -188,7 +188,7 @@
 
 
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
-  @if(calculationResults.proofOfOriginNeeded) { <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")</li> }
+  @if(calculationResults.proofOfOriginNeeded) { <li>@messages(s"checkYourAnswers.sendDeclaration.acknowledgement.${agentOrTrader}.EU.over.thousand")</li> }
   @if(calculationResults.isNothingToPay) { <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li> } else { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.1")</li> }
   <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.2")</li>
  </ul>
