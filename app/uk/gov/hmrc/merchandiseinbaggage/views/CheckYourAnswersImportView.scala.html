@@ -17,6 +17,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+@import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 @import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.taxDue
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
@@ -25,7 +27,9 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], declaration: Declaration, calculationResults: CalculationResults)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration, calculationResults: CalculationResults, isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
 @change = @{messages("checkYourAnswers.change")}
 
@@ -178,14 +182,15 @@
   }
  </dl>
 
- <h2 class="govuk-heading-m">@messages("checkYourAnswers.sendDeclaration")</h2>
+ <h2 class="govuk-heading-m">@messages(s"checkYourAnswers.${agentOrTrader}.sendDeclaration")</h2>
 
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
+
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
   @if(calculationResults.proofOfOriginNeeded) { <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")</li> }
-  @if(calculationResults.isNothingToPay) { <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li> } else { <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1")</li> }
-  <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.2")</li>
+  @if(calculationResults.isNothingToPay) { <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li> } else { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.1")</li> }
+  <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.2")</li>
  </ul>
 
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>

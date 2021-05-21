@@ -84,7 +84,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
 
-        val eventualResult = newHandler().onPageLoad(declaration)
+        val eventualResult = newHandler().onPageLoad(declaration, YesNo.Yes)
 
         status(eventualResult) mustBe OK
         contentAsString(eventualResult) must include(messageApi("checkYourAnswers.title"))
@@ -105,7 +105,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
 
-        val eventualResult = newHandler(overThresholdGoods).onPageLoad(declaration)
+        val eventualResult = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
 
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad().url)

@@ -29,7 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -46,9 +46,10 @@ class CheckYourAnswersAmendHandler @Inject()(
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  def onPageLoad(
-    declarationJourney: DeclarationJourney,
-    amendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
+  def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(
+    implicit hc: HeaderCarrier,
+    request: Request[_],
+    messages: Messages): Future[Result] =
     (for {
       amendPlusOriginal <- calculationService.amendPlusOriginalCalculations(declarationJourney)
       goods             <- OptionT.fromOption(declarationJourney.goodsEntries.declarationGoodsIfComplete)
@@ -57,8 +58,8 @@ class CheckYourAnswersAmendHandler @Inject()(
     } yield
       (declarationJourney.declarationType, outstanding.thresholdCheck) match {
         case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
-        case (Import, _)        => Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue))
-        case (Export, _)        => Ok(amendExportView(form, amendment))
+        case (Import, _)        => Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue, isAgent))
+        case (Export, _)        => Ok(amendExportView(form, amendment, isAgent))
       }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =

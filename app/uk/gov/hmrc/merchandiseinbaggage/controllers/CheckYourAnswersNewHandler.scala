@@ -24,7 +24,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
@@ -42,12 +42,14 @@ class CheckYourAnswersNewHandler @Inject()(
   exportView: CheckYourAnswersExportView
 )(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  def onPageLoad(declaration: Declaration)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
+  def onPageLoad(
+    declaration: Declaration,
+    isAgent: YesNo)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
       (calculationResponse.thresholdCheck, declaration.declarationType) match {
         case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
-        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results))
-        case (WithinThreshold, Export) => Ok(exportView(form, declaration))
+        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
+        case (WithinThreshold, Export) => Ok(exportView(form, declaration, isAgent))
       }
     }
 
