@@ -31,7 +31,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
     setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) { bulletPoints =>
       bulletPoints.size mustBe 3
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")}"
+      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
       elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"

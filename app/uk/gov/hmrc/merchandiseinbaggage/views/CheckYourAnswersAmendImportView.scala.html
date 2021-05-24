@@ -61,9 +61,9 @@
  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
 
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
-  <li>@messages("checkYourAnswers.amend.sendDeclaration.acknowledgement.1")</li>
+  <li>@messages(s"checkYourAnswers.amend.sendDeclaration.${agentOrTrader}.acknowledgement.1")</li>
   @if(calculationResults.proofOfOriginNeeded) {
-    <li>@messages("checkYourAnswers.sendDeclaration.acknowledgement.EU.over.thousand")</li>
+    <li>@messages(s"checkYourAnswers.sendDeclaration.acknowledgement.${agentOrTrader}.EU.over.thousand")</li>
   }
   @if(outstandingBalance.value == 0L) {
     <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li>
