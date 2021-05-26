@@ -18,13 +18,10 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, MibReference, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 
-import java.time.{LocalDate, LocalDateTime}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

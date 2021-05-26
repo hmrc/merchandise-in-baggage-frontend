@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.google.inject.{Inject, Singleton}
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,10 +27,9 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.service.{Auditor, CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,12 +38,9 @@ class CheckYourAnswersNewHandler @Inject()(
   calculationService: CalculationService,
   paymentService: PaymentService,
   mibConnector: MibConnector,
-  val auditConnector: AuditConnector,
-  val messagesApi: MessagesApi,
   importView: CheckYourAnswersImportView,
   exportView: CheckYourAnswersExportView
-)(implicit val ec: ExecutionContext, val appConfig: AppConfig)
-    extends Auditor {
+)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
   def onPageLoad(
     declaration: Declaration,
@@ -74,7 +70,6 @@ class CheckYourAnswersNewHandler @Inject()(
       declarationWithCalculationResponse = declaration.copy(
         maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
       _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
-      _           <- auditDeclaration(declarationWithCalculationResponse)
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
+      redirectUrl <- paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 }

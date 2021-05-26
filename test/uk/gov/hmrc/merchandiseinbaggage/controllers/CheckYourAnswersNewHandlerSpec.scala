@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
 import com.softwaremill.quicklens._
-import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -67,10 +66,8 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
   private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
-      new PaymentService(testPaymentConnector),
+      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       testMibConnector,
-      auditConnector,
-      messagesApi,
       importView,
       exportView,
     )

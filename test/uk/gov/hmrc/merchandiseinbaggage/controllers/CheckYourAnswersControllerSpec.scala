@@ -56,10 +56,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private def newHandler() =
     new CheckYourAnswersNewHandler(
       mockCalculationService,
-      new PaymentService(testPaymentConnector),
+      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       mibConnector,
-      auditConnector,
-      messagesApi,
       importView,
       exportView,
     )
@@ -68,9 +66,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     new CheckYourAnswersAmendHandler(
       actionBuilder,
       mockCalculationService,
-      new PaymentService(testPaymentConnector),
-      auditConnector,
-      messagesApi,
+      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       amendImportView,
       amendExportView,
     )

@@ -33,7 +33,6 @@ import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentServ
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,7 +43,6 @@ class CheckYourAnswersAmendHandlerSpec
   private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector = injector.instanceOf[MibConnector]
-  private val auditConnector = injector.instanceOf[AuditConnector]
 
   private val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -61,8 +59,6 @@ class CheckYourAnswersAmendHandlerSpec
       actionBuilder,
       stubbedCalculation(paymentCalcs),
       paymentService,
-      auditConnector,
-      messagesApi,
       importView,
       exportView,
     )

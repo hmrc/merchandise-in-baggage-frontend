@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import play.api.Logger
-import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
+import play.api.i18n.MessagesApi
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
