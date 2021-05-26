@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import cats.data.OptionT
 import cats.instances.future._
 import com.google.inject.{Inject, Singleton}
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,10 +31,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{Auditor, CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,8 +44,11 @@ class CheckYourAnswersAmendHandler @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   calculationService: CalculationService,
   paymentService: PaymentService,
+  val auditConnector: AuditConnector,
+  val messagesApi: MessagesApi,
   amendImportView: CheckYourAnswersAmendImportView,
-  amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
+  amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig)
+    extends Auditor {
 
   def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(
     implicit hc: HeaderCarrier,
@@ -92,6 +96,7 @@ class CheckYourAnswersAmendHandler @Inject()(
         _ <- calculationService.amendDeclaration(updatedDeclaration)
         redirectUrl <- paymentService
                         .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults.results)
+        _ <- auditDeclaration(updatedDeclaration)
       } yield Redirect(redirectUrl)
     }
 }

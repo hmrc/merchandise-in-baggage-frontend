@@ -32,6 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentServ
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,6 +45,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val amendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector = injector.instanceOf[MibConnector]
+  private val auditConnector = injector.instanceOf[AuditConnector]
   private val mockCalculationService = mock[CalculationService]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
@@ -56,6 +58,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       mockCalculationService,
       new PaymentService(testPaymentConnector),
       mibConnector,
+      auditConnector,
+      messagesApi,
       importView,
       exportView,
     )
@@ -65,6 +69,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       actionBuilder,
       mockCalculationService,
       new PaymentService(testPaymentConnector),
+      auditConnector,
+      messagesApi,
       amendImportView,
       amendExportView,
     )

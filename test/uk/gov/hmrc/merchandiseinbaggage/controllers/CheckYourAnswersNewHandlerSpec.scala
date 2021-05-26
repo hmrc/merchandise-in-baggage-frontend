@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
-
 import com.softwaremill.quicklens._
+import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -33,16 +33,18 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
+class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
   private lazy val httpClient = injector.instanceOf[HttpClient]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
+  private val auditConnector = injector.instanceOf[AuditConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
@@ -67,6 +69,8 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       stubbedCalculation(paymentCalcs),
       new PaymentService(testPaymentConnector),
       testMibConnector,
+      auditConnector,
+      messagesApi,
       importView,
       exportView,
     )
@@ -158,5 +162,6 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)
     }
+
   }
 }
