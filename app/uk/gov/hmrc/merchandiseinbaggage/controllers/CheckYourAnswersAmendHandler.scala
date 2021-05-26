@@ -90,7 +90,6 @@ class CheckYourAnswersAmendHandler @Inject()(
 
       for {
         _ <- calculationService.amendDeclaration(updatedDeclaration)
-//        _ <- auditDeclaration(updatedDeclaration)
         redirectUrl <- paymentService
                         .sendPaymentRequest(updatedDeclaration, Some(updatedAmendment.reference), calculationResults.results)
       } yield Redirect(redirectUrl)
