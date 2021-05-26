@@ -21,7 +21,6 @@ import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-//import uk.gov.hmrc.merchandiseinbaggage.model.audit.RefundableDeclaration
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
 import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
@@ -32,8 +31,6 @@ import scala.util.control.NonFatal
 trait Auditor {
   val auditConnector: AuditConnector
   val messagesApi: MessagesApi
-
-  val messagesEN: Messages = MessagesImpl(Lang("en"), messagesApi)
 
   private val logger = Logger(this.getClass)
 

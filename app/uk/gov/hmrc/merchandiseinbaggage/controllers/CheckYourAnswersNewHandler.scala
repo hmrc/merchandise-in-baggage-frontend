@@ -74,7 +74,7 @@ class CheckYourAnswersNewHandler @Inject()(
       declarationWithCalculationResponse = declaration.copy(
         maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
       _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
       _           <- auditDeclaration(declarationWithCalculationResponse)
+      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 }
