@@ -189,7 +189,7 @@
 
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
   @if(calculationResults.proofOfOriginNeeded) { <li>@messages(s"checkYourAnswers.sendDeclaration.acknowledgement.${agentOrTrader}.EU.over.thousand")</li> }
-  @if(calculationResults.isNothingToPay) { <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li> } else { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.1")</li> }
+  @if(calculationResults.isNothingToPay) { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1.zero")</li> } else { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1")</li> }
   <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.2")</li>
  </ul>
 
@@ -199,7 +199,7 @@
   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
   <strong class="govuk-warning-text__text">
    <span class="govuk-warning-text__assistive">@messages("checkYourAnswers.sendDeclaration.warning")</span>
-   @messages("checkYourAnswers.sendDeclaration.warning.Import.message")
+   @messages(s"checkYourAnswers.sendDeclaration.warning.Import.${agentOrTrader}.message")
   </strong>
  </div>
 
