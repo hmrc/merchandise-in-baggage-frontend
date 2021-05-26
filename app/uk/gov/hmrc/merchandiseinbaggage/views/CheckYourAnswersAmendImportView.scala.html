@@ -66,7 +66,7 @@
     <li>@messages(s"checkYourAnswers.sendDeclaration.acknowledgement.${agentOrTrader}.EU.over.thousand")</li>
   }
   @if(outstandingBalance.value == 0L) {
-    <li>@messages("checkYourAnswers.sendDeclaration.Import.acknowledgement.1.zero")</li>
+    <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1.zero")</li>
   } else {
     <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1")</li>
   }
