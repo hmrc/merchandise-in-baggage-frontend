@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
-
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
@@ -44,6 +43,7 @@ class CheckYourAnswersAmendHandlerSpec
   private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector = injector.instanceOf[MibConnector]
+
   private val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 

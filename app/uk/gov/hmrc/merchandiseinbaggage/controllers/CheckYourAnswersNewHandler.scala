@@ -67,8 +67,9 @@ class CheckYourAnswersNewHandler @Inject()(
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
       calculationResponse <- calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
-      _ <- mibConnector.persistDeclaration(
-            declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)))
-      redirectUrl <- paymentService.sendPaymentRequest(declaration.mibReference, None, calculationResponse.results)
+      declarationWithCalculationResponse = declaration.copy(
+        maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
+      _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
+      redirectUrl <- paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 }

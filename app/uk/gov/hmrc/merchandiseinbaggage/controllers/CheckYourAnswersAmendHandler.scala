@@ -91,7 +91,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       for {
         _ <- calculationService.amendDeclaration(updatedDeclaration)
         redirectUrl <- paymentService
-                        .sendPaymentRequest(updatedDeclaration.mibReference, Some(updatedAmendment.reference), calculationResults.results)
+                        .sendPaymentRequest(updatedDeclaration, Some(updatedAmendment.reference), calculationResults.results)
       } yield Redirect(redirectUrl)
     }
 }
