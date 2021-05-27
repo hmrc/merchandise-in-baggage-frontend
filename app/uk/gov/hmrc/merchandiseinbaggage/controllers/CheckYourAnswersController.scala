@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import javax.inject.{Inject, Singleton}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 
 import scala.concurrent.ExecutionContext
 
@@ -40,16 +38,18 @@ class CheckYourAnswersController @Inject()(
     import request.declarationJourney._
     journeyType match {
       case New =>
-        declarationIfRequiredAndComplete
-          .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            newHandler.onPageLoad(declaration, maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
-          }
+        (for {
+          declaration <- declarationIfRequiredAndComplete
+          agent       <- maybeIsACustomsAgent
+        } yield newHandler.onPageLoad(declaration, agent))
+          .getOrElse(actionProvider.invalidRequestF(incompleteMessage))
       case Amend =>
-        amendmentIfRequiredAndComplete
-          .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            amendHandler
-              .onPageLoad(request.declarationJourney, amendment, maybeCustomsAgent.fold(No: YesNo)(_ => Yes))
-          }
+        (for {
+          amendment <- amendmentIfRequiredAndComplete
+          agent     <- maybeIsACustomsAgent
+        } yield
+          amendHandler
+            .onPageLoad(request.declarationJourney, amendment, agent)).getOrElse(actionProvider.invalidRequestF(incompleteMessage))
     }
   }
 
