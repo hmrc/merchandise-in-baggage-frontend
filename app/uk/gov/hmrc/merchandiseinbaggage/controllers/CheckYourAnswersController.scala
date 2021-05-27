@@ -20,6 +20,8 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
 import uk.gov.hmrc.merchandiseinbaggage.model.core.GoodsEntries
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 
@@ -38,18 +40,16 @@ class CheckYourAnswersController @Inject()(
     import request.declarationJourney._
     journeyType match {
       case New =>
-        (for {
-          declaration <- declarationIfRequiredAndComplete
-          agent       <- maybeIsACustomsAgent
-        } yield newHandler.onPageLoad(declaration, agent))
-          .getOrElse(actionProvider.invalidRequestF(incompleteMessage))
+        declarationIfRequiredAndComplete
+          .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
+            newHandler.onPageLoad(declaration, maybeIsACustomsAgent.fold(No: YesNo)(value => value))
+          }
       case Amend =>
-        (for {
-          amendment <- amendmentIfRequiredAndComplete
-          agent     <- maybeIsACustomsAgent
-        } yield
-          amendHandler
-            .onPageLoad(request.declarationJourney, amendment, agent)).getOrElse(actionProvider.invalidRequestF(incompleteMessage))
+        amendmentIfRequiredAndComplete
+          .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
+            amendHandler
+              .onPageLoad(request.declarationJourney, amendment, maybeIsACustomsAgent.fold(No: YesNo)(value => value))
+          }
     }
   }
 
