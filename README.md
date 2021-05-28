@@ -12,7 +12,8 @@ Business travellers carrying commercial goods for both import or export.
 SM profile : MERCHANDISE_IN_BAGGAGE_ALL
 `sm MERCHANDISE_IN_BAGGAGE_ALL` This will start all the required services to complete a journey
 
-`local url` http://localhost:8281/declare-commercial-goods/import-export-choice
+`local url` http://localhost:8281/declare-commercial-goods/start-import
+`local url` http://localhost:8281/declare-commercial-goods/start-export
 
 **How to run tests**
 
