@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -37,8 +37,8 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
   private val view = app.injector.instanceOf[PaymentCalculationView]
   lazy val mibConnector = injector.instanceOf[MibConnector]
 
-  private lazy val stubbedCalculation: CalculationResponse => CalculationService = calculationResults =>
-    new CalculationService(mibConnector) {
+  private lazy val stubbedCalculation: CalculationResponse => MibService = calculationResults =>
+    new MibService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResponse] =
         Future.successful(calculationResults)

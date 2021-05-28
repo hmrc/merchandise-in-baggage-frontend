@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.ExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 
 import scala.concurrent.ExecutionContext
@@ -35,7 +35,7 @@ import scala.concurrent.ExecutionContext
 class PaymentCalculationController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  calculationService: CalculationService,
+  mibService: MibService,
   mibConnector: MibConnector,
   view: PaymentCalculationView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
@@ -54,7 +54,7 @@ class PaymentCalculationController @Inject()(
         mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
           request.declarationJourney.maybeGoodsDestination
             .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-              calculationService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
+              mibService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
                 (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
                   case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
                   case (WithinThreshold, Import) => importView(calculationResponse.results, exchangeUrl)

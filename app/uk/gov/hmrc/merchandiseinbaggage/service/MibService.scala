@@ -32,8 +32,8 @@ import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CalculationService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
-  private val logger = Logger("CalculationService")
+class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
+  private val logger = Logger("MibService")
 
   def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
     mibConnector.calculatePayments(goods.map(_.calculationRequest(destination))).map(withLogging)

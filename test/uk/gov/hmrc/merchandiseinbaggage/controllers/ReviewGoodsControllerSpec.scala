@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,7 +39,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
 
   private val view = app.injector.instanceOf[ReviewGoodsView]
   private val mockNavigator = mock[Navigator]
-  private val mockCalculationService = mock[CalculationService]
+  private val mockMibService = mock[MibService]
 
   def controller(declarationJourney: DeclarationJourney) =
     new ReviewGoodsController(
@@ -47,7 +47,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       view,
-      mockCalculationService,
+      mockMibService,
       mockNavigator)
 
   forAll(declarationTypesTable) { importOrExport =>
@@ -61,7 +61,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         val allowance =
           if (importOrExport == Export) aThresholdAllowance.modify(_.goods).setTo(entries.declarationGoodsIfComplete.get)
           else aThresholdAllowance
-        (mockCalculationService
+        (mockMibService
           .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
           .expects(*, *, *, *, *)
           .returning(OptionT.pure[Future](allowance))
@@ -84,7 +84,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
-        (mockCalculationService
+        (mockMibService
           .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
           .expects(*, *, *, *, *)
           .returning(OptionT.pure[Future](aThresholdAllowance))
@@ -104,7 +104,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
-      (mockCalculationService
+      (mockMibService
         .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
         .expects(*, *, *, *, *)
         .returning(OptionT.pure[Future](aThresholdAllowance))
@@ -133,16 +133,16 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
           stubProvider(journey),
           stubRepo(journey),
           view,
-          mockCalculationService,
+          mockMibService,
           injector.instanceOf[Navigator])
 
-      (mockCalculationService
+      (mockMibService
         .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
         .expects(*, *, *, *, *)
         .returning(OptionT.pure[Future](aThresholdAllowance))
         .once()
 
-      (mockCalculationService
+      (mockMibService
         .amendPlusOriginalCalculations(_: DeclarationJourney)(_: HeaderCarrier))
         .expects(*, *)
         .returning(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))

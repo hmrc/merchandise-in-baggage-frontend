@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -37,7 +37,7 @@ class PreviousDeclarationDetailsControllerSpec
     extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration with MockFactory {
 
   val mockNavigator: Navigator = mock[Navigator]
-  val mockCalculationService: CalculationService = mock[CalculationService]
+  val mockMibService: MibService = mock[MibService]
   val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
   val mibConnector = injector.instanceOf[MibConnector]
   val controller =
@@ -47,7 +47,7 @@ class PreviousDeclarationDetailsControllerSpec
       declarationJourneyRepository,
       mibConnector,
       mockNavigator,
-      mockCalculationService,
+      mockMibService,
       view)
 
   "creating a page" should {
@@ -60,7 +60,7 @@ class PreviousDeclarationDetailsControllerSpec
           declarationId = aDeclarationId)
 
       givenADeclarationJourneyIsPersisted(importJourney)
-      (mockCalculationService
+      (mockMibService
         .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
         .expects(*, *)
         .returning(Future.successful(aThresholdAllowance))
@@ -106,7 +106,7 @@ class PreviousDeclarationDetailsControllerSpec
           createdAt = journeyDate.atStartOfDay,
           declarationId = aDeclarationId)
 
-      (mockCalculationService
+      (mockMibService
         .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
         .expects(*, *)
         .returning(Future.successful(aThresholdAllowance))
@@ -138,7 +138,7 @@ class PreviousDeclarationDetailsControllerSpec
           createdAt = journeyDate.atStartOfDay,
           declarationId = aDeclarationId)
 
-      (mockCalculationService
+      (mockMibService
         .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
         .expects(*, *)
         .returning(Future.successful(aThresholdAllowance))

@@ -28,7 +28,6 @@ object ThresholdAllowance {
 
   private[core] val formatter = "%,.2f"
 
-  //TODO this should be all done in BE
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
     def allowanceLeft: Double =

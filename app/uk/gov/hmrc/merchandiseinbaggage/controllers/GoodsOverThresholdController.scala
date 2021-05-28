@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{goodsDeclarationIncompleteMessage, goodsDestinationUnansweredMessage}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
@@ -32,7 +32,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class GoodsOverThresholdController @Inject()(
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  calculationService: CalculationService,
+  mibService: MibService,
   mibConnector: MibConnector,
   view: GoodsOverThresholdView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
@@ -45,7 +45,7 @@ class GoodsOverThresholdController @Inject()(
             .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
               request.declarationType match {
                 case Import =>
-                  calculationService.paymentCalculations(goods.goods, destination).map { calculations =>
+                  mibService.paymentCalculations(goods.goods, destination).map { calculations =>
                     import calculations.results._
                     Ok(
                       view(
