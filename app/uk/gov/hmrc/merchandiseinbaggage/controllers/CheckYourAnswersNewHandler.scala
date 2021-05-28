@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CheckYourAnswersNewHandler @Inject()(
-  calculationService: CalculationService,
+  mibService: MibService,
   paymentService: PaymentService,
   mibConnector: MibConnector,
   importView: CheckYourAnswersImportView,
@@ -45,7 +45,7 @@ class CheckYourAnswersNewHandler @Inject()(
   def onPageLoad(
     declaration: Declaration,
     isAgent: YesNo)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
+    mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
       (calculationResponse.thresholdCheck, declaration.declarationType) match {
         case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
         case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
@@ -66,7 +66,7 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      calculationResponse <- calculationService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      calculationResponse <- mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
       declarationWithCalculationResponse = declaration.copy(
         maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
       _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)

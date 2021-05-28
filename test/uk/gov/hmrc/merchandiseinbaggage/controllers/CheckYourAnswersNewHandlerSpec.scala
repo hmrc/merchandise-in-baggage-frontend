@@ -29,7 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -56,8 +56,8 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       Future.successful(DeclarationId("abc"))
   }
 
-  private lazy val stubbedCalculation: CalculationResponse => CalculationService = calculationResponse =>
-    new CalculationService(mibConnector) {
+  private lazy val stubbedCalculation: CalculationResponse => MibService = calculationResponse =>
+    new MibService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResponse] =
         Future.successful(calculationResponse)

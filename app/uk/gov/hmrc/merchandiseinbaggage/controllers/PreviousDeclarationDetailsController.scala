@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.service.CalculationService
+import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 
 import scala.concurrent.ExecutionContext
@@ -36,7 +36,7 @@ class PreviousDeclarationDetailsController @Inject()(
   override val repo: DeclarationJourneyRepository,
   mibConnector: MibConnector,
   navigator: Navigator,
-  calculationService: CalculationService,
+  mibService: MibService,
   view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
@@ -44,7 +44,7 @@ class PreviousDeclarationDetailsController @Inject()(
     import request.declarationJourney._
     (for {
       declaration <- OptionT(mibConnector.findDeclaration(declarationId))
-      allowance   <- OptionT.liftF(calculationService.thresholdAllowance(declaration))
+      allowance   <- OptionT.liftF(mibService.thresholdAllowance(declaration))
     } yield Ok(view(declaration, allowance)))
       .fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}"))(view => view)
   }

@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -46,7 +46,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val amendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector = injector.instanceOf[MibConnector]
   private val auditConnector = injector.instanceOf[AuditConnector]
-  private val mockCalculationService = mock[CalculationService]
+  private val mockMibService = mock[MibService]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
@@ -55,7 +55,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
   private def newHandler() =
     new CheckYourAnswersNewHandler(
-      mockCalculationService,
+      mockMibService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       mibConnector,
       importView,
@@ -65,7 +65,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private def amendHandler() =
     new CheckYourAnswersAmendHandler(
       actionBuilder,
-      mockCalculationService,
+      mockMibService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       amendImportView,
       amendExportView,
@@ -100,7 +100,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersisted(journey)
       val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
 
-      (mockCalculationService
+      (mockMibService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))
@@ -116,12 +116,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersisted(journey)
       givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), journey.declarationId)
 
-      (mockCalculationService
+      (mockMibService
         .amendPlusOriginalCalculations(_: DeclarationJourney)(_: HeaderCarrier))
         .expects(*, *)
         .returning(OptionT.pure[Future](CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
-      (mockCalculationService
+      (mockMibService
         .paymentCalculations(_: Seq[Goods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
@@ -153,7 +153,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersisted(journey)
       givenDeclarationIsPersistedInBackend
 
-      (mockCalculationService
+      (mockMibService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))
@@ -171,17 +171,17 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersisted(journey)
       val declarationWithResult = declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
 
-      (mockCalculationService
+      (mockMibService
         .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
         .expects(*, *)
         .returning(Future.successful(Some(declarationWithResult)))
 
-      (mockCalculationService
+      (mockMibService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
-      (mockCalculationService
+      (mockMibService
         .amendDeclaration(_: Declaration)(_: HeaderCarrier))
         .expects(*, *)
         .returning(Future.successful(declarationWithResult.declarationId))

@@ -40,8 +40,7 @@ class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl"
     httpClient.POST[PayApiRequest, HttpResponse](url, requestBody).map { response =>
       response.status match {
         case Status.CREATED => response.json.as[PayApiResponse]
-        case other: Int     =>
-          //TODO: PagerDuty
+        case other: Int =>
           throw PayApiException(s"unexpected status from pay-api for reference:${requestBody.mibReference.value}, status:$other")
       }
     }

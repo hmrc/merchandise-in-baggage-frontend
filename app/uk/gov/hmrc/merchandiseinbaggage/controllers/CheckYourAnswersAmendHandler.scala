@@ -31,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.OverThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, Declaration, DeclarationId, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Utils.FutureOps
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
@@ -41,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersAmendHandler @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
-  calculationService: CalculationService,
+  mibService: MibService,
   paymentService: PaymentService,
   amendImportView: CheckYourAnswersAmendImportView,
   amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
@@ -51,10 +51,10 @@ class CheckYourAnswersAmendHandler @Inject()(
     request: Request[_],
     messages: Messages): Future[Result] =
     (for {
-      amendPlusOriginal <- calculationService.amendPlusOriginalCalculations(declarationJourney)
+      amendPlusOriginal <- mibService.amendPlusOriginalCalculations(declarationJourney)
       goods             <- OptionT.fromOption(declarationJourney.goodsEntries.declarationGoodsIfComplete)
       destination       <- OptionT.fromOption(declarationJourney.maybeGoodsDestination)
-      outstanding       <- OptionT.liftF(calculationService.paymentCalculations(goods.goods, destination))
+      outstanding       <- OptionT.liftF(mibService.paymentCalculations(goods.goods, destination))
     } yield
       (declarationJourney.declarationType, outstanding.thresholdCheck) match {
         case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
@@ -63,7 +63,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
-    calculationService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
+    mibService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
       maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage).asFuture) { originalDeclaration =>
         originalDeclaration.declarationType match {
           case Export =>
@@ -75,13 +75,14 @@ class CheckYourAnswersAmendHandler @Inject()(
     }
 
   private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] = {
-    val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ amendment)
-    calculationService.amendDeclaration(amendedDeclaration).map(_ => Redirect(DeclarationConfirmationController.onPageLoad()))
+    val updatedAmendment = amendment.copy(reference = originalDeclaration.amendments.size + 1)
+    val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+    mibService.amendDeclaration(amendedDeclaration).map(_ => Redirect(DeclarationConfirmationController.onPageLoad()))
   }
 
   private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
     implicit hc: HeaderCarrier): Future[Result] =
-    calculationService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
+    mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
       val amendmentRef = originalDeclaration.amendments.size + 1
       val updatedAmendment =
         amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.results.totalCalculationResult))
@@ -89,7 +90,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
       for {
-        _ <- calculationService.amendDeclaration(updatedDeclaration)
+        _ <- mibService.amendDeclaration(updatedDeclaration)
         redirectUrl <- paymentService
                         .sendPaymentRequest(updatedDeclaration, Some(updatedAmendment.reference), calculationResults.results)
       } yield Redirect(redirectUrl)
