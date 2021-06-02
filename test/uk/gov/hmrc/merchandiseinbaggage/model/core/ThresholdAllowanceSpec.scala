@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 import com.softwaremill.quicklens._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
 
 class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
 
