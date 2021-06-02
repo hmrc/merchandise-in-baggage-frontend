@@ -16,32 +16,40 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import akka.stream.Materializer
-import play.api.inject.{ApplicationLifecycle, Injector}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.audit.http.config.AuditingConfig
-import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
-import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
-
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.audit.HandlerResult
 import scala.concurrent.{ExecutionContext, Future}
+import akka.actor.ActorSystem
+import akka.stream.Materializer
+import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
+import play.api.libs.json.{JsObject, Json}
+import uk.gov.hmrc.play.audit.http.config.AuditingConfig
+import uk.gov.hmrc.play.audit.http.connector.{AuditChannel, AuditConnector, AuditCounter}
 
-trait TestAuditConnector extends AuditConnector {
-  def audited: Option[ExtendedDataEvent]
-}
+abstract class TestAuditConnector(appName: String) extends AuditConnector {
+  private val _auditingConfig =
+    AuditingConfig(consumer = None, enabled = true, auditSource = "", auditSentHeaders = false)
 
-object TestAuditConnector {
-  def apply(result: Future[AuditResult], injector: Injector): TestAuditConnector = new TestAuditConnector {
-    override val auditingConfig: AuditingConfig = injector.instanceOf[AuditingConfig]
-    override val materializer: Materializer = injector.instanceOf[Materializer]
-    override val lifecycle: ApplicationLifecycle = injector.instanceOf[ApplicationLifecycle]
+  override def auditingConfig: AuditingConfig = _auditingConfig
 
-    private var auditedEvent: Option[ExtendedDataEvent] = None
+  override def auditChannel: AuditChannel = new AuditChannel {
+    override def auditingConfig: AuditingConfig = _auditingConfig
 
-    override def audited: Option[ExtendedDataEvent] = auditedEvent
+    override def materializer: Materializer = Materializer(ActorSystem())
 
-    override def sendExtendedEvent(event: ExtendedDataEvent)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[AuditResult] = {
-      auditedEvent = Some(event)
-      result
+    override def lifecycle: ApplicationLifecycle = new DefaultApplicationLifecycle()
+
+    override def send(path: String, event: JsValue)(implicit ec: ExecutionContext): Future[HandlerResult] = {
+      sendResult(path, event)
+      Future.successful(HandlerResult.Success)
     }
+
   }
+
+  override def auditCounter: AuditCounter = new AuditCounter {
+    override def createMetadata(): JsObject = Json.obj()
+  }
+
+  def sendResult(path: String, event: JsValue): Future[HandlerResult]
+
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.google.inject.Inject
-import controllers.Assets.Redirect
+import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
