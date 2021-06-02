@@ -485,7 +485,7 @@ checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.1.zero = They must
 checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.2 = Bydd angen iddo ddangos y datganiad hwn a derbynebau prynu os bydd yn cael ei stopio gan Lu’r Ffiniau
 checkYourAnswers.personalDetails.customsAgentYesNoLabel = Asiant tollau
-checkYourAnswers.sendDeclaration.Export.agent.acknowledgement.1 = They must declare all goods they take out of Great Britain for trade or business use
+checkYourAnswers.sendDeclaration.Export.agent.acknowledgement.1 = Mae’n rhaid i’ch cleient ddatgan yr holl nwyddau y mae’n mynd â nhw allan o Brydain Fawr at ddefnydd masnach neu fusnes
 checkYourAnswers.sendDeclaration.Export.trader.acknowledgement.1 = Mae’n rhaid i mi ddatgan yr holl nwyddau rwy’n mynd â nhw allan o Brydain Fawr at ddefnydd masnach neu fusnes
 checkYourAnswers.sendDeclaration.Export.agent.acknowledgement.2 = Bydd angen iddo ddangos y datganiad hwn a derbynebau prynu os bydd yn cael ei stopio gan Lu’r Ffiniau
 checkYourAnswers.sendDeclaration.Export.trader.acknowledgement.2 = Bydd angen i mi ddangos fy natganiad a derbynebau prynu os byddaf yn cael fy stopio gan Lu’r Ffiniau
@@ -494,7 +494,7 @@ checkYourAnswers.sendDeclaration.warning = Rhybudd
 checkYourAnswers.sendDeclaration.warning.Import.trader.message = Os na fyddwch yn datgan eich holl nwyddau cyn cyrraedd Prydain Fawr, mae’n bosibl y codir cosb arnoch ac y bydd eich nwyddau’n cael eu cadw gan Lu’r Ffiniau.
 checkYourAnswers.sendDeclaration.warning.Import.agent.message = Os na fydd eich cleient yn datgan ei holl nwyddau cyn mynd i mewn i Brydain Fawr, mae’n bosibl y codir cosb arno ac y bydd ei nwyddau’n cael eu cadw gan Lu’r Ffiniau.
 checkYourAnswers.sendDeclaration.warning.Export.trader.message = Os na fyddwch yn datgan eich holl nwyddau cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arnoch ac y bydd eich nwyddau’n cael eu cadw gan Lu’r Ffiniau.
-checkYourAnswers.sendDeclaration.warning.Export.agent.message = If your client does not declare all of their goods before leaving Great Britain they may be charged a penalty and have their goods detained by Border Force.
+checkYourAnswers.sendDeclaration.warning.Export.agent.message = Os na fydd eich cleient yn datgan ei holl nwyddau cyn gadael Prydain Fawr, mae’n bosibl y codir cosb arno ac y bydd ei nwyddau’n cael eu cadw gan Lu’r Ffiniau.
 checkYourAnswers.payButton = Derbyn a thalu
 checkYourAnswers.makeDeclarationButton = Derbyn ac anfon y datganiad
 
