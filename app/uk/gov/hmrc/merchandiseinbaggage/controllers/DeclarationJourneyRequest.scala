@@ -17,10 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 
 final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJourney, val request: Request[A])
     extends WrappedRequest[A](request) {
 
-  def declarationType = declarationJourney.declarationType
+  def declarationType: DeclarationType = declarationJourney.declarationType
 }

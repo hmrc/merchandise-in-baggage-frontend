@@ -29,7 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.{CalculationService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -47,8 +47,8 @@ class CheckYourAnswersAmendHandlerSpec
   private val paymentService = mock[PaymentService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val stubbedCalculation: CalculationResults => CalculationService = _ =>
-    new CalculationService(mibConnector) {
+  private lazy val stubbedCalculation: CalculationResults => MibService = _ =>
+    new MibService(mibConnector) {
       override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
         implicit hc: HeaderCarrier): Future[CalculationResponse] =
         Future.successful(aCalculationResponse)

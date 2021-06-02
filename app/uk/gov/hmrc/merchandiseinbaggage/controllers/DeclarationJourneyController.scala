@@ -51,7 +51,6 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
   def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(
     implicit ec: ExecutionContext): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
-      //TODO move this logic in navigator
       if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
       else Redirect(redirectIfNotComplete)
     }
