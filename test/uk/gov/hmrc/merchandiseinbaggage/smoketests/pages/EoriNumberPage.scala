@@ -17,16 +17,35 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
+import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, YesNo}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.EoriNumberPage._
 
 object EoriNumberPage extends Page {
   val path = "/declare-commercial-goods/enter-eori-number"
-  val expectedAgentTitle = "What is the EORI number of the business bringing the goods into Great Britain?"
+  val expectedAgentImportTitle = "What is the EORI number of the business bringing the goods into Great Britain?"
   val expectedAgentExportTitle = "What is the EORI number of the business taking the goods out of Great Britain?"
   val expectedNonAgentTitle = "What is your EORI number?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     find(IdQuery("eori")).get.underlying.sendKeys(formData.toString)
     click.on(NameQuery("continue"))
+  }
+}
+
+trait EoriNumberPage extends BaseUiSpec { this: Suite =>
+
+  def goToEoriPage(customerAgent: YesNo, declarationType: DeclarationType = Import): Assertion = {
+    goto(path)
+    val titleStart = (customerAgent, declarationType) match {
+      case (Yes, Import) => expectedAgentImportTitle
+      case (Yes, Export) => expectedAgentExportTitle
+      case (No, _)       => expectedNonAgentTitle
+    }
+    pageTitle must startWith(titleStart)
   }
 }
