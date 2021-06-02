@@ -20,7 +20,7 @@ import play.api.libs.json.JsValue
 import uk.gov.hmrc.audit.HandlerResult
 import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer}
+import akka.stream.Materializer
 import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
 import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
@@ -35,7 +35,7 @@ abstract class TestAuditConnector(appName: String) extends AuditConnector {
   override def auditChannel: AuditChannel = new AuditChannel {
     override def auditingConfig: AuditingConfig = _auditingConfig
 
-    override def materializer: Materializer = ActorMaterializer()(ActorSystem())
+    override def materializer: Materializer = Materializer(ActorSystem())
 
     override def lifecycle: ApplicationLifecycle = new DefaultApplicationLifecycle()
 
