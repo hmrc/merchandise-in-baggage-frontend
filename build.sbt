@@ -1,6 +1,5 @@
 import play.sbt.PlayImport.PlayKeys.playDefaultPort
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
-import uk.gov.hmrc.SbtArtifactory
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
 import com.itv.scalapact.plugin._
@@ -10,7 +9,7 @@ val appName = "merchandise-in-baggage-frontend"
 val silencerVersion = "1.7.0"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, SbtArtifactory, ScalaPactPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning, SbtDistributablesPlugin, ScalaPactPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     majorVersion                     := 0,
