@@ -5,13 +5,14 @@
         <encoder class="uk.gov.hmrc.play.logging.JsonEncoder"/>
     </appender>
 
-    <logger name="uk.gov" level="${logger.uk.gov:-WARN}"/>
-
     <logger name="reactivemongo" level="WARN"/>
 
     <logger name="play.api.mvc.LegacySessionCookieBaker" level="OFF"/>
 
-    <root level="${logger.application:-WARN}">
+    <logger name="uk.gov" level="${logger.uk.gov:-INFO}"/>
+    <logger name="application" level="${logger.application:-INFO}"/>
+
+    <root level="${logger.application:-ERROR}">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
