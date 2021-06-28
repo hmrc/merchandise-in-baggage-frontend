@@ -14,23 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.wiremock
+package uk.gov.hmrc.merchandiseinbaggage.auth
 
-import com.github.tomakehurst.wiremock.WireMockServer
-import org.scalatest.{BeforeAndAfterEach, Suite}
+import play.api.mvc.{Request, WrappedRequest}
+import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-trait WireMockSupport extends BeforeAndAfterEach { this: Suite =>
-  implicit val wireMockServer = new WireMockServer(WireMockSupport.port)
-
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    wireMockServer.start()
-  }
-
-  override def afterEach(): Unit =
-    wireMockServer.stop()
-}
-
-object WireMockSupport {
-  val port: Int = 8080
-}
+case class AuthRequest[A](val request: Request[A], val credentials: Option[Credentials]) extends WrappedRequest[A](request)

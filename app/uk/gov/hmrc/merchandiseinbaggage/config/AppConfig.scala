@@ -16,25 +16,27 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.config
 
+import com.google.inject.Inject
 import play.api.i18n.Lang
 import play.api.mvc.Call
-
 import javax.inject.Singleton
+import play.api.{Configuration, Environment}
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @Singleton
-class AppConfig() extends MongoConfiguration with MibConfiguration {
+class AppConfig @Inject()(val config: Configuration, val env: Environment)() extends MongoConfiguration with MibConfiguration {
 
   val serviceIdentifier = "mib"
 
   val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
-
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
   val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
+  lazy val strideRoles: Seq[String] = config.get[Seq[String]]("stride.roles")
+  lazy val flagConf: Boolean = config.get[Boolean]("internal")
   lazy val timeout: Int = configSource("timeout.timeout").loadOrThrow[Int]
   lazy val countdown: Int = configSource("timeout.countdown").loadOrThrow[Int]
 
