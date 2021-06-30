@@ -31,7 +31,7 @@ class DeclarationJourneyActionProviderSpec extends BaseSpec with WireMockSupport
         .configure(
           Map(
             "microservice.services.auth.port" -> WireMockSupport.port,
-            "internal"                        -> true
+            "assistedDigital"                 -> true
           ))
         .build()
     val actionProvider = injector.instanceOf[DeclarationJourneyActionProvider]

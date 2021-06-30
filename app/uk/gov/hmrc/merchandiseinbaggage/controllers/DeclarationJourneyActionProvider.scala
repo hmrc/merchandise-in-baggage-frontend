@@ -37,7 +37,7 @@ class DeclarationJourneyActionProvider @Inject()(
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
 
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
-    if (appConfig.flagConf) internalJourneyAction
+    if (appConfig.isAssistedDigital) internalJourneyAction
     else defaultActionBuilder andThen journeyActionRefiner
 
   def goodsAction(idx: Int): ActionBuilder[DeclarationGoodsRequest, AnyContent] =
