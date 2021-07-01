@@ -16,3 +16,5 @@ addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
 addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.8.1")
 
 addSbtPlugin("com.itv" % "sbt-scalapact" % "3.3.1")
+
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.3")

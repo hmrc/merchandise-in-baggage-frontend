@@ -6,7 +6,7 @@ import com.itv.scalapact.plugin._
 
 val appName = "merchandise-in-baggage-frontend"
 
-val silencerVersion = "1.7.0"
+val silencerVersion = "1.7.1"
 
 lazy val microservice = Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalaPactPlugin)
