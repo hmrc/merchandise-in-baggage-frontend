@@ -20,16 +20,25 @@ import com.google.inject.Inject
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationJourneyActionProvider @Inject()(defaultActionBuilder: DefaultActionBuilder, repo: DeclarationJourneyRepository)(
-  implicit ec: ExecutionContext) {
+class DeclarationJourneyActionProvider @Inject()(
+  defaultActionBuilder: DefaultActionBuilder,
+  repo: DeclarationJourneyRepository,
+  strideAuthAction: StrideAuthAction)(implicit ec: ExecutionContext, appConfig: AppConfig) {
+
+  val internalJourneyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
+    defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
+
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
-    defaultActionBuilder andThen journeyActionRefiner
+    if (appConfig.isAssistedDigital) internalJourneyAction
+    else defaultActionBuilder andThen journeyActionRefiner
 
   def goodsAction(idx: Int): ActionBuilder[DeclarationGoodsRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner andThen goodsActionRefiner(idx)

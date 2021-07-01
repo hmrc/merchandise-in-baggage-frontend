@@ -32,7 +32,8 @@ import play.api.test.FakeRequest
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.DefaultDB
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.MongoConfiguration
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
+import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, MongoConfiguration}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyActionProvider
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -51,6 +52,7 @@ trait BaseSpecWithApplication
     PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))
 
   lazy val defaultBuilder = injector.instanceOf[DefaultActionBuilder]
+  implicit lazy val appConfig = injector.instanceOf[AppConfig]
   def messagesApi = app.injector.instanceOf[MessagesApi]
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
@@ -65,7 +67,8 @@ trait BaseSpecWithApplication
         "play.http.router"                                   -> "testOnlyDoNotUseInAppConf.Routes",
         "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
         "microservice.services.payment.port"                 -> WireMockSupport.port,
-        "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port
+        "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port,
+        "microservice.services.auth.port"                    -> WireMockSupport.port
       ))
       .build()
 
@@ -83,8 +86,10 @@ trait BaseSpecWithApplication
       override def upsert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] = Future.successful(declarationJourney)
   }
 
+  lazy val stubStride: StrideAuthAction = app.injector.instanceOf[StrideAuthAction]
+
   lazy val stubProvider: DeclarationJourney => DeclarationJourneyActionProvider = declarationJourney =>
-    new DeclarationJourneyActionProvider(defaultBuilder, stubRepo(declarationJourney))
+    new DeclarationJourneyActionProvider(defaultBuilder, stubRepo(declarationJourney), stubStride)
 
   def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
     declarationJourneyRepository.insert(declarationJourney).futureValue
