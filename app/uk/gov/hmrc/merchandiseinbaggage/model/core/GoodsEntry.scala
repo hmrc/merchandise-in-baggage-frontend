@@ -32,6 +32,7 @@ final case class ImportGoodsEntry(
   override val maybeCategory: Option[String] = None,
   maybeGoodsVatRate: Option[GoodsVatRate] = None,
   maybeProducedInEu: Option[YesNoDontKnow] = None,
+  maybeImportInEu: Option[YesNoDontKnow] = None,
   override val maybePurchaseDetails: Option[PurchaseDetails] = None
 ) extends GoodsEntry {
   override def goodsIfComplete: Option[ImportGoods] =

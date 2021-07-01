@@ -24,7 +24,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, ThresholdCheck, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.core._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport, MakeImport}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{ImportExportChoice, _}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 
@@ -34,6 +35,7 @@ class Navigator {
   import NavigatorMapping._
 
   def nextPage(request: NavigationRequest)(implicit ec: ExecutionContext): Future[Call] = request match {
+    case ImportExportChoiceRequest(choice, sessionId, upsert)              => importExportChoice(choice, sessionId, upsert)
     case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert)    => reviewGoods(value, journey, overThresholdCheck, upsert)
     case PurchaseDetailsRequest(input, idx, journey, entries, upsert)      => purchaseDetails(input, idx, entries, journey, upsert)
     case RemoveGoodsRequest(idx, journey, value, upsert)                   => removeGoodOrRedirect(idx, journey, value, upsert)
@@ -334,4 +336,22 @@ object NavigatorMapping {
       }
     }
   }
+
+  def importExportChoice(choice: ImportExportChoice, sessionId: SessionId, upsert: DeclarationJourney => Future[DeclarationJourney])(
+    implicit ec: ExecutionContext): Future[Call] = {
+    val (declarationType, journeyType) = choice match {
+      case MakeImport    => (Import, New)
+      case MakeExport    => (Export, New)
+      case AddToExisting => (Import, Amend) //defaults to Import, will be set correctly in the next page
+    }
+
+    upsert(DeclarationJourney(sessionId, declarationType, journeyType))
+      .map { _ =>
+        journeyType match {
+          case New   => GoodsDestinationController.onPageLoad()
+          case Amend => RetrieveDeclarationController.onPageLoad()
+        }
+      }
+  }
+
 }

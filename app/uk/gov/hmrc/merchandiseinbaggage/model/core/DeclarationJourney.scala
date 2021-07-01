@@ -151,6 +151,24 @@ case class DeclarationJourney(
 object DeclarationJourney extends MongoDateTimeFormats {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
+  def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =
+    declarationType match {
+      case Import =>
+        DeclarationJourney(
+          sessionId = sessionId,
+          declarationType = declarationType,
+          journeyType = journeyType,
+          goodsEntries = GoodsEntries(ImportGoodsEntry())
+        )
+      case Export =>
+        DeclarationJourney(
+          sessionId = sessionId,
+          declarationType = declarationType,
+          journeyType = journeyType,
+          goodsEntries = GoodsEntries(ExportGoodsEntry())
+        )
+    }
+
   def apply(sessionId: SessionId, declarationType: DeclarationType): DeclarationJourney = declarationType match {
     case Import =>
       DeclarationJourney(
