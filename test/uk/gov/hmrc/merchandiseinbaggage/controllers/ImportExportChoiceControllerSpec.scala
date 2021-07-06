@@ -22,11 +22,13 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{ImportExportChoiceCo
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport}
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with WireMockSupport {
 
   val view = injector.instanceOf[ImportExportChoice]
   val mockNavigator = mock[Navigator]
@@ -36,6 +38,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
   "onPageLoad" should {
     "return 200 with radio button" in {
       val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
+      givenTheUserIsAuthenticatedAndAuthorised()
 
       val eventualResult = controller.onPageLoad(request)
       val result = contentAsString(eventualResult)
@@ -80,6 +83,8 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     "return 400 with required form error" in {
       val request = buildGet(ImportExportChoiceController.onSubmit().url, aSessionId)
         .withFormUrlEncodedBody("value" -> "")
+
+      givenTheUserIsAuthenticatedAndAuthorised()
 
       val eventualResult = controller.onSubmit(request)
       val result = contentAsString(eventualResult)
