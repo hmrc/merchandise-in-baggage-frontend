@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
+import uk.gov.hmrc.merchandiseinbaggage.auth.{AuthRequest, StrideAuthAction}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -32,6 +32,8 @@ class DeclarationJourneyActionProvider @Inject()(
   defaultActionBuilder: DefaultActionBuilder,
   repo: DeclarationJourneyRepository,
   strideAuthAction: StrideAuthAction)(implicit ec: ExecutionContext, appConfig: AppConfig) {
+
+  val initJourneyAction: ActionBuilder[AuthRequest, AnyContent] = defaultActionBuilder andThen strideAuthAction
 
   val internalJourneyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner

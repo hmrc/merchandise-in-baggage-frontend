@@ -11,6 +11,14 @@ feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
 
+# This is only for assisted digital journey - Welsh is not required
+importExportChoice.header = What do you want to do?
+importExportChoice.title = What do you want to do?
+importExportChoice.MakeImport = Make an import declaration
+importExportChoice.MakeExport = Make an export declaration
+importExportChoice.AddToExisting = Add goods to an existing declaration
+importExportChoice.error.required = Select one of the options
+
 error.browser.title.prefix = Error:
 error.summary.title = There is a problem
 error.max.3.decimals = Enter a number in the correct format, for example, 25.60
