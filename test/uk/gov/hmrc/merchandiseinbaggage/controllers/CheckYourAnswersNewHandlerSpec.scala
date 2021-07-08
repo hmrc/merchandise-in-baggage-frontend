@@ -17,7 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
+
 import com.softwaremill.quicklens._
+import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -25,11 +27,12 @@ import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -37,9 +40,10 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport {
+class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
   private lazy val httpClient = injector.instanceOf[HttpClient]
+  private lazy val mockTpsPaymentsService = mock[TpsPaymentsService]
   private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val mibConnector = injector.instanceOf[MibConnector]
@@ -66,6 +70,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
   private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
+      mockTpsPaymentsService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       testMibConnector,
       importView,
@@ -128,6 +133,28 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe Some("http://host")
+    }
+
+    "will calculate tax and send payment request to TPS for Imports" in {
+      val sessionId = SessionId()
+      implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val id = DeclarationId("xxx")
+      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val importJourney: DeclarationJourney = completedDeclarationJourney
+        .copy(sessionId = sessionId, createdAt = created, declarationId = id)
+
+      givenADeclarationJourneyIsPersistedWithStub(importJourney)
+
+      (mockTpsPaymentsService
+        .createTpsPayments(_: String, _: Option[Int], _: Declaration, _: CalculationResults)(_: HeaderCarrier))
+        .expects("123", None, *, *, *)
+        .returning(Future.successful(TpsId("someid")))
+        .once()
+
+      val eventualResult = newHandler().onSubmit(importJourney.toDeclaration, "123")
+
+      status(eventualResult) mustBe 303
+      redirectLocation(eventualResult) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
     }
 
     "will redirect to confirmation if totalTax is £0 and should not call pay api" in {

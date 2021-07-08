@@ -25,6 +25,7 @@ import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
+import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
 
 @Singleton
 class AppConfig @Inject()(val config: Configuration, val env: Environment)() extends MongoConfiguration with MibConfiguration {
@@ -42,6 +43,9 @@ class AppConfig @Inject()(val config: Configuration, val env: Environment)() ext
 
   lazy val paymentsReturnUrl: String = configSource("payments.returnUrl").loadOrThrow[String]
   lazy val paymentsBackUrl: String = configSource("payments.backUrl").loadOrThrow[String]
+
+  lazy val tpsNavigation: TpsNavigation = configSource("tps-navigation").loadOrThrow[TpsNavigation]
+  lazy val tpsFrontendBaseUrl: String = configSource("microservice.services.tps-payments-frontend.url").loadOrThrow[String]
 
   val feedbackUrl: String = {
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]

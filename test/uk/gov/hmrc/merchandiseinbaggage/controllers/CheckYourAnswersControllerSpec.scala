@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -47,6 +47,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val mibConnector = injector.instanceOf[MibConnector]
   private val auditConnector = injector.instanceOf[AuditConnector]
   private val mockMibService = mock[MibService]
+  private val mockTpsService = mock[TpsPaymentsService]
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
@@ -56,6 +57,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private def newHandler() =
     new CheckYourAnswersNewHandler(
       mockMibService,
+      mockTpsService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       mibConnector,
       importView,

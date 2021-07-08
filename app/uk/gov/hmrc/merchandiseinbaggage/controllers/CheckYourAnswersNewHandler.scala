@@ -26,8 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
@@ -36,6 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CheckYourAnswersNewHandler @Inject()(
   mibService: MibService,
+  tpsPaymentsService: TpsPaymentsService,
   paymentService: PaymentService,
   mibConnector: MibConnector,
   importView: CheckYourAnswersImportView,
@@ -64,6 +65,14 @@ class CheckYourAnswersNewHandler @Inject()(
   private def persistAndRedirect(declaration: Declaration)(implicit hc: HeaderCarrier) =
     mibConnector.persistDeclaration(declaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
 
+  def onSubmit(declaration: Declaration, pid: String)(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
+    declaration.declarationType match {
+      case Export =>
+        persistAndRedirect(declaration)
+      case Import =>
+        persistAndRedirectToPayments(declaration, pid)
+    }
+
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
       calculationResponse <- mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
@@ -72,4 +81,28 @@ class CheckYourAnswersNewHandler @Inject()(
       _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
       redirectUrl <- paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
+
+  private def persistAndRedirectToPayments(declaration: Declaration, pid: String)(
+    implicit rh: RequestHeader,
+    hc: HeaderCarrier): Future[Result] =
+    for {
+      calculationResponse <- mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      _ <- mibConnector.persistDeclaration(
+            declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)))
+      redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, declaration, pid)
+    } yield redirect
+
+  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration, pid: String)(
+    implicit rh: RequestHeader,
+    hc: HeaderCarrier): Future[Result] =
+    if (calculations.totalTaxDue.value == 0L) {
+      Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+    } else {
+      tpsPaymentsService
+        .createTpsPayments(pid, None, declaration, calculations)
+        .map(
+          tpsId =>
+            Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
+              .addingToSession("TPS_ID" -> tpsId.value))
+    }
 }
