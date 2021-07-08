@@ -36,9 +36,14 @@ class TpsPaymentsService @Inject()(connector: TpsPaymentsBackendConnector, val a
     extends Auditor {
 
   def createTpsPayments(pid: String, amendmentRef: Option[Int], declaration: Declaration, paymentDue: CalculationResults)(
-    implicit hc: HeaderCarrier): Future[TpsId] = {
-    auditDeclaration(declaration)
-    val request = TpsPaymentsRequest(
+    implicit hc: HeaderCarrier): Future[TpsId] =
+    for {
+      _     <- auditDeclaration(declaration)
+      tpsId <- connector.tpsPayments(buildTpsRequest(pid, amendmentRef, declaration, paymentDue))
+    } yield tpsId
+
+  private[service] def buildTpsRequest(pid: String, amendmentRef: Option[Int], declaration: Declaration, paymentDue: CalculationResults) =
+    TpsPaymentsRequest(
       pid = pid,
       payments = Seq(
         TpsPaymentsItem(
@@ -55,7 +60,4 @@ class TpsPaymentsService @Inject()(connector: TpsPaymentsBackendConnector, val a
       ),
       navigation = appConfig.tpsNavigation
     )
-
-    connector.tpsPayments(request)
-  }
 }
