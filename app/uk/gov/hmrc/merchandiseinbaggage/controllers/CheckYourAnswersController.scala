@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
@@ -33,7 +34,7 @@ class CheckYourAnswersController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   newHandler: CheckYourAnswersNewHandler,
   amendHandler: CheckYourAnswersAmendHandler,
-  override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext)
+  override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -58,7 +59,10 @@ class CheckYourAnswersController @Inject()(
       case New =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            newHandler.onSubmit(declaration.copy(lang = messages.lang.code))
+            if (appConfig.isAssistedDigital)
+              newHandler.onSubmit(declaration.copy(lang = messages.lang.code), request.pid)
+            else
+              newHandler.onSubmit(declaration.copy(lang = messages.lang.code))
           }
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete

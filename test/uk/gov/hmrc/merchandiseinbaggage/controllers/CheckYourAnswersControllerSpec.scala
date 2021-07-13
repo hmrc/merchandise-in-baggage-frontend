@@ -18,6 +18,9 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.OptionT
 import org.scalamock.scalatest.MockFactory
+import play.api.Application
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.RequestHeader
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
@@ -28,14 +31,17 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{payapi, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
+import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.mvc.Results._
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
@@ -147,6 +153,47 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
       }
+    }
+
+    s"will invoke assisted digital on submit with $TpsId if flag is set" in new DeclarationJourneyControllerSpec {
+      override def fakeApplication(): Application =
+        new GuiceApplicationBuilder()
+          .configure(
+            Map(
+              "microservice.services.auth.port" -> WireMockSupport.port,
+              "assistedDigital"                 -> true
+            ))
+          .build()
+
+      val sessionId = SessionId()
+      val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
+
+      def controller(declarationJourney: DeclarationJourney) =
+        new CheckYourAnswersController(
+          controllerComponents,
+          actionBuilder,
+          mockHandler,
+          amendHandler(),
+          stubRepo(journey)
+        )
+
+      givenTheUserIsAuthenticatedAndAuthorised()
+      givenADeclarationJourneyIsPersisted(journey)
+      givenDeclarationIsPersistedInBackend
+
+      val mockHandler = mock[CheckYourAnswersNewHandler]
+
+      (mockHandler
+        .onSubmit(_: Declaration, _: String)(_: RequestHeader, _: HeaderCarrier))
+        .expects(*, *, *, *)
+        .returning(Future.successful(Redirect("")))
+        .once()
+
+      val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        .withHeaders("authProviderId" -> "123")
+      val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
+
+      status(eventualResult) mustBe 303
     }
 
     s"redirect to next page after successful form submit for New journies" in {

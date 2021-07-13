@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Request, WrappedRequest}
+import play.api.mvc.WrappedRequest
+import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 
-final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJourney, val request: Request[A])
+final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJourney, val request: AuthRequest[A])
     extends WrappedRequest[A](request) {
 
   def declarationType: DeclarationType = declarationJourney.declarationType
+  def pid: String = request.credentials.map(_.providerId).getOrElse("PID not found")
 }

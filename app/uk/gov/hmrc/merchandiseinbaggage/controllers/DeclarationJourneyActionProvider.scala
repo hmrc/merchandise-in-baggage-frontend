@@ -62,7 +62,7 @@ class DeclarationJourneyActionProvider @Inject()(
           case Some(sessionId) =>
             repo.findBySessionId(SessionId(sessionId)).map {
               case Some(declarationJourney) =>
-                Right(new DeclarationJourneyRequest(declarationJourney, request))
+                Right(new DeclarationJourneyRequest(declarationJourney, AuthRequest(request, None)))
               case _ => Left(invalidRequest(s"Persisted declaration journey not found for session: $sessionId")(request))
             }
         }
