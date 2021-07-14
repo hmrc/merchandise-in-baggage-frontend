@@ -74,6 +74,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
     new CheckYourAnswersAmendHandler(
       actionBuilder,
       mockMibService,
+      mockTpsService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       amendImportView,
       amendExportView,
