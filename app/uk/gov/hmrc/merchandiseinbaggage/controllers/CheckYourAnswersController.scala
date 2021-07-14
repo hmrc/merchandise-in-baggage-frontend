@@ -67,7 +67,10 @@ class CheckYourAnswersController @Inject()(
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            amendHandler.onSubmit(request.declarationJourney.declarationId, amendment.copy(lang = messages.lang.code))
+            if (appConfig.isAssistedDigital)
+              amendHandler.onSubmit(request.declarationJourney.declarationId, request.pid, amendment.copy(lang = messages.lang.code))
+            else
+              amendHandler.onSubmit(request.declarationJourney.declarationId, amendment.copy(lang = messages.lang.code))
           }
     }
   }
