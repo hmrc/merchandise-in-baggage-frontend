@@ -29,6 +29,7 @@ class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuratio
 
   override def configure(): Unit = {
     bindBaseUrl("paymentBaseUrl", "payment")
+    bindBaseUrl("tpsBackendBaseUrl", "tps-payments-backend")
     bindBaseUrl("mibBackendBaseUrl", "merchandise-in-baggage")
     bindBaseUrl("addressLookupFrontendBaseUrl", "address-lookup-frontend")
     bindConstant()

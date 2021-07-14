@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import java.time.LocalDateTime
+
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
@@ -24,12 +25,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService}
+import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
@@ -43,8 +45,9 @@ class CheckYourAnswersAmendHandlerSpec
   private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector = injector.instanceOf[MibConnector]
-
+  private val mockTpsPaymentsService = mock[TpsPaymentsService]
   private val paymentService = mock[PaymentService]
+  private val mockMibService = mock[MibService]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val stubbedCalculation: CalculationResults => MibService = _ =>
@@ -58,6 +61,7 @@ class CheckYourAnswersAmendHandlerSpec
     new CheckYourAnswersAmendHandler(
       actionBuilder,
       stubbedCalculation(paymentCalcs),
+      mockTpsPaymentsService,
       paymentService,
       importView,
       exportView,
@@ -84,6 +88,57 @@ class CheckYourAnswersAmendHandlerSpec
 
         status(eventualResult) mustBe OK
         contentAsString(eventualResult) must include(messageApi("checkYourAnswers.amend.title"))
+      }
+
+      s"will calculate tax and send payment request to TPS for $importOrExport" in {
+        val sessionId = SessionId()
+        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val id = DeclarationId("xxx")
+        val created = LocalDateTime.now.withSecond(0).withNano(0)
+        val journey: DeclarationJourney = completedDeclarationJourney
+          .copy(sessionId = sessionId, createdAt = created, declarationId = id, declarationType = importOrExport)
+        val handler = new CheckYourAnswersAmendHandler(
+          actionBuilder,
+          mockMibService,
+          mockTpsPaymentsService,
+          paymentService,
+          importView,
+          exportView,
+        )
+
+        givenADeclarationJourneyIsPersistedWithStub(journey)
+
+        (mockMibService
+          .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
+          .expects(*, *)
+          .returning(Future.successful(Some(journey.toDeclaration)))
+
+        if (importOrExport == Import) {
+          (mockMibService
+            .paymentCalculations(_: Seq[Goods], _: GoodsDestination)(_: HeaderCarrier))
+            .expects(*, *, *)
+            .returning(Future.successful(aCalculationResponse))
+        }
+
+        (mockMibService
+          .amendDeclaration(_: Declaration)(_: HeaderCarrier))
+          .expects(*, *)
+          .returning(Future.successful(journey.declarationId))
+
+        if (importOrExport == Import) {
+          (mockTpsPaymentsService
+            .createTpsPayments(_: String, _: Option[Int], _: Declaration, _: CalculationResults)(_: HeaderCarrier))
+            .expects("123", Some(1), *, *, *)
+            .returning(Future.successful(TpsId("someid")))
+        }
+
+        val amendment = completedAmendment(Import)
+        val eventualResult = handler.onSubmit(journey.toDeclaration.declarationId, "123", amendment)
+
+        status(eventualResult) mustBe 303
+        if (importOrExport == Export) redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/declaration-confirmation")
+        if (importOrExport == Import)
+          redirectLocation(eventualResult) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
       }
     }
   }
