@@ -21,12 +21,12 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyType, NotRequired}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyType, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class DeclarationConfirmationController @Inject()(
@@ -71,11 +71,15 @@ class DeclarationConfirmationController @Inject()(
     repo.upsert(DeclarationJourney(sessionId, declarationType).copy(declarationId = declarationId))
   }
 
-  //In case of Imports with payment needed, the confirmation page will be hosted by the Payments service
   private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType): Boolean =
     (declaration.declarationType, journeyType) match {
-      case (Export, _)     => true
-      case (Import, New)   => declaration.paymentStatus.contains(NotRequired)
+      case (Export, _) => true
+      case (Import, New) if appConf.isAssistedDigital =>
+        declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
+      case (Import, New) => declaration.paymentStatus.contains(NotRequired)
+      case (Import, Amend) if appConf.isAssistedDigital =>
+        val latestAmendmentStatus = declaration.amendments.lastOption.flatMap(_.paymentStatus)
+        latestAmendmentStatus.contains(Paid) || latestAmendmentStatus.contains(NotRequired)
       case (Import, Amend) => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
     }
 }
