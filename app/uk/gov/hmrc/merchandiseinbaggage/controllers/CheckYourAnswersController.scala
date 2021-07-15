@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
@@ -34,8 +34,8 @@ class CheckYourAnswersController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   newHandler: CheckYourAnswersNewHandler,
   amendHandler: CheckYourAnswersAmendHandler,
-  override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController {
+  override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext)
+    extends DeclarationJourneyUpdateController with IsAssistedDigitalConfiguration {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
@@ -59,7 +59,7 @@ class CheckYourAnswersController @Inject()(
       case New =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            if (appConfig.isAssistedDigital)
+            if (isAssistedDigital)
               newHandler.onSubmit(declaration.copy(lang = messages.lang.code), request.pid)
             else
               newHandler.onSubmit(declaration.copy(lang = messages.lang.code))
@@ -67,7 +67,7 @@ class CheckYourAnswersController @Inject()(
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            if (appConfig.isAssistedDigital)
+            if (isAssistedDigital)
               amendHandler.onSubmit(request.declarationJourney.declarationId, request.pid, amendment.copy(lang = messages.lang.code))
             else
               amendHandler.onSubmit(request.declarationJourney.declarationId, amendment.copy(lang = messages.lang.code))

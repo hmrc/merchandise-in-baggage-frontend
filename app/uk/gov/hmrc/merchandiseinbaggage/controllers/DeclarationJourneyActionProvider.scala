@@ -21,7 +21,7 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.auth.{AuthRequest, StrideAuthAction}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
@@ -31,7 +31,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class DeclarationJourneyActionProvider @Inject()(
   defaultActionBuilder: DefaultActionBuilder,
   repo: DeclarationJourneyRepository,
-  strideAuthAction: StrideAuthAction)(implicit ec: ExecutionContext, appConfig: AppConfig) {
+  strideAuthAction: StrideAuthAction)(implicit ec: ExecutionContext)
+    extends IsAssistedDigitalConfiguration {
 
   val initJourneyAction: ActionBuilder[AuthRequest, AnyContent] = defaultActionBuilder andThen strideAuthAction
 
@@ -39,7 +40,7 @@ class DeclarationJourneyActionProvider @Inject()(
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
 
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
-    if (appConfig.isAssistedDigital) internalJourneyAction
+    if (isAssistedDigital) internalJourneyAction
     else defaultActionBuilder andThen journeyActionRefiner
 
   def goodsAction(idx: Int): ActionBuilder[DeclarationGoodsRequest, AnyContent] =

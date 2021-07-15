@@ -37,7 +37,6 @@ class AppConfig @Inject()(val config: Configuration, val env: Environment)() ext
   val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
   lazy val strideRoles: Seq[String] = config.get[Seq[String]]("stride.roles")
-  lazy val isAssistedDigital: Boolean = config.get[Boolean]("assistedDigital")
   lazy val timeout: Int = configSource("timeout.timeout").loadOrThrow[Int]
   lazy val countdown: Int = configSource("timeout.countdown").loadOrThrow[Int]
 
@@ -85,3 +84,7 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
+
+trait IsAssistedDigitalConfiguration {
+  lazy val isAssistedDigital: Boolean = configSource("assistedDigital").loadOrThrow[Boolean]
+}

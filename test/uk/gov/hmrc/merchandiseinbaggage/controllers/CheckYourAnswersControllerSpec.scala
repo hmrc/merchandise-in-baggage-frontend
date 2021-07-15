@@ -156,15 +156,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       }
 
       s"will invoke assisted digital on submit with $TpsId if flag is set for $journeyType" in new DeclarationJourneyControllerSpec {
-        override def fakeApplication(): Application =
-          new GuiceApplicationBuilder()
-            .configure(
-              Map(
-                "microservice.services.auth.port" -> WireMockSupport.port,
-                "assistedDigital"                 -> true
-              ))
-            .build()
-
         val sessionId = SessionId()
         val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = journeyType)
         val mockHandler = mock[CheckYourAnswersNewHandler]
@@ -177,7 +168,9 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
             mockHandler,
             mockAmendHandler,
             stubRepo(journey)
-          )
+          ) {
+            override lazy val isAssistedDigital: Boolean = true
+          }
 
         givenTheUserIsAuthenticatedAndAuthorised()
         givenADeclarationJourneyIsPersisted(journey)
