@@ -214,8 +214,7 @@ trait CoreTestData {
     LocalDateTime.now,
     DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
     Some(TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))),
-    None,
-    Some("Digital")
+    None
   )
 
   val aAmendmentPaid = aAmendment
