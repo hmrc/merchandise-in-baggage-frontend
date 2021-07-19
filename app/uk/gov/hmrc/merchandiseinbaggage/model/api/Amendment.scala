@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 import java.time.LocalDateTime
 
 import play.api.libs.json.{Json, OFormat}
-import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 
 case class Amendment(
   reference: Int,
@@ -32,7 +31,7 @@ case class Amendment(
   emailsSent: Boolean
 )
 
-object Amendment extends IsAssistedDigitalConfiguration {
+object Amendment extends JourneySourceFinder {
   implicit val format: OFormat[Amendment] = Json.format[Amendment]
 
   def apply(
@@ -41,9 +40,7 @@ object Amendment extends IsAssistedDigitalConfiguration {
     goods: DeclarationGoods,
     maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
     paymentStatus: Option[PaymentStatus] = None,
+    source: Option[String] = findSource,
     emailsSent: Boolean = false): Amendment =
-    Amendment(reference, dateOfAmendment, goods, maybeTotalCalculationResult, paymentStatus, findSource(), "en", emailsSent)
-
-  private[api] def findSource(assisted: Boolean = isAssistedDigital): Option[String] =
-    if (assisted) Some("AssistedDigital") else Some("Digital")
+    Amendment(reference, dateOfAmendment, goods, maybeTotalCalculationResult, paymentStatus, source, "en", emailsSent)
 }
