@@ -33,13 +33,51 @@ case class Declaration(
   journeyDetails: JourneyDetails,
   dateOfDeclaration: LocalDateTime,
   mibReference: MibReference,
-  maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
-  paymentStatus: Option[PaymentStatus] = None,
-  emailsSent: Boolean = false,
-  lang: String = "en",
-  source: Option[String] = Some("Digital"),
-  amendments: Seq[Amendment] = Seq.empty)
+  maybeTotalCalculationResult: Option[TotalCalculationResult],
+  paymentStatus: Option[PaymentStatus],
+  emailsSent: Boolean,
+  lang: String,
+  source: Option[String],
+  amendments: Seq[Amendment])
 
-object Declaration {
+object Declaration extends JourneySourceFinder {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
+
+  def apply(
+    declarationId: DeclarationId,
+    sessionId: SessionId,
+    declarationType: DeclarationType,
+    goodsDestination: GoodsDestination,
+    declarationGoods: DeclarationGoods,
+    nameOfPersonCarryingTheGoods: Name,
+    email: Option[Email],
+    maybeCustomsAgent: Option[CustomsAgent],
+    eori: Eori,
+    journeyDetails: JourneyDetails,
+    dateOfDeclaration: LocalDateTime,
+    mibReference: MibReference,
+    maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
+    paymentStatus: Option[PaymentStatus] = None,
+    source: Option[String] = findSource,
+    amendments: Seq[Amendment] = Seq.empty): Declaration =
+    Declaration(
+      declarationId,
+      sessionId,
+      declarationType,
+      goodsDestination: GoodsDestination,
+      declarationGoods: DeclarationGoods,
+      nameOfPersonCarryingTheGoods,
+      email,
+      maybeCustomsAgent,
+      eori,
+      journeyDetails,
+      dateOfDeclaration,
+      mibReference,
+      maybeTotalCalculationResult,
+      paymentStatus,
+      false,
+      "en",
+      source,
+      amendments
+    )
 }
