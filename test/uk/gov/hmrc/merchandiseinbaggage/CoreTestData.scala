@@ -290,7 +290,7 @@ trait CoreTestData {
     }
 
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
-    val result = declarationConfirmationView.apply(persistedDeclaration.get, journeyType)(fakeRequest, message, appConfig)
+    val result = declarationConfirmationView.apply(persistedDeclaration.get, journeyType, false)(fakeRequest, message, appConfig)
 
     result.body
   }

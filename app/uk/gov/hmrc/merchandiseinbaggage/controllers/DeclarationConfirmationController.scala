@@ -36,7 +36,7 @@ class DeclarationConfirmationController @Inject()(
   connector: MibConnector,
   val repo: DeclarationJourneyRepository,
 )(implicit ec: ExecutionContext, appConf: AppConfig)
-    extends DeclarationJourneyController with IsAssistedDigitalConfiguration {
+    extends IsAssistedDigitalConfiguration with DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
@@ -44,7 +44,7 @@ class DeclarationConfirmationController @Inject()(
     connector.findDeclaration(declarationId).map {
       case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
         clearAnswers()
-        Ok(view(declaration, journeyType))
+        Ok(view(declaration, journeyType, isAssistedDigital))
       case Some(_) =>
         clearAnswers()
         actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation")

@@ -24,8 +24,8 @@ import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.govukfrontend.views.Aliases.{Table, TableRow, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.table.HeadCell
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Zero
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRequest, CalculationResults}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 
 object DataModelEnriched {

@@ -35,7 +35,7 @@ class CheckYourAnswersController @Inject()(
   newHandler: CheckYourAnswersNewHandler,
   amendHandler: CheckYourAnswersAmendHandler,
   override val repo: DeclarationJourneyRepository)(implicit ec: ExecutionContext)
-    extends DeclarationJourneyUpdateController with IsAssistedDigitalConfiguration {
+    extends IsAssistedDigitalConfiguration with DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
