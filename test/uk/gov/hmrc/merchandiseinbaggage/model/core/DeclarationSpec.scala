@@ -395,4 +395,40 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       source = stub.findSource
     ).source mustBe Some("AssistedDigital")
   }
+
+  "return the latest added goods" in {
+    val declarationWithGoods = Declaration(
+      aDeclarationId,
+      aSessionId,
+      Import,
+      GreatBritain,
+      aDeclarationGood,
+      Name("xx", "yy"),
+      None,
+      None,
+      Eori("GB123"),
+      JourneyInSmallVehicle(
+        journeyPort,
+        JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
+        "Lx123"
+      ),
+      LocalDateTime.now(),
+      MibReference("xx"),
+      None,
+      amendments = Seq.empty
+    )
+
+    val latestAmendment = aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusMinutes(10))
+
+    declarationWithGoods.latestGoods mustBe declarationWithGoods.declarationGoods.goods
+    declarationWithGoods
+      .modify(_.amendments)
+      .setTo(Seq(
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now()),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusDays(1)),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().plusMinutes(1)),
+        latestAmendment
+      ))
+      .latestGoods mustBe latestAmendment.goods.goods
+  }
 }

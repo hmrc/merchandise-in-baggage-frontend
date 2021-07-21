@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 import javax.inject.Inject
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,16 +42,23 @@ class DeclarationConfirmationController @Inject()(
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
     val journeyType = request.declarationJourney.journeyType
-    connector.findDeclaration(declarationId).map {
+    connector.findDeclaration(declarationId).flatMap {
       case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
-        clearAnswers()
-        Ok(view(declaration, journeyType, isAssistedDigital))
+        cleanAnswersAndConfirm(journeyType, declaration)
       case Some(_) =>
-        clearAnswers()
-        actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation")
-      case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
+        clearAnswers().map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
+      case _ => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
     }
   }
+
+  private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(
+    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    if (isAssistedDigital)
+      for {
+        _   <- clearAnswers()
+        res <- connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
+      } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue.formattedInPounds))
+    else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, "")))
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._

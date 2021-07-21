@@ -103,7 +103,6 @@ class CheckYourAnswersNewHandler @Inject()(
         .map(
           tpsId =>
             Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-              .addingToSession("TPS_ID" -> tpsId.value)
-              .addingToSession("amountToPay" -> calculations.totalTaxDue.formattedInPounds))
+              .addingToSession("TPS_ID" -> tpsId.value))
     }
 }

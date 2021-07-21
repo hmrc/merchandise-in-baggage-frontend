@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 import java.text.NumberFormat.getCurrencyInstance
+import java.time.{LocalDateTime, ZoneOffset}
 import java.util.Locale.UK
 
 import play.api.i18n.Messages
@@ -181,5 +182,12 @@ object DataModelEnriched {
           ))
       )
     }
+  }
+
+  implicit class DeclarationEnriched(declaration: Declaration) {
+    implicit val localDateOrdering: Ordering[LocalDateTime] = Ordering.by(_.toEpochSecond(ZoneOffset.UTC))
+    def latestGoods: Seq[Goods] =
+      if (declaration.amendments.isEmpty) declaration.declarationGoods.goods
+      else declaration.amendments.maxBy(_.dateOfAmendment).goods.goods
   }
 }
