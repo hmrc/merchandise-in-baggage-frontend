@@ -18,8 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.OptionT
 import org.scalamock.scalatest.MockFactory
-import play.api.Application
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -35,13 +34,12 @@ import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView, CheckYourAnswersExportView, CheckYourAnswersImportView}
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.mvc.Results._
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory {
 
@@ -156,15 +154,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       }
 
       s"will invoke assisted digital on submit with $TpsId if flag is set for $journeyType" in new DeclarationJourneyControllerSpec {
-        override def fakeApplication(): Application =
-          new GuiceApplicationBuilder()
-            .configure(
-              Map(
-                "microservice.services.auth.port" -> WireMockSupport.port,
-                "assistedDigital"                 -> true
-              ))
-            .build()
-
         val sessionId = SessionId()
         val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = journeyType)
         val mockHandler = mock[CheckYourAnswersNewHandler]
@@ -177,7 +166,9 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
             mockHandler,
             mockAmendHandler,
             stubRepo(journey)
-          )
+          ) {
+            override lazy val isAssistedDigital: Boolean = true
+          }
 
         givenTheUserIsAuthenticatedAndAuthorised()
         givenADeclarationJourneyIsPersisted(journey)

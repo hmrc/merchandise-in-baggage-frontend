@@ -16,20 +16,21 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.time.LocalDateTime
+import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
+import com.softwaremill.quicklens._
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-import com.softwaremill.quicklens._
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
@@ -368,5 +369,66 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
     "amending an export and not all questions have been answered" in {
       startedAmendExportJourney.amendmentRequiredAndComplete mustBe false
     }
+  }
+
+  "source is AssistedDigital if internal" in {
+    val stub = new JourneySourceFinder {
+      override def findSource: Option[String] = Some("AssistedDigital")
+    }
+    Declaration(
+      aDeclarationId,
+      aSessionId,
+      Import,
+      GreatBritain,
+      aDeclarationGood,
+      Name("xx", "yy"),
+      None,
+      None,
+      Eori("GB123"),
+      JourneyInSmallVehicle(
+        journeyPort,
+        JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
+        "Lx123"
+      ),
+      LocalDateTime.now(),
+      MibReference("xx"),
+      source = stub.findSource
+    ).source mustBe Some("AssistedDigital")
+  }
+
+  "return the latest added goods" in {
+    val declarationWithGoods = Declaration(
+      aDeclarationId,
+      aSessionId,
+      Import,
+      GreatBritain,
+      aDeclarationGood,
+      Name("xx", "yy"),
+      None,
+      None,
+      Eori("GB123"),
+      JourneyInSmallVehicle(
+        journeyPort,
+        JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
+        "Lx123"
+      ),
+      LocalDateTime.now(),
+      MibReference("xx"),
+      None,
+      amendments = Seq.empty
+    )
+
+    val latestAmendment = aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusMinutes(10))
+
+    declarationWithGoods.latestGoods mustBe declarationWithGoods.declarationGoods.goods
+    declarationWithGoods
+      .modify(_.amendments)
+      .setTo(Seq(
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now()),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusDays(1)),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().plusMinutes(1)),
+        latestAmendment
+      ))
+      .latestGoods mustBe latestAmendment.goods.goods
   }
 }

@@ -214,8 +214,7 @@ trait CoreTestData {
     LocalDateTime.now,
     DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
     Some(TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))),
-    None,
-    Some("Digital")
+    None
   )
 
   val aAmendmentPaid = aAmendment
@@ -291,7 +290,7 @@ trait CoreTestData {
     }
 
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
-    val result = declarationConfirmationView.apply(persistedDeclaration.get, journeyType)(fakeRequest, message, appConfig)
+    val result = declarationConfirmationView.apply(persistedDeclaration.get, journeyType, false, "")(fakeRequest, message, appConfig)
 
     result.body
   }

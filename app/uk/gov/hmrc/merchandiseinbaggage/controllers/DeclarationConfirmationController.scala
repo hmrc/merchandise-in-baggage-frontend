@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 import javax.inject.Inject
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,21 +37,28 @@ class DeclarationConfirmationController @Inject()(
   connector: MibConnector,
   val repo: DeclarationJourneyRepository,
 )(implicit ec: ExecutionContext, appConf: AppConfig)
-    extends DeclarationJourneyController {
+    extends IsAssistedDigitalConfiguration with DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
     val journeyType = request.declarationJourney.journeyType
-    connector.findDeclaration(declarationId).map {
+    connector.findDeclaration(declarationId).flatMap {
       case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
-        clearAnswers()
-        Ok(view(declaration, journeyType))
+        cleanAnswersAndConfirm(journeyType, declaration)
       case Some(_) =>
-        clearAnswers()
-        actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation")
-      case _ => actionProvider.invalidRequest(s"declaration not found for id:${declarationId.value}")
+        clearAnswers().map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
+      case _ => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
     }
   }
+
+  private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(
+    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+    if (isAssistedDigital)
+      for {
+        _   <- clearAnswers()
+        res <- connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
+      } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue.formattedInPounds))
+    else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, "")))
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
@@ -72,14 +80,14 @@ class DeclarationConfirmationController @Inject()(
   }
 
   private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType): Boolean =
-    (declaration.declarationType, journeyType) match {
-      case (Export, _) => true
-      case (Import, New) if appConf.isAssistedDigital =>
+    (declaration.declarationType, journeyType, isAssistedDigital) match {
+      case (Export, _, _) => true
+      case (Import, New, true) =>
         declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
-      case (Import, New) => declaration.paymentStatus.contains(NotRequired)
-      case (Import, Amend) if appConf.isAssistedDigital =>
+      case (Import, New, _) => declaration.paymentStatus.contains(NotRequired)
+      case (Import, Amend, true) =>
         val latestAmendmentStatus = declaration.amendments.lastOption.flatMap(_.paymentStatus)
         latestAmendmentStatus.contains(Paid) || latestAmendmentStatus.contains(NotRequired)
-      case (Import, Amend) => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
+      case (Import, Amend, _) => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
     }
 }
