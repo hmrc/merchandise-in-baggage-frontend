@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 
 @this(
         govukTemplate: GovukTemplate,
@@ -33,7 +34,8 @@
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
         appConfig: AppConfig,
         hmrcStandardFooter: HmrcStandardFooter,
-        govukSkipLink: GovukSkipLink
+        govukSkipLink: GovukSkipLink,
+        siteHeader: components.siteHeader,
 )
 
 @(
@@ -52,35 +54,43 @@
 @hmrcTrackingConsentSnippet()
 }
 
+
 @headerDefault = {
-@headerBlock.getOrElse {
-    @govukHeader(Header(
+    @if(appConfig.isAssistedDigital) {
+        @siteHeader()
+    } else {
+        @headerBlock.getOrElse {
+        @govukHeader(Header(
         homepageUrl = Some(messages("service.name.govuk.a.href")),
         serviceUrl =  Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href")),
         serviceName = Some(messages("service.name")),
         attributes = Map(),
         containerClasses = None))
-}
+            }
+        }
 }
 
 @beforeContentDefault = {
-@phaseBanner("beta")
-@{
-    maybeBackButtonUrl.fold(Html("")) { call =>
-        if(call.url == "#") {
-            govukBackLink(BackLink(href = "#", content = Text(messages("site.back")), attributes = Map("id" -> "back-link")))
-        } else {
-            // for some reason the supplied Call path does not always start with /declare-commercial-goods/
-            val pathPrefix = "/declare-commercial-goods"
-            val urlString = call.toString
-            val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
 
-            govukBackLink(BackLink(href = fullPathUrl, content = Text(messages("site.back"))))
+@if(!appConfig.isAssistedDigital) {
+    @phaseBanner("beta")
+    @{
+        maybeBackButtonUrl.fold(Html("")) { call =>
+            if(call.url == "#") {
+                govukBackLink(BackLink(href = "#", content = Text(messages("site.back")), attributes = Map("id" -> "back-link")))
+            } else {
+                // for some reason the supplied Call path does not always start with /declare-commercial-goods/
+                val pathPrefix = "/declare-commercial-goods"
+                val urlString = call.toString
+                val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
+
+                govukBackLink(BackLink(href = fullPathUrl, content = Text(messages("site.back"))))
+            }
         }
     }
 }
 
-@if(appConfig.languageTranslationEnabled) {
+@if(!appConfig.isAssistedDigital && appConfig.languageTranslationEnabled) {
     @languageSelection()
 }
 
