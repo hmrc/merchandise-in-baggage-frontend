@@ -74,18 +74,18 @@
 
 @if(!appConfig.isAssistedDigital) {
     @phaseBanner("beta")
-    @{
-        maybeBackButtonUrl.fold(Html("")) { call =>
-            if(call.url == "#") {
-                govukBackLink(BackLink(href = "#", content = Text(messages("site.back")), attributes = Map("id" -> "back-link")))
-            } else {
-                // for some reason the supplied Call path does not always start with /declare-commercial-goods/
-                val pathPrefix = "/declare-commercial-goods"
-                val urlString = call.toString
-                val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
+}
+@{
+    maybeBackButtonUrl.fold(Html("")) { call =>
+        if(call.url == "#") {
+            govukBackLink(BackLink(href = "#", content = Text(messages("site.back")), attributes = Map("id" -> "back-link")))
+        } else {
+            // for some reason the supplied Call path does not always start with /declare-commercial-goods/
+            val pathPrefix = "/declare-commercial-goods"
+            val urlString = call.toString
+            val fullPathUrl = if(urlString.startsWith(pathPrefix)) urlString else s"$pathPrefix$urlString"
 
-                govukBackLink(BackLink(href = fullPathUrl, content = Text(messages("site.back"))))
-            }
+            govukBackLink(BackLink(href = fullPathUrl, content = Text(messages("site.back"))))
         }
     }
 }
