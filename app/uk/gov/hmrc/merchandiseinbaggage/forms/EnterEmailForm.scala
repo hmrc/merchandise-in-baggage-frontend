@@ -19,16 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.Form
 import play.api.data.Forms.mapping
 import play.api.data.validation.{Constraint, Invalid, Valid}
+import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
-object EnterEmailForm extends Mappings {
+object EnterEmailForm extends Mappings with IsAssistedDigitalConfiguration {
 
   private val emailRegex =
     """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
   private val emailAddress: Constraint[String] = Constraint[String]("constraint.email") { e =>
-    if (e.trim.isEmpty) Invalid("enterEmail.error.required")
+    if (!isAssistedDigital && e.trim.isEmpty) Invalid("enterEmail.error.required")
     else
       emailRegex
         .findFirstMatchIn(e)
