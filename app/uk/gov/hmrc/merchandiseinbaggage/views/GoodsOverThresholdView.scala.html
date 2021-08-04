@@ -52,9 +52,15 @@ p: components.p
     </p>
 
     <p class="govuk-body">
-        <a class="govuk-link" href="@if(appConfig.isAssistedDigital) { ImportExportChoiceController.onPageLoad().url } else { StartImportController.onPageLoad().url }">
+        @if(appConfig.isAssistedDigital) {
+        <a class="govuk-link" href="@ImportExportChoiceController.onPageLoad().url">
             @messages("goodsOverThreshold.p5")
         </a>
+        } else {
+        <a class="govuk-link" href="@StartImportController.onPageLoad().url">
+            @messages("goodsOverThreshold.p5")
+        </a>
+        }
     </p>
 
     @h2("goodsOverThreshold.h3", classes = Some("govuk-heading-m"))
