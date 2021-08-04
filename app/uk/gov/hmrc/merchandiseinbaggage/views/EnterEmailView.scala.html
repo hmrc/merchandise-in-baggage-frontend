@@ -47,7 +47,7 @@ h1: components.h1)
         id = "email",
         name = "email",
         inputType = "email",
-        label = "enterEmail.email",
+        label = if(appConfig.isAssistedDigital) { "enterEmail.email.optional" } else { "enterEmail.email" },
         isPageHeading = false,
         attributes = Map("autocomplete" -> "email", "aria-describedby" -> "email-hint"),
         classes = Some("govuk-input--width-20")
