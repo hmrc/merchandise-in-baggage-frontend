@@ -60,7 +60,7 @@
  </div>
  <div class="govuk-summary-list__row">
   <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
-  @if(isAssistedDigital) {
+  @if(declaration.declarationType == Import && isAssistedDigital) {
    <dd id="amountAD" class="govuk-summary-list__value">@totalTaxDue</dd>
   } else { <dd id="amount" class="govuk-summary-list__value">@messages("declarationConfirmation.nothingtopay.label")</dd> }
  </div>
