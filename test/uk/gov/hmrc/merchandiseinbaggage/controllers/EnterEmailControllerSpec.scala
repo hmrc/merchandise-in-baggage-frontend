@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{EnterEmailView, EnterOptionalEmailView}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,10 +30,17 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val view = app.injector.instanceOf[EnterEmailView]
+  private val viewOpt = app.injector.instanceOf[EnterOptionalEmailView]
   val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new EnterEmailController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+    new EnterEmailController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      view,
+      viewOpt,
+      mockNavigator)
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
