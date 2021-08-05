@@ -31,7 +31,7 @@ object EnterEmailForm extends Mappings with IsAssistedDigitalConfiguration {
   private val emailAddress: Constraint[String] =
     Constraint[String]("constraint.email") { e =>
       if (isAssistedDigital && e.trim.isEmpty) Valid
-      else if (e.trim.isEmpty) Invalid("enterEmail.error.required")
+      else if (!isAssistedDigital && e.trim.isEmpty) Invalid("enterEmail.error.required")
       else
         emailRegex
           .findFirstMatchIn(e)
