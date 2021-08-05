@@ -18,7 +18,9 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import java.time.{LocalDateTime, ZoneOffset}
 import java.util.UUID
+
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -82,7 +84,7 @@ case class DeclarationJourney(
   maybeRegistrationNumber: Option[String] = None,
   maybeRetrieveDeclaration: Option[RetrieveDeclaration] = None,
   declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString))
-    extends MibReferenceGenerator {
+    extends MibReferenceGenerator with IsAssistedDigitalConfiguration {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
@@ -116,7 +118,7 @@ case class DeclarationJourney(
         goodsDestination             <- maybeGoodsDestination
         goods                        <- goodsEntries.declarationGoodsIfComplete
         nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
-        email                        <- maybeEmailAddress
+        email                        <- if (isAssistedDigital) Some(Email("")) else maybeEmailAddress
         eori                         <- maybeEori
         journeyDetails               <- maybeCompleteJourneyDetails
         if discardedAnswersAreCompleteAndRequireADeclaration
