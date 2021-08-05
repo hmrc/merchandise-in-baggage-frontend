@@ -28,14 +28,16 @@ object EnterEmailForm extends Mappings with IsAssistedDigitalConfiguration {
   private val emailRegex =
     """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r
 
-  private val emailAddress: Constraint[String] = Constraint[String]("constraint.email") { e =>
-    if (!isAssistedDigital && e.trim.isEmpty) Invalid("enterEmail.error.required")
-    else
-      emailRegex
-        .findFirstMatchIn(e)
-        .map(_ => Valid)
-        .getOrElse(Invalid("enterEmail.error.invalid"))
-  }
+  private val emailAddress: Constraint[String] =
+    Constraint[String]("constraint.email") { e =>
+      if (isAssistedDigital && e.trim.isEmpty) Valid
+      else if (e.trim.isEmpty) Invalid("enterEmail.error.required")
+      else
+        emailRegex
+          .findFirstMatchIn(e)
+          .map(_ => Valid)
+          .getOrElse(Invalid("enterEmail.error.invalid"))
+    }
 
   val form: Form[Email] = Form(
     mapping(
