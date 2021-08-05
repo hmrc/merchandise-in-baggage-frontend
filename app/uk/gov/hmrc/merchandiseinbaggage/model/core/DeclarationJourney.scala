@@ -130,7 +130,7 @@ case class DeclarationJourney(
           goodsDestination,
           goods,
           nameOfPersonCarryingTheGoods,
-          Some(email),
+          if (isAssistedDigital) maybeEmailAddress else Some(email),
           maybeCustomsAgent,
           eori,
           journeyDetails,
