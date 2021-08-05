@@ -484,6 +484,7 @@ checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration
 checkYourAnswers.trader.sendDeclaration = Now send your declaration
 checkYourAnswers.agent.sendDeclaration = Now send your declaration on behalf of your client
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.sendDeclaration.acknowledgement.AD = You understand that:
 checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1 = I must bring this updated declaration with me
 checkYourAnswers.amend.sendDeclaration.agent.acknowledgement.1 = They must bring this updated declaration with them
 checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force
