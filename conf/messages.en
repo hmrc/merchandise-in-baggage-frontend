@@ -71,6 +71,7 @@ language.switcher = Language switcher
 invalidRequest.title = You cannot access this page
 invalidRequest.li1 = You need to provide more details about the goods before you can view this page.
 invalidRequest.li2 = Make a declaration if you are:
+invalidRequest.ad = Start a new declaration
 invalidRequest.Import.restart = bringing commercial goods into Great Britain
 invalidRequest.Export.restart = taking commercial goods out of Great Britain
 
