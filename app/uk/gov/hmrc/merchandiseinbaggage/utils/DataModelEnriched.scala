@@ -114,7 +114,7 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
     def isDutyAndVat: Boolean = !isVatOnly && !isDutyOnly
 
     def proofOfOriginNeeded: Boolean =
-      !isAssistedDigital && calculationResults
+      calculationResults
         .filter(_.goods.producedInEu == YesNoDontKnow.Yes)
         .map(_.gbpAmount.value)
         .sum > 100000L // £1000 in pence

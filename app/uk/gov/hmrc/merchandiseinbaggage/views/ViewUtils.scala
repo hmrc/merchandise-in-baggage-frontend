@@ -52,7 +52,7 @@ object ViewUtils {
           .sum
       }
 
-    if (declaration.declarationType == Import) {
+    if (!isAssistedDigital && declaration.declarationType == Import) {
       (calcAmount(declaration.maybeTotalCalculationResult) + declaration.amendments
         .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
         .map(x => calcAmount(x.maybeTotalCalculationResult))
