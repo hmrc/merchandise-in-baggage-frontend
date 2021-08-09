@@ -68,9 +68,7 @@ object AppConfigSource {
 }
 
 trait MongoConfiguration extends IsAssistedDigitalConfiguration {
-  lazy val mongoConf: MongoConf =
-    if (isAssistedDigital) configSource("mongodbad").loadOrThrow[MongoConf]
-    else configSource("mongodb").loadOrThrow[MongoConf]
+  lazy val mongoConf: MongoConf = configSource("mongodb").loadOrThrow[MongoConf]
 }
 
 final case class MongoConf(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")
