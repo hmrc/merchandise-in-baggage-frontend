@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
+import DeclarationJourney._
 
 case class GoodsEntries(entries: Seq[GoodsEntry]) {
   if (entries.isEmpty) throw new RuntimeException("GoodsEntries cannot be empty: use apply()")
@@ -118,7 +119,7 @@ case class DeclarationJourney(
         goodsDestination             <- maybeGoodsDestination
         goods                        <- goodsEntries.declarationGoodsIfComplete
         nameOfPersonCarryingTheGoods <- maybeNameOfPersonCarryingTheGoods
-        email                        <- if (isAssistedDigital) Some(Email("")) else maybeEmailAddress
+        email                        <- defaultEmail(isAssistedDigital, maybeEmailAddress)
         eori                         <- maybeEori
         journeyDetails               <- maybeCompleteJourneyDetails
         if discardedAnswersAreCompleteAndRequireADeclaration
@@ -130,7 +131,7 @@ case class DeclarationJourney(
           goodsDestination,
           goods,
           nameOfPersonCarryingTheGoods,
-          if (isAssistedDigital) maybeEmailAddress else Some(email),
+          userEmail(isAssistedDigital, maybeEmailAddress, email),
           maybeCustomsAgent,
           eori,
           journeyDetails,
@@ -154,21 +155,17 @@ object DeclarationJourney extends MongoDateTimeFormats {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =
+    DeclarationJourney(
+      sessionId = sessionId,
+      declarationType = declarationType,
+      journeyType = journeyType,
+      goodsEntries = goodsEntries(declarationType)
+    )
+
+  private def goodsEntries(declarationType: DeclarationType) =
     declarationType match {
-      case Import =>
-        DeclarationJourney(
-          sessionId = sessionId,
-          declarationType = declarationType,
-          journeyType = journeyType,
-          goodsEntries = GoodsEntries(ImportGoodsEntry())
-        )
-      case Export =>
-        DeclarationJourney(
-          sessionId = sessionId,
-          declarationType = declarationType,
-          journeyType = journeyType,
-          goodsEntries = GoodsEntries(ExportGoodsEntry())
-        )
+      case Import => GoodsEntries(ImportGoodsEntry())
+      case Export => GoodsEntries(ExportGoodsEntry())
     }
 
   def apply(sessionId: SessionId, declarationType: DeclarationType): DeclarationJourney = declarationType match {
@@ -187,6 +184,12 @@ object DeclarationJourney extends MongoDateTimeFormats {
   }
 
   val id = "sessionId"
+
+  def defaultEmail(isAssistedDigital: Boolean, maybeEmailAddress: Option[Email]): Option[Email] =
+    if (isAssistedDigital) Some(Email("")) else maybeEmailAddress
+
+  def userEmail(isAssistedDigital: Boolean, maybeEmailAddress: Option[Email], email: Email) =
+    if (isAssistedDigital) maybeEmailAddress else Some(email)
 
   implicit class UpdateGoodsEntries(declarationJourney: DeclarationJourney) {
     def updateGoodsEntries(): DeclarationJourney =

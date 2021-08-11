@@ -51,11 +51,17 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def optionalEmailFieldIfAssistedDigital(form: Form[_], fieldName: String): Unit =
+  def optionalEmailFieldIfAssistedDigital(form: Form[_], fieldName: String): Unit = {
+    "bind when key is present" in {
+      val result = form.bind(Map(fieldName -> "xx@yyy")).apply(fieldName)
+      result.errors mustEqual Seq()
+    }
+
     "not bind blank values" in {
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors mustEqual Seq()
     }
+  }
 
   def aMandatoryDateField(form: Form[_], key: String): Unit =
     "fail to bind an empty date" in {

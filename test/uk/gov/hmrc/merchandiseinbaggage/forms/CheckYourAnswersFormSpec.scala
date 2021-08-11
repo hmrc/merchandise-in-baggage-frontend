@@ -20,7 +20,7 @@ import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm._
 
-class CheckYourAnswersFormProviderSpec extends BaseSpec {
+class CheckYourAnswersFormSpec extends BaseSpec {
   "bind tax due in pence to the form" in {
     form.bind(Map(taxDue -> "3012")).value mustBe Some(Answers(3012))
   }
