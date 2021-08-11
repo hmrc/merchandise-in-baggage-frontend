@@ -48,7 +48,11 @@
 
  <h2 class="govuk-heading-m">@messages(s"checkYourAnswers.${agentOrTrader}.sendDeclaration")</h2>
 
- <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
+ @if(appConfig.isAssistedDigital) {
+  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement.AD")</p>
+ } else {
+  <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>
+ }
 
  <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
   <li>@messages(s"checkYourAnswers.amend.sendDeclaration.${agentOrTrader}.acknowledgement.1")</li>

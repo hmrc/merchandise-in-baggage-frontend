@@ -22,15 +22,13 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.components.link
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.ImportGoods
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.ExportGoods
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
+@import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
 @import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
-@(declaration: Declaration, journeyType: JourneyType, isAssistedDigital: Boolean, totalTaxDue: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration, journeyType: JourneyType, isAssistedDigital: Boolean, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @printLink = {
  <script>
@@ -60,8 +58,8 @@
  </div>
  <div class="govuk-summary-list__row">
   <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
-  @if(isAssistedDigital) {
-   <dd id="amountAD" class="govuk-summary-list__value">@totalTaxDue</dd>
+  @if(declaration.declarationType == Import && isAssistedDigital && totalTaxDue.value > 0) {
+   <dd id="amountAD" class="govuk-summary-list__value">@{totalTaxDue.formattedInPounds}</dd>
   } else { <dd id="amount" class="govuk-summary-list__value">@messages("declarationConfirmation.nothingtopay.label")</dd> }
  </div>
 </dl>
@@ -81,7 +79,7 @@
    <li>@messages(s"declarationConfirmation.ul.2")</li>
    <li>@messages(s"declarationConfirmation.ul.3")</li>
 
-  @if( ViewUtils.proofOfOriginNeeded(declaration)) {
+  @if(ViewUtils.proofOfOriginNeeded(declaration)) {
   <li>@messages("declarationConfirmation.ul.4")</li>
   }
 

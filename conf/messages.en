@@ -71,6 +71,7 @@ language.switcher = Language switcher
 invalidRequest.title = You cannot access this page
 invalidRequest.li1 = You need to provide more details about the goods before you can view this page.
 invalidRequest.li2 = Make a declaration if you are:
+invalidRequest.ad = Start a new declaration
 invalidRequest.Import.restart = bringing commercial goods into Great Britain
 invalidRequest.Export.restart = taking commercial goods out of Great Britain
 
@@ -330,6 +331,7 @@ enterEmail.title = Enter an email address
 enterEmail.heading = Enter an email address
 enterEmail.hint = We will only use this to send you confirmation of your declaration.
 enterEmail.email = Email address
+enterEmail.email.optional = Email address (optional)
 enterEmail.error.required = Enter an email address
 enterEmail.error.invalid = Enter an email address in the correct format, like name@example.com
 
@@ -483,6 +485,7 @@ checkYourAnswers.journeyDetails.vehicleRegistrationNumber = Vehicle registration
 checkYourAnswers.trader.sendDeclaration = Now send your declaration
 checkYourAnswers.agent.sendDeclaration = Now send your declaration on behalf of your client
 checkYourAnswers.sendDeclaration.acknowledgement = I understand that:
+checkYourAnswers.sendDeclaration.acknowledgement.AD = You understand that:
 checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1 = I must bring this updated declaration with me
 checkYourAnswers.amend.sendDeclaration.agent.acknowledgement.1 = They must bring this updated declaration with them
 checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.2 = I will need to show my declaration and purchase receipts if I am stopped by Border Force

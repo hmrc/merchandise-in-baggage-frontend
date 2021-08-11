@@ -30,11 +30,16 @@ class GoodsRemovedController @Inject()(
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    val startAgainUrl = request.declarationJourney.declarationType match {
-      case Import => routes.StartImportController.onPageLoad().url
-      case Export => routes.StartExportController.onPageLoad().url
-    }
+    val startAgainUrl =
+      if (appConfig.isAssistedDigital) routes.ImportExportChoiceController.onPageLoad().url
+      else backUrl(request)
 
     Ok(view(startAgainUrl, request.declarationType))
   }
+
+  private def backUrl(request: DeclarationJourneyRequest[AnyContent]): String =
+    request.declarationJourney.declarationType match {
+      case Import => routes.StartImportController.onPageLoad().url
+      case Export => routes.StartExportController.onPageLoad().url
+    }
 }

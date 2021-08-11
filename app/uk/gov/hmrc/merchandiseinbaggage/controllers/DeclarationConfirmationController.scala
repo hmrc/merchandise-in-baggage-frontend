@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, JourneyType, NotRequired, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, Declaration, JourneyType, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
-import javax.inject.Inject
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -57,8 +57,8 @@ class DeclarationConfirmationController @Inject()(
       for {
         _   <- clearAnswers()
         res <- connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
-      } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue.formattedInPounds))
-    else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, "")))
+      } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue))
+    else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, AmountInPence(0))))
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._

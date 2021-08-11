@@ -18,11 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm.form
+import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
+import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
+import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
+import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterOptionalEmailView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -32,28 +34,46 @@ class EnterEmailController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: EnterEmailView,
+  viewOptional: EnterOptionalEmailView,
   navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController with IsAssistedDigitalConfiguration {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.TravellerDetailsController.onPageLoad())
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    val preparedForm = request.declarationJourney.maybeEmailAddress.fold(form)(form.fill)
-
-    Ok(view(preparedForm, request.declarationType, backButtonUrl))
-  }
+  val onPageLoad: Action[AnyContent] =
+    actionProvider.journeyAction { implicit request =>
+      if (isAssistedDigital) {
+        val preparedForm = optionalForm.fill(request.declarationJourney.maybeEmailAddress)
+        Ok(viewOptional(preparedForm, request.declarationType, backButtonUrl))
+      } else {
+        val preparedForm = request.declarationJourney.maybeEmailAddress.fold(mandatoryForm)(mandatoryForm.fill)
+        Ok(view(preparedForm, request.declarationType, backButtonUrl))
+      }
+    }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-        email => {
-          val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
-          navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
-        }.map(Redirect)
-      )
+    if (isAssistedDigital) {
+      optionalForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(viewOptional(formWithErrors, request.declarationType, backButtonUrl))),
+          email => {
+            val updated = request.declarationJourney.copy(maybeEmailAddress = email)
+            navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+          }.map(Redirect)
+        )
+    } else {
+      mandatoryForm
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
+          email => {
+            val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
+            navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+          }.map(Redirect)
+        )
+    }
   }
 }

@@ -28,7 +28,8 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
 
 @Singleton
-class AppConfig @Inject()(val config: Configuration, val env: Environment)() extends MongoConfiguration with MibConfiguration {
+class AppConfig @Inject()(val config: Configuration, val env: Environment)()
+    extends MongoConfiguration with MibConfiguration with IsAssistedDigitalConfiguration {
 
   val serviceIdentifier = "mib"
 

@@ -43,7 +43,11 @@
         @messages("declarationNotFound.li4.a.text")
         @link(RetrieveDeclarationController.onPageLoad.url, "declarationNotFound.li4.b.text", id = Some("tryAgain"))
         @messages("declarationNotFound.li4.c.text")
-        @link(GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text", id = Some("makeNewDeclaration"))
+        @if(appConfig.isAssistedDigital) {
+            @link(ImportExportChoiceController.onPageLoad.url, "declarationNotFound.li4.d.text", id = Some("makeNewDeclaration"))
+        } else {
+            @link(GoodsDestinationController.onPageLoad.url, "declarationNotFound.li4.d.text", id = Some("makeNewDeclaration"))
+        }
     </p>
 
     <br>

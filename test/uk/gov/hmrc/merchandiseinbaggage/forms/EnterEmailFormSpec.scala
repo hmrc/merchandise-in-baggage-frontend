@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 
 class EnterEmailFormSpec extends FieldBehaviours {
@@ -26,9 +26,18 @@ class EnterEmailFormSpec extends FieldBehaviours {
     val fieldName = "email"
 
     behave like mandatoryEmailField(
-      form,
+      mandatoryForm,
       fieldName,
       requiredError = FormError(fieldName, "enterEmail.error.required")
+    )
+  }
+
+  ".email optional if assisted digital" must {
+    val fieldName = "email"
+
+    behave like optionalEmailFieldIfAssistedDigital(
+      optionalForm,
+      fieldName
     )
   }
 

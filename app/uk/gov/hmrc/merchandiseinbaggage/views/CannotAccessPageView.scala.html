@@ -26,11 +26,14 @@
   <h1 class="govuk-heading-xl">@messages("invalidRequest.title")</h1>
 
  @p(Html(messages("invalidRequest.li1")))
- @p(Html(messages("invalidRequest.li2")))
 
- <ul class="govuk-list govuk-list--bullet">
-  <li id="expiredUlIdOne">@link(StartImportController.onPageLoad().url, messages("invalidRequest.Import.restart"), true)</li>
-  <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad().url, messages("invalidRequest.Export.restart"), true)</li>
- </ul>
-
+ @if(appConfig.isAssistedDigital) {
+  <p class="govuk-body"><a class="govuk-link" href="@ImportExportChoiceController.onPageLoad().url">@messages("invalidRequest.ad")</a></p>
+ } else {
+  @p(Html(messages("invalidRequest.li2")))
+  <ul class="govuk-list govuk-list--bullet">
+   <li id="expiredUlIdOne">@link(StartImportController.onPageLoad().url, messages("invalidRequest.Import.restart"), true)</li>
+   <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad().url, messages("invalidRequest.Export.restart"), true)</li>
+  </ul>
+ }
 }
