@@ -29,5 +29,6 @@ class AmountInPenceSpec extends BaseSpec with CoreTestData {
     AmountInPence(12000).formattedInPounds mustBe "£120"
     AmountInPence(120000).formattedInPounds mustBe "£1,200"
     AmountInPence(1230000).formattedInPounds mustBe "£12,300"
+    AmountInPence(123).fromBigDecimal(10.00) mustBe AmountInPence(1000)
   }
 }
