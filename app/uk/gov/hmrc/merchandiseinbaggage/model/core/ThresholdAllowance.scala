@@ -22,7 +22,11 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.util.Try
 
-case class ThresholdAllowance(goods: DeclarationGoods, calculationResponse: CalculationResponse, destination: GoodsDestination)
+case class ThresholdAllowance(
+  currentGoods: DeclarationGoods,
+  allGoods: DeclarationGoods,
+  calculationResponse: CalculationResponse,
+  destination: GoodsDestination)
 
 object ThresholdAllowance {
 
@@ -31,9 +35,9 @@ object ThresholdAllowance {
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
     import allowance._
     def allowanceLeft: Double =
-      goods.goods.headOption
+      allGoods.goods.headOption
         .map { g =>
-          calculateAllowanceLeft(goods, calculationResponse, destination, g)
+          calculateAllowanceLeft(allGoods, calculationResponse, destination, g)
         }
         .getOrElse(0)
 

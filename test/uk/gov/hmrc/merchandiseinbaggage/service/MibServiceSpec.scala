@@ -32,9 +32,10 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import com.softwaremill.quicklens._
+import org.scalatest.OptionValues
 import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 
-class MibServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with MockFactory {
+class MibServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with MockFactory with OptionValues {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val mockConnector = mock[MibConnector]
@@ -79,7 +80,8 @@ class MibServiceSpec extends BaseSpecWithApplication with WireMockSupport with C
       .returning(Future.successful(calculationResponse))
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, New, aDeclarationId).value.futureValue
-    actual mustBe Some(ThresholdAllowance(DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
+    actual mustBe Some(
+      ThresholdAllowance(DeclarationGoods(List(aImportGoods)), DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
   }
 
   "check threshold allowance including existing declaration for amends" in {
@@ -101,11 +103,12 @@ class MibServiceSpec extends BaseSpecWithApplication with WireMockSupport with C
       .returning(Future.successful(calculationResponse))
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
-    actual mustBe Some(
-      ThresholdAllowance(
-        DeclarationGoods(aImportGoods +: DeclarationView.allGoods(existingDeclaration)),
-        calculationResponse,
-        GreatBritain))
+    val allGoods = existingDeclaration.declarationGoods.goods ++ entries.declarationGoodsIfComplete.get.goods
+
+    actual.value.currentGoods mustBe entries.declarationGoodsIfComplete.value
+    actual.value.allGoods.goods must contain theSameElementsAs allGoods
+
+    actual.value.calculationResponse mustBe calculationResponse
   }
 
   s"add only goods in $Paid or $NotRequired status" in {

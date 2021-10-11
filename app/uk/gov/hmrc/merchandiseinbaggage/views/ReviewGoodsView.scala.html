@@ -43,7 +43,7 @@ button: components.button
 
     @h1(messages(s"reviewGoods.$journeyType.heading"))
 
-    @summaryList(allowance.goods)
+    @summaryList(allowance.currentGoods)
 
     @allowance.calculationResponse.thresholdCheck match {
         case WithinThreshold => {

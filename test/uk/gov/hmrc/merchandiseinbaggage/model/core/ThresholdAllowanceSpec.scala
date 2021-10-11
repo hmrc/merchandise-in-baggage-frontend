@@ -33,7 +33,7 @@ class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
     val goodOne = aExportGoods.modify(_.purchaseDetails.amount).setTo("71.75")
     val goodTwo = aExportGoods.modify(_.purchaseDetails.amount).setTo("70.00")
     val allowance = aThresholdAllowance
-      .modify(_.goods.goods)
+      .modify(_.allGoods.goods)
       .setTo(Seq(goodOne, goodTwo))
 
     allowance.allowanceLeft mustBe 1358.25
