@@ -66,13 +66,13 @@ class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionCon
       destination      <- OptionT.fromOption(maybeGoodsDestination)
       totalGoods       <- addGoods(journeyType, declarationId, declarationGoods.goods)
       calculation      <- OptionT.liftF(paymentCalculations(totalGoods, destination))
-    } yield ThresholdAllowance(DeclarationGoods(totalGoods), calculation, destination)
+    } yield ThresholdAllowance(DeclarationGoods(declarationGoods.goods), DeclarationGoods(totalGoods), calculation, destination)
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
     val totalGoods = allGoods(declaration)
     paymentCalculations(totalGoods, goodsDestination).map(calculation =>
-      ThresholdAllowance(DeclarationGoods(totalGoods), calculation, goodsDestination))
+      ThresholdAllowance(DeclarationGoods(declarationGoods.goods), DeclarationGoods(totalGoods), calculation, goodsDestination))
   }
 
   private[service] def addGoods(journeyType: JourneyType, declarationId: DeclarationId, goods: Seq[Goods])(

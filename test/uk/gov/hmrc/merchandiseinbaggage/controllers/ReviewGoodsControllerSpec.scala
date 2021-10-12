@@ -59,7 +59,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       s"return 200 with radio buttons for $importOrExport" in {
         val request = buildGet(ReviewGoodsController.onPageLoad().url, aSessionId)
         val allowance =
-          if (importOrExport == Export) aThresholdAllowance.modify(_.goods).setTo(entries.declarationGoodsIfComplete.get)
+          if (importOrExport == Export) aThresholdAllowance.modify(_.currentGoods).setTo(entries.declarationGoodsIfComplete.get)
           else aThresholdAllowance
         (mockMibService
           .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))

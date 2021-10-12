@@ -199,7 +199,7 @@ trait CoreTestData {
   val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
   val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult))
   val aCalculationResponse: CalculationResponse = CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
-  val aThresholdAllowance = ThresholdAllowance(aDeclarationGood, aCalculationResponse, GreatBritain)
+  val aThresholdAllowance = ThresholdAllowance(aDeclarationGood, aDeclarationGood, aCalculationResponse, GreatBritain)
 
   val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
 
