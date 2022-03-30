@@ -151,7 +151,7 @@ case class DeclarationJourney(
   val amendmentRequiredAndComplete: Boolean = amendmentIfRequiredAndComplete.isDefined
 }
 
-object DeclarationJourney extends MongoDateTimeFormats {
+object DeclarationJourney {
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =

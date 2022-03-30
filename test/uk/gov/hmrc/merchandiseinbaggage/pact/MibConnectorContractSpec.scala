@@ -52,14 +52,14 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     .addInteraction(
       interaction
         .description("Persisting a declaration")
-        .given("persistDeclarationTest")
+        .provided("persistDeclarationTest")
         .uponReceiving(POST, s"$declarationsUrl", None, Map("Content-Type" -> "application/json"), Json.toJson(declaration).toString)
         .willRespondWith(201, s""""\\"${declaration.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
         .description("Amending a declaration")
-        .given("amendDeclarationTest")
+        .provided("amendDeclarationTest")
         .uponReceiving(
           PUT,
           s"$declarationsUrl",
@@ -71,14 +71,14 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     .addInteraction(
       interaction
         .description("find a declaration")
-        .given(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
+        .provided(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
         .uponReceiving(GET, s"$declarationsUrl/56789")
         .willRespondWith(200, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
     )
     .addInteraction(
       interaction
         .description("calculates total payments for amendment")
-        .given(s"id789")
+        .provided(s"id789")
         .uponReceiving(
           POST,
           s"$amendsPlusExistingCalculationsUrl",
@@ -113,7 +113,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     .addInteraction(
       interaction
         .description("calculate payments")
-        .given(s"calculatePaymentsTest")
+        .provided(s"calculatePaymentsTest")
         .uponReceiving(
           POST,
           s"$calculationsUrl",
@@ -132,14 +132,14 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
     .addInteraction(
       interaction
         .description("check EoriNumber")
-        .given(s"checkEoriNumberTest")
+        .provided(s"checkEoriNumberTest")
         .uponReceiving(GET, s"${checkEoriUrl}GB123")
         .willRespondWith(200, Json.toJson(CheckResponse("GB123", true, None)).toString)
     )
     .addInteraction(
       interaction
         .description("findBy mib ref and eori")
-        .given(s"findByTestXXX${Json.toJson(findByDeclaration).toString}")
+        .provided(s"findByTestXXX${Json.toJson(findByDeclaration).toString}")
         .uponReceiving(GET, s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}")
         .willRespondWith(200, Json.toJson(findByDeclaration).toString)
     )

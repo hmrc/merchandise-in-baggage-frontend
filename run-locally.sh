@@ -1,1 +1,1 @@
-sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes
+sbt run -Dapplication.router=testOnlyDoNotUseInAppConf.Routes -DassistedDigital=false

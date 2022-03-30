@@ -29,8 +29,6 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsEmpty, DefaultActionBuilder}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
-import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.DefaultDB
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
 import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, MongoConfiguration}
@@ -39,6 +37,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.mongo.MongoComponent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -78,8 +77,8 @@ trait BaseSpecWithApplication
 
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 
-  private lazy val db: () => DefaultDB = app.injector.instanceOf[ReactiveMongoComponent].mongoConnector.db
-  private val ttlSeconds = 100
+  private lazy val db = injector.instanceOf[MongoComponent]
+  private val ttlSeconds = 3600
 
   lazy val stubRepo: DeclarationJourney => DeclarationJourneyRepository = declarationJourney =>
     new DeclarationJourneyRepository(db, ttlSeconds) {

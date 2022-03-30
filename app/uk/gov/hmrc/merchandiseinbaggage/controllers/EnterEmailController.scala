@@ -20,7 +20,6 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
-import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterEmailView
