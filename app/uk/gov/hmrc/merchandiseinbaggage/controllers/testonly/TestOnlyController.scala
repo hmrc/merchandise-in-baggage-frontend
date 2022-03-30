@@ -66,16 +66,16 @@ class TestOnlyController @Inject()(
               logger.error(s"Provided Json was invalid: $errors")
               onError(form)
             case JsSuccess(declarationJourney, _) =>
-            repository.insert(declarationJourney).map { _ =>
-              declarationJourney.declarationType match {
-                case Import =>
-                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                    .addingToSession((sessionId, declarationJourney.sessionId.value))
-                case Export =>
-                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                    .addingToSession((sessionId, declarationJourney.sessionId.value))
+              repository.insert(declarationJourney).map { _ =>
+                declarationJourney.declarationType match {
+                  case Import =>
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                      .addingToSession((sessionId, declarationJourney.sessionId.value))
+                  case Export =>
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                      .addingToSession((sessionId, declarationJourney.sessionId.value))
+                }
               }
-            }
           }
         }
       )
