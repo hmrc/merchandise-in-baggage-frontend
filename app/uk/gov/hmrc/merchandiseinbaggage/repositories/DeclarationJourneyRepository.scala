@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,50 +16,52 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
-import play.api.libs.json.Json.{JsValueWrapper, _}
+import com.mongodb.client.model.Indexes.ascending
+import org.mongodb.scala.model.Filters.{empty, equal}
+import org.mongodb.scala.model.ReturnDocument.AFTER
+import org.mongodb.scala.model.{FindOneAndReplaceOptions, IndexModel, IndexOptions}
+import play.api.Logging
 import play.api.libs.json._
-import reactivemongo.api.DB
-import reactivemongo.api.indexes.Index
-import reactivemongo.api.indexes.IndexType.Ascending
-import reactivemongo.bson.BSONDocument
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney.{format, id}
-import uk.gov.hmrc.mongo.ReactiveRepository
+import uk.gov.hmrc.mongo.MongoComponent
+import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Named}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
-    extends ReactiveRepository[DeclarationJourney, String]("declarationJourney", mongo, format, implicitly[Format[String]]) {
-
-  override def indexes: Seq[Index] = Seq(
-    Index(Seq(id -> Ascending), Option("primaryKey"), unique = true),
-    Index(
-      key = Seq("createdAt" -> Ascending),
-      name = Option("timeToLive"),
-      unique = false,
-      options = BSONDocument("expireAfterSeconds" -> ttlInSeconds)
-    )
-  )
+class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
+    extends PlayMongoRepository[DeclarationJourney](
+      mongo,
+      "declarationJourney",
+      format,
+      Seq(
+        IndexModel(ascending(id), IndexOptions().name("primaryKey").unique(true)),
+        IndexModel(
+          ascending("createdAt"),
+          IndexOptions().name("timeToLive").unique(false).expireAfter(ttlInSeconds, TimeUnit.SECONDS)
+        )
+      )
+    ) with Logging {
 
   private[repositories] lazy val timeToLiveInSeconds: Int = ttlInSeconds
 
-  private[repositories] lazy val indices: Future[List[Index]] = collection.indexesManager.list()
+  private[repositories] lazy val indices = collection.listIndexes().toFuture()
 
   def insert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
-    super.insert(declarationJourney).map(_ => declarationJourney)
+    collection.insertOne(declarationJourney).toFuture().map(_ => declarationJourney)
 
-  def findBySessionId(sessionId: SessionId): Future[Option[DeclarationJourney]] = {
-    val query: (String, JsValueWrapper) = id -> JsString(sessionId.value)
-    find(query).map(_.headOption)
-  }
+  def findBySessionId(sessionId: SessionId): Future[Option[DeclarationJourney]] =
+    collection.find(equal(id, sessionId.value)).toFuture().map(_.headOption)
+
+  def findAll(): Future[Seq[DeclarationJourney]] = collection.find().toFuture()
 
   def deleteAll(): Future[Unit] = {
     logger.warn("DeclarationJourneyRepository.deleteAll() called")
-
-    super.removeAll().map(_ => ())
+    collection.deleteMany(empty()).toFuture().map(_ => ())
   }
 
   implicit val jsObjectWriter: OWrites[JsObject] = new OWrites[JsObject] {
@@ -71,7 +73,10 @@ class DeclarationJourneyRepository @Inject()(mongo: () => DB, @Named("declaratio
     */
   def upsert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
     collection
-      .update(ordered = false)
-      .one(Json.obj(id -> declarationJourney.sessionId.value), declarationJourney, upsert = true)
-      .map(_ => declarationJourney)
+      .findOneAndReplace(
+        equal(id, declarationJourney.sessionId.value),
+        declarationJourney,
+        FindOneAndReplaceOptions().upsert(true).returnDocument(AFTER)
+      )
+      .toFuture()
 }

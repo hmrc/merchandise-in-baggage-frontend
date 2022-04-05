@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.audit.HandlerResult
+
 import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
-import play.api.libs.json.{JsObject, Json}
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
-import uk.gov.hmrc.play.audit.http.connector.{AuditChannel, AuditConnector, AuditCounter}
+import uk.gov.hmrc.play.audit.http.connector.{AuditChannel, AuditConnector, DatastreamMetrics}
 
 abstract class TestAuditConnector(appName: String) extends AuditConnector {
   private val _auditingConfig =
@@ -44,11 +44,10 @@ abstract class TestAuditConnector(appName: String) extends AuditConnector {
       Future.successful(HandlerResult.Success)
     }
 
+    override def datastreamMetrics: DatastreamMetrics = DatastreamMetrics.disabled
   }
 
-  override def auditCounter: AuditCounter = new AuditCounter {
-    override def createMetadata(): JsObject = Json.obj()
-  }
+  override def datastreamMetrics: DatastreamMetrics = DatastreamMetrics.disabled
 
   def sendResult(path: String, event: JsValue): Future[HandlerResult]
 

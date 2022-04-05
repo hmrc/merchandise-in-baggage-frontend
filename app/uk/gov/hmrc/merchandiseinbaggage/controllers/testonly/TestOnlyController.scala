@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers.testonly
 
 import play.api.data.Form
-import play.api.libs.json.Json
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.libs.json.Json.{prettyPrint, toJson}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.SessionKeys.sessionId
@@ -34,9 +34,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEnt
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-
 import java.time.LocalDate.now
+
 import javax.inject.Inject
+import play.api.Logging
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestOnlyController @Inject()(
@@ -44,7 +46,7 @@ class TestOnlyController @Inject()(
   repository: DeclarationJourneyRepository,
   formProvider: DeclarationJourneyFormProvider,
   page: TestOnlyDeclarationJourneyPage)(implicit val ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) {
+    extends FrontendController(mcc) with Logging {
   private val form = formProvider()
 
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
@@ -59,17 +61,21 @@ class TestOnlyController @Inject()(
       .fold(
         formWithErrors => onError(formWithErrors),
         json => {
-          Json.parse(json).validate[DeclarationJourney].asOpt.fold(onError(form)) { declarationJourney =>
-            repository.insert(declarationJourney).map { _ =>
-              declarationJourney.declarationType match {
-                case Import =>
-                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                    .addingToSession((sessionId, declarationJourney.sessionId.value))
-                case Export =>
-                  Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
-                    .addingToSession((sessionId, declarationJourney.sessionId.value))
+          Json.parse(json).validate[DeclarationJourney] match {
+            case JsError(errors) =>
+              logger.error(s"Provided Json was invalid: $errors")
+              onError(form)
+            case JsSuccess(declarationJourney, _) =>
+              repository.insert(declarationJourney).map { _ =>
+                declarationJourney.declarationType match {
+                  case Import =>
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                      .addingToSession((sessionId, declarationJourney.sessionId.value))
+                  case Export =>
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                      .addingToSession((sessionId, declarationJourney.sessionId.value))
+                }
               }
-            }
           }
         }
       )

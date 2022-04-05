@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
-import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository

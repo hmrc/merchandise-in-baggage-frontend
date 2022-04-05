@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{ImportExportChoiceController, _}
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport}
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice

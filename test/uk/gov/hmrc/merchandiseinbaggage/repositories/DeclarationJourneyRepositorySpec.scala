@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
-import reactivemongo.bson.{BSONElement, BSONInteger}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with CoreTestData {
   override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 
   "DeclarationJourneyRepository" should {
+
+    "findAll finds zero matches when no declarations made" in {
+      declarationJourneyRepository.findAll().futureValue.size mustBe 0
+    }
+
     "persist and find a declaration journey" in {
       val inserted = declarationJourneyRepository.insert(completedDeclarationJourney).futureValue
 
@@ -45,12 +49,11 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       declarationJourneyRepository.timeToLiveInSeconds mustBe expectedTimeToLive
 
-      declarationJourneyRepository.indices.futureValue
-        .filter(_.name.contains("timeToLive"))
-        .head
-        .options
-        .elements
-        .head mustBe BSONElement("expireAfterSeconds", BSONInteger(expectedTimeToLive))
+      val indices = declarationJourneyRepository.indices.futureValue
+
+      val actualTimeToLive = indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt64().intValue()
+
+      actualTimeToLive mustBe expectedTimeToLive
     }
   }
 }
