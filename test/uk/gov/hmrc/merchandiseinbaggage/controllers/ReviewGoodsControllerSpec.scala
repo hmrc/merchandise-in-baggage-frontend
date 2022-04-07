@@ -57,7 +57,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        val request = buildGet(ReviewGoodsController.onPageLoad().url, aSessionId)
+        val request = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
         val allowance =
           if (importOrExport == Export) aThresholdAllowance.modify(_.currentGoods).setTo(entries.declarationGoodsIfComplete.get)
           else aThresholdAllowance
@@ -81,7 +81,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
 
     "onSubmit" should {
       s"redirect to next page after successful form submit with Yes for $importOrExport by delegating to Navigator" in {
-        val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
+        val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
         (mockMibService
@@ -101,7 +101,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(ReviewGoodsController.onSubmit().url, aSessionId)
+      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       (mockMibService
@@ -147,13 +147,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .expects(*, *)
         .returning(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))
 
-      val request = buildPost(ReviewGoodsController.onSubmit().url, id)
+      val request = buildPost(ReviewGoodsController.onSubmit.url, id)
         .withFormUrlEncodedBody("value" -> "No")
 
       val eventualResult = controller.onSubmit()(request)
       val expectedRedirect =
-        if (importOrExport == Export) Some(CheckYourAnswersController.onPageLoad().url)
-        else Some(PaymentCalculationController.onPageLoad().url)
+        if (importOrExport == Export) Some(CheckYourAnswersController.onPageLoad.url)
+        else Some(PaymentCalculationController.onPageLoad.url)
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe expectedRedirect
     }

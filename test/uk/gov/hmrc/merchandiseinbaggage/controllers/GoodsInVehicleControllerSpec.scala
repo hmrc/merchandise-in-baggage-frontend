@@ -41,7 +41,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(GoodsInVehicleController.onPageLoad().url, aSessionId)
+        val request = buildGet(GoodsInVehicleController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -53,13 +53,13 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with
 
     "onSubmit" should {
       s"redirect by delegating to navigator for $importOrExport" in {
-        val request = buildPost(GoodsInVehicleController.onSubmit().url, aSessionId)
+        val request = buildPost(GoodsInVehicleController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
 
         (mockNavigator
           .nextPage(_: GoodsInVehicleRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(VehicleSizeController.onPageLoad()))
+          .returning(Future.successful(VehicleSizeController.onPageLoad))
           .once()
 
         controller(journey).onSubmit()(request).futureValue
@@ -68,7 +68,7 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec with
 
     s"return 400 with any form errors for $importOrExport" in {
 
-      val request = buildGet(GoodsInVehicleController.onSubmit().url, aSessionId)
+      val request = buildGet(GoodsInVehicleController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit()(request)

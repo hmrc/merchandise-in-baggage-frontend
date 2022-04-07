@@ -34,14 +34,14 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
     givenConfirmJourney("id", address, wireMockServer)
 
-    s"store address and redirect to ${routes.EoriNumberController.onPageLoad()}" when {
+    s"store address and redirect to ${routes.EoriNumberController.onPageLoad}" when {
       "a declaration journey has been started" in {
         givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad().url
+        redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad.url
 
         startedImportJourney.maybeCustomsAgentAddress mustBe None
         declarationJourneyRepository
@@ -52,14 +52,14 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
       }
     }
 
-    s"store address and redirect to ${routes.CheckYourAnswersController.onPageLoad()}" when {
+    s"store address and redirect to ${routes.CheckYourAnswersController.onPageLoad}" when {
       "a declaration journey is complete" in {
         givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
         val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad().url
+        redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad.url
 
         completedDeclarationJourney.maybeCustomsAgentAddress mustNot be(Some(address))
         declarationJourneyRepository

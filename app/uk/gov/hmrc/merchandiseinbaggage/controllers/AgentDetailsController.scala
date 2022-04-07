@@ -37,7 +37,7 @@ class AgentDetailsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(routes.CustomsAgentController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preparedForm = request.declarationJourney.maybeCustomsAgentName.fold(form)(form.fill)

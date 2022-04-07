@@ -43,7 +43,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val sessionId = SessionId()
     val id = DeclarationId("456")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
@@ -66,7 +66,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val sessionId = SessionId()
     val id = DeclarationId("456")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
     val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
     val declarationWithNoPaymentRequired = importJourney.declarationIfRequiredAndComplete.get.copy(paymentStatus = Some(NotRequired))
@@ -89,7 +89,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val sessionId = SessionId()
     val id = DeclarationId("456")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, sessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
     val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
 
@@ -110,7 +110,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     val controller =
       new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad().url, aSessionId)
+    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, aSessionId)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe 303

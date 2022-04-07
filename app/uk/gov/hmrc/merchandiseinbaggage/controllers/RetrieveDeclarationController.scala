@@ -44,7 +44,7 @@ class RetrieveDeclarationController @Inject()(
 
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preFilledForm = request.declarationJourney.maybeRetrieveDeclaration.fold(form)(form.fill)
-    Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType))
+    Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType))
   }
 
   override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -52,7 +52,7 @@ class RetrieveDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad(), request.declarationJourney.declarationType)).asFuture,
+          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType)).asFuture,
         retrieveDeclaration => processRequest(retrieveDeclaration)
       )
   }

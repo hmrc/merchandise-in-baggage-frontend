@@ -63,7 +63,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       val eventualResult = controller(journey).onSubmit(1)(request)
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(routes.ReviewGoodsController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(routes.ReviewGoodsController.onPageLoad.url)
     }
 
     s"return 400 with any form errors for Export" in {

@@ -48,7 +48,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   "onPageLoad" should {
     s"return 200 with correct content" in {
 
-      val request = buildGet(EnterEmailController.onPageLoad().url, aSessionId)
+      val request = buildGet(EnterEmailController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result = contentAsString(eventualResult)
 
@@ -62,13 +62,13 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
 
   "onSubmit" should {
     s"redirect to /journey-details after successful form submit" in {
-      val request = buildPost(EnterEmailController.onSubmit().url, aSessionId)
+      val request = buildPost(EnterEmailController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("email" -> "test@email.com")
 
       (mockNavigator
         .nextPage(_: EnterEmailRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future.successful(JourneyDetailsController.onPageLoad()))
+        .returning(Future.successful(JourneyDetailsController.onPageLoad))
         .once()
 
       controller(journey).onSubmit()(request).futureValue
@@ -76,7 +76,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   }
 
   s"return 400 with any form errors" in {
-    val request = buildPost(EnterEmailController.onSubmit().url, aSessionId)
+    val request = buildPost(EnterEmailController.onSubmit.url, aSessionId)
       .withFormUrlEncodedBody("email" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit()(request)

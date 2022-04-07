@@ -33,7 +33,7 @@ trait StartController extends DeclarationJourneyController {
     val sessionId = SessionId(request.session(SessionKeys.sessionId))
 
     repo.upsert(DeclarationJourney(sessionId, declarationType)).map { _ =>
-      Redirect(routes.NewOrExistingController.onPageLoad())
+      Redirect(routes.NewOrExistingController.onPageLoad)
     }
   }
 }

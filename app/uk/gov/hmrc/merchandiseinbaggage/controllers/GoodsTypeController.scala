@@ -38,10 +38,10 @@ class GoodsTypeController @Inject()(
 
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
-    if (referer.contains(routes.CheckYourAnswersController.onPageLoad().url)) routes.CheckYourAnswersController.onPageLoad()
-    else if (referer.contains(routes.ReviewGoodsController.onPageLoad().url)) routes.ReviewGoodsController.onPageLoad()
-    else if (request.declarationJourney.journeyType == Amend) routes.ExciseAndRestrictedGoodsController.onPageLoad()
-    else routes.ValueWeightOfGoodsController.onPageLoad()
+    if (referer.contains(routes.CheckYourAnswersController.onPageLoad.url)) routes.CheckYourAnswersController.onPageLoad
+    else if (referer.contains(routes.ReviewGoodsController.onPageLoad.url)) routes.ReviewGoodsController.onPageLoad
+    else if (request.declarationJourney.journeyType == Amend) routes.ExciseAndRestrictedGoodsController.onPageLoad
+    else routes.ValueWeightOfGoodsController.onPageLoad
   }
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>

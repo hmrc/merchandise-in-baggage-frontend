@@ -48,7 +48,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
         givenExchangeRateURL("https://something")
         givenAPaymentCalculation(aCalculationResult)
 
-        val request = buildGet(routes.GoodsOverThresholdController.onPageLoad().url, aSessionId)
+        val request = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 

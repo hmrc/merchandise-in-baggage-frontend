@@ -37,7 +37,7 @@ class JourneyDetailsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(EnterEmailController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(EnterEmailController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val journeyForm = form(request.declarationType)

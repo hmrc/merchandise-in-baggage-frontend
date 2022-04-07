@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ button: components.button
 @(form: Form[_], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"vehicleSize.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
-    @formHelper(action = VehicleSizeController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = VehicleSizeController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 

@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ button: components.button
 @(form: Form[_], dest: GoodsDestination, declarationType: DeclarationType, exchangeUrl:String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"valueWeightOfGoods.${dest.toString}.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
-    @formHelper(action = ValueWeightOfGoodsController.onSubmit(), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = ValueWeightOfGoodsController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
 
         @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 

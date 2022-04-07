@@ -41,11 +41,11 @@ class PaymentCalculationController @Inject()(
     extends DeclarationJourneyController {
 
   private val backButtonUrl: Call =
-    ReviewGoodsController.onPageLoad()
+    ReviewGoodsController.onPageLoad
 
   private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend)
-      CheckYourAnswersController.onPageLoad()
+      CheckYourAnswersController.onPageLoad
     else default
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -56,9 +56,9 @@ class PaymentCalculationController @Inject()(
             .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
               mibService.paymentCalculations(declarationGoods.goods, destination).map { calculationResponse =>
                 (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
-                  case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad())
+                  case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad)
                   case (WithinThreshold, Import) => importView(calculationResponse.results, exchangeUrl)
-                  case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()))
+                  case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad))
 
                 }
               }
@@ -72,7 +72,7 @@ class PaymentCalculationController @Inject()(
     Ok(
       view(
         calculationResults,
-        checkYourAnswersIfComplete(CustomsAgentController.onPageLoad()),
+        checkYourAnswersIfComplete(CustomsAgentController.onPageLoad),
         exchangeUrl.url,
         backButtonUrl
       ))

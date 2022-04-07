@@ -38,9 +38,9 @@ class CustomsAgentController @Inject()(
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     request.declarationJourney.declarationType match {
       case Import =>
-        backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad())
+        backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad)
       case Export =>
-        backToCheckYourAnswersIfCompleteElse(routes.ReviewGoodsController.onPageLoad())
+        backToCheckYourAnswersIfCompleteElse(routes.ReviewGoodsController.onPageLoad)
     }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

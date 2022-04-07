@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,18 +46,18 @@ p: components.p
     @p(Html(messages("goodsOverThreshold.p3")))
 
     <p class="govuk-body">
-        <a class="govuk-link" href="@ReviewGoodsController.onPageLoad().url">
+        <a class="govuk-link" href="@ReviewGoodsController.onPageLoad.url">
             @messages("goodsOverThreshold.p4")
         </a>
     </p>
 
     <p class="govuk-body">
         @if(appConfig.isAssistedDigital) {
-        <a class="govuk-link" href="@ImportExportChoiceController.onPageLoad().url">
+        <a class="govuk-link" href="@ImportExportChoiceController.onPageLoad.url">
             @messages("goodsOverThreshold.p5")
         </a>
         } else {
-        <a class="govuk-link" href="@StartImportController.onPageLoad().url">
+        <a class="govuk-link" href="@StartImportController.onPageLoad.url">
             @messages("goodsOverThreshold.p5")
         </a>
         }

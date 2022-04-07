@@ -2,7 +2,6 @@ import play.sbt.PlayImport.PlayKeys.playDefaultPort
 import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
-import com.itv.scalapact.plugin._
 
 val appName = "merchandise-in-baggage-frontend"
 
@@ -43,8 +42,8 @@ lazy val microservice = Project(appName, file("."))
   .settings(resolvers += Resolver.jcenterRepo)
   .settings(
     retrieveManaged := true,
-    scalafmtOnCompile in Compile := true,
-    scalafmtOnCompile in Test := true
+    Compile / scalafmtOnCompile := true,
+    Test / scalafmtOnCompile := true
   )
   .settings(
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*BuildInfo.*;.*javascript.*;.*Routes.*;.*testonly.*;",

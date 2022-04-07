@@ -32,7 +32,7 @@ trait DeclarationJourneyController extends FrontendBaseController {
 
   def backToCheckYourAnswersIfCompleteElse(backIfIncomplete: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete)
-      routes.CheckYourAnswersController.onPageLoad()
+      routes.CheckYourAnswersController.onPageLoad
     else backIfIncomplete
 }
 
@@ -51,7 +51,7 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
   def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(
     implicit ec: ExecutionContext): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
-      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
+      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad)
       else Redirect(redirectIfNotComplete)
     }
 }
@@ -66,13 +66,13 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
     goodsEntry.maybeCategory match {
       case Some(c) => f(c)
       case None =>
-        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad()}")
-        Future successful Redirect(routes.CannotAccessPageController.onPageLoad())
+        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad}")
+        Future successful Redirect(routes.CannotAccessPageController.onPageLoad)
     }
 
   def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
     (request.declarationJourney.declarationRequiredAndComplete, request.declarationJourney.goodsEntries.entries(index - 1).isComplete) match {
-      case (true, true)   => routes.CheckYourAnswersController.onPageLoad() // user clicked change link from /check-your-answers
+      case (true, true)   => routes.CheckYourAnswersController.onPageLoad // user clicked change link from /check-your-answers
       case (true, false)  => default // user clicked add more goods from /check-your-answers
       case (false, true)  => routes.ReviewGoodsController.onPageLoad // user clicked change link from /review-goods
       case (false, false) => default // normal journey flow / user is adding more goods from /review-goods

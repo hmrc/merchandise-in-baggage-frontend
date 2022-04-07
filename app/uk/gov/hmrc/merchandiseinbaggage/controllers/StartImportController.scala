@@ -31,7 +31,7 @@ class StartImportController @Inject()(
     extends StartController {
 
   override val onPageLoad: Action[AnyContent] = Action {
-    Redirect(routes.StartImportController.processRequest())
+    Redirect(routes.StartImportController.processRequest)
   }
 
   override val declarationType: DeclarationType = Import

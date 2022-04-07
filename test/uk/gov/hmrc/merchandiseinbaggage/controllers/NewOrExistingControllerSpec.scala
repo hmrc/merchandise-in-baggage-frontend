@@ -39,7 +39,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(NewOrExistingController.onPageLoad().url, aSessionId)
+        val request = buildGet(NewOrExistingController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
         val result = contentAsString(eventualResult)
 
@@ -52,13 +52,13 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
 
     "onSubmit" should {
       s"redirect to /goods-destination after successful form submit with New for $importOrExport" in {
-        val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
+        val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "New")
 
         (mockNavigator
           .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(GoodsDestinationController.onPageLoad()))
+          .returning(Future.successful(GoodsDestinationController.onPageLoad))
           .once()
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -66,13 +66,13 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
       }
 
       s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
-        val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
+        val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Amend")
 
         (mockNavigator
           .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(RetrieveDeclarationController.onPageLoad()))
+          .returning(Future.successful(RetrieveDeclarationController.onPageLoad))
           .once()
 
         val eventualResult = controller(journey).onSubmit(request)
@@ -81,7 +81,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(NewOrExistingController.onSubmit().url, aSessionId)
+      val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

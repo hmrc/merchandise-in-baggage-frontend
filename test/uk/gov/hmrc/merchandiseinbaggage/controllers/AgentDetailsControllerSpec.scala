@@ -43,7 +43,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
   "onPageLoad" should {
     s"return 200 with correct content" in {
 
-      val request = buildGet(routes.AgentDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(routes.AgentDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(request)
       val result = contentAsString(eventualResult)
 
@@ -55,13 +55,13 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
 
   "onSubmit" should {
     s"redirect to /enter-agent-address after successful form" in {
-      val request = buildPost(routes.AgentDetailsController.onSubmit().url, aSessionId)
+      val request = buildPost(routes.AgentDetailsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "business name")
 
       (mockNavigator
         .nextPage(_: AgentDetailsRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future successful EnterAgentAddressController.onPageLoad())
+        .returning(Future successful EnterAgentAddressController.onPageLoad)
         .once()
 
       controller(journey).onSubmit(request).futureValue
@@ -69,7 +69,7 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
   }
 
   s"return 400 with any form errors" in {
-    val request = buildPost(routes.AgentDetailsController.onSubmit().url, aSessionId)
+    val request = buildPost(routes.AgentDetailsController.onSubmit.url, aSessionId)
       .withFormUrlEncodedBody("value1" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit(request)

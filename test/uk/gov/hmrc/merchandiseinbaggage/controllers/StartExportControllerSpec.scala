@@ -30,23 +30,23 @@ class StartExportControllerSpec extends DeclarationJourneyControllerSpec with Co
 
   "onPageLoad" should {
     "store redirect" in {
-      val url = routes.StartExportController.onPageLoad().url
+      val url = routes.StartExportController.onPageLoad.url
       val request = buildGet(url, aSessionId)
       val result = controller().onPageLoad()(request)
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.StartExportController.processRequest().url)
+      redirectLocation(result) mustBe Some(routes.StartExportController.processRequest.url)
     }
   }
 
   "process-request" should {
     "store the declaration type in mongo" in {
-      val url = routes.StartExportController.processRequest().url
+      val url = routes.StartExportController.processRequest.url
       val request = buildPost(url, aSessionId)
       val result = controller().processRequest()(request)
 
       status(result) mustBe Status.SEE_OTHER
-      redirectLocation(result) mustBe Some(routes.NewOrExistingController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(routes.NewOrExistingController.onPageLoad.url)
     }
   }
 }

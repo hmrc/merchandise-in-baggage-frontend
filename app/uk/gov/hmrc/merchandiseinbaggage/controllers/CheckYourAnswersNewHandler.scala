@@ -48,7 +48,7 @@ class CheckYourAnswersNewHandler @Inject()(
     isAgent: YesNo)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
     mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
       (calculationResponse.thresholdCheck, declaration.declarationType) match {
-        case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad())
+        case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad)
         case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
         case (WithinThreshold, Export) => Ok(exportView(form, declaration, isAgent))
       }
@@ -63,7 +63,7 @@ class CheckYourAnswersNewHandler @Inject()(
     }
 
   private def persistAndRedirect(declaration: Declaration)(implicit hc: HeaderCarrier) =
-    mibConnector.persistDeclaration(declaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+    mibConnector.persistDeclaration(declaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad))
 
   def onSubmit(declaration: Declaration, pid: String)(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
     declaration.declarationType match {
@@ -96,7 +96,7 @@ class CheckYourAnswersNewHandler @Inject()(
     implicit rh: RequestHeader,
     hc: HeaderCarrier): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
-      Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+      Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
         .createTpsPayments(pid, None, declaration, calculations)

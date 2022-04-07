@@ -40,8 +40,8 @@ class ExciseAndRestrictedGoodsController @Inject()(
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
     val backIfIncomplete =
       request.declarationJourney.journeyType match {
-        case New   => GoodsDestinationController.onPageLoad()
-        case Amend => PreviousDeclarationDetailsController.onPageLoad()
+        case New   => GoodsDestinationController.onPageLoad
+        case Amend => PreviousDeclarationDetailsController.onPageLoad
       }
 
     backToCheckYourAnswersIfCompleteElse(backIfIncomplete)
