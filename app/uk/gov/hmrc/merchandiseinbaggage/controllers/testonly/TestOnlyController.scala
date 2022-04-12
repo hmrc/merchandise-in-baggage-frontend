@@ -69,10 +69,10 @@ class TestOnlyController @Inject()(
               repository.insert(declarationJourney).map { _ =>
                 declarationJourney.declarationType match {
                   case Import =>
-                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad)
                       .addingToSession((sessionId, declarationJourney.sessionId.value))
                   case Export =>
-                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad())
+                    Redirect(controllers.routes.GoodsDestinationController.onPageLoad)
                       .addingToSession((sessionId, declarationJourney.sessionId.value))
                 }
               }

@@ -38,7 +38,7 @@ class RemoveGoodsController @Inject()(
 
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call =
     request.declarationJourney.declarationIfRequiredAndComplete
-      .fold(routes.ReviewGoodsController.onPageLoad())(_ => routes.CheckYourAnswersController.onPageLoad())
+      .fold(routes.ReviewGoodsController.onPageLoad)(_ => routes.CheckYourAnswersController.onPageLoad)
 
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>

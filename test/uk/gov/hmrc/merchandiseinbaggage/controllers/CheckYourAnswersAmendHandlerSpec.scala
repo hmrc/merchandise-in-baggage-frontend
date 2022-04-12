@@ -80,7 +80,7 @@ class CheckYourAnswersAmendHandlerSpec
         givenADeclarationJourneyIsPersisted(journey)
         givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), id)
 
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val amendment = completedAmendment(importOrExport)
 
@@ -92,7 +92,7 @@ class CheckYourAnswersAmendHandlerSpec
 
       s"will calculate tax and send payment request to TPS for $importOrExport" in {
         val sessionId = SessionId()
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
         val id = DeclarationId("xxx")
         val created = LocalDateTime.now.withSecond(0).withNano(0)
         val journey: DeclarationJourney = completedDeclarationJourney
@@ -156,11 +156,11 @@ class CheckYourAnswersAmendHandlerSpec
 
     val newAmendment = completedAmendment(Export)
 
-    implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+    implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
     val eventualResult = amendHandler().onSubmit(stubbedId, newAmendment)
 
     status(eventualResult) mustBe 303
-    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad().url)
+    redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad.url)
   }
 }

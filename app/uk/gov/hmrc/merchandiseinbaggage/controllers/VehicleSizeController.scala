@@ -37,7 +37,7 @@ class VehicleSizeController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(GoodsInVehicleController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(GoodsInVehicleController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(

@@ -53,13 +53,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onSubmit" should {
     "redirect with navigator adding 'new' to header" in {
-      val request = buildGet(ImportExportChoiceController.onSubmit().url, aSessionId)
+      val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> MakeExport.toString)
 
       (mockNavigator
         .nextPage(_: ImportExportChoiceRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future successful GoodsDestinationController.onPageLoad())
+        .returning(Future successful GoodsDestinationController.onPageLoad)
         .once()
 
       val eventualResult = controller.onSubmit(request)
@@ -67,13 +67,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     "redirect with navigator adding 'amend' to header" in {
-      val request = buildGet(routes.ImportExportChoiceController.onSubmit().url, aSessionId)
+      val request = buildGet(routes.ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> AddToExisting.toString)
 
       (mockNavigator
         .nextPage(_: ImportExportChoiceRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future successful GoodsDestinationController.onPageLoad())
+        .returning(Future successful GoodsDestinationController.onPageLoad)
         .once()
 
       val eventualResult = controller.onSubmit(request)
@@ -81,7 +81,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     "return 400 with required form error" in {
-      val request = buildGet(ImportExportChoiceController.onSubmit().url, aSessionId)
+      val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "")
 
       givenTheUserIsAuthenticatedAndAuthorised()

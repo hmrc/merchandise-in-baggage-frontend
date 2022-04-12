@@ -77,20 +77,20 @@ class RetrieveDeclarationControllerSpec
   "onSubmit" should {
     s"redirect by delegating to Navigator" in {
       givenFindByDeclarationReturnStatus(mibReference, eori, 404)
-      val request = buildPost(RetrieveDeclarationController.onSubmit().url, aSessionId)
+      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
       (mockNavigator
         .nextPage(_: RetrieveDeclarationRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future.successful(DeclarationNotFoundController.onPageLoad()))
+        .returning(Future.successful(DeclarationNotFoundController.onPageLoad))
 
       controller(journey).onSubmit(request).futureValue
     }
 
     s"redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
       givenFindByDeclarationReturnStatus(mibReference, eori, 500)
-      val request = buildPost(RetrieveDeclarationController.onSubmit().url, aSessionId)
+      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
       val eventualResult = controller(journey).onSubmit(request)
@@ -98,7 +98,7 @@ class RetrieveDeclarationControllerSpec
     }
 
     "return 400 for invalid form data" in {
-      val request = buildPost(RetrieveDeclarationController.onSubmit().url, aSessionId)
+      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
       val eventualResult = controller(journey).onSubmit(request)
       val result = contentAsString(eventualResult)

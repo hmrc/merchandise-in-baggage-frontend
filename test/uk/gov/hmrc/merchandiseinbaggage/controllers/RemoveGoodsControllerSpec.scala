@@ -44,7 +44,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
     (mockNavigator
       .nextPage(_: RemoveGoodsRequest)(_: ExecutionContext))
       .expects(*, *)
-      .returning(Future.successful(CheckYourAnswersController.onPageLoad()))
+      .returning(Future.successful(CheckYourAnswersController.onPageLoad))
 
     status(result) mustBe Status.SEE_OTHER
   }

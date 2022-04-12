@@ -43,7 +43,7 @@ class EoriNumberController @Inject()(
     extends DeclarationJourneyUpdateController with Logging {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(CustomsAgentController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(CustomsAgentController.onPageLoad)
 
   private val invalidRequestMessage = "maybeIsACustomsAgent is unanswered"
 

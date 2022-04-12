@@ -38,7 +38,7 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
     val journey = startedImportToGreatBritainJourney.copy(sessionId = id, createdAt = created)
     givenADeclarationJourneyIsPersisted(journey)
 
-    val result = controller.onKeepAlive(buildGet(routes.KeepAliveController.onKeepAlive().url, id))
+    val result = controller.onKeepAlive(buildGet(routes.KeepAliveController.onKeepAlive.url, id))
 
     status(result) mustBe 204
     repo.findBySessionId(id).futureValue mustBe Some(journey)
@@ -49,14 +49,14 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
     val journey = startedImportToGreatBritainJourney.copy(sessionId = id)
     givenADeclarationJourneyIsPersisted(journey)
 
-    val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete().url, id))
+    val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete.url, id))
 
     status(result) mustBe 200
   }
 
   "onServiceTimeout" should {
     "return 200" in {
-      val request = buildGet(routes.KeepAliveController.onServiceTimeout().url, aSessionId)
+      val request = buildGet(routes.KeepAliveController.onServiceTimeout.url, aSessionId)
 
       val eventualResult = controller.onServiceTimeout()(request)
       val result = contentAsString(eventualResult)

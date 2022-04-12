@@ -35,7 +35,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url)
-      .withSession((SessionKeys.sessionId, sessionId.value))
+      .withSession((SessionKeys.sessionId, sessionId.value), (SessionKeys.authToken -> SessionKeys.authToken))
       .withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 

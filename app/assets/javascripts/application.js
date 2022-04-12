@@ -14,15 +14,10 @@ $(document).ready(function () {
     //Add keypress event on every link where exist role="button"
     $(document).on('keypress', 'a[role="button"]', null, onKeypressButton, false);
 
-    // =====================================================
-    // Details/summary polyfill from frontend toolkit
-    // =====================================================
-    GOVUK.details.init();
-
     $('input[type=submit], button[type=submit]').data('ignore-double-submit', 'true');
 })
 
-$(window).load(function () {
+$(window).on('load', function () {
     // If there is an error summary, set focus to the summary
     if ($('.error-summary').length) {
         $('.error-summary').focus();

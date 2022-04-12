@@ -62,13 +62,13 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
 
     "onSubmit" should {
       s"redirect for $importOrExport using Navigator" in {
-        val request = buildPost(GoodsDestinationController.onSubmit().url, aSessionId)
+        val request = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
         (mockNavigator
           .nextPage(_: GoodsDestinationRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad()))
+          .returning(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad))
           .once()
 
         controller(journey).onSubmit(request).futureValue
@@ -76,7 +76,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(GoodsDestinationController.onSubmit().url, aSessionId)
+      val request = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

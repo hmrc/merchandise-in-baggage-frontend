@@ -39,7 +39,7 @@ class ValueWeightOfGoodsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.ExciseAndRestrictedGoodsController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(routes.ExciseAndRestrictedGoodsController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     mibConnector.findExchangeRateURL.map { exchangeUrl =>

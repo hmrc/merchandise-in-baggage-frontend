@@ -25,7 +25,7 @@ class DeclarationNotFoundControllerSpec extends DeclarationJourneyControllerSpec
   val controller = new DeclarationNotFoundController(controllerComponents, stubProvider(startedImportJourney), view)
 
   "return 200 on pageLoad" in {
-    val request = buildGet(routes.DeclarationNotFoundController.onPageLoad().url, aSessionId)
+    val request = buildGet(routes.DeclarationNotFoundController.onPageLoad.url, aSessionId)
 
     status(controller.onPageLoad(request)) mustBe 200
   }

@@ -33,9 +33,9 @@ class CannotUseServiceController @Inject()(
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
-    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad().url)) routes.ExciseAndRestrictedGoodsController.onPageLoad()
-    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad().url)) routes.ValueWeightOfGoodsController.onPageLoad()
-    else if (referer.contains(routes.VehicleSizeController.onPageLoad().url)) routes.VehicleSizeController.onPageLoad()
+    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url)) routes.ExciseAndRestrictedGoodsController.onPageLoad
+    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad.url)) routes.ValueWeightOfGoodsController.onPageLoad
+    else if (referer.contains(routes.VehicleSizeController.onPageLoad.url)) routes.VehicleSizeController.onPageLoad
     else backUrl
   }
 

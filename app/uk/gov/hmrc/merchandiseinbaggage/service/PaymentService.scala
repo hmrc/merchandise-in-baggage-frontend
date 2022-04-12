@@ -41,7 +41,7 @@ class PaymentService @Inject()(connector: PaymentConnector, val auditConnector: 
   def sendPaymentRequest(declaration: Declaration, amendmentRef: Option[Int], paymentCalcs: CalculationResults)(
     implicit hc: HeaderCarrier): Future[String] =
     if (paymentCalcs.totalTaxDue.value == 0) {
-      Future.successful(routes.DeclarationConfirmationController.onPageLoad().url)
+      Future.successful(routes.DeclarationConfirmationController.onPageLoad.url)
     } else {
       auditDeclaration(declaration)
       connector

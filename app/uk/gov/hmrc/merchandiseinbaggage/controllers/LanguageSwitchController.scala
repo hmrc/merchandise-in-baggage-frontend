@@ -28,7 +28,7 @@ class LanguageSwitchController @Inject()(
   val controllerComponents: MessagesControllerComponents
 ) extends FrontendBaseController with I18nSupport {
 
-  private def fallbackURL: String = routes.GoodsDestinationController.onPageLoad().url
+  private def fallbackURL: String = routes.GoodsDestinationController.onPageLoad.url
 
   def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
     val languageToUse =

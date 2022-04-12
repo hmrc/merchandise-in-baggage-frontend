@@ -42,7 +42,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with Moc
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
 
     val result = controller.onSubmit()(
-      buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)
+      buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody(("eori", "GB123467800022"))
     )
 
@@ -61,7 +61,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with Moc
       new EoriNumberController(controllerComponents, actionBuilder, declarationJourneyRepository, view, connector, mockNavigator)
 
     val result = controller.onSubmit()(
-      buildPost(routes.EoriNumberController.onSubmit().url, aSessionId)
+      buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody(("eori", "GB123467800000"))
     )
 

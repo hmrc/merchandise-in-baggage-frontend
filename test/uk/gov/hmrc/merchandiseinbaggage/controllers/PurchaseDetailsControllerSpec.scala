@@ -85,7 +85,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
         (mockNavigator
           .nextPage(_: PurchaseDetailsRequest)(_: ExecutionContext))
           .expects(*, *)
-          .returning(Future.successful(ReviewGoodsController.onPageLoad()))
+          .returning(Future.successful(ReviewGoodsController.onPageLoad))
 
         val eventualResult = controller(journey).onSubmit(1)(request)
         status(eventualResult) mustBe 303

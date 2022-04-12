@@ -63,14 +63,14 @@ class DeclarationConfirmationController @Inject()(
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
-      Redirect(routes.GoodsDestinationController.onPageLoad())
+      Redirect(routes.GoodsDestinationController.onPageLoad)
     }
   }
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
-      Redirect(routes.RetrieveDeclarationController.onPageLoad())
+      Redirect(routes.RetrieveDeclarationController.onPageLoad)
     }
   }
 

@@ -63,7 +63,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
           maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
           goodsEntries = completedGoodsEntries(importOrExport))
 
-        val request = buildGet(PaymentCalculationController.onPageLoad().url, aSessionId)
+        val request = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -86,7 +86,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
           case Export =>
             status(eventualResult) mustBe 303
-            redirectLocation(eventualResult) mustBe Some(CustomsAgentController.onPageLoad().url)
+            redirectLocation(eventualResult) mustBe Some(CustomsAgentController.onPageLoad.url)
         }
       }
 
@@ -99,11 +99,11 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
             goodsEntries = overThresholdGoods(importOrExport)
           )
 
-        val request = buildGet(PaymentCalculationController.onPageLoad().url, aSessionId)
+        val request = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
       }
     }
   }

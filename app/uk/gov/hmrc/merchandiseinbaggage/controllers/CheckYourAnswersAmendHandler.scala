@@ -58,7 +58,7 @@ class CheckYourAnswersAmendHandler @Inject()(
       outstanding       <- OptionT.liftF(mibService.paymentCalculations(goods.goods, destination))
     } yield
       (declarationJourney.declarationType, outstanding.thresholdCheck) match {
-        case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad())
+        case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad)
         case (Import, _)        => Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue, isAgent))
         case (Export, _)        => Ok(amendExportView(form, amendment, isAgent))
       }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
@@ -78,7 +78,7 @@ class CheckYourAnswersAmendHandler @Inject()(
   private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] = {
     val updatedAmendment = amendment.copy(reference = originalDeclaration.amendments.size + 1)
     val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
-    mibService.amendDeclaration(amendedDeclaration).map(_ => Redirect(DeclarationConfirmationController.onPageLoad()))
+    mibService.amendDeclaration(amendedDeclaration).map(_ => Redirect(DeclarationConfirmationController.onPageLoad))
   }
 
   private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
@@ -131,7 +131,7 @@ class CheckYourAnswersAmendHandler @Inject()(
     implicit rh: RequestHeader,
     hc: HeaderCarrier): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
-      Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad()))
+      Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
         .createTpsPayments(pid, Some(amendmentRef), declaration, calculations)

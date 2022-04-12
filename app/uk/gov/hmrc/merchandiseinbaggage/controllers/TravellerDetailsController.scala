@@ -36,7 +36,7 @@ class TravellerDetailsController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(EoriNumberController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(EoriNumberController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill), request.declarationType, backButtonUrl))

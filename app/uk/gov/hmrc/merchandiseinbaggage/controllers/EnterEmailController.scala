@@ -39,7 +39,7 @@ class EnterEmailController @Inject()(
     extends DeclarationJourneyUpdateController with IsAssistedDigitalConfiguration {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
-    backToCheckYourAnswersIfCompleteElse(routes.TravellerDetailsController.onPageLoad())
+    backToCheckYourAnswersIfCompleteElse(routes.TravellerDetailsController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] =
     actionProvider.journeyAction { implicit request =>

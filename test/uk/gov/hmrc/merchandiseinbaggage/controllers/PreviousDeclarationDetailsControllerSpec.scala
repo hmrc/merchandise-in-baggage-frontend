@@ -71,7 +71,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -91,7 +91,7 @@ class PreviousDeclarationDetailsControllerSpec
       givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
 
       val request =
-        buildGet(PreviousDeclarationDetailsController.onPageLoad().url, SessionId()).withSession("declarationId" -> "987")
+        buildGet(PreviousDeclarationDetailsController.onPageLoad.url, SessionId()).withSession("declarationId" -> "987")
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 303
 
@@ -120,7 +120,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -152,7 +152,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -163,7 +163,7 @@ class PreviousDeclarationDetailsControllerSpec
   }
 
   "on submit update and redirect" in {
-    val postRequest = buildPost(PreviousDeclarationDetailsController.onPageLoad().url, aSessionId)
+    val postRequest = buildPost(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
 
     val result = controller.onSubmit()(postRequest)
     status(result) mustBe 303

@@ -37,7 +37,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.VehicleSizeController.onPageLoad().url, aSessionId)
+        val request = buildGet(routes.VehicleSizeController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 
@@ -50,18 +50,18 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to /vehicle-registration-number after successful form submit with Yes for $importOrExport" in {
-        val request = buildPost(routes.VehicleSizeController.onSubmit().url, aSessionId)
+        val request = buildPost(routes.VehicleSizeController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Yes")
         val eventualResult = controller(journey).onSubmit()(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.VehicleRegistrationNumberController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(routes.VehicleRegistrationNumberController.onPageLoad.url)
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
 
-      val request = buildGet(routes.VehicleSizeController.onSubmit().url, aSessionId)
+      val request = buildGet(routes.VehicleSizeController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit()(request)

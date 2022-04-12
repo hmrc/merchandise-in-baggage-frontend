@@ -41,7 +41,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
   "onPageLoad" should {
     s"return 200 with radio buttons" in {
 
-      val request = buildGet(CustomsAgentController.onPageLoad().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onPageLoad.url, aSessionId)
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onPageLoad(request)
       val result = contentAsString(eventualResult)
 
@@ -54,20 +54,20 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
 
   "onSubmit" should {
     s"delegate to Navigator" in {
-      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
       (mockNavigator
         .nextPage(_: CustomsAgentRequest)(_: ExecutionContext))
         .expects(*, *)
-        .returning(Future successful AgentDetailsController.onPageLoad())
+        .returning(Future successful AgentDetailsController.onPageLoad)
         .once()
 
       controller(journey).onSubmit(request).futureValue
     }
 
     s"return 400 with any form errors" in {
-      val request = buildGet(CustomsAgentController.onSubmit().url, aSessionId)
+      val request = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)

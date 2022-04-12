@@ -31,7 +31,7 @@ class StartExportController @Inject()(
     extends StartController {
 
   override val onPageLoad: Action[AnyContent] = Action {
-    Redirect(routes.StartExportController.processRequest())
+    Redirect(routes.StartExportController.processRequest)
   }
 
   override val declarationType: DeclarationType = Export

@@ -44,7 +44,7 @@ class EnterAgentAddressController @Inject()(
       address <- addressLookupFrontendConnector.getAddress(id)
       _       <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
     } yield
-      if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad())
-      else Redirect(routes.EoriNumberController.onPageLoad())
+      if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad)
+      else Redirect(routes.EoriNumberController.onPageLoad)
   }
 }

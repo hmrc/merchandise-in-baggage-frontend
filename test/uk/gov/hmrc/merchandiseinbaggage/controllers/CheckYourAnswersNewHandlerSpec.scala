@@ -88,7 +88,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val eventualResult = newHandler().onPageLoad(declaration, YesNo.Yes)
 
@@ -109,12 +109,12 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
           .modify(_.thresholdCheck)
           .setTo(OverThreshold)
 
-        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad().url, sessionId)
+        implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val eventualResult = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
       }
     }
   }
@@ -137,7 +137,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
     "will calculate tax and send payment request to TPS for Imports" in {
       val sessionId = SessionId()
-      implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
       val id = DeclarationId("xxx")
       val created = LocalDateTime.now.withSecond(0).withNano(0)
       val importJourney: DeclarationJourney = completedDeclarationJourney
@@ -169,7 +169,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       val eventualResult = newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
 
     "will redirect to declaration-confirmation for Export" in {
@@ -184,7 +184,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       val eventualResult = newHandler().onSubmit(declaration.copy(declarationType = Export))
 
       status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad().url)
+      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
 
   }

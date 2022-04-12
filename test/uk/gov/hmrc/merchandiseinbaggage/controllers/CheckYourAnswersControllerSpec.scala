@@ -93,11 +93,11 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         val sessionId = SessionId()
         val inCompletedJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(journeyType = journeyType)
 
-        val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val request = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
         val eventualResult = controller(declarationJourney = inCompletedJourney).onPageLoad()(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad.url)
       }
     }
 
@@ -105,7 +105,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val sessionId = SessionId()
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
       givenADeclarationJourneyIsPersisted(journey)
-      val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val request = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
       (mockMibService
         .paymentCalculations(_: Seq[ImportGoods], _: GoodsDestination)(_: HeaderCarrier))
@@ -133,7 +133,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aTotalCalculationResult.calculationResults, WithinThreshold)))
 
-      val request = buildGet(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val request = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onPageLoad()(request)
 
       status(eventualResult) mustBe 200
@@ -146,11 +146,11 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         val sessionId = SessionId()
         val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(journeyType = journeyType)
 
-        val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val request = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
         val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
         status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad().url)
+        redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad.url)
       }
 
       s"will invoke assisted digital on submit with $TpsId if flag is set for $journeyType" in new DeclarationJourneyControllerSpec {
@@ -187,7 +187,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
               .returning(Future.successful(Redirect("")))
         }
 
-        val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+        val request = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
           .withHeaders("authProviderId" -> "123")
         val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
@@ -206,7 +206,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         .expects(*, *, *)
         .returning(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))
 
-      val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val request = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
       status(eventualResult) mustBe 303
@@ -234,7 +234,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         .expects(*, *)
         .returning(Future.successful(declarationWithResult.declarationId))
 
-      val request = buildPost(routes.CheckYourAnswersController.onPageLoad().url, sessionId)
+      val request = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
       val eventualResult = controller(declarationJourney = journey).onSubmit()(request)
 
       status(eventualResult) mustBe 303

@@ -1,5 +1,5 @@
 @*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@
     @p(Html(messages("sessionExpired.restart.p")), Some("expiredRestartId"))
 
     <ul class="govuk-list govuk-list--bullet">
-        <li id="expiredUlIdOne">@link(StartImportController.onPageLoad().url, messages("sessionExpired.Import.restart"), true)</li>
-        <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad().url, messages("sessionExpired.Export.restart"), true)</li>
+        <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("sessionExpired.Import.restart"), true)</li>
+        <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("sessionExpired.Export.restart"), true)</li>
     </ul>
 }

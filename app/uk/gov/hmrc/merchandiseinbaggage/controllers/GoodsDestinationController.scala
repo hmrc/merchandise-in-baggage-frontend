@@ -38,7 +38,7 @@ class GoodsDestinationController @Inject()(
     extends DeclarationJourneyUpdateController {
 
   private val backLink =
-    if (appConfig.isAssistedDigital) ImportExportChoiceController.onPageLoad() else NewOrExistingController.onPageLoad()
+    if (appConfig.isAssistedDigital) ImportExportChoiceController.onPageLoad else NewOrExistingController.onPageLoad
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(

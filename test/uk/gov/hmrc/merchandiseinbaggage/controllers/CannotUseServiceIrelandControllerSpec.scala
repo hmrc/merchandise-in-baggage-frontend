@@ -36,7 +36,7 @@ class CannotUseServiceIrelandControllerSpec extends DeclarationJourneyController
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.CannotUseServiceIrelandController.onPageLoad().url, aSessionId)
+        val request = buildGet(routes.CannotUseServiceIrelandController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result = contentAsString(eventualResult)
 

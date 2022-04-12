@@ -35,7 +35,7 @@ class NoDeclarationNeededControllerSpec extends DeclarationJourneyControllerSpec
       val journey: DeclarationJourney =
         DeclarationJourney(aSessionId, Import).copy(maybeGoodsDestination = Some(GreatBritain))
 
-      val request = buildGet(routes.NoDeclarationNeededController.onPageLoad().url, aSessionId)
+      val request = buildGet(routes.NoDeclarationNeededController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result = contentAsString(eventualResult)
 
