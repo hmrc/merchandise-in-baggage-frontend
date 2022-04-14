@@ -41,11 +41,11 @@ object MockStrideAuth {
                        | },
                        | "allEnrolments": [
                        |  {
-                       |   "key": "digital_tps_payment_taker_call_handler",
+                       |   "key": "tps_payment_taker_call_handler",
                        |   "identifiers": [
                        |    {
-                       |     "key": "digital_tps_payment_taker_call_handler",
-                       |     "value": "digital_tps_payment_taker_call_handler"
+                       |     "key": "tps_payment_taker_call_handler",
+                       |     "value": "tps_payment_taker_call_handler"
                        |    }
                        |   ],
                        |   "state": "Activated"
