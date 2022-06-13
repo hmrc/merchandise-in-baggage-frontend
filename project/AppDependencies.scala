@@ -6,7 +6,7 @@ object AppDependencies {
   private val pactVersion = "4.4.0"
 
   val compile = Seq(
-    "uk.gov.hmrc"                %% "bootstrap-frontend-play-28" % "5.21.0",
+    "uk.gov.hmrc"                %% "bootstrap-frontend-play-28" % "5.24.0",
     "uk.gov.hmrc"                %% "auth-client"                % "5.12.0-play-28",
     "uk.gov.hmrc"                %% "play-frontend-hmrc"         % "3.13.0-play-28",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "0.62.0",
@@ -19,7 +19,7 @@ object AppDependencies {
   )
 
   val test = Seq(
-    "uk.gov.hmrc"              %% "bootstrap-test-play-28"  % "5.21.0"   % Test,
+    "uk.gov.hmrc"              %% "bootstrap-test-play-28"  % "5.24.0"   % Test,
     "org.scalatest"            %% "scalatest"               % "3.1.4"    % Test,
     "com.typesafe.play"        %% "play-test"               % current    % Test,
     "com.vladsch.flexmark"     %  "flexmark-all"            % "0.36.8"  % "test, it",
