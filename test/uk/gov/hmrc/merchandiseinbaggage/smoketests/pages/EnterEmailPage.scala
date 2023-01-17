@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertions.fail
-import org.scalatestplus.selenium.WebBrowser.{find, _}
+import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
 object EnterEmailPage extends Page {

@@ -27,13 +27,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenFindByDeclarationReturnStatus
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveDeclarationControllerSpec
-    extends DeclarationJourneyControllerSpec with WireMockSupport with MockFactory with PropertyBaseTables {
+class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
 
   val view = injector.instanceOf[RetrieveDeclarationView]
   val connector = injector.instanceOf[MibConnector]

@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyOnFoot
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDetailsPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenPersistedDeclarationIsFound}
+
 import java.time.LocalDate
 
 class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPage with CoreTestData {

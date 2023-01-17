@@ -19,9 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.FormError
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{GoodsDestination, GoodsDestinations}
 
 class GoodsDestinationFormSpec extends OptionFieldBehaviours {
 

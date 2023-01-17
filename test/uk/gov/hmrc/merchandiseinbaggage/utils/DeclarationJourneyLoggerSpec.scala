@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
 import org.scalamock.scalatest.MockFactory
-import play.api.mvc.{Cookies, Headers, RequestHeader}
 import play.api.mvc.request.RequestTarget
+import play.api.mvc.{Cookies, Headers, RequestHeader}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 
 class DeclarationJourneyLoggerSpec extends BaseSpec with MockFactory {

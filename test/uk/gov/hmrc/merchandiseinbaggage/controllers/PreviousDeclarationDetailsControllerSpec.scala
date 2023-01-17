@@ -28,13 +28,12 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PreviousDeclarationDetailsControllerSpec
-    extends DeclarationJourneyControllerSpec with CoreTestData with WireMockSupport with MibConfiguration with MockFactory {
+    extends DeclarationJourneyControllerSpec with CoreTestData with MibConfiguration with MockFactory {
 
   val mockNavigator: Navigator = mock[Navigator]
   val mockMibService: MibService = mock[MibService]

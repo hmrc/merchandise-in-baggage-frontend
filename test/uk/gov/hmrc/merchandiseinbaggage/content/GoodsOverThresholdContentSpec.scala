@@ -22,9 +22,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData with WireMockSupport {
+class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData {
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     "onPageLoad" should {

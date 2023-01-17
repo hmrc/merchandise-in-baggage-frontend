@@ -19,13 +19,12 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 import org.scalatest.concurrent.Eventually
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.stubs.AddressLookupFrontendStub._
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggage.stubs.AddressLookupFrontendStub._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class AddressLookupFrontendConnectorSpec extends BaseSpecWithApplication with WireMockSupport with Eventually {
+class AddressLookupFrontendConnectorSpec extends BaseSpecWithApplication with Eventually {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private lazy val connector = injector.instanceOf[AddressLookupFrontendConnector]
 

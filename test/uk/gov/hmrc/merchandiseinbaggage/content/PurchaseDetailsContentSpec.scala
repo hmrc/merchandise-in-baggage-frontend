@@ -20,9 +20,8 @@ import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-class PurchaseDetailsContentSpec extends PurchaseDetailsPage with CoreTestData with PropertyBaseTables with WireMockSupport {
+class PurchaseDetailsContentSpec extends PurchaseDetailsPage with CoreTestData with PropertyBaseTables {
 
   forAll(declarationTypesTable) { importOrExport =>
     s"render contents for $importOrExport" in {

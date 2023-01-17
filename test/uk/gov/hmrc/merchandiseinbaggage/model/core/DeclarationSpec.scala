@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.time.{LocalDate, LocalDateTime}
-import java.util.UUID
-
 import com.softwaremill.quicklens._
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
@@ -31,6 +28,9 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
+
+import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))

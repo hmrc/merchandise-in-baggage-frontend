@@ -20,10 +20,9 @@ import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.{TpsId, TpsPaymentsRequest}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.TpsPaymentsBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class TpsPaymentsServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with ScalaFutures {
+class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData with ScalaFutures {
 
   val paymentService = app.injector.instanceOf[TpsPaymentsService]
 

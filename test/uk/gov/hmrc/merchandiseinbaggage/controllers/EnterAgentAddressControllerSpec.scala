@@ -20,11 +20,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.connectors.AddressLookupFrontendConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.AddressLookupFrontendStub._
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
+class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec {
   "returnFromAddressLookup" must {
     val connector = injector.instanceOf[AddressLookupFrontendConnector]
     val controller = new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
@@ -32,10 +31,10 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
     val address =
       Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), AddressLookupCountry("GB", Some("United Kingdom")))
 
-    givenConfirmJourney("id", address, wireMockServer)
-
     s"store address and redirect to ${routes.EoriNumberController.onPageLoad}" when {
       "a declaration journey has been started" in {
+        givenConfirmJourney("id", address, wireMockServer)
+
         givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)
@@ -54,6 +53,8 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec w
 
     s"store address and redirect to ${routes.CheckYourAnswersController.onPageLoad}" when {
       "a declaration journey is complete" in {
+        givenConfirmJourney("id", address, wireMockServer)
+
         givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
         val request = buildGet(url, aSessionId)
         val result = controller.returnFromAddressLookup("id")(request)

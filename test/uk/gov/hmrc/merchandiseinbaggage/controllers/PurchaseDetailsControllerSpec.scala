@@ -25,12 +25,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEnt
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with WireMockSupport {
+class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   private val importView = app.injector.instanceOf[PurchaseDetailsImportView]
   private val exportView = app.injector.instanceOf[PurchaseDetailsExportView]
@@ -48,8 +47,6 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       exportView)
 
   declarationTypes.foreach { importOrExport =>
-    givenExchangeRateURL("http://something")
-
     val journey: DeclarationJourney = DeclarationJourney(
       aSessionId,
       importOrExport,
@@ -79,6 +76,8 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
+        givenExchangeRateURL("http://something")
+
         val request = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
 
@@ -92,6 +91,8 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       }
 
       s"return 400 with any form errors for $importOrExport" in {
+        givenExchangeRateURL("http://something")
+
         val request = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("abcd" -> "in valid")
 

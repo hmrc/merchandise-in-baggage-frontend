@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.audit.HandlerResult
-
-import scala.concurrent.{ExecutionContext, Future}
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
+import play.api.libs.json.JsValue
+import uk.gov.hmrc.audit.HandlerResult
 import uk.gov.hmrc.play.audit.http.config.AuditingConfig
 import uk.gov.hmrc.play.audit.http.connector.{AuditChannel, AuditConnector, DatastreamMetrics}
+
+import scala.concurrent.{ExecutionContext, Future}
 
 abstract class TestAuditConnector(appName: String) extends AuditConnector {
   private val _auditingConfig =

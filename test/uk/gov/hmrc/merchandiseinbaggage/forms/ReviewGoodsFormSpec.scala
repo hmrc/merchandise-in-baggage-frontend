@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 
 class ReviewGoodsFormSpec extends YesNoFieldBehaviours {
 

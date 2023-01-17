@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.view
 
-import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.proofOfOriginNeeded
-import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import com.softwaremill.quicklens._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{NotRequired, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.proofOfOriginNeeded
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 class ViewUtilsSpec extends BaseSpec with CoreTestData {
 
