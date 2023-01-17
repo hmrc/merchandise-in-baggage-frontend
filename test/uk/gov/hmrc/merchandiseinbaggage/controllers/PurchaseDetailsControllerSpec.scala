@@ -55,6 +55,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
+        givenExchangeRateURL("http://something")
 
         val request = buildGet(PurchaseDetailsController.onPageLoad(1).url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(1)(request)

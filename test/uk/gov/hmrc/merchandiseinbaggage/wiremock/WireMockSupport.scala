@@ -44,5 +44,5 @@ trait WireMockSupport extends BeforeAndAfterAll with BeforeAndAfterEach { this: 
 }
 
 object WireMockSupport {
-  val port: Int = 8080
+  val port: Int = 5051
 }

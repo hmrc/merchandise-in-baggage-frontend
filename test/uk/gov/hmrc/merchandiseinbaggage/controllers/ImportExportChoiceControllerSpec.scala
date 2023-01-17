@@ -36,6 +36,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onPageLoad" should {
     "return 200 with radio button" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
       val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
 
       val eventualResult = controller.onPageLoad(request)
