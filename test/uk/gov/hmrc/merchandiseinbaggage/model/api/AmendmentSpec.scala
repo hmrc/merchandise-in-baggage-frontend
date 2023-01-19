@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import java.time.LocalDateTime
-
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
+
+import java.time.LocalDateTime
 
 class AmendmentSpec extends BaseSpec with CoreTestData {
 

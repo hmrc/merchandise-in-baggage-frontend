@@ -17,14 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.stubs
 
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, ExchangeRateURL, MibReference}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 
 object MibBackendStub extends MibConfiguration with CoreTestData {

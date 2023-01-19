@@ -1,8 +1,3 @@
-.*
-
-!.gitignore
-!.github
-!.scalafmt.conf
 .cache
 /.classpath
 db
@@ -35,3 +30,4 @@ tmp
 .idea_modules
 bin
 pact
+/.bsp

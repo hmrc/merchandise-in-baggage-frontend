@@ -29,10 +29,11 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Named}
+import javax.inject.{Inject, Named, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+@Singleton
 class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
     extends PlayMongoRepository[DeclarationJourney](
       mongo,

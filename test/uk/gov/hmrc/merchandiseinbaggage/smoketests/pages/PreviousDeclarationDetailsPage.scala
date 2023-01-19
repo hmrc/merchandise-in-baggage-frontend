@@ -17,9 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.{Assertion, Suite}
+import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDetailsPage._
-import org.scalatestplus.selenium.WebBrowser._
 
 object PreviousDeclarationDetailsPage extends Page {
   val path = "/declare-commercial-goods/previous-declaration-details"

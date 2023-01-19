@@ -16,14 +16,13 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
-import java.time.LocalDate
-
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
-import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyDetailsEntry}
+
+import java.time.LocalDate
 
 class JourneyDetailsFormSpec extends FieldBehaviours {
   private val firstJanuary = LocalDate.of(2021, 1, 1)

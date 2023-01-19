@@ -20,7 +20,6 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
@@ -42,10 +41,9 @@ import uk.gov.hmrc.mongo.MongoComponent
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait BaseSpec extends AnyWordSpec with Matchers
+trait BaseSpec extends AnyWordSpec with Matchers with WireMockSupport
 
-trait BaseSpecWithApplication
-    extends BaseSpec with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures with BeforeAndAfterEach with BeforeAndAfterAll {
+trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with MongoConfiguration with ScalaFutures {
 
   override implicit val patienceConfig: PatienceConfig =
     PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))

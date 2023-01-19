@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsTypeForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 
 class GoodsTypeFormSpec extends FieldBehaviours {
 

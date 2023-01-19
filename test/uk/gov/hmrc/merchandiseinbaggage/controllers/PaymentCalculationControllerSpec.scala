@@ -27,12 +27,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
+class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view = app.injector.instanceOf[PaymentCalculationView]
   lazy val mibConnector = injector.instanceOf[MibConnector]
@@ -91,6 +90,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
       }
 
       s"redirect to /goods-over-threshold for $importOrExport if its over threshold" in {
+        givenExchangeRateURL("http://something")
         val journey =
           DeclarationJourney(
             SessionId("123"),

@@ -19,14 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
+import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
+import uk.gov.hmrc.audit.HandlerResult
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
+
 import scala.concurrent.ExecutionContext.Implicits.global
-import play.api.libs.json.JsValue
-import uk.gov.hmrc.audit.HandlerResult
-import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.Future
 
 class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with MockFactory {

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import com.softwaremill.quicklens._
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.OptionValues
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -26,16 +28,13 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
+import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import com.softwaremill.quicklens._
-import org.scalatest.OptionValues
-import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 
-class MibServiceSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData with MockFactory with OptionValues {
+class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with MockFactory with OptionValues {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
   private val mockConnector = mock[MibConnector]

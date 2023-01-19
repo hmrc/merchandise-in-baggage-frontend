@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
-import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.forms.ExciseAndRestrictedGoodsForm.form
+import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 
 class ExciseAndRestrictedGoodsFormSpec extends YesNoFieldBehaviours {

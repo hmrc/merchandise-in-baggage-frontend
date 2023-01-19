@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.openqa.selenium.support.ui.Select
-import org.scalatestplus.selenium.WebBrowser.{find, _}
+import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.forms.JourneyDetailsForm._
 
 import java.time.LocalDate

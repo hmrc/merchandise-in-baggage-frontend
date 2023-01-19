@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
-import org.scalatestplus.selenium.WebBrowser.{IdQuery, _}
+import org.scalatestplus.selenium.WebBrowser._
 
 object GoodsDestinationPage extends Page {
   val path = "/declare-commercial-goods/goods-destination"

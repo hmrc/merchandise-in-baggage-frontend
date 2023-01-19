@@ -19,18 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.New
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.{Page, StartImportPage}
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success, Try}
 
-class BaseUiSpec extends BaseSpecWithApplication with WireMockSupport with HtmlUnit with Eventually with CoreTestData {
+class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually with CoreTestData {
 
   webDriver.setJavascriptEnabled(false)
 

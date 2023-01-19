@@ -16,14 +16,15 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.wiremock
 
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 
 object MockStrideAuth {
   val expectedDetail = "SessionRecordNotFound"
 
-  def givenTheUserIsAuthenticatedAndAuthorised(): StubMapping =
-    stubFor(
+  def givenTheUserIsAuthenticatedAndAuthorised()(implicit wireMockServer: WireMockServer): StubMapping =
+    wireMockServer.stubFor(
       post(urlEqualTo("/auth/authorise"))
         .withRequestBody(
           equalToJson(

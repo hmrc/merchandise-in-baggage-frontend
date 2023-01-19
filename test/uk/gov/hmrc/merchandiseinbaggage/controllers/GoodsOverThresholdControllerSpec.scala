@@ -25,11 +25,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec with WireMockSupport {
+class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view = app.injector.instanceOf[GoodsOverThresholdView]
   private val calculatorService = app.injector.instanceOf[MibService]

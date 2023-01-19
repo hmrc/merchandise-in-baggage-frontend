@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import java.time.LocalDateTime
-
 import org.scalamock.scalatest.MockFactory
 import play.api.mvc.Request
 import play.api.test.Helpers._
@@ -27,20 +25,20 @@ import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
+import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec
-    extends DeclarationJourneyControllerSpec with MibConfiguration with WireMockSupport with MockFactory with PropertyBaseTables {
+    extends DeclarationJourneyControllerSpec with MibConfiguration with MockFactory with PropertyBaseTables {
 
   private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]

@@ -16,19 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.{post, urlPathEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PaymentConnectorSpec extends BaseSpecWithApplication with WireMockSupport with CoreTestData {
+class PaymentConnectorSpec extends BaseSpecWithApplication with CoreTestData {
 
   class TestPaymentConnector
       extends PaymentConnector(injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))

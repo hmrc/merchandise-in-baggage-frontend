@@ -23,12 +23,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExi
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with WireMockSupport {
+class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
   val view = injector.instanceOf[ImportExportChoice]
   val mockNavigator = mock[Navigator]
@@ -37,8 +36,8 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onPageLoad" should {
     "return 200 with radio button" in {
-      val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
       givenTheUserIsAuthenticatedAndAuthorised()
+      val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
 
       val eventualResult = controller.onPageLoad(request)
       val result = contentAsString(eventualResult)
@@ -53,6 +52,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onSubmit" should {
     "redirect with navigator adding 'new' to header" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
       val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> MakeExport.toString)
 
@@ -67,6 +67,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     "redirect with navigator adding 'amend' to header" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
       val request = buildGet(routes.ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> AddToExisting.toString)
 
@@ -81,6 +82,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     "return 400 with required form error" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
       val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "")
 

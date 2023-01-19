@@ -16,19 +16,18 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
-import java.time.LocalDateTime
-
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with WireMockSupport with MibConfiguration {
+import java.time.LocalDateTime
+
+class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration {
 
   private val client = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()

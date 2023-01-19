@@ -21,9 +21,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.EssentialAction
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.{MockStrideAuth, WireMockSupport}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
-class DeclarationJourneyActionProviderSpec extends BaseSpec with WireMockSupport {
+class DeclarationJourneyActionProviderSpec extends BaseSpec {
 
   "need to be stride authenticated if internal FE flag is set" in new DeclarationJourneyControllerSpec {
     override def fakeApplication(): Application =
@@ -36,7 +37,7 @@ class DeclarationJourneyActionProviderSpec extends BaseSpec with WireMockSupport
         .build()
     val actionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 
-    MockStrideAuth.givenTheUserIsAuthenticatedAndAuthorised()
+    givenTheUserIsAuthenticatedAndAuthorised()
 
     val action: EssentialAction = actionProvider.journeyAction { _ =>
       play.api.mvc.Results.Ok("authenticated")

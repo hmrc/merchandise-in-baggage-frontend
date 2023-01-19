@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage
 
-import java.time.{LocalDate, LocalDateTime}
-import java.util.UUID
-
 import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
@@ -29,14 +26,17 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates.Twenty
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResult, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.{CheckEoriAddress, CheckResponse, CompanyDetails}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{ConversionRatePeriod, payapi, _}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, ExportGoodsEntry, GoodsEntries, ImportGoodsEntry, ThresholdAllowance}
+import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
+
+import java.time.{LocalDate, LocalDateTime}
+import java.util.UUID
 
 trait CoreTestData {
   val payApiRequest: PayApiRequest = payapi.PayApiRequest(

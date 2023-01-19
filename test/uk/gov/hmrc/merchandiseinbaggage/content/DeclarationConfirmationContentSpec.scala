@@ -24,6 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, NotRequired}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmationPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.LocalDateTimeOps
+
 import scala.collection.JavaConverters._
 
 class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage with CoreTestData {
