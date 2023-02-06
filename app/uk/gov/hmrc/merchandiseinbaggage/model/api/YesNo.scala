@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import enumeratum.EnumEntry
+import play.api.libs.json.Format
 
 import scala.collection.immutable
 
@@ -27,6 +28,7 @@ sealed trait YesNo extends EnumEntry {
 object YesNo extends Enum[YesNo] {
   override val baseMessageKey: String = "site"
   override val values: immutable.IndexedSeq[YesNo] = findValues
+  implicit val format: Format[YesNo] = EnumFormat(YesNo)
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No
 

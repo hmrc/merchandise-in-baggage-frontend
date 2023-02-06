@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import org.mongodb.scala.Document
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
@@ -74,7 +75,7 @@ class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually w
     goto(StartImportPage.path)
 
     (for {
-      persisted <- declarationJourneyRepository.findAll()
+      persisted <- declarationJourneyRepository.collection.find[DeclarationJourney]().toFuture()
       updated <- declarationJourneyRepository.upsert(
                   declarationJourney
                     .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType))

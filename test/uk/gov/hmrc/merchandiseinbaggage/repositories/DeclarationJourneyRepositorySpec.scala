@@ -16,19 +16,19 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
+import org.mongodb.scala.Document
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with CoreTestData {
-  override def beforeEach(): Unit = declarationJourneyRepository.deleteAll().futureValue
 
   "DeclarationJourneyRepository" should {
 
     "findAll finds zero matches when no declarations made" in {
-      declarationJourneyRepository.findAll().futureValue.size mustBe 0
+      declarationJourneyRepository.collection.find[Document]().toFuture().futureValue.size mustBe 0
     }
 
     "persist and find a declaration journey" in {
-      val inserted = declarationJourneyRepository.insert(completedDeclarationJourney).futureValue
+      val inserted = declarationJourneyRepository.upsert(completedDeclarationJourney).futureValue
 
       inserted mustBe completedDeclarationJourney
 
@@ -39,7 +39,7 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
     "update a declaration journey" in {
       val update = completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None)
 
-      declarationJourneyRepository.insert(completedDeclarationJourney).futureValue
+      declarationJourneyRepository.upsert(completedDeclarationJourney).futureValue
       declarationJourneyRepository.upsert(update).futureValue mustBe update
       declarationJourneyRepository.findBySessionId(update.sessionId).futureValue mustBe Some(update)
     }
@@ -47,9 +47,9 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
     "have a ttl index with the configured expiry time" in {
       val expectedTimeToLive = 3600
 
-      declarationJourneyRepository.timeToLiveInSeconds mustBe expectedTimeToLive
+      declarationJourneyRepository.appConfig.mongoTTL mustBe expectedTimeToLive
 
-      val indices = declarationJourneyRepository.indices.futureValue
+      val indices = declarationJourneyRepository.collection.listIndexes().toFuture().futureValue
 
       val actualTimeToLive = indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt64().intValue()
 
