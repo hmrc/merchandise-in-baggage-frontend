@@ -133,7 +133,7 @@ valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan �
 valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £1,500 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.rate.1=Byddwn yn cyfrifo cyfanswm gwerth gan ddefnyddio
-valueWeightOfGoods.rate.2= cyfraddau cyfnewid misol CThEM (yn agor tab newydd)
+valueWeightOfGoods.rate.2= cyfraddau cyfnewid misol CThEF (yn agor tab newydd)
 valueWeightOfGoods.rate.3=a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 
 
@@ -201,7 +201,7 @@ purchaseDetails.price.label = Swm a dalwyd
 purchaseDetails.price.hint = Nodwch y swm o dan yr arian cyfred a ddefnyddir
 purchaseDetails.currency.label = Arian cyfred
 purchaseDetails.p.1 = I drosi’r swm a dalwyd, byddwn yn defnyddio 
-purchaseDetails.p.a.text = cyfraddau cyfnewid misol CThEM (yn agor tab newydd) 
+purchaseDetails.p.a.text = cyfraddau cyfnewid misol CThEF (yn agor tab newydd)
 purchaseDetails.p.2 = a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rhif
@@ -263,7 +263,7 @@ goodsOverThreshold.p6 = Cyfanswm gwerth eich nwyddau yw {0}.
 goodsOverThreshold.p7 = Gwnaethom drosi’r swm hwn ar gyfradd o:
 goodsOverThreshold.li = {0} i 1 (GBP).
 goodsOverThreshold.p8.1 = Rydym yn defnyddio
-goodsOverThreshold.p8.a.text = cyfraddau trosi misol CThEM (yn agor tab newydd)
+goodsOverThreshold.p8.a.text = cyfraddau trosi misol CThEF (yn agor tab newydd)
 goodsOverThreshold.p8.2 = a chyfraddau’r mis yr ydych yn cyflwyno’ch datganiad ynddo.
 
 # PaymentCalculation
@@ -289,7 +289,7 @@ paymentCalculation.dutyAndVat.p1 = Codir Toll Dramor ar gyfradd unffurf o 3.3% a
 paymentCalculation.p2 = Gwnaethom gyfnewid y cyfanswm ar gyfradd o:
 paymentCalculation.li = {0} i 1 (GBP).
 paymentCalculation.p3.1 = Gwnaethom ddefnyddio
-paymentCalculation.p3.a.text =  cyfraddau cyfnewid misol CThEM (yn agor tab newydd).
+paymentCalculation.p3.a.text =  cyfraddau cyfnewid misol CThEF (yn agor tab newydd).
 paymentCalculation.p3.2 = a’r cyfraddau yn y mis pan fyddwch yn cyflwyno’ch datganiad.
 paymentCalculation.zero.button = Datgan nwyddau
 
