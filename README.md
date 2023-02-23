@@ -26,4 +26,4 @@ The generated contracts test will then being used from the Backend contract veri
 
 See the companion Reposirory https://github.com/hmrc/merchandise-in-baggage-ui-tests for UI tests using this repo.
 
-Perform: `sm --start MERCHANDISE_IN_BAGGAGE_ALL` to run this service, and then separately run the UI tests.
+Perform: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL` to run this service, and then separately run the UI tests.
