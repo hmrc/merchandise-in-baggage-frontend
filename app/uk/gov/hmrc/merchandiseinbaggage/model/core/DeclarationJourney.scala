@@ -16,10 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import java.time.{LocalDateTime, ZoneOffset}
-import java.util.UUID
-
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json._
 import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
@@ -27,8 +24,13 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
-import DeclarationJourney._
+import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
+
+import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
+import java.util.UUID
+import scala.util._
 
 case class GoodsEntries(entries: Seq[GoodsEntry]) {
   if (entries.isEmpty) throw new RuntimeException("GoodsEntries cannot be empty: use apply()")
@@ -152,6 +154,44 @@ case class DeclarationJourney(
 }
 
 object DeclarationJourney {
+
+  def parseDateString(dateValue: String): JsResult[LocalDateTime] = {
+    val parsedTime: Try[LocalDateTime] = Try {
+      if (dateValue.contains("Z")) {
+        ZonedDateTime.parse(dateValue).toLocalDateTime
+      } else {
+        LocalDateTime.parse(dateValue)
+      }
+    }
+    parsedTime match {
+      case Failure(_) => JsError("Unexpected LocalDateTime Format")
+      case Success(value) => JsSuccess(value)
+    }
+  }
+
+  def parseBigDecimal(bigDecimal: BigDecimal): JsResult[LocalDateTime] =
+    LocalDateTime.ofInstant(Instant.ofEpochMilli(bigDecimal.toLong), ZoneOffset.UTC) match {
+      case d: LocalDateTime => JsSuccess(d)
+      case _                => JsError("Unexpected LocalDateTime Format")
+    }
+
+  implicit val localDateTimeRead: Reads[LocalDateTime] = {
+    case JsObject(map) if map.contains("$date") =>
+      map("$date") match {
+        case JsNumber(bigDecimal) => parseBigDecimal(bigDecimal)
+        case JsObject(stringObject) if (stringObject.contains("$numberLong")) =>
+          val extractedBigDecimal: BigDecimal = BigDecimal(stringObject("$numberLong").as[JsString].value)
+          parseBigDecimal(extractedBigDecimal)
+        case JsString(dateValue) =>
+          parseDateString(dateValue)
+        case _ => JsError("Unexpected LocalDateTime Format")
+      }
+    case JsString(dateValue) =>
+      parseDateString(dateValue)
+    case _ => JsError("Unexpected LocalDateTime Format")
+  }
+
+  implicit val dateFormat: Format[LocalDateTime] = Format(localDateTimeRead, MongoJavatimeFormats.localDateTimeWrites)
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =
@@ -195,4 +235,5 @@ object DeclarationJourney {
     def updateGoodsEntries(): DeclarationJourney =
       declarationJourney.copy(goodsEntries = declarationJourney.goodsEntries.addEmptyIfNecessary())
   }
+
 }

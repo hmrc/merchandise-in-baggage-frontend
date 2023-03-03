@@ -17,11 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
 import com.mongodb.client.model.Indexes.ascending
-import org.mongodb.scala.model.Filters.{empty, equal}
+import org.mongodb.scala.model.Filters.equal
 import org.mongodb.scala.model.ReturnDocument.AFTER
 import org.mongodb.scala.model.{FindOneAndReplaceOptions, IndexModel, IndexOptions}
-import play.api.Logging
-import play.api.libs.json._
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney.{format, id}
@@ -29,12 +28,12 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
 import java.util.concurrent.TimeUnit
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, @Named("declarationJourneyTimeToLiveInSeconds") ttlInSeconds: Int)
+class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfig: AppConfig)
     extends PlayMongoRepository[DeclarationJourney](
       mongo,
       "declarationJourney",
@@ -43,35 +42,14 @@ class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, @Named("decl
         IndexModel(ascending(id), IndexOptions().name("primaryKey").unique(true)),
         IndexModel(
           ascending("createdAt"),
-          IndexOptions().name("timeToLive").unique(false).expireAfter(ttlInSeconds, TimeUnit.SECONDS)
+          IndexOptions().name("timeToLive").unique(false).expireAfter(appConfig.mongoTTL, TimeUnit.SECONDS)
         )
       )
-    ) with Logging {
-
-  private[repositories] lazy val timeToLiveInSeconds: Int = ttlInSeconds
-
-  private[repositories] lazy val indices = collection.listIndexes().toFuture()
-
-  def insert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
-    collection.insertOne(declarationJourney).toFuture().map(_ => declarationJourney)
+    ) {
 
   def findBySessionId(sessionId: SessionId): Future[Option[DeclarationJourney]] =
     collection.find(equal(id, sessionId.value)).toFuture().map(_.headOption)
 
-  def findAll(): Future[Seq[DeclarationJourney]] = collection.find().toFuture()
-
-  def deleteAll(): Future[Unit] = {
-    logger.warn("DeclarationJourneyRepository.deleteAll() called")
-    collection.deleteMany(empty()).toFuture().map(_ => ())
-  }
-
-  implicit val jsObjectWriter: OWrites[JsObject] = new OWrites[JsObject] {
-    override def writes(o: JsObject): JsObject = o
-  }
-
-  /**
-    * Update or Insert (UpSert)
-    */
   def upsert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
     collection
       .findOneAndReplace(

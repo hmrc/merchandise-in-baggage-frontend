@@ -93,8 +93,4 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
       .toList
   }
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    declarationJourneyRepository.deleteAll()
-  }
 }

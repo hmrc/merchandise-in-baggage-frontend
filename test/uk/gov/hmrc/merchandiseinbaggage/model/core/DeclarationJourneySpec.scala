@@ -16,11 +16,17 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import org.scalatest.funspec.AnyFunSpec
+import play.api.libs.Comet
+import play.api.libs.Comet.json
+import play.api.libs.json.{JsError, JsObject, JsString, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
+
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 
 class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBaseTables {
 
@@ -46,5 +52,54 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
   "set user email" in {
     userEmail(true, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("x@y"))
     userEmail(false, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("zz@y"))
+  }
+
+  val date = LocalDate.of(2018, 2, 1).atStartOfDay
+  val dateTimeWithoutZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500)
+  val dateTimeWithZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500) + "Z"
+  val dateString = date.toString
+  val dateStringWithZ = dateTimeWithZ.toString
+  val dateMillis = 1517443200000L
+  val dateMillisBigDecimal : BigDecimal = 1517443200000L
+  val jsonMillis = Json.obj(s"$$date" -> dateMillis)
+  val jsonBigDecimal = Json.obj(s"$$date" -> dateMillisBigDecimal)
+  val json = Json.obj(s"$$date" -> date)
+
+  "parseDateString" should {
+    "convert a zonedDateString to a dateTime" in {
+      val result = parseDateString("2018-02-01T14:30:30.000000500Z")
+      result mustEqual JsSuccess(LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500))
+    }
+    "convert a localDateString to a dateTime" in {
+      val result = parseDateString("2018-02-01T14:30:30.000000500")
+      result mustEqual JsSuccess(LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500))
+    }
+    "return an error when a string cannot convert to a date" in {
+      val result = parseDateString("Cat")
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+  }
+
+  "localDateTimeRead" should {
+    "decode a decimal to a dateTime" in {
+      val result = localDateTimeRead.reads(jsonBigDecimal)
+      result mustEqual JsSuccess(LocalDate.of(2018, 2, 1).atStartOfDay)
+    }
+    "decode a long to a dateTime" in {
+      val result = localDateTimeRead.reads(jsonMillis)
+      result mustEqual parseDateString(LocalDate.of(2018, 2, 1).atStartOfDay.toString)
+    }
+    "decode a string of LocalDateTime to a dateTime" in {
+      val result = localDateTimeRead.reads(JsString(dateString))
+      result mustEqual parseDateString(LocalDate.of(2018, 2, 1).atStartOfDay.toString)
+    }
+    "decode a string of ZonedDateTime to a dateTime" in {
+      val result = localDateTimeRead.reads(JsString(dateStringWithZ))
+      result mustEqual parseDateString(LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500) + "Z")
+    }
+    "decode some json to a dateTime" in {
+      val result = localDateTimeRead.reads(jsonMillis)
+      result mustEqual JsSuccess(LocalDate.of(2018, 2, 1).atStartOfDay)
+    }
   }
 }

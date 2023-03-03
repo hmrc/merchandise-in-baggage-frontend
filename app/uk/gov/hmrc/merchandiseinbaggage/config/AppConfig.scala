@@ -28,8 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
 
 @Singleton
-class AppConfig @Inject()(val config: Configuration, val env: Environment)()
-    extends MongoConfiguration with MibConfiguration with IsAssistedDigitalConfiguration {
+class AppConfig @Inject()(val config: Configuration, val env: Environment)() extends MibConfiguration with IsAssistedDigitalConfiguration {
 
   val serviceIdentifier = "mib"
 
@@ -46,6 +45,8 @@ class AppConfig @Inject()(val config: Configuration, val env: Environment)()
 
   lazy val tpsNavigation: TpsNavigation = configSource("tps-navigation").loadOrThrow[TpsNavigation]
   lazy val tpsFrontendBaseUrl: String = configSource("microservice.services.tps-payments-frontend.url").loadOrThrow[String]
+
+  lazy val mongoTTL: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
 
   val feedbackUrl: String = {
     val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
@@ -66,10 +67,6 @@ class AppConfig @Inject()(val config: Configuration, val env: Environment)()
 
 object AppConfigSource {
   val configSource: String => ConfigSource = ConfigSource.default.at
-}
-
-trait MongoConfiguration extends IsAssistedDigitalConfiguration {
-  lazy val mongoConf: MongoConf = configSource("mongodb").loadOrThrow[MongoConf]
 }
 
 final case class MongoConf(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")

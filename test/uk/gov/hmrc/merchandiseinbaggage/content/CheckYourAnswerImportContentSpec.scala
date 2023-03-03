@@ -73,8 +73,4 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
       .toList
   }
 
-  override def beforeEach(): Unit = {
-    super.beforeEach()
-    declarationJourneyRepository.deleteAll()
-  }
 }
