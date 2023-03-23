@@ -60,10 +60,10 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
   val dateString = date.toString
   val dateStringWithZ = dateTimeWithZ.toString
   val dateMillis = 1517443200000L
-  val dateMillisBigDecimal : BigDecimal = 1517443200000L
-  val jsonMillis = Json.obj(s"$$date" -> dateMillis)
+  val dateMillisBigDecimal: BigDecimal = 1517443200000L
+  val jsonMillis = Json.obj(s"$$date"     -> dateMillis)
   val jsonBigDecimal = Json.obj(s"$$date" -> dateMillisBigDecimal)
-  val json = Json.obj(s"$$date" -> date)
+  val json = Json.obj(s"$$date"           -> date)
 
   "parseDateString" should {
     "convert a zonedDateString to a dateTime" in {

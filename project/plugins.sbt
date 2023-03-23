@@ -13,8 +13,10 @@ addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.11")
 
 addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.9.2")
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "1.0.0")
+
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.0")
 
 addSbtPlugin("com.itv" % "sbt-scalapact" % "3.3.1")
 
-addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.2")
+addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.6.4")

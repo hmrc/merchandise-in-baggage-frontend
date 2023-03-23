@@ -64,7 +64,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       mibConnector,
       importView,
-      exportView,
+      exportView
     )
 
   private def amendHandler() =
@@ -74,7 +74,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       mockTpsService,
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       amendImportView,
-      amendExportView,
+      amendExportView
     )
 
   private def controller(declarationJourney: DeclarationJourney) =

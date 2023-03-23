@@ -72,7 +72,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       new PaymentService(testPaymentConnector, auditConnector, messagesApi),
       testMibConnector,
       importView,
-      exportView,
+      exportView
     )
 
   declarationTypes.foreach { importOrExport: DeclarationType =>

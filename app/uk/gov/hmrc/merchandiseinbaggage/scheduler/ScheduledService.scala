@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.forms
+package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ImportExportChoice, ImportExportChoices}
+import scala.concurrent.{ExecutionContext, Future}
 
-object ImportExportChoiceForm extends Mappings {
+trait ScheduledService[R] {
+  val jobName: String
 
-  val form: Form[ImportExportChoice] =
-    Form(
-      "value" -> enum[ImportExportChoice](ImportExportChoices, "importExportChoice.error.required", "importExportChoice.error.required")
-    )
+  def invoke(implicit ec: ExecutionContext): Future[R]
 }

@@ -70,7 +70,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       result.errors must contain allElementsOf List(
         FormError(s"$key.day", dayBlankErrorKey),
         FormError(s"$key.month", monthBlankErrorKey),
-        FormError(s"$key.year", yearBlankErrorKey),
+        FormError(s"$key.year", yearBlankErrorKey)
       )
     }
 }

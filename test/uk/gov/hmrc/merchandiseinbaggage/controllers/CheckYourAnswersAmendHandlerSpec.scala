@@ -62,7 +62,7 @@ class CheckYourAnswersAmendHandlerSpec
       mockTpsPaymentsService,
       paymentService,
       importView,
-      exportView,
+      exportView
     )
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
@@ -101,7 +101,7 @@ class CheckYourAnswersAmendHandlerSpec
           mockTpsPaymentsService,
           paymentService,
           importView,
-          exportView,
+          exportView
         )
 
         givenADeclarationJourneyIsPersistedWithStub(journey)

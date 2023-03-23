@@ -1,5 +1,4 @@
 import play.sbt.PlayImport.PlayKeys.playDefaultPort
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import scoverage.ScoverageKeys
 
 val appName = "merchandise-in-baggage-frontend"
@@ -34,7 +33,6 @@ lazy val microservice = Project(appName, file("."))
     )
     // ***************
   )
-  .settings(publishingSettings: _*)
   .settings(
     retrieveManaged := true,
     Compile / scalafmtOnCompile := true,
@@ -48,3 +46,5 @@ lazy val microservice = Project(appName, file("."))
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
   )
+
+addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")

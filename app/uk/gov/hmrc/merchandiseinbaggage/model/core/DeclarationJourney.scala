@@ -164,7 +164,7 @@ object DeclarationJourney {
       }
     }
     parsedTime match {
-      case Failure(_) => JsError("Unexpected LocalDateTime Format")
+      case Failure(_)     => JsError("Unexpected LocalDateTime Format")
       case Success(value) => JsSuccess(value)
     }
   }

@@ -40,7 +40,7 @@ object TravellerDetailsForm extends Mappings {
           .verifying(isValidName("travellerDetails.firstName.error.invalid")),
       lastName ->
         text("travellerDetails.lastName.error.required")
-          .verifying(isValidName("travellerDetails.lastName.error.invalid")),
+          .verifying(isValidName("travellerDetails.lastName.error.invalid"))
     )(Name.apply)(Name.unapply)
   )
 }

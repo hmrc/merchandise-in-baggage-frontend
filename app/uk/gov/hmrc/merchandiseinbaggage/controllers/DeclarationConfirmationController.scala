@@ -35,7 +35,7 @@ class DeclarationConfirmationController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   view: DeclarationConfirmationView,
   connector: MibConnector,
-  val repo: DeclarationJourneyRepository,
+  val repo: DeclarationJourneyRepository
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends IsAssistedDigitalConfiguration with DeclarationJourneyController {
 

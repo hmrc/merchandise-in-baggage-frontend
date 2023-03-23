@@ -32,7 +32,7 @@ class KeepAliveController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
   progressDeletedView: ProgressDeletedView,
-  serviceTimeoutView: ServiceTimeoutView,
+  serviceTimeoutView: ServiceTimeoutView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendBaseController {
 
