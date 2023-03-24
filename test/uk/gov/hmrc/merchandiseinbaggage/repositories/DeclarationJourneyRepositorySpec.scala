@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.repositories
 import org.bson.types.ObjectId
 import org.mongodb.scala.Document
 import org.mongodb.scala.model.{Filters, Updates}
-import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import uk.gov.hmrc.mongo.play.json.Codecs

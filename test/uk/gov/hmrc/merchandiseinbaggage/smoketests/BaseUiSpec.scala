@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
-import org.mongodb.scala.Document
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}

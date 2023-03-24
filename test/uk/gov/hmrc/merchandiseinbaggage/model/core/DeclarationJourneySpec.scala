@@ -16,17 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import org.scalatest.funspec.AnyFunSpec
-import play.api.libs.Comet
-import play.api.libs.Comet.json
-import play.api.libs.json.{JsError, JsObject, JsString, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
-import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime}
 
 class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBaseTables {
 

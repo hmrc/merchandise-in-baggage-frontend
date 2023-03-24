@@ -21,7 +21,7 @@ import org.mongodb.scala.model.Filters.equal
 import org.bson.BsonType
 import org.bson.types.ObjectId
 import org.mongodb.scala.model.ReturnDocument.AFTER
-import org.mongodb.scala.model.{Aggregates, Field, Filters, FindOneAndReplaceOptions, IndexModel, IndexOptions, Projections, UpdateOptions, Updates}
+import org.mongodb.scala.model.{Filters, FindOneAndReplaceOptions, IndexModel, IndexOptions, Projections, UpdateOptions, Updates}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -31,9 +31,8 @@ import uk.gov.hmrc.mongo.play.json.{Codecs, PlayMongoRepository}
 
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
-import org.mongodb.scala.bson.{BsonDocument, BsonValue}
+import scala.concurrent.{ExecutionContext, Future}
+import org.mongodb.scala.bson.BsonDocument
 import org.mongodb.scala.result.UpdateResult
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.objectIdFormat
@@ -42,7 +41,7 @@ import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import scala.util.Try
 
 @Singleton
-class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfig: AppConfig)
+class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfig: AppConfig)(implicit ec: ExecutionContext)
     extends PlayMongoRepository[DeclarationJourney](
       mongo,
       "declarationJourney",
