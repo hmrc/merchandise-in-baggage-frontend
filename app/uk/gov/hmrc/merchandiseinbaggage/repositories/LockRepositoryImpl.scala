@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.forms
+package uk.gov.hmrc.merchandiseinbaggage.repositories
 
-import play.api.data.Form
-import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{ImportExportChoice, ImportExportChoices}
+import com.google.inject.Inject
+import uk.gov.hmrc.mongo.lock._
 
-object ImportExportChoiceForm extends Mappings {
+trait LockRepositoryProvider {
+  val repo: MongoLockRepository
+}
 
-  val form: Form[ImportExportChoice] =
-    Form(
-      "value" -> enum[ImportExportChoice](ImportExportChoices, "importExportChoice.error.required", "importExportChoice.error.required")
-    )
+class DefaultLockRepositoryProvider @Inject()(component: MongoLockRepository) extends LockRepositoryProvider {
+  lazy val repo: MongoLockRepository = component
 }

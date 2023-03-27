@@ -16,17 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import org.scalatest.funspec.AnyFunSpec
-import play.api.libs.Comet
-import play.api.libs.Comet.json
-import play.api.libs.json.{JsError, JsObject, JsString, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
-import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
+import java.time.{LocalDate, LocalDateTime}
 
 class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBaseTables {
 
@@ -60,10 +57,10 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
   val dateString = date.toString
   val dateStringWithZ = dateTimeWithZ.toString
   val dateMillis = 1517443200000L
-  val dateMillisBigDecimal : BigDecimal = 1517443200000L
-  val jsonMillis = Json.obj(s"$$date" -> dateMillis)
+  val dateMillisBigDecimal: BigDecimal = 1517443200000L
+  val jsonMillis = Json.obj(s"$$date"     -> dateMillis)
   val jsonBigDecimal = Json.obj(s"$$date" -> dateMillisBigDecimal)
-  val json = Json.obj(s"$$date" -> date)
+  val json = Json.obj(s"$$date"           -> date)
 
   "parseDateString" should {
     "convert a zonedDateString to a dateTime" in {

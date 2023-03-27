@@ -17,14 +17,15 @@
 package uk.gov.hmrc.merchandiseinbaggage
 
 import org.mongodb.scala.model.Filters
+import akka.actor.ActorSystem
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.Application
+import play.api.{Application, Configuration, inject}
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.Injector
+import play.api.inject.{ApplicationLifecycle, Injector}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.{AnyContentAsEmpty, DefaultActionBuilder}
 import play.api.test.CSRFTokenHelper._
@@ -38,9 +39,13 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 import uk.gov.hmrc.mongo.MongoComponent
+import scheduler.SchedulingActor.UpdateDocumentsClass
+import scheduler.{SchedulingActor, UpdateCreatedAtFieldsJob}
+import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseSpec extends AnyWordSpec with Matchers with WireMockSupport
 
@@ -61,6 +66,10 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   override def fakeApplication(): Application =
     new GuiceApplicationBuilder()
+      .overrides(
+        inject.bind[DocumentUpdateService].to[FakeDocumentUpdateService],
+        inject.bind[UpdateCreatedAtFieldsJob].to[FakeUpdateCreatedAtFieldsJob]
+      )
       .configure(Map(
         "play.http.router"                                   -> "testOnlyDoNotUseInAppConf.Routes",
         "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
@@ -94,4 +103,21 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
     declarationJourneyRepository.upsert(declarationJourney).futureValue
+}
+
+class FakeDocumentUpdateService extends DocumentUpdateService {
+  override val jobName: String = "update-created-at-field-job"
+
+  override def invoke(implicit ec: ExecutionContext): Future[Boolean] = Future.successful(true)
+}
+
+class FakeUpdateCreatedAtFieldsJob @Inject()(
+  val config: Configuration,
+  val service: FakeDocumentUpdateService,
+  val applicationLifecycle: ApplicationLifecycle
+) extends UpdateCreatedAtFieldsJob {
+
+  override def jobName: String = "update-created-at-field-job"
+  override val scheduledMessage: SchedulingActor.ScheduledMessage[_] = UpdateDocumentsClass(service)
+  override val actorSystem: ActorSystem = ActorSystem(jobName)
 }

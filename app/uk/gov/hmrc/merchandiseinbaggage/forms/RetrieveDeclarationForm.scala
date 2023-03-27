@@ -30,7 +30,7 @@ object RetrieveDeclarationForm extends Validators {
           .verifying(isValidMibRef),
       "eori" ->
         eori("retrieveDeclaration.eori.error.required")
-          .verifying(isValidEori("retrieveDeclaration.eori.error.invalid")),
+          .verifying(isValidEori("retrieveDeclaration.eori.error.invalid"))
     )((mibRef, eori) => RetrieveDeclaration(MibReference(mibRef), Eori(eori)))(rd => Some((rd.mibReference.value, rd.eori.value)))
   )
 }

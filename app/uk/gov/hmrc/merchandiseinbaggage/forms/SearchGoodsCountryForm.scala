@@ -25,6 +25,6 @@ object SearchGoodsCountryForm extends Mappings {
   val form: Form[String] =
     Form(
       "country" -> text(s"searchGoodsCountry.error.required")
-        .verifying("searchGoodsCountry.error.invalid", code => CountryService.isValidCountryCode(code)),
+        .verifying("searchGoodsCountry.error.invalid", code => CountryService.isValidCountryCode(code))
     )
 }

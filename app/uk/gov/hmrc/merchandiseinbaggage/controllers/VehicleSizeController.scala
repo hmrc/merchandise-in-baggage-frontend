@@ -32,7 +32,7 @@ class VehicleSizeController @Inject()(
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   navigator: Navigator,
-  view: VehicleSizeView,
+  view: VehicleSizeView
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 

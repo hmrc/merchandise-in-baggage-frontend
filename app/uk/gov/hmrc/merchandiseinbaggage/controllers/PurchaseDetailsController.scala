@@ -39,7 +39,7 @@ class PurchaseDetailsController @Inject()(
   navigator: Navigator,
   mibConnector: MibConnector,
   importView: PurchaseDetailsImportView,
-  exportView: PurchaseDetailsExportView,
+  exportView: PurchaseDetailsExportView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 

@@ -37,7 +37,7 @@ object GoodsItemList {
   private def rowWithOutChange(key: String, value: String)(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       key = Key(Text(messages(key))),
-      value = Value(Text(value)),
+      value = Value(Text(value))
     )
 
   private def importSummary(goods: ImportGoods, idx: Int)(implicit messages: Messages): SummaryList =
