@@ -35,6 +35,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core._
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ServiceTimeoutPage.fakeRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{DeclarationConfirmationView, Layout}
 
+import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
@@ -211,7 +212,7 @@ trait CoreTestData {
 
   val aAmendment = Amendment(
     1,
-    LocalDateTime.now,
+    LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS),
     DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
     Some(TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))),
     None

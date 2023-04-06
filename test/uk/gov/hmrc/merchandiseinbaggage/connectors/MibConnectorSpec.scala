@@ -26,6 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration {
 
@@ -49,7 +50,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Mi
   }
 
   "send a calculation requests to backend for amend payment" in {
-    val amend = Amendment(111, LocalDateTime.now, DeclarationGoods(Seq(aImportGoods)))
+    val amend = Amendment(111, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), DeclarationGoods(Seq(aImportGoods)))
     val amendRequest = CalculationAmendRequest(Some(amend), Some(GreatBritain), aDeclarationId)
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil

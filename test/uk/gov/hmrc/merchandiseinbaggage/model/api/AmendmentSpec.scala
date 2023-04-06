@@ -19,6 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class AmendmentSpec extends BaseSpec with CoreTestData {
 
@@ -26,11 +27,12 @@ class AmendmentSpec extends BaseSpec with CoreTestData {
     val stub = new JourneySourceFinder {
       override def findSource: Option[String] = Some("AssistedDigital")
     }
-    Amendment(1, LocalDateTime.now, aDeclarationGood, source = stub.findSource).source mustBe Some("AssistedDigital")
+    Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), aDeclarationGood, source = stub.findSource).source mustBe Some(
+      "AssistedDigital")
   }
 
   "populate the source to Digital if public facing" in new JourneySourceFinder {
     override lazy val isAssistedDigital: Boolean = false
-    Amendment(1, LocalDateTime.now, aDeclarationGood).source mustBe Some("Digital")
+    Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), aDeclarationGood).source mustBe Some("Digital")
   }
 }

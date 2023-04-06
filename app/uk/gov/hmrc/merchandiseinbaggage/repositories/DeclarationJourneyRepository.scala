@@ -37,6 +37,7 @@ import org.mongodb.scala.result.UpdateResult
 import play.api.libs.json._
 import uk.gov.hmrc.mongo.play.json.formats.MongoFormats.objectIdFormat
 
+import java.time.temporal.ChronoUnit
 import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import scala.util.Try
 
@@ -80,7 +81,7 @@ class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfi
   }
 
   def updateDate(documentIds: Seq[ObjectId]) = {
-    val time = LocalDateTime.now()
+    val time = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     val zdt = ZonedDateTime.of(time, ZoneId.systemDefault())
 
     val selector = Filters.in("_id", documentIds: _*)
