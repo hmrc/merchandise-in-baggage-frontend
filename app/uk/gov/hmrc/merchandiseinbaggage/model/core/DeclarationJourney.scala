@@ -28,6 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
 import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
+import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
 import java.util.UUID
 import scala.util._
@@ -70,7 +71,9 @@ case class DeclarationJourney(
   sessionId: SessionId,
   declarationType: DeclarationType,
   journeyType: JourneyType = New,
-  createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC),
+  createdAt: LocalDateTime = LocalDateTime
+    .now(ZoneOffset.UTC)
+    .truncatedTo(ChronoUnit.MILLIS),
   maybeExciseOrRestrictedGoods: Option[YesNo] = None,
   maybeGoodsDestination: Option[GoodsDestination] = None,
   maybeValueWeightOfGoodsBelowThreshold: Option[YesNo] = None,
@@ -137,7 +140,7 @@ case class DeclarationJourney(
           maybeCustomsAgent,
           eori,
           journeyDetails,
-          LocalDateTime.now(),
+          LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
           mibReference
         )
       }
@@ -146,8 +149,9 @@ case class DeclarationJourney(
   val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
 
   val amendmentIfRequiredAndComplete: Option[Amendment] = journeyType match {
-    case New   => None
-    case Amend => goodsEntries.declarationGoodsIfComplete.map(goods => Amendment(1, LocalDateTime.now, goods))
+    case New => None
+    case Amend =>
+      goodsEntries.declarationGoodsIfComplete.map(goods => Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), goods))
   }
 
   val amendmentRequiredAndComplete: Boolean = amendmentIfRequiredAndComplete.isDefined

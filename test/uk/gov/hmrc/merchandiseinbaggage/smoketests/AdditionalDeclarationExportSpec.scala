@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
 
 class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
@@ -41,7 +42,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
       val sessionId = SessionId()
-      val created = LocalDateTime.now
+      val created = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
       val id = paidDeclaration.declarationId
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(

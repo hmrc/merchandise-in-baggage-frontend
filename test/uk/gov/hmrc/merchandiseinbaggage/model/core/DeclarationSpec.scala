@@ -29,6 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
+import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, LocalDateTime}
 import java.util.UUID
 
@@ -172,7 +173,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be complete" when {
       "the user has completed the journey" in {
-        val now = LocalDateTime.now
+        val now = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
         val reference = MibReference("xx")
         val declarationId = DeclarationId(UUID.randomUUID().toString)
         completedDeclarationJourney.declarationIfRequiredAndComplete
@@ -390,7 +391,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
         "Lx123"
       ),
-      LocalDateTime.now(),
+      LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
       MibReference("xx"),
       source = stub.findSource
     ).source mustBe Some("AssistedDigital")
@@ -412,21 +413,21 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
         JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
         "Lx123"
       ),
-      LocalDateTime.now(),
+      LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
       MibReference("xx"),
       None,
       amendments = Seq.empty
     )
 
-    val latestAmendment = aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusMinutes(10))
+    val latestAmendment = aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusMinutes(10))
 
     declarationWithGoods.latestGoods mustBe declarationWithGoods.declarationGoods.goods
     declarationWithGoods
       .modify(_.amendments)
       .setTo(Seq(
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now()),
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().minusDays(1)),
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().plusMinutes(1)),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusDays(1)),
+        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).plusMinutes(1)),
         latestAmendment
       ))
       .latestGoods mustBe latestAmendment.goods.goods
