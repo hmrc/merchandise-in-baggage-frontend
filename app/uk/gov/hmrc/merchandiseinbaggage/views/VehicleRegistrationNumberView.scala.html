@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -30,7 +30,7 @@ text: components.inputText)
 
 @layout(pageTitle = Some(title(form, "vehicleRegistrationNumber.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
-  @formHelper(action = VehicleRegistrationNumberController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = VehicleRegistrationNumberController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
     @errorSummary(form.errors)
 

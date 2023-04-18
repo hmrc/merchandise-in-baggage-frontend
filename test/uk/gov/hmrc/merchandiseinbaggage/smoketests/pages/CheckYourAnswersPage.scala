@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage.{amendTitle, newTitle, path}
 
 object CheckYourAnswersPage extends Page {
   val path = "/declare-commercial-goods/check-your-answers"

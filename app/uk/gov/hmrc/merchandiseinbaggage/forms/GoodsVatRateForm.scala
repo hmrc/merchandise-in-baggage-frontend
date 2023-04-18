@@ -24,7 +24,7 @@ object GoodsVatRateForm extends Mappings {
 
   val form: Form[GoodsVatRate] =
     Form(
-      "value" -> enum[GoodsVatRate](GoodsVatRates, "goodsVatRate.error.required")
+      "value" -> enumerator[GoodsVatRate](GoodsVatRates, "goodsVatRate.error.required")
     )
 
 }

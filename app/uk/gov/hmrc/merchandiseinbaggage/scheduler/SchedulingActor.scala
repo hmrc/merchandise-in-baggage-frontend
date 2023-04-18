@@ -35,7 +35,7 @@ object SchedulingActor {
     val service: ScheduledService[A]
   }
 
-  def props: Props = Props[SchedulingActor]
+  def props(): Props = Props[SchedulingActor]()
 
   case class UpdateDocumentsClass(service: DocumentUpdateService) extends ScheduledMessage[Boolean]
 }

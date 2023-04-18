@@ -44,9 +44,9 @@ trait Mappings extends Formatters {
   protected def bigDecimal(requiredKey: String = requiredKey, nonNumericKey: String = nonNumericKey): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))
 
-  protected def enum[A <: EnumEntry](
-    enum: Enum[A],
+  protected def enumerator[A <: EnumEntry](
+    enumerator: Enum[A],
     requiredKey: String = requiredKey,
     invalidKey: String = "error.invalid"): FieldMapping[A] =
-    of(enumFormatter[A](enum, requiredKey, invalidKey))
+    of(enumFormatter[A](enumerator, requiredKey, invalidKey))
 }

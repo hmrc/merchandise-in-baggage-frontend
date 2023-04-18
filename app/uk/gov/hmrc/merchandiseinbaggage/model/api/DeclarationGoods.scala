@@ -45,16 +45,18 @@ object ExportGoods {
 }
 
 object Goods {
-  implicit val writes = Writes[Goods] {
+  implicit val writes: Writes[Goods] = Writes[Goods] {
     case ig: ImportGoods => ImportGoods.format.writes(ig)
     case eg: ExportGoods => ExportGoods.format.writes(eg)
   }
 
-  implicit val reads = Reads[Goods] {
+  //TODO: Check catch all case
+  implicit val reads: Reads[Goods] = Reads[Goods] {
     case json: JsObject if json.keys.contains("producedInEu") =>
       JsSuccess(json.as[ImportGoods])
     case json: JsObject if json.keys.contains("destination") =>
       JsSuccess(json.as[ExportGoods])
+    case _ => JsError()
   }
 }
 

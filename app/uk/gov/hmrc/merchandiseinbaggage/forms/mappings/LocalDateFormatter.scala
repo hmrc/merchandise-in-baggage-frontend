@@ -49,8 +49,7 @@ class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with F
         requiredKey = blankErrorKey,
         wholeNumberKey = invalidErrorKey,
         nonNumericKey = invalidErrorKey
-      ).bind(s"$key.$subKey", data.mapValues(_.trim))
-        .right
+      ).bind(s"$key.$subKey", data.map(set => (set._1, set._2.trim)))
         .flatMap(int => if (extraValidation(int)) Right(int) else Left(Seq(FormError(s"$key.$subKey", invalidErrorKey))))
 
     val dayField = bindIntSubfield("day", dayBlankErrorKey, dayInvalidErrorKey, day => day >= 1 && day <= 31)

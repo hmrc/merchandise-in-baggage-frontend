@@ -53,7 +53,7 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
 
   val date = LocalDate.of(2018, 2, 1).atStartOfDay
   val dateTimeWithoutZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500)
-  val dateTimeWithZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500) + "Z"
+  val dateTimeWithZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500).toString + "Z"
   val dateString = date.toString
   val dateStringWithZ = dateTimeWithZ.toString
   val dateMillis = 1517443200000L
@@ -92,7 +92,7 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
     }
     "decode a string of ZonedDateTime to a dateTime" in {
       val result = localDateTimeRead.reads(JsString(dateStringWithZ))
-      result mustEqual parseDateString(LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500) + "Z")
+      result mustEqual parseDateString(LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500).toString + "Z")
     }
     "decode some json to a dateTime" in {
       val result = localDateTimeRead.reads(jsonMillis)

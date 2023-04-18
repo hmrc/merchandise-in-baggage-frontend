@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
 import akka.actor.ActorSystem
 import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension
-import org.mockito.Mockito.reset
 import org.quartz.CronExpression
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
@@ -26,7 +25,7 @@ import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import uk.gov.hmrc.merchandiseinbaggage.scheduler.SchedulingActor.UpdateDocumentsClass
 import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 
 class ScheduledJobSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
   val jobNameTest = "testJobName"

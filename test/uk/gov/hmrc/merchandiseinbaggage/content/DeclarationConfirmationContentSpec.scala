@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmation
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.LocalDateTimeOps
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage with CoreTestData {
 

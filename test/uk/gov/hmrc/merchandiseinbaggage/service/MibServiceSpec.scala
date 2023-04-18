@@ -152,7 +152,7 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
       .setTo(Export)
       .modify(_.amendments)
       .setTo(amendments)
-    val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ amendments.map(_.goods.goods)
+    val expectedTotalGoods: Seq[Goods] = foundDeclaration.declarationGoods.goods ++ amendments.flatMap(_.goods.goods)
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))

@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.Layout
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -103,7 +102,7 @@
 
     @if(journeyDateWithInAllowedRange(declaration)) {
         @p(Html(messages("previousDeclarationDetails.add_goods")))
-        @formHelper(action = PreviousDeclarationDetailsController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+        @formHelper(action = PreviousDeclarationDetailsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
             @button("previousDeclarationDetails.add.button.text", name = Some("continue"))
         }
     } else {

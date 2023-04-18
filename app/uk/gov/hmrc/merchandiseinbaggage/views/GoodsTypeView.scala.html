@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -32,7 +32,7 @@ p: components.p)
 
 @layout(pageTitle = Some(title(form, if(idx == 1) s"goodsType.$journeyType.title" else s"goodsType.$journeyType.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
-  @formHelper(action = GoodsTypeController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+  @formHelper(action = GoodsTypeController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
     @errorSummary(form.errors)
 

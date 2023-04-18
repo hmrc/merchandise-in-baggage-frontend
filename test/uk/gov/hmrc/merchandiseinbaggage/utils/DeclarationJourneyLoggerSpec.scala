@@ -26,16 +26,16 @@ class DeclarationJourneyLoggerSpec extends BaseSpec with MockFactory {
   "DeclarationJourneyLogger" should {
     "be able to warn" in {
 
-      implicit val mockRequest = mock[RequestHeader]
+      implicit val mockRequest: RequestHeader = mock[RequestHeader]
 
       val mockTarget = mock[RequestTarget]
 
-      (mockTarget.path _).stubs().returns("PATH")
+      (() => mockTarget.path).stubs().returns("PATH")
 
-      (mockRequest.target _).stubs().returns(mockTarget)
-      (mockRequest.method _).stubs().returns("METHOD")
-      (mockRequest.headers _).stubs().returns(Headers.create())
-      (mockRequest.cookies _).stubs().returns(Cookies(Seq()))
+      (() => mockRequest.target).stubs().returns(mockTarget)
+      (() => mockRequest.method).stubs().returns("METHOD")
+      (() => mockRequest.headers).stubs().returns(Headers.create())
+      (() => mockRequest.cookies).stubs().returns(Cookies(Seq()))
 
       DeclarationJourneyLogger.warn("Test")
     }

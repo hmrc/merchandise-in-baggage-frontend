@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsVatRates
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
@@ -34,7 +34,7 @@ button: components.button
 @(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
-    @formHelper(action = GoodsVatRateController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = GoodsVatRateController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, GoodsVatRates.values.headOption.map(_.entryName))
 

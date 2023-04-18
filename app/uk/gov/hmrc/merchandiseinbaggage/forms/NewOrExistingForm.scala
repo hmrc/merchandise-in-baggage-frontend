@@ -24,7 +24,7 @@ object NewOrExistingForm extends Mappings {
 
   val form: Form[JourneyType] =
     Form(
-      "value" -> enum[JourneyType](JourneyTypes, "newOrExisting.error.required")
+      "value" -> enumerator[JourneyType](JourneyTypes, "newOrExisting.error.required")
     )
 
 }

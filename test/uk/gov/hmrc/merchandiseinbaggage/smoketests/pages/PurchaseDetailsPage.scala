@@ -23,7 +23,7 @@ import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage.path
 
 object PurchaseDetailsPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
