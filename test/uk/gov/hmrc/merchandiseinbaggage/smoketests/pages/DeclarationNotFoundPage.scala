@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage.{path, title}
 
 object DeclarationNotFoundPage extends Page {
   val path = "/declare-commercial-goods/declaration-not-found"

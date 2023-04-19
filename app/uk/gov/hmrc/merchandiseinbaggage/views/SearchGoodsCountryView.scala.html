@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -55,7 +55,7 @@ button: components.button
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import)
 ) {
-    @formHelper(action = SearchGoodsCountryController.onSubmit(idx), 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = SearchGoodsCountryController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, Some("country"))
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
@@ -36,7 +35,7 @@ button: components.button
 @hintText = @{if(isAgent == Yes) "eoriNumber.agent.hint" else "eoriNumber.trader.hint"}
 
 @layout(pageTitle = Some(title(form, s"eoriNumber.$agentOrTrader.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
-    @formHelper(action = EoriNumberController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = EoriNumberController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors)
 

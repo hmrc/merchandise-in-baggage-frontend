@@ -19,5 +19,5 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 
 trait Page {
-  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver)
+  def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit
 }

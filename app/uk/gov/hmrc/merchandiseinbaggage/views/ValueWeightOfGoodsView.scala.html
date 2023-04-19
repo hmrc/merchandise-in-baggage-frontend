@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -31,7 +31,7 @@ button: components.button
 @(form: Form[_], dest: GoodsDestination, declarationType: DeclarationType, exchangeUrl:String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"valueWeightOfGoods.${dest.toString}.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
-    @formHelper(action = ValueWeightOfGoodsController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = ValueWeightOfGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))
 

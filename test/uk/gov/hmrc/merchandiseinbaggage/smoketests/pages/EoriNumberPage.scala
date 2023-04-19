@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.EoriNumberPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.EoriNumberPage.{expectedAgentExportTitle, expectedAgentImportTitle, expectedNonAgentTitle, path}
 
 object EoriNumberPage extends Page {
   val path = "/declare-commercial-goods/enter-eori-number"

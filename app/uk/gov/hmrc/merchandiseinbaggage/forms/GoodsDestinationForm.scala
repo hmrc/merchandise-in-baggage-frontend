@@ -25,7 +25,7 @@ object GoodsDestinationForm extends Mappings {
 
   def form(declarationType: DeclarationType): Form[GoodsDestination] =
     Form(
-      "value" -> enum[GoodsDestination](GoodsDestinations, s"goodsDestination.error.$declarationType.required")
+      "value" -> enumerator[GoodsDestination](GoodsDestinations, s"goodsDestination.error.$declarationType.required")
     )
 
 }

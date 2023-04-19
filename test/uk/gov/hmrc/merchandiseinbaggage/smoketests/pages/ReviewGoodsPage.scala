@@ -21,7 +21,7 @@ import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyType
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage.path
 
 object ReviewGoodsPage extends Page {
   val path: String = "/declare-commercial-goods/review-goods"

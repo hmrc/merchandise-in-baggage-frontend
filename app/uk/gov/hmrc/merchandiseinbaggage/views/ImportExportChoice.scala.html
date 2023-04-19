@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
@@ -32,7 +32,7 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages, appConf: AppConfig)
 
 @layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
-    @formHelper(action = ImportExportChoiceController.onSubmit, 'autoComplete -> "off", 'novalidate -> "novalidate") {
+    @formHelper(action = ImportExportChoiceController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, ImportExportChoices.values.headOption.map(_.entryName))
 

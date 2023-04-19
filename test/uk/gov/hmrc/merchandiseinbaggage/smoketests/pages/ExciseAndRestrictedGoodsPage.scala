@@ -22,7 +22,7 @@ import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ExciseAndRestrictedGoodsPage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ExciseAndRestrictedGoodsPage.{exportTitle, importTitle, path}
 
 object ExciseAndRestrictedGoodsPage extends Page {
   val path = "/declare-commercial-goods/excise-and-restricted-goods"

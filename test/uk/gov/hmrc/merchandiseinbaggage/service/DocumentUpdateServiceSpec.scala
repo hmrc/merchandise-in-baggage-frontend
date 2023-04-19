@@ -18,9 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import org.bson.types.ObjectId
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.{BeforeAndAfterEach, RecoverMethods}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.MockitoSugar
 import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec

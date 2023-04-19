@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with CoreTestData {
 

@@ -45,7 +45,7 @@ class MappingsSpec extends BaseSpec with OptionValues with Mappings {
   "enumerable" must {
 
     val testForm = Form(
-      "value" -> enum[Foo](Foos)
+      "value" -> enumerator[Foo](Foos)
     )
 
     "bind a valid option" in {

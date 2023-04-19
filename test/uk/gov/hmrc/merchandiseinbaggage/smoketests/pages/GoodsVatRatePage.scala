@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.{Assertion, Suite}
 import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsVatRatePage._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsVatRatePage.{path, title}
 
 object GoodsVatRatePage extends Page {
   def path(idx: Int) = s"/declare-commercial-goods/goods-vat-rate/$idx"

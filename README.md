@@ -17,7 +17,7 @@ SM profile : MERCHANDISE_IN_BAGGAGE_ALL
 
 **How to run tests**
 
-`sbt test` will run all the tests, including unit, UI and consumer contract tests. The consumer tests will generate
+`./run_all_tests` will run all the tests, including unit, UI and consumer contract tests. The consumer tests will generate
 contract files stored in the project root directory folder `pact`
 The generated contracts test will then being used from the Backend contract verifier by running the script:
 `checkincheck.sh`. However, currently contracts test only runs for local build.
@@ -26,4 +26,15 @@ The generated contracts test will then being used from the Backend contract veri
 
 See the companion Reposirory https://github.com/hmrc/merchandise-in-baggage-ui-tests for UI tests using this repo.
 
-Perform: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL` to run this service, and then separately run the UI tests.
+1: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL -wait 30 && sm2 --stop MERCHANDISE_IN_BAGGAGE_FRONTEND`
+To run all mods services and stop this one,
+
+2: `./run-locally.sh` to run up this individual service locally
+
+3: Run the UI tests
+
+
+OR
+
+Perform: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL` to run all mods services, and then separately run the UI tests.
+(won't test the branch)

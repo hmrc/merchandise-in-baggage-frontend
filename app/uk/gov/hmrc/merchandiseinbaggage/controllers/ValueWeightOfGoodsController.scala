@@ -42,7 +42,7 @@ class ValueWeightOfGoodsController @Inject()(
     backToCheckYourAnswersIfCompleteElse(routes.ExciseAndRestrictedGoodsController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    mibConnector.findExchangeRateURL.map { exchangeUrl =>
+    mibConnector.findExchangeRateURL().map { exchangeUrl =>
       request.declarationJourney.maybeGoodsDestination
         .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
           Ok(
@@ -60,7 +60,7 @@ class ValueWeightOfGoodsController @Inject()(
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationJourney = request.declarationJourney
 
-    mibConnector.findExchangeRateURL.flatMap { exchangeUrl =>
+    mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
       declarationJourney.maybeGoodsDestination
         .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
           form(goodsDestination)
