@@ -19,7 +19,7 @@ addSbtPlugin("com.lucidchart" % "sbt-scalafmt" % "1.16")
 
 addSbtPlugin("com.beautiful-scala" % "sbt-scalastyle" % "1.5.1")
 
-addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.7")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "2.0.8")
 
 addSbtPlugin("com.itv" % "sbt-scalapact" % "3.3.1")
 
