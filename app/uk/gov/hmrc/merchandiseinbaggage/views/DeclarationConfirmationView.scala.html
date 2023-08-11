@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import views.html.helper.CSPNonce
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
@@ -32,7 +33,7 @@
 @(declaration: Declaration, journeyType: JourneyType, isAssistedDigital: Boolean, totalTaxDue: AmountInPence)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @printLink = {
- <script>
+ <script @{CSPNonce.attr}>
   document.getElementById("printLink").classList.remove("govuk-!-display-none");
   document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print")
   document.getElementById("printLink").setAttribute("aria-hidden", "false")
