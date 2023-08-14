@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import views.html.helper.CSPNonce
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -36,8 +37,8 @@ h1: components.h1)
 @(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
-    <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-    <script>
+    <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
+    <script @{CSPNonce.attr}>
         var selectElementId = 'port'
         var submitOnConfirm = false
         var dataSource = @Html( Json.toJson(PortService.getAllPorts.map(_.toAutoCompleteJson)).toString )

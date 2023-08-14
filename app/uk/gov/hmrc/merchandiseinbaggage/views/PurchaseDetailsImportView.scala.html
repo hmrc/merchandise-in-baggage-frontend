@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import views.html.helper.CSPNonce
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
@@ -35,8 +36,8 @@ button: components.button
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, exchangeUrl:String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
-    <script src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-    <script>
+    <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
+    <script @{CSPNonce.attr}>
         var selectElementId = 'currency'
         var submitOnConfirm = false
         var dataSource = @Html( Json.toJson(CurrencyService.getAllCurrencies.map(_.toAutoCompleteJson)).toString )

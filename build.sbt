@@ -8,7 +8,7 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     majorVersion                     := 0,
-    scalaVersion                     := "2.13.10",
+    scalaVersion                     := "2.13.11",
     playDefaultPort                  := 8281,
     libraryDependencies              ++= AppDependencies.compile ++ AppDependencies.test,
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
