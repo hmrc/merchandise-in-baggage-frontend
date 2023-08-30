@@ -26,7 +26,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
@@ -195,7 +194,12 @@ object DeclarationJourney {
     case _ => JsError("Unexpected LocalDateTime Format")
   }
 
-  implicit val dateFormat: Format[LocalDateTime] = Format(localDateTimeRead, MongoJavatimeFormats.localDateTimeWrites)
+  implicit val localDateTimeWrites: Writes[LocalDateTime] =
+    Writes
+      .at[String](__ \ "$date" \ "$numberLong")
+      .contramap(_.toInstant(ZoneOffset.UTC).toEpochMilli.toString)
+
+  implicit val dateFormat: Format[LocalDateTime] = Format(localDateTimeRead, localDateTimeWrites)
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =
