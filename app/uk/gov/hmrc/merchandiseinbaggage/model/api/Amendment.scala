@@ -41,6 +41,7 @@ object Amendment extends JourneySourceFinder {
     maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
     paymentStatus: Option[PaymentStatus] = None,
     source: Option[String] = findSource,
-    emailsSent: Boolean = false): Amendment =
+    emailsSent: Boolean = false
+  ): Amendment =
     Amendment(reference, dateOfAmendment, goods, maybeTotalCalculationResult, paymentStatus, source, "en", emailsSent)
 }

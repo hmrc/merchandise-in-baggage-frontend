@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsAgentController @Inject()(
+class CustomsAgentController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -44,7 +44,13 @@ class CustomsAgentController @Inject()(
     }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill), request.declarationType, backButtonUrl))
+    Ok(
+      view(
+        request.declarationJourney.maybeIsACustomsAgent.fold(form)(form.fill),
+        request.declarationType,
+        backButtonUrl
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -56,7 +62,12 @@ class CustomsAgentController @Inject()(
           val updatedJourney = request.declarationJourney.copy(maybeIsACustomsAgent = Some(isCustomsAgent))
           navigator
             .nextPage(
-              CustomsAgentRequest(isCustomsAgent, updatedJourney, repo.upsert, updatedJourney.declarationRequiredAndComplete)
+              CustomsAgentRequest(
+                isCustomsAgent,
+                updatedJourney,
+                repo.upsert,
+                updatedJourney.declarationRequiredAndComplete
+              )
             )
             .map(Redirect)
         }

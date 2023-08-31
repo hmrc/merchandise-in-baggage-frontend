@@ -36,12 +36,14 @@ object AddressLookupFrontendStub {
     server
       .stubFor(
         post(urlPathEqualTo("/api/v2/init"))
-          .willReturn(aResponse().withStatus(202).withHeader(LOCATION, "/blah")))
+          .willReturn(aResponse().withStatus(202).withHeader(LOCATION, "/blah"))
+      )
 
   def givenConfirmJourney(id: String, address: Address, server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlPathEqualTo("/api/confirmed"))
           .withQueryParam("id", equalTo(id))
-          .willReturn(okJson(confirmJourneyResponse(address))))
+          .willReturn(okJson(confirmJourneyResponse(address)))
+      )
 }

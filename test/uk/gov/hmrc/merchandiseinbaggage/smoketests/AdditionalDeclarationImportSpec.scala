@@ -37,7 +37,8 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
         paymentStatus = Some(Paid),
         maybeTotalCalculationResult = Some(aTotalCalculationResult),
         eori = eori,
-        mibReference = mibReference)
+        mibReference = mibReference
+      )
 
       givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 

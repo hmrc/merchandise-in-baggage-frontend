@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser._
 
 object GoodsDestinationPage extends Page {
-  val path = "/declare-commercial-goods/goods-destination"
+  val path        = "/declare-commercial-goods/goods-destination"
   val importTitle = "Where in the UK are the goods going to?"
   val exportTitle = "Where in the UK are the goods leaving from?"
 

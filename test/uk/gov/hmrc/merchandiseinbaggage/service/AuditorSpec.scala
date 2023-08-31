@@ -33,7 +33,7 @@ import scala.concurrent.Future
 class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with MockFactory {
   private val failed = Failure("failed")
 
-  private val aMessagesApi: MessagesApi = mock[MessagesApi]
+  private val aMessagesApi: MessagesApi              = mock[MessagesApi]
   private implicit val aHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   "auditDeclaration" should {
@@ -51,7 +51,7 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
 
         val auditService = new Auditor {
           override val auditConnector: AuditConnector = testAuditConnector
-          override val messagesApi: MessagesApi = aMessagesApi
+          override val messagesApi: MessagesApi       = aMessagesApi
         }
 
         auditService.auditDeclaration(declaration).futureValue mustBe a[Unit]
@@ -72,7 +72,7 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
 
       val auditService = new Auditor {
         override val auditConnector: AuditConnector = testAuditConnector
-        override val messagesApi: MessagesApi = aMessagesApi
+        override val messagesApi: MessagesApi       = aMessagesApi
       }
 
       auditService.auditDeclaration(aDeclarationWithAmendment).futureValue mustBe a[Unit]
@@ -88,7 +88,7 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
 
       val auditService = new Auditor {
         override val auditConnector: AuditConnector = testAuditConnector
-        override val messagesApi: MessagesApi = aMessagesApi
+        override val messagesApi: MessagesApi       = aMessagesApi
       }
 
       auditService.auditDeclaration(aDeclarationWithAmendment).futureValue mustBe a[Unit]

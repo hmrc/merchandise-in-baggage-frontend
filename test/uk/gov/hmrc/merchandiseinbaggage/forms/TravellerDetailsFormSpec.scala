@@ -21,13 +21,13 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm._
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 
 class TravellerDetailsFormSpec extends FieldBehaviours {
-  private val nameMatchingRegex = "aZ'- "
+  private val nameMatchingRegex           = "aZ'- "
   private val numbersAndSpecialCharacters =
     Set("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "!", ".", ",", "$")
 
   firstName must {
     val requiredMessageKey = "travellerDetails.firstName.error.required"
-    val invalidMessageKey = "travellerDetails.firstName.error.invalid"
+    val invalidMessageKey  = "travellerDetails.firstName.error.invalid"
 
     behave like mandatoryField(form, firstName, FormError(firstName, requiredMessageKey))
 
@@ -43,7 +43,7 @@ class TravellerDetailsFormSpec extends FieldBehaviours {
 
   lastName must {
     val requiredMessageKey = "travellerDetails.lastName.error.required"
-    val invalidMessageKey = "travellerDetails.lastName.error.invalid"
+    val invalidMessageKey  = "travellerDetails.lastName.error.invalid"
 
     behave like mandatoryField(form, lastName, FormError(lastName, requiredMessageKey))
 

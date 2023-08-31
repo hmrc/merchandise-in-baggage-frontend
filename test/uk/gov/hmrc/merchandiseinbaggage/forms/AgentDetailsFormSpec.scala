@@ -24,7 +24,7 @@ class AgentDetailsFormSpec extends FieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "agentDetails.error.required"
 
     behave like mandatoryField(

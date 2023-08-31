@@ -18,7 +18,13 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import play.api.libs.json.{Json, OFormat}
 
-case class Country(code: String, countryName: String, alphaTwoCode: String, isEu: Boolean, countrySynonyms: List[String])
+case class Country(
+  code: String,
+  countryName: String,
+  alphaTwoCode: String,
+  isEu: Boolean,
+  countrySynonyms: List[String]
+)
 
 object Country {
   implicit val formats: OFormat[Country] = Json.format[Country]

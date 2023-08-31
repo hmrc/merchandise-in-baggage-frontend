@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class PurchaseDetailsController @Inject()(
+class PurchaseDetailsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
@@ -63,12 +63,20 @@ class PurchaseDetailsController @Inject()(
     }
   }
 
-  def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async {
-    implicit request: DeclarationGoodsRequest[AnyContent] =>
+  def onSubmit(idx: Int): Action[AnyContent] =
+    actionProvider.goodsAction(idx).async { implicit request: DeclarationGoodsRequest[AnyContent] =>
       withGoodsCategory(request.goodsEntry) { category =>
         val requestWithIndexAndCallBack: PurchaseDetailsInput => Future[Result] = purchaseDetailsInput =>
           navigator
-            .nextPage(PurchaseDetailsRequest(purchaseDetailsInput, idx, request.goodsEntry, request.declarationJourney, repo.upsert))
+            .nextPage(
+              PurchaseDetailsRequest(
+                purchaseDetailsInput,
+                idx,
+                request.goodsEntry,
+                request.declarationJourney,
+                repo.upsert
+              )
+            )
             .map(Redirect)
 
         request.declarationJourney.declarationType match {
@@ -79,7 +87,7 @@ class PurchaseDetailsController @Inject()(
                 formWithErrors =>
                   mibConnector.findExchangeRateURL().map { exchangeUrl =>
                     BadRequest(importView(formWithErrors, idx, category, exchangeUrl.url, backButtonUrl(idx)))
-                },
+                  },
                 purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
 
@@ -87,10 +95,11 @@ class PurchaseDetailsController @Inject()(
             form
               .bindFromRequest()
               .fold(
-                formWithErrors => Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
+                formWithErrors =>
+                  Future successful BadRequest(exportView(formWithErrors, idx, category, backButtonUrl(idx))),
                 purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
         }
       }
-  }
+    }
 }

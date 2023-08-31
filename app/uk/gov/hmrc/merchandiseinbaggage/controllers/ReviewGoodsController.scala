@@ -36,13 +36,14 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ReviewGoodsController @Inject()(
+class ReviewGoodsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: ReviewGoodsView,
   mibService: MibService,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
@@ -69,7 +70,9 @@ class ReviewGoodsController @Inject()(
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(BadRequest(view(formWithErrors, thresholdAllowance, backButtonUrl, declarationType, journeyType))),
+              Future.successful(
+                BadRequest(view(formWithErrors, thresholdAllowance, backButtonUrl, declarationType, journeyType))
+              ),
             redirectTo
           )
       }
@@ -78,19 +81,21 @@ class ReviewGoodsController @Inject()(
   private def redirectTo(declareMoreGoods: YesNo)(implicit request: DeclarationJourneyRequest[_]): Future[Result] =
     (for {
       check <- checkThresholdIfAmending(request.declarationJourney)
-      call <- OptionT.liftF(
-               navigator.nextPage(
-                 ReviewGoodsRequest(
-                   declareMoreGoods,
-                   request.declarationJourney,
-                   check.thresholdCheck,
-                   repo.upsert
+      call  <- OptionT.liftF(
+                 navigator.nextPage(
+                   ReviewGoodsRequest(
+                     declareMoreGoods,
+                     request.declarationJourney,
+                     check.thresholdCheck,
+                     repo.upsert
+                   )
                  )
-               ))
+               )
     } yield call).fold(actionProvider.invalidRequest(declarationNotFoundMessage))(Redirect)
 
-  private def checkThresholdIfAmending(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
+  private def checkThresholdIfAmending(
+    declarationJourney: DeclarationJourney
+  )(implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] =
     declarationJourney.amendmentIfRequiredAndComplete
       .fold(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold))) { _ =>
         mibService.amendPlusOriginalCalculations(declarationJourney)

@@ -32,12 +32,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PaymentCalculationController @Inject()(
+class PaymentCalculationController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   mibService: MibService,
   mibConnector: MibConnector,
-  view: PaymentCalculationView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+  view: PaymentCalculationView
+)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
 
   private val backButtonUrl: Call =
@@ -58,7 +59,8 @@ class PaymentCalculationController @Inject()(
                 (calculationResponse.thresholdCheck, request.declarationJourney.declarationType) match {
                   case (OverThreshold, _)        => Redirect(GoodsOverThresholdController.onPageLoad)
                   case (WithinThreshold, Import) => importView(calculationResponse.results, exchangeUrl)
-                  case (WithinThreshold, Export) => Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad))
+                  case (WithinThreshold, Export) =>
+                    Redirect(checkYourAnswersIfComplete(CustomsAgentController.onPageLoad))
 
                 }
               }
@@ -67,13 +69,15 @@ class PaymentCalculationController @Inject()(
       }
   }
 
-  private def importView(calculationResults: CalculationResults, exchangeUrl: ExchangeRateURL)(
-    implicit request: DeclarationJourneyRequest[_]): Result =
+  private def importView(calculationResults: CalculationResults, exchangeUrl: ExchangeRateURL)(implicit
+    request: DeclarationJourneyRequest[_]
+  ): Result =
     Ok(
       view(
         calculationResults,
         checkYourAnswersIfComplete(CustomsAgentController.onPageLoad),
         exchangeUrl.url,
         backButtonUrl
-      ))
+      )
+    )
 }

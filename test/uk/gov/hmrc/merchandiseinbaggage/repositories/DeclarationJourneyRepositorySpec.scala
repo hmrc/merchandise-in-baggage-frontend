@@ -27,7 +27,8 @@ import java.time.LocalDateTime
 
 class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with CoreTestData {
 
-  private val declarationOtherJourney = completedDeclarationJourney.copy(sessionId = SessionId("c55ef3b3-db49-4cc8-956b-ab52546dee64"))
+  private val declarationOtherJourney =
+    completedDeclarationJourney.copy(sessionId = SessionId("c55ef3b3-db49-4cc8-956b-ab52546dee64"))
 
   "DeclarationJourneyRepository" should {
 
@@ -41,7 +42,8 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       inserted mustBe completedDeclarationJourney
 
       declarationJourneyRepository.findBySessionId(completedDeclarationJourney.sessionId).futureValue mustBe Some(
-        completedDeclarationJourney)
+        completedDeclarationJourney
+      )
     }
 
     "update a declaration journey" in {
@@ -59,7 +61,8 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       val indices = declarationJourneyRepository.collection.listIndexes().toFuture().futureValue
 
-      val actualTimeToLive = indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt64().intValue()
+      val actualTimeToLive =
+        indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt64().intValue()
 
       actualTimeToLive mustBe expectedTimeToLive
     }
@@ -68,7 +71,7 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
   "getSessionIdsWithStringCreatedAt" should {
     "return list of session ids with createdAt field of type string" in {
 
-      val testDocumentId = declarationJourneyRepository.collection
+      val testDocumentId  = declarationJourneyRepository.collection
         .insertOne(completedDeclarationJourney)
         .toFuture()
         .futureValue
@@ -83,9 +86,9 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
         .asObjectId()
         .getValue
 
-      val selector = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
+      val selector      = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
       val selectorOther = Filters.equal("sessionId", Codecs.toBson(declarationOtherJourney.sessionId))
-      val update = Updates.set("createdAt", "2023-03-21T15:05:20.747Z")
+      val update        = Updates.set("createdAt", "2023-03-21T15:05:20.747Z")
       declarationJourneyRepository.collection.findOneAndUpdate(selector, update).toFuture().futureValue
       declarationJourneyRepository.collection.findOneAndUpdate(selectorOther, update).toFuture().futureValue
 
@@ -108,12 +111,12 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       // Set one set of data to use string CreatedAt
       val selector = Filters.equal("sessionId", Codecs.toBson(declarationOtherJourney.sessionId))
-      val update = Updates.set("createdAt", "2020")
+      val update   = Updates.set("createdAt", "2020")
       declarationJourneyRepository.collection.findOneAndUpdate(selector, update).toFuture().futureValue
 
       // Find where createdAt is string and update
       val documentIds: Seq[ObjectId] = declarationJourneyRepository.findCreatedAtString(2).futureValue
-      val updateTime = declarationJourneyRepository.updateDate(documentIds).futureValue
+      val updateTime                 = declarationJourneyRepository.updateDate(documentIds).futureValue
 
       // Checks collection sizes and returns are correct
       declarationJourneyRepository.collection.find(Filters.empty()).toFuture().futureValue.size mustBe 2
@@ -135,15 +138,15 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       declarationJourneyRepository.upsert(declarationOtherJourney).futureValue
 
       // Set both sets of data to use string CreatedAt
-      val selector = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
+      val selector      = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
       val selectorOther = Filters.equal("sessionId", Codecs.toBson(declarationOtherJourney.sessionId))
-      val update = Updates.set("createdAt", "2020")
+      val update        = Updates.set("createdAt", "2020")
       declarationJourneyRepository.collection.findOneAndUpdate(selector, update).toFuture().futureValue
       declarationJourneyRepository.collection.findOneAndUpdate(selectorOther, update).toFuture().futureValue
 
       // Find where createdAt is string and update
       val documentIds: Seq[ObjectId] = declarationJourneyRepository.findCreatedAtString(2).futureValue
-      val updateTime = declarationJourneyRepository.updateDate(documentIds).futureValue
+      val updateTime                 = declarationJourneyRepository.updateDate(documentIds).futureValue
 
       // Checks collection sizes and returns are correct
       declarationJourneyRepository.collection.find(Filters.empty()).toFuture().futureValue.size mustBe 2
@@ -157,15 +160,15 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       declarationJourneyRepository.upsert(declarationOtherJourney).futureValue
 
       // Set both sets of data to use string CreatedAt
-      val selector = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
+      val selector      = Filters.equal("sessionId", Codecs.toBson(completedDeclarationJourney.sessionId))
       val selectorOther = Filters.equal("sessionId", Codecs.toBson(declarationOtherJourney.sessionId))
-      val update = Updates.set("createdAt", "2020")
+      val update        = Updates.set("createdAt", "2020")
       declarationJourneyRepository.collection.findOneAndUpdate(selector, update).toFuture().futureValue
       declarationJourneyRepository.collection.findOneAndUpdate(selectorOther, update).toFuture().futureValue
 
       // Find where createdAt is string and update
       val documentIds: Seq[ObjectId] = declarationJourneyRepository.findCreatedAtString(1).futureValue
-      val updateTime = declarationJourneyRepository.updateDate(documentIds).futureValue
+      val updateTime                 = declarationJourneyRepository.updateDate(documentIds).futureValue
 
       // Checks collection sizes and returns are correct
       documentIds.size mustBe 1

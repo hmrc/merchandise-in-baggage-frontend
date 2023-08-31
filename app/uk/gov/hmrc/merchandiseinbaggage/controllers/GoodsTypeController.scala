@@ -28,12 +28,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsTypeController @Inject()(
+class GoodsTypeController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
   view: GoodsTypeView,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
@@ -47,7 +48,15 @@ class GoodsTypeController @Inject()(
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx) { implicit request =>
     val preparedForm = request.goodsEntry.maybeCategory.fold(form)(form.fill)
 
-    Ok(view(preparedForm, idx, request.declarationJourney.declarationType, request.declarationJourney.journeyType, backButtonUrl))
+    Ok(
+      view(
+        preparedForm,
+        idx,
+        request.declarationJourney.declarationType,
+        request.declarationJourney.journeyType,
+        backButtonUrl
+      )
+    )
   }
 
   def onSubmit(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
@@ -55,13 +64,21 @@ class GoodsTypeController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(
-            view(formWithErrors, idx, request.declarationJourney.declarationType, request.declarationJourney.journeyType, backButtonUrl))),
-        category => {
+          Future.successful(
+            BadRequest(
+              view(
+                formWithErrors,
+                idx,
+                request.declarationJourney.declarationType,
+                request.declarationJourney.journeyType,
+                backButtonUrl
+              )
+            )
+          ),
+        category =>
           navigator
             .nextPage(GoodsTypeRequest(request.declarationJourney, request.goodsEntry, idx, category, repo.upsert))
             .map(Redirect)
-        }
       )
   }
 }

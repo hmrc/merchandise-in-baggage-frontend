@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  val view = injector.instanceOf[VehicleRegistrationNumberView]
+  val view      = injector.instanceOf[VehicleRegistrationNumberView]
   val navigator = injector.instanceOf[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
@@ -34,7 +34,8 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       navigator,
-      view)
+      view
+    )
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
@@ -42,7 +43,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
 
         status(eventualResult) mustBe 200
@@ -55,7 +56,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
 
-        val request = buildPost(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
+        val request        = buildPost(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "KM04 123")
 
         val eventualResult = controller(journey).onSubmit()(request)
@@ -66,11 +67,11 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
       s"return 400 with required form error for $importOrExport" in {
 
-        val request = buildGet(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
+        val request        = buildGet(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value123" -> "")
 
         val eventualResult = controller(journey).onSubmit()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 400
         result must include(messageApi("error.summary.title"))

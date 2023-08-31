@@ -33,13 +33,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class PreviousDeclarationDetailsControllerSpec
-    extends DeclarationJourneyControllerSpec with CoreTestData with MibConfiguration with MockFactory {
+    extends DeclarationJourneyControllerSpec
+    with CoreTestData
+    with MibConfiguration
+    with MockFactory {
 
-  val mockNavigator: Navigator = mock[Navigator]
+  val mockNavigator: Navigator   = mock[Navigator]
   val mockMibService: MibService = mock[MibService]
-  val view = app.injector.instanceOf[PreviousDeclarationDetailsView]
-  val mibConnector = injector.instanceOf[MibConnector]
-  val controller =
+  val view                       = app.injector.instanceOf[PreviousDeclarationDetailsView]
+  val mibConnector               = injector.instanceOf[MibConnector]
+  val controller                 =
     new PreviousDeclarationDetailsController(
       controllerComponents,
       actionBuilder,
@@ -47,7 +50,8 @@ class PreviousDeclarationDetailsControllerSpec
       mibConnector,
       mockNavigator,
       mockMibService,
-      view)
+      view
+    )
 
   "creating a page" should {
     "return 200 if declaration exists" in {
@@ -56,7 +60,8 @@ class PreviousDeclarationDetailsControllerSpec
           sessionId = aSessionId,
           declarationType = DeclarationType.Import,
           createdAt = journeyDate.atStartOfDay,
-          declarationId = aDeclarationId)
+          declarationId = aDeclarationId
+        )
 
       givenADeclarationJourneyIsPersisted(importJourney)
       (mockMibService
@@ -70,7 +75,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -83,13 +88,14 @@ class PreviousDeclarationDetailsControllerSpec
           sessionId = aSessionId,
           declarationType = DeclarationType.Import,
           createdAt = journeyDate.atStartOfDay,
-          declarationId = aDeclarationId)
+          declarationId = aDeclarationId
+        )
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
       givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
 
-      val request =
+      val request        =
         buildGet(PreviousDeclarationDetailsController.onPageLoad.url, SessionId()).withSession("declarationId" -> "987")
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 303
@@ -103,7 +109,8 @@ class PreviousDeclarationDetailsControllerSpec
           sessionId = aSessionId,
           declarationType = DeclarationType.Import,
           createdAt = journeyDate.atStartOfDay,
-          declarationId = aDeclarationId)
+          declarationId = aDeclarationId
+        )
 
       (mockMibService
         .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
@@ -114,12 +121,16 @@ class PreviousDeclarationDetailsControllerSpec
 
       val persistedDeclaration = importJourney.declarationIfRequiredAndComplete.map { declaration =>
         declaration
-          .copy(maybeTotalCalculationResult = Some(aTotalCalculationResult), paymentStatus = Some(Paid), amendments = Seq(aAmendmentPaid))
+          .copy(
+            maybeTotalCalculationResult = Some(aTotalCalculationResult),
+            paymentStatus = Some(Paid),
+            amendments = Seq(aAmendmentPaid)
+          )
       }
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 
@@ -135,7 +146,8 @@ class PreviousDeclarationDetailsControllerSpec
           sessionId = aSessionId,
           declarationType = DeclarationType.Export,
           createdAt = journeyDate.atStartOfDay,
-          declarationId = aDeclarationId)
+          declarationId = aDeclarationId
+        )
 
       (mockMibService
         .thresholdAllowance(_: Declaration)(_: HeaderCarrier))
@@ -146,12 +158,16 @@ class PreviousDeclarationDetailsControllerSpec
 
       val persistedDeclaration = exportJourney.declarationIfRequiredAndComplete.map { declaration =>
         declaration
-          .copy(maybeTotalCalculationResult = Some(aTotalCalculationResult), paymentStatus = Some(Paid), amendments = Seq(aAmendmentPaid))
+          .copy(
+            maybeTotalCalculationResult = Some(aTotalCalculationResult),
+            paymentStatus = Some(Paid),
+            amendments = Seq(aAmendmentPaid)
+          )
       }
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe 200
 

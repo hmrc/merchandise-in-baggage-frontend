@@ -57,7 +57,8 @@ object DeclarationJourneyLogger {
     s"sessionId: [${hc.sessionId.map(_.value).getOrElse("")}]"
   }
 
-  private def deviceId(implicit r: RequestHeader) = s"deviceId: [${r.cookies.find(_.name == deviceID).map(_.value).getOrElse("")}]"
+  private def deviceId(implicit r: RequestHeader) =
+    s"deviceId: [${r.cookies.find(_.name == deviceID).map(_.value).getOrElse("")}]"
 
   private def context(implicit r: RequestHeader) = s"context: [${r.method} ${r.path}]] $sessionId $deviceId"
 
@@ -67,7 +68,7 @@ object DeclarationJourneyLogger {
   private def makeRichMessage(message: String)(implicit request: RequestHeader): String = request match {
     case declarationJourneyRequest: DeclarationJourneyRequest[_] =>
       s"$message ${obfuscatedDeclarationJourney(declarationJourneyRequest)} $context"
-    case r =>
+    case r                                                       =>
       s"$message declarationJourney: [] $context"
   }
 }

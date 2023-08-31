@@ -38,7 +38,8 @@ case class Declaration(
   emailsSent: Boolean,
   lang: String,
   source: Option[String],
-  amendments: Seq[Amendment])
+  amendments: Seq[Amendment]
+)
 
 object Declaration extends JourneySourceFinder {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
@@ -59,7 +60,8 @@ object Declaration extends JourneySourceFinder {
     maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
     paymentStatus: Option[PaymentStatus] = None,
     source: Option[String] = findSource,
-    amendments: Seq[Amendment] = Seq.empty): Declaration =
+    amendments: Seq[Amendment] = Seq.empty
+  ): Declaration =
     Declaration(
       declarationId,
       sessionId,

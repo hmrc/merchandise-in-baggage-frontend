@@ -25,7 +25,7 @@ class NewOrExistingFormSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "newOrExisting.error.required"
 
     behave like optionsField[JourneyType](

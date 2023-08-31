@@ -32,9 +32,14 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StrideAuthAction @Inject()(override val authConnector: AuthConnector, appConfig: AppConfig, mcc: MessagesControllerComponents)(
-  implicit ec: ExecutionContext)
-    extends ActionBuilder[AuthRequest, AnyContent] with AuthorisedFunctions with AuthRedirects {
+class StrideAuthAction @Inject() (
+  override val authConnector: AuthConnector,
+  appConfig: AppConfig,
+  mcc: MessagesControllerComponents
+)(implicit ec: ExecutionContext)
+    extends ActionBuilder[AuthRequest, AnyContent]
+    with AuthorisedFunctions
+    with AuthRedirects {
 
   override def parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
@@ -56,16 +61,15 @@ class StrideAuthAction @Inject()(override val authConnector: AuthConnector, appC
     }
 
     authorised(AuthProviders(PrivilegedApplication))
-      .retrieve(credentials and allEnrolments) {
-        case creds ~ enrolments =>
-          if (hasRequiredRoles(enrolments))
-            block(AuthRequest(request, creds))
-          else Future successful Unauthorized("Insufficient Roles")
+      .retrieve(credentials and allEnrolments) { case creds ~ enrolments =>
+        if (hasRequiredRoles(enrolments))
+          block(AuthRequest(request, creds))
+        else Future successful Unauthorized("Insufficient Roles")
       }
       .recover {
-        case e: NoActiveSession =>
+        case e: NoActiveSession        =>
           redirectToStrideLogin(e.getMessage)
-        case e: InternalError =>
+        case e: InternalError          =>
           redirectToStrideLogin(e.getMessage)
         case e: AuthorisationException =>
           logger.warn(s"User is forbidden because of ${e.reason}, $e")

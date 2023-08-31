@@ -31,10 +31,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
+class RetrieveDeclarationControllerSpec
+    extends DeclarationJourneyControllerSpec
+    with MockFactory
+    with PropertyBaseTables {
 
-  val view = injector.instanceOf[RetrieveDeclarationView]
-  val connector = injector.instanceOf[MibConnector]
+  val view          = injector.instanceOf[RetrieveDeclarationView]
+  val connector     = injector.instanceOf[MibConnector]
   val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
@@ -44,7 +47,8 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
       stubRepo(declarationJourney),
       connector,
       mockNavigator,
-      view)
+      view
+    )
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
@@ -54,9 +58,9 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
 
-        val request = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         result must include(messageApi(s"retrieveDeclaration.title"))
@@ -88,7 +92,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
     s"redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
       givenFindByDeclarationReturnStatus(mibReference, eori, 500)
-      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
+      val request        = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
       val eventualResult = controller(journey).onSubmit(request)
@@ -96,10 +100,10 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
     }
 
     "return 400 for invalid form data" in {
-      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
+      val request        = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi(s"retrieveDeclaration.mibReference.error.invalid"))

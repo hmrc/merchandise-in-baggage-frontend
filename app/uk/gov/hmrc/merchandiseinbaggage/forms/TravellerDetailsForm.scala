@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
 
 object TravellerDetailsForm extends Mappings {
   val firstName = "firstName"
-  val lastName = "lastName"
+  val lastName  = "lastName"
 
   private val regex: String = "[A-Za-z '-]*"
 
@@ -38,7 +38,7 @@ object TravellerDetailsForm extends Mappings {
       firstName ->
         text("travellerDetails.firstName.error.required")
           .verifying(isValidName("travellerDetails.firstName.error.invalid")),
-      lastName ->
+      lastName  ->
         text("travellerDetails.lastName.error.required")
           .verifying(isValidName("travellerDetails.lastName.error.invalid"))
     )(Name.apply)(Name.unapply)

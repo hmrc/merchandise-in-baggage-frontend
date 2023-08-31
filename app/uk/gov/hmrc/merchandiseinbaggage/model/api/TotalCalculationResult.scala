@@ -24,7 +24,8 @@ case class TotalCalculationResult(
   totalGbpValue: AmountInPence,
   totalTaxDue: AmountInPence,
   totalDutyDue: AmountInPence,
-  totalVatDue: AmountInPence)
+  totalVatDue: AmountInPence
+)
 
 object TotalCalculationResult {
   implicit val format: OFormat[TotalCalculationResult] = Json.format[TotalCalculationResult]

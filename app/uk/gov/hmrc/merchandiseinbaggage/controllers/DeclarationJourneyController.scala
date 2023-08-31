@@ -30,17 +30,21 @@ trait DeclarationJourneyController extends FrontendBaseController {
 
   val onPageLoad: Action[AnyContent]
 
-  def backToCheckYourAnswersIfCompleteElse(backIfIncomplete: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
-    if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete)
+  def backToCheckYourAnswersIfCompleteElse(
+    backIfIncomplete: Call
+  )(implicit request: DeclarationJourneyRequest[_]): Call =
+    if (
+      request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete
+    )
       routes.CheckYourAnswersController.onPageLoad
     else backIfIncomplete
 }
 
 object DeclarationJourneyController {
-  val incompleteMessage = "declaration journey is not required and complete"
+  val incompleteMessage                 = "declaration journey is not required and complete"
   val goodsDestinationUnansweredMessage = "goods destination is unanswered"
   val goodsDeclarationIncompleteMessage = "goods declaration is incomplete"
-  val declarationNotFoundMessage = "original declaration was not found"
+  val declarationNotFoundMessage        = "original declaration was not found"
 }
 
 trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
@@ -48,10 +52,12 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
 
   val repo: DeclarationJourneyRepository
 
-  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(
-    implicit ec: ExecutionContext): Future[Result] =
+  def persistAndRedirect(updatedDeclarationJourney: DeclarationJourney, redirectIfNotComplete: Call)(implicit
+    ec: ExecutionContext
+  ): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
-      if (updatedDeclarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad)
+      if (updatedDeclarationJourney.declarationRequiredAndComplete)
+        Redirect(routes.CheckYourAnswersController.onPageLoad)
       else Redirect(redirectIfNotComplete)
     }
 }
@@ -61,18 +67,25 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
 
   def onPageLoad(idx: Int): Action[AnyContent]
 
-  def withGoodsCategory(goodsEntry: GoodsEntry)(f: String => Future[Result])(
-    implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
+  def withGoodsCategory(
+    goodsEntry: GoodsEntry
+  )(f: String => Future[Result])(implicit request: DeclarationGoodsRequest[AnyContent]): Future[Result] =
     goodsEntry.maybeCategory match {
       case Some(c) => f(c)
-      case None =>
-        DeclarationJourneyLogger.warn(s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad}")
+      case None    =>
+        DeclarationJourneyLogger.warn(
+          s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad}"
+        )
         Future successful Redirect(routes.CannotAccessPageController.onPageLoad)
     }
 
   def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
-    (request.declarationJourney.declarationRequiredAndComplete, request.declarationJourney.goodsEntries.entries(index - 1).isComplete) match {
-      case (true, true)   => routes.CheckYourAnswersController.onPageLoad // user clicked change link from /check-your-answers
+    (
+      request.declarationJourney.declarationRequiredAndComplete,
+      request.declarationJourney.goodsEntries.entries(index - 1).isComplete
+    ) match {
+      case (true, true)   =>
+        routes.CheckYourAnswersController.onPageLoad // user clicked change link from /check-your-answers
       case (true, false)  => default // user clicked add more goods from /check-your-answers
       case (false, true)  => routes.ReviewGoodsController.onPageLoad // user clicked change link from /review-goods
       case (false, false) => default // normal journey flow / user is adding more goods from /review-goods

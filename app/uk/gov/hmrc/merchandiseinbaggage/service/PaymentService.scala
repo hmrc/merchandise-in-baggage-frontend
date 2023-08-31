@@ -33,13 +33,16 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 @Singleton
-class PaymentService @Inject()(connector: PaymentConnector, val auditConnector: AuditConnector, val messagesApi: MessagesApi)(
-  implicit ec: ExecutionContext,
-  appConfig: AppConfig)
+class PaymentService @Inject() (
+  connector: PaymentConnector,
+  val auditConnector: AuditConnector,
+  val messagesApi: MessagesApi
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends Auditor {
 
-  def sendPaymentRequest(declaration: Declaration, amendmentRef: Option[Int], paymentCalcs: CalculationResults)(
-    implicit hc: HeaderCarrier): Future[String] =
+  def sendPaymentRequest(declaration: Declaration, amendmentRef: Option[Int], paymentCalcs: CalculationResults)(implicit
+    hc: HeaderCarrier
+  ): Future[String] =
     if (paymentCalcs.totalTaxDue.value == 0) {
       Future.successful(routes.DeclarationConfirmationController.onPageLoad.url)
     } else {

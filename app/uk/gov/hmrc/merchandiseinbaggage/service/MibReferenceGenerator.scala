@@ -23,7 +23,7 @@ import scala.util.matching.Regex
 
 trait MibReferenceGenerator {
 
-  protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
+  protected val referenceFormat             = """^X([A-Z])MB(\d{10})$"""
   protected val referenceFormatRegex: Regex = referenceFormat.r
 
   def mibReference: MibReference = {

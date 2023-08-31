@@ -28,17 +28,22 @@ import scala.concurrent.duration.{Duration, SECONDS}
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DocumentUpdateService extends ScheduledService[Boolean] with Logging
-class DefaultDocumentUpdateService @Inject()(
+class DefaultDocumentUpdateService @Inject() (
   repository: DeclarationJourneyRepository,
   lockRepositoryProvider: LockRepositoryProvider,
-  servicesConfig: ServicesConfig)(implicit ec: ExecutionContext)
+  servicesConfig: ServicesConfig
+)(implicit ec: ExecutionContext)
     extends DocumentUpdateService {
 
-  override val jobName: String = "update-created-at-field-job"
-  private val updateLimit: Int = servicesConfig.getInt(s"schedules.$jobName.updateLimit")
+  override val jobName: String         = "update-created-at-field-job"
+  private val updateLimit: Int         = servicesConfig.getInt(s"schedules.$jobName.updateLimit")
   private lazy val lockoutTimeout: Int = servicesConfig.getInt(s"schedules.$jobName.lockTimeout")
   private val lockService: LockService =
-    LockService(lockRepositoryProvider.repo, lockId = "update-created-at-job-lock", ttl = Duration.create(lockoutTimeout, SECONDS))
+    LockService(
+      lockRepositoryProvider.repo,
+      lockId = "update-created-at-job-lock",
+      ttl = Duration.create(lockoutTimeout, SECONDS)
+    )
 
   private[service] def updateMissingCreatedAtFields(): Future[RepositoryUpdateMessage] =
     repository.findCreatedAtString(updateLimit).flatMap { documentIds =>
@@ -57,7 +62,7 @@ class DefaultDocumentUpdateService @Inject()(
       case Some(updateMessage) =>
         logger.info(updateMessage.message)
         true
-      case None =>
+      case None                =>
         logger.info(FailedToLockRepositoryForUpdate.message)
         false
     }

@@ -41,12 +41,14 @@ import play.api.Logging
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestOnlyController @Inject()(
+class TestOnlyController @Inject() (
   mcc: MessagesControllerComponents,
   repository: DeclarationJourneyRepository,
   formProvider: DeclarationJourneyFormProvider,
-  page: TestOnlyDeclarationJourneyPage)(implicit val ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendController(mcc) with Logging {
+  page: TestOnlyDeclarationJourneyPage
+)(implicit val ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
+    with Logging {
   private val form = formProvider()
 
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
@@ -60,9 +62,9 @@ class TestOnlyController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => onError(formWithErrors),
-        json => {
+        json =>
           Json.parse(json).validate[DeclarationJourney] match {
-            case JsError(errors) =>
+            case JsError(errors)                  =>
               logger.error(s"Provided Json was invalid: $errors")
               onError(form)
             case JsSuccess(declarationJourney, _) =>
@@ -77,7 +79,6 @@ class TestOnlyController @Inject()(
                 }
               }
           }
-        }
       )
   }
 }
@@ -107,13 +108,15 @@ object TestOnlyController {
             Some(YesNoDontKnow.Yes),
             Some(PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
           )
-        )),
+        )
+      ),
       maybeNameOfPersonCarryingTheGoods = Some(Name("Terry", "Test")),
       maybeEmailAddress = Some(Email("aa@test.com")),
       maybeIsACustomsAgent = Some(Yes),
       maybeCustomsAgentName = Some("Andy Agent"),
-      maybeCustomsAgentAddress =
-        Some(Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))),
+      maybeCustomsAgentAddress = Some(
+        Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))
+      ),
       maybeEori = Some(Eori("GB123467800000")),
       maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("DVR", now())),
       maybeTravellingByVehicle = Some(Yes),

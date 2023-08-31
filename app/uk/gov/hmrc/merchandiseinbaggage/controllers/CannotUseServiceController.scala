@@ -23,18 +23,21 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotUseServiceView
 
 @Singleton
-class CannotUseServiceController @Inject()(
+class CannotUseServiceController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  view: CannotUseServiceView)(implicit val appConfig: AppConfig)
+  view: CannotUseServiceView
+)(implicit val appConfig: AppConfig)
     extends DeclarationJourneyController {
 
   private val backUrl = Call("GET", "#")
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
-    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url)) routes.ExciseAndRestrictedGoodsController.onPageLoad
-    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad.url)) routes.ValueWeightOfGoodsController.onPageLoad
+    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url))
+      routes.ExciseAndRestrictedGoodsController.onPageLoad
+    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad.url))
+      routes.ValueWeightOfGoodsController.onPageLoad
     else if (referer.contains(routes.VehicleSizeController.onPageLoad.url)) routes.VehicleSizeController.onPageLoad
     else backUrl
   }

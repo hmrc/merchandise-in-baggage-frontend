@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AgentDetailsController @Inject()(
+class AgentDetailsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -50,11 +50,10 @@ class AgentDetailsController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, backButtonUrl, request.declarationType))),
-        value => {
+        value =>
           navigator
             .nextPage(AgentDetailsRequest(value, request.declarationJourney, repo.upsert))
             .map(Redirect)
-        }
       )
   }
 }

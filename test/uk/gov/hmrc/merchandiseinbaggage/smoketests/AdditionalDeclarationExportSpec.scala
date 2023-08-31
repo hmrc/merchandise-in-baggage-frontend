@@ -41,16 +41,17 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
       givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
-      val sessionId = SessionId()
-      val created = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
-      val id = paidDeclaration.declarationId
+      val sessionId                         = SessionId()
+      val created                           = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
+      val id                                = paidDeclaration.declarationId
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(
           sessionId = sessionId,
           declarationType = DeclarationType.Export,
           maybeEori = Some(eori),
           createdAt = created,
-          declarationId = id)
+          declarationId = id
+        )
 
       givenADeclarationJourneyIsPersisted(exportJourney)
       givenDeclarationIsAmendedInBackend

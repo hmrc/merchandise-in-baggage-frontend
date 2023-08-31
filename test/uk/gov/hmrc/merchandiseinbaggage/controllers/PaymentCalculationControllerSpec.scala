@@ -33,15 +33,16 @@ import scala.concurrent.Future
 
 class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[PaymentCalculationView]
+  private val view      = app.injector.instanceOf[PaymentCalculationView]
   lazy val mibConnector = injector.instanceOf[MibConnector]
 
   private lazy val stubbedCalculation: CalculationResponse => MibService = calculationResults =>
     new MibService(mibConnector) {
-      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit
+        hc: HeaderCarrier
+      ): Future[CalculationResponse] =
         Future.successful(calculationResults)
-  }
+    }
 
   def controller(declarationJourney: DeclarationJourney, thresholdCheck: ThresholdCheck = WithinThreshold) =
     new PaymentCalculationController(
@@ -49,7 +50,8 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
       stubProvider(declarationJourney),
       stubbedCalculation(aCalculationResponse.copy(thresholdCheck = thresholdCheck)),
       mibConnector,
-      view)
+      view
+    )
 
   declarationTypes.foreach { importOrExport =>
     "onPageLoad" should {
@@ -60,11 +62,12 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
           aSessionId,
           importOrExport,
           maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
-          goodsEntries = completedGoodsEntries(importOrExport))
+          goodsEntries = completedGoodsEntries(importOrExport)
+        )
 
-        val request = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         importOrExport match {
           case Import =>
@@ -99,8 +102,9 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
             goodsEntries = overThresholdGoods(importOrExport)
           )
 
-        val request = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
-        val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
+        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
+        val eventualResult =
+          controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
 
         status(eventualResult) mustBe 303
         redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad.url)

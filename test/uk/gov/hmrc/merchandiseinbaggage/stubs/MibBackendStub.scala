@@ -36,92 +36,119 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
       .stubFor(
         post(urlPathEqualTo(s"$declarationsUrl"))
           .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
-          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(declaration.declarationId).toString)))
+          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(declaration.declarationId).toString))
+      )
 
   def givenDeclarationIsPersistedInBackend(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$declarationsUrl"))
-          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString)))
+          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString))
+      )
 
   def givenDeclarationIsAmendedInBackend(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         put(urlPathEqualTo(s"$declarationsUrl"))
-          .willReturn(aResponse().withStatus(200).withBody(Json.toJson(stubbedDeclarationId).toString)))
+          .willReturn(aResponse().withStatus(200).withBody(Json.toJson(stubbedDeclarationId).toString))
+      )
 
   def givenPersistedDeclarationIsFound(declaration: Declaration, declarationId: DeclarationId = stubbedDeclarationId)(
-    implicit server: WireMockServer): StubMapping = {
+    implicit server: WireMockServer
+  ): StubMapping = {
     val declarationWithId = declaration.copy(declarationId = declarationId)
     server
       .stubFor(
         get(urlPathEqualTo(s"$declarationsUrl/${declarationWithId.declarationId.value}"))
-          .willReturn(okJson(Json.toJson(declarationWithId).toString)))
+          .willReturn(okJson(Json.toJson(declarationWithId).toString))
+      )
   }
 
   def givenPersistedDeclarationIsFound()(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlMatching(s"$declarationsUrl/(.*)"))
-          .willReturn(okJson(Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString)))
+          .willReturn(
+            okJson(
+              Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString
+            )
+          )
+      )
 
-  def givenFindByDeclarationReturnSuccess(mibReference: MibReference, eori: Eori, declaration: Declaration)(
-    implicit server: WireMockServer): StubMapping =
+  def givenFindByDeclarationReturnSuccess(mibReference: MibReference, eori: Eori, declaration: Declaration)(implicit
+    server: WireMockServer
+  ): StubMapping =
     server
       .stubFor(
         get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
-          .willReturn(okJson(Json.toJson(declaration).toString())))
+          .willReturn(okJson(Json.toJson(declaration).toString()))
+      )
 
-  def givenFindByDeclarationReturnStatus(mibReference: MibReference, eori: Eori, aStatus: Int)(
-    implicit server: WireMockServer): StubMapping =
+  def givenFindByDeclarationReturnStatus(mibReference: MibReference, eori: Eori, aStatus: Int)(implicit
+    server: WireMockServer
+  ): StubMapping =
     server
       .stubFor(
         get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
-          .willReturn(status(aStatus)))
+          .willReturn(status(aStatus))
+      )
 
   def givenAPaymentCalculations(
     requests: Seq[CalculationRequest],
     results: Seq[CalculationResult],
-    thresholdCheck: ThresholdCheck = WithinThreshold)(implicit server: WireMockServer): StubMapping =
+    thresholdCheck: ThresholdCheck = WithinThreshold
+  )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
           .withRequestBody(equalToJson(toJson(requests).toString, true, false))
-          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
+      )
 
   def givenAnAmendPaymentCalculationsRequest(
     request: CalculationAmendRequest,
     results: Seq[CalculationResult],
-    thresholdCheck: ThresholdCheck = WithinThreshold)(implicit server: WireMockServer): StubMapping =
+    thresholdCheck: ThresholdCheck = WithinThreshold
+  )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$amendsPlusExistingCalculationsUrl"))
           .withRequestBody(equalToJson(toJson(request).toString, true, false))
-          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
+      )
 
-  def givenAnAmendPaymentCalculations(results: Seq[CalculationResult], thresholdCheck: ThresholdCheck = WithinThreshold)(
-    implicit server: WireMockServer): StubMapping =
+  def givenAnAmendPaymentCalculations(
+    results: Seq[CalculationResult],
+    thresholdCheck: ThresholdCheck = WithinThreshold
+  )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$amendsPlusExistingCalculationsUrl"))
-          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString)))
+          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
+      )
 
-  def givenAPaymentCalculation(result: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(
-    implicit server: WireMockServer): StubMapping =
+  def givenAPaymentCalculation(result: CalculationResult, thresholdCheck: ThresholdCheck = WithinThreshold)(implicit
+    server: WireMockServer
+  ): StubMapping =
     server
       .stubFor(
         post(urlPathEqualTo(s"$calculationsUrl"))
-          .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(List(result)), thresholdCheck)).toString)))
+          .willReturn(
+            okJson(Json.toJson(CalculationResponse(CalculationResults(List(result)), thresholdCheck)).toString)
+          )
+      )
 
   def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlPathEqualTo(s"$checkEoriUrl$eoriNumber"))
-          .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString)))
+          .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString))
+      )
 
   def givenExchangeRateURL(url: String)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
         get(urlPathEqualTo(s"$exchangeRateUrl"))
-          .willReturn(ok().withBody(Json.toJson(ExchangeRateURL(url)).toString)))
+          .willReturn(ok().withBody(Json.toJson(ExchangeRateURL(url)).toString))
+      )
 }

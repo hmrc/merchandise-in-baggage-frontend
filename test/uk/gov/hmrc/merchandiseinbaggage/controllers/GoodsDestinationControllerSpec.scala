@@ -30,7 +30,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
 
-  val view = injector.instanceOf[GoodsDestinationView]
+  val view                     = injector.instanceOf[GoodsDestinationView]
   val mockNavigator: Navigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
@@ -39,16 +39,17 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       mockNavigator,
-      view)
+      view
+    )
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(GoodsDestinationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(GoodsDestinationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         result must include(messageApi(s"goodsDestination.$importOrExport.title"))
@@ -76,11 +77,11 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
+      val request        = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))

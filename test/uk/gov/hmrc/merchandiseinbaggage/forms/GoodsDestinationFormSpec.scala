@@ -26,7 +26,7 @@ class GoodsDestinationFormSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName         = "value"
     val importRequiredKey = "goodsDestination.error.Import.required"
     val exportRequiredKey = "goodsDestination.error.Export.required"
 

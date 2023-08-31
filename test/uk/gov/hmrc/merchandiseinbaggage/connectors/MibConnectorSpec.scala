@@ -30,9 +30,9 @@ import java.time.temporal.ChronoUnit
 
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration {
 
-  private val client = app.injector.instanceOf[MibConnector]
+  private val client             = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val declarationWithId = declaration.copy(declarationId = stubbedDeclarationId)
+  private val declarationWithId  = declaration.copy(declarationId = stubbedDeclarationId)
 
   "send a declaration to backend to be persisted" in {
     givenDeclarationIsPersistedInBackend(declarationWithId)
@@ -42,16 +42,20 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Mi
 
   "send a calculation request to backend for payment" in {
     val calculationRequest = List(aGoods).map(_.calculationRequest(GreatBritain))
-    val stubbedResult = List(CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
+    val stubbedResult      =
+      List(CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
 
     givenAPaymentCalculations(calculationRequest, stubbedResult)
 
-    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResponse(CalculationResults(stubbedResult), WithinThreshold)
+    client.calculatePayments(calculationRequest).futureValue mustBe CalculationResponse(
+      CalculationResults(stubbedResult),
+      WithinThreshold
+    )
   }
 
   "send a calculation requests to backend for amend payment" in {
-    val amend = Amendment(111, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), DeclarationGoods(Seq(aImportGoods)))
-    val amendRequest = CalculationAmendRequest(Some(amend), Some(GreatBritain), aDeclarationId)
+    val amend          = Amendment(111, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), DeclarationGoods(Seq(aImportGoods)))
+    val amendRequest   = CalculationAmendRequest(Some(amend), Some(GreatBritain), aDeclarationId)
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 
@@ -59,7 +63,8 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Mi
 
     client.calculatePaymentsAmendPlusExisting(amendRequest).futureValue mustBe CalculationResponse(
       CalculationResults(stubbedResults),
-      WithinThreshold)
+      WithinThreshold
+    )
   }
 
   "find a persisted declaration from backend by declarationId" in {

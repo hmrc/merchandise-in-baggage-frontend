@@ -26,7 +26,8 @@ case class PayApiRequest(
   dutyAmountInPence: AmountInPence,
   returnUrl: String,
   backUrl: String,
-  amendmentReference: Option[Int] = None)
+  amendmentReference: Option[Int] = None
+)
 
 object PayApiRequest {
   implicit val format: Format[PayApiRequest] = Json.format[PayApiRequest]

@@ -50,7 +50,8 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
     givenAPaymentCalculation(aCalculationResult)
     givenPersistedDeclarationIsFound(
       declarationWithAmendment.copy(journeyDetails = JourneyOnFoot(journeyPort, LocalDate.now().minusDays(35))),
-      journey.declarationId)
+      journey.declarationId
+    )
     goToPreviousDeclarationDetailsPage
 
     webDriver.findElements(By.name("continue")).size() mustBe 0
@@ -61,7 +62,8 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
     givenAPaymentCalculation(aCalculationResult)
     givenPersistedDeclarationIsFound(
       declarationWithAmendment.copy(journeyDetails = JourneyOnFoot(journeyPort, LocalDate.now())),
-      journey.declarationId)
+      journey.declarationId
+    )
     goToPreviousDeclarationDetailsPage
 
     val expected =

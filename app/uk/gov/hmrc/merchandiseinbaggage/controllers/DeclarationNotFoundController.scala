@@ -22,10 +22,11 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationNotFoundView
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeclarationNotFoundController @Inject()(
+class DeclarationNotFoundController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  view: DeclarationNotFoundView)(implicit appConfig: AppConfig)
+  view: DeclarationNotFoundView
+)(implicit appConfig: AppConfig)
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

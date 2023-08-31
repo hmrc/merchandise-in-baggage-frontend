@@ -59,7 +59,7 @@ class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually w
     Try {
       page.submitPage(formData)
     } match {
-      case Success(_) => ()
+      case Success(_)  => ()
       case Failure(ex) =>
         println(s"\ncurrentPage: ${webDriver.getCurrentUrl}\n")
         ex.printStackTrace()
@@ -70,14 +70,17 @@ class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually w
   def givenAJourneyWithSession(
     journeyType: JourneyType = New,
     declarationType: DeclarationType = Import,
-    declarationJourney: DeclarationJourney = completedDeclarationJourney): DeclarationJourney = {
+    declarationJourney: DeclarationJourney = completedDeclarationJourney
+  ): DeclarationJourney = {
     goto(StartImportPage.path)
 
     (for {
       persisted <- declarationJourneyRepository.collection.find[DeclarationJourney]().toFuture()
-      updated <- declarationJourneyRepository.upsert(
-                  declarationJourney
-                    .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType))
+      updated   <-
+        declarationJourneyRepository.upsert(
+          declarationJourney
+            .copy(sessionId = persisted.head.sessionId, journeyType = journeyType, declarationType = declarationType)
+        )
     } yield updated).futureValue
   }
 }

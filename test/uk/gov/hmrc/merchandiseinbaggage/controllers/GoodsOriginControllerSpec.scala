@@ -28,19 +28,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  private val view = app.injector.instanceOf[GoodsOriginView]
+  private val view  = app.injector.instanceOf[GoodsOriginView]
   val mockNavigator = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsOriginController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+    new GoodsOriginController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      view,
+      mockNavigator
+    )
 
-  val journey = startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(completedImportGoods.copy(maybePurchaseDetails = None)))
+  val journey = startedImportToGreatBritainJourney.copy(goodsEntries =
+    GoodsEntries(completedImportGoods.copy(maybePurchaseDetails = None))
+  )
 
   "onPageLoad" should {
     s"return 200 with radio buttons" in {
-      val request = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId)
+      val request        = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 200
       result must include(messageApi(s"goodsOrigin.title"))
@@ -64,11 +72,11 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with Mo
   }
 
   s"return 400 with any form errors" in {
-    val request = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
+    val request        = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
       .withFormUrlEncodedBody("value" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit(1)(request)
-    val result = contentAsString(eventualResult)
+    val result         = contentAsString(eventualResult)
 
     status(eventualResult) mustBe 400
     result must include(messageApi("error.summary.title"))

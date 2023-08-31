@@ -28,10 +28,12 @@ object TpsPaymentsBackendStub extends CoreTestData {
   def givenTaxArePaid(tpsId: TpsId)(implicit server: WireMockServer): StubMapping = {
     server.stubFor(
       post(urlPathEqualTo("/tps-payments-backend/tps-payments"))
-        .willReturn(okJson(Json.toJson(tpsId).toString).withStatus(201)))
+        .willReturn(okJson(Json.toJson(tpsId).toString).withStatus(201))
+    )
     server.stubFor(
       get(urlPathEqualTo("/tps-payments/make-payment/mib/123"))
-        .willReturn(aResponse().withStatus(200)))
+        .willReturn(aResponse().withStatus(200))
+    )
   }
 
 }

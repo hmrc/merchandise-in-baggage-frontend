@@ -26,7 +26,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = injector.instanceOf[SearchGoodsCountryView]
+  private val view      = injector.instanceOf[SearchGoodsCountryView]
   private val navigator = injector.instanceOf[Navigator]
 
   val controller: DeclarationJourney => SearchGoodsCountryController =
@@ -36,16 +36,21 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
         stubProvider(declarationJourney),
         stubRepo(declarationJourney),
         navigator,
-        view)
+        view
+      )
 
   val journey: DeclarationJourney =
-    DeclarationJourney(SessionId("123"), Export, goodsEntries = GoodsEntries(Seq(completedExportGoods.copy(maybePurchaseDetails = None))))
+    DeclarationJourney(
+      SessionId("123"),
+      Export,
+      goodsEntries = GoodsEntries(Seq(completedExportGoods.copy(maybePurchaseDetails = None)))
+    )
 
   "onPageLoad" should {
     s"return 200 with correct content Export" in {
-      val request = buildGet(routes.SearchGoodsCountryController.onPageLoad(1).url, aSessionId)
+      val request        = buildGet(routes.SearchGoodsCountryController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 200
       result must include(messages(s"searchGoodsCountry.title", "test good"))
@@ -57,7 +62,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onSubmit" should {
     s"redirect to next page after successful form submit for Export" in {
-      val request = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
+      val request        = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("country" -> "AF")
 
       val eventualResult = controller(journey).onSubmit(1)(request)
@@ -67,11 +72,11 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     s"return 400 with any form errors for Export" in {
-      val request = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
+      val request        = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("country" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(1)(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))

@@ -29,9 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  private val view = app.injector.instanceOf[EnterEmailView]
+  private val view    = app.injector.instanceOf[EnterEmailView]
   private val viewOpt = app.injector.instanceOf[EnterOptionalEmailView]
-  val mockNavigator = mock[Navigator]
+  val mockNavigator   = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney) =
     new EnterEmailController(
@@ -40,7 +40,8 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
       stubRepo(declarationJourney),
       view,
       viewOpt,
-      mockNavigator)
+      mockNavigator
+    )
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
@@ -48,9 +49,9 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   "onPageLoad" should {
     s"return 200 with correct content" in {
 
-      val request = buildGet(EnterEmailController.onPageLoad.url, aSessionId)
+      val request        = buildGet(EnterEmailController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 200
       result must include(messages("enterEmail.title"))
@@ -76,11 +77,11 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   }
 
   s"return 400 with any form errors" in {
-    val request = buildPost(EnterEmailController.onSubmit.url, aSessionId)
+    val request        = buildPost(EnterEmailController.onSubmit.url, aSessionId)
       .withFormUrlEncodedBody("email" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit()(request)
-    val result = contentAsString(eventualResult)
+    val result         = contentAsString(eventualResult)
 
     status(eventualResult) mustBe 400
     result must include(messages("enterEmail.title"))

@@ -23,10 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
 class SchedulingActor extends Actor with ActorLogging {
   import context.dispatcher
 
-  override def receive: Receive = {
-    case message: ScheduledMessage[_] =>
-      log.info(s"Received update request from the ${message.getClass.getSimpleName}")
-      message.service.invoke
+  override def receive: Receive = { case message: ScheduledMessage[_] =>
+    log.info(s"Received update request from the ${message.getClass.getSimpleName}")
+    message.service.invoke
   }
 }
 

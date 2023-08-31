@@ -24,21 +24,22 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 sealed trait JourneyDetails {
   val port: Port
   val dateOfTravel: LocalDate
-  val travellingByVehicle: YesNo = No
+  val travellingByVehicle: YesNo              = No
   val maybeRegistrationNumber: Option[String] = None
 }
 
 case class JourneyOnFoot(port: Port, dateOfTravel: LocalDate) extends JourneyDetails
 
-case class JourneyInSmallVehicle(port: Port, dateOfTravel: LocalDate, registrationNumber: String) extends JourneyDetails {
-  override val travellingByVehicle: YesNo = Yes
+case class JourneyInSmallVehicle(port: Port, dateOfTravel: LocalDate, registrationNumber: String)
+    extends JourneyDetails {
+  override val travellingByVehicle: YesNo              = Yes
   override val maybeRegistrationNumber: Option[String] = Some(registrationNumber)
 }
 
 object JourneyDetails {
   implicit val format: OFormat[JourneyDetails] = new OFormat[JourneyDetails] {
     override def reads(json: JsValue): JsResult[JourneyDetails] = {
-      val port = (json \ "port").as[Port]
+      val port         = (json \ "port").as[Port]
       val dateOfTravel = (json \ "dateOfTravel").as[LocalDate]
 
       (json \ "registrationNumber").asOpt[String] match {

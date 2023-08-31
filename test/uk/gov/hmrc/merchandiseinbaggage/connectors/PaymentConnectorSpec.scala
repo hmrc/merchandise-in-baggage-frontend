@@ -39,7 +39,8 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with CoreTestData {
       .stubFor(
         post(urlPathEqualTo(payUrl))
           .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
-          .willReturn(okJson(stubbedResponse).withStatus(201)))
+          .willReturn(okJson(stubbedResponse).withStatus(201))
+      )
 
     val response = sendPaymentRequest(payApiRequest).futureValue
     response mustBe PayApiResponse(JourneyId("5f3bc55"), URL("http://localhost:9056/pay/initiate-journey"))

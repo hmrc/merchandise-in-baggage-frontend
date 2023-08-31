@@ -42,8 +42,9 @@ import java.time.{LocalDateTime, ZoneId, ZonedDateTime}
 import scala.util.Try
 
 @Singleton
-class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfig: AppConfig)(implicit ec: ExecutionContext)
-    extends PlayMongoRepository[DeclarationJourney](
+class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConfig: AppConfig)(implicit
+  ec: ExecutionContext
+) extends PlayMongoRepository[DeclarationJourney](
       mongo,
       "declarationJourney",
       format,
@@ -70,8 +71,8 @@ class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfi
 
   def findCreatedAtString(updateLimit: Int): Future[Seq[ObjectId]] = {
     implicit val bsonObjectIdFormat: Format[ObjectId] = objectIdFormat
-    val longReads: Reads[ObjectId] = (__ \ "_id").read[ObjectId]
-    val projection = Projections.include("_id")
+    val longReads: Reads[ObjectId]                    = (__ \ "_id").read[ObjectId]
+    val projection                                    = Projections.include("_id")
     collection
       .find[BsonDocument](Filters.bsonType("createdAt", BsonType.STRING))
       .limit(updateLimit)
@@ -82,18 +83,18 @@ class DeclarationJourneyRepository @Inject()(mongo: MongoComponent, val appConfi
 
   def updateDate(documentIds: Seq[ObjectId]) = {
     val time = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
-    val zdt = ZonedDateTime.of(time, ZoneId.systemDefault())
+    val zdt  = ZonedDateTime.of(time, ZoneId.systemDefault())
 
     val selector = Filters.in("_id", documentIds: _*)
-    val update = Updates.set("createdAt", BsonDocument("$toDate" -> zdt.toInstant.toEpochMilli))
-    val options = UpdateOptions().upsert(false)
-    val result = collection.updateMany(selector, Seq(update), options).toFuture()
+    val update   = Updates.set("createdAt", BsonDocument("$toDate" -> zdt.toInstant.toEpochMilli))
+    val options  = UpdateOptions().upsert(false)
+    val result   = collection.updateMany(selector, Seq(update), options).toFuture()
     result
       .map { updateResult: UpdateResult =>
         Try(updateResult.getModifiedCount).getOrElse(0L)
       }
-      .recover {
-        case e: Exception => throw new RuntimeException(s"Failed to add createdAt field: ${e.getMessage}")
+      .recover { case e: Exception =>
+        throw new RuntimeException(s"Failed to add createdAt field: ${e.getMessage}")
       }
   }
 }

@@ -25,7 +25,7 @@ class ExciseAndRestrictedGoodsFormSpec extends YesNoFieldBehaviours {
 
   val importRequiredKey = "exciseAndRestrictedGoods.error.Import.required"
   val exportRequiredKey = "exciseAndRestrictedGoods.error.Export.required"
-  val invalidKey = "error.yesNo"
+  val invalidKey        = "error.yesNo"
 
   ".value" must {
 

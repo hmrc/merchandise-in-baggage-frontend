@@ -81,7 +81,8 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     calculationResult: CalculationResult,
     thresholdCheck: ThresholdCheck = WithinThreshold,
     journey: DeclarationJourney = completedAmendedJourney(Import)
-      .copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain)))(fn: List[WebElement] => Any): Any = fn {
+      .copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
+  )(fn: List[WebElement] => Any): Any = fn {
     givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
     givenAPaymentCalculation(calculationResult)
     givenAJourneyWithSession(Amend, declarationJourney = journey)

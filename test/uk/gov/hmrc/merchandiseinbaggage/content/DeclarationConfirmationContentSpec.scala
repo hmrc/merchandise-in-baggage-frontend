@@ -54,19 +54,30 @@ class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage wit
     elementText(bulletPoints(1)) mustBe s"${messages("declarationConfirmation.ul.3")}"
 
     findById("makeAnotherDeclarationId").getText mustBe "Make a new declaration"
-    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/make-another-declaration")
+    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl(
+      "/declare-commercial-goods/make-another-declaration"
+    )
     findById("changeDeclarationId").getText mustBe "Add goods to an existing declaration"
-    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/add-goods-to-an-existing-declaration")
+    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl(
+      "/declare-commercial-goods/add-goods-to-an-existing-declaration"
+    )
   }
 
   "it should show the confirmation content as expected for Imports" in {
-    val journey = givenAJourneyWithSession()
+    val journey    = givenAJourneyWithSession()
     val calcResult =
-      CalculationResult(aImportGoods, AmountInPence(111000L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
+      CalculationResult(
+        aImportGoods,
+        AmountInPence(111000L),
+        AmountInPence(5),
+        AmountInPence(7),
+        Some(aConversionRatePeriod)
+      )
     givenPersistedDeclarationIsFound(
       declaration.copy(
         paymentStatus = Some(NotRequired),
-        maybeTotalCalculationResult = Some(aTotalCalculationResult.copy(calculationResults = CalculationResults(Seq(calcResult))))
+        maybeTotalCalculationResult =
+          Some(aTotalCalculationResult.copy(calculationResults = CalculationResults(Seq(calcResult))))
       ),
       journey.declarationId
     )
@@ -97,9 +108,13 @@ class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage wit
     findById("bringingEUGoodsId").getText mustBe "Bringing EU goods"
 
     findById("makeAnotherDeclarationId").getText mustBe "Make a new declaration"
-    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/make-another-declaration")
+    findById("makeAnotherDeclarationId").getAttribute("href") mustBe fullUrl(
+      "/declare-commercial-goods/make-another-declaration"
+    )
     findById("changeDeclarationId").getText mustBe "Add goods to an existing declaration"
-    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/add-goods-to-an-existing-declaration")
+    findById("changeDeclarationId").getAttribute("href") mustBe fullUrl(
+      "/declare-commercial-goods/add-goods-to-an-existing-declaration"
+    )
   }
 
   private def findBullets() =

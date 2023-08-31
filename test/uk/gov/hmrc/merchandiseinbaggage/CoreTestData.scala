@@ -55,8 +55,8 @@ trait CoreTestData {
 
   val aSessionId: SessionId = SessionId()
 
-  val mibReference = MibReference("XAMB0000010000")
-  val eori = Eori("GB123456780000")
+  val mibReference   = MibReference("XAMB0000010000")
+  val eori           = Eori("GB123456780000")
   val aDeclarationId = DeclarationId(UUID.randomUUID().toString)
 
   val startedImportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import)
@@ -100,19 +100,28 @@ trait CoreTestData {
   def overThresholdGoods(declarationType: DeclarationType = Import): GoodsEntries =
     declarationType match {
       case Import =>
-        GoodsEntries(completedImportGoods.copy(
-          maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+        GoodsEntries(
+          completedImportGoods.copy(
+            maybePurchaseDetails =
+              Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
+          )
+        )
 
       case Export =>
-        GoodsEntries(completedExportGoods.copy(
-          maybePurchaseDetails = Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))))
+        GoodsEntries(
+          completedExportGoods.copy(
+            maybePurchaseDetails =
+              Some(PurchaseDetails("1915", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
+          )
+        )
     }
 
   val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(aSessionId)
 
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 
-  val incompleteDeclarationJourney: DeclarationJourney = completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
+  val incompleteDeclarationJourney: DeclarationJourney =
+    completedDeclarationJourney.copy(maybeJourneyDetailsEntry = None)
 
   val startedImportGoods: ImportGoodsEntry = ImportGoodsEntry(Some(aCategoryOfGoods))
 
@@ -137,7 +146,9 @@ trait CoreTestData {
     startedImportToGreatBritainJourney.copy(goodsEntries = completedDeclarationJourney.goodsEntries)
 
   val previouslyCompleteJourneyWithIncompleteGoodsEntryAdded: DeclarationJourney =
-    completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(completedImportGoods, completedImportGoods, startedImportGoods)))
+    completedDeclarationJourney.copy(goodsEntries =
+      GoodsEntries(Seq(completedImportGoods, completedImportGoods, startedImportGoods))
+    )
 
   val importJourneyWithGoodsOverThreshold: DeclarationJourney =
     startedImportToGreatBritainJourney.copy(goodsEntries = overThresholdGoods(Import))
@@ -147,9 +158,10 @@ trait CoreTestData {
 
   val journeyDate: LocalDate = LocalDate.now
 
-  val doverJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("DVR", journeyDate)
+  val doverJourneyEntry: JourneyDetailsEntry    = JourneyDetailsEntry("DVR", journeyDate)
   val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("LHR", journeyDate)
-  val anAddress = Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))
+  val anAddress                                 =
+    Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
     completedDeclarationJourney
@@ -169,10 +181,11 @@ trait CoreTestData {
 
   val aPurchaseDetails: PurchaseDetails =
     PurchaseDetails("199.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European")))
-  val aGoods: ImportGoods = ImportGoods(aCategoryOfGoods, Twenty, YesNoDontKnow.Yes, aPurchaseDetails)
+  val aGoods: ImportGoods               = ImportGoods(aCategoryOfGoods, Twenty, YesNoDontKnow.Yes, aPurchaseDetails)
 
-  val aConversionRatePeriod: ConversionRatePeriod = ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
-  val aCalculationResult: CalculationResult =
+  val aConversionRatePeriod: ConversionRatePeriod =
+    ConversionRatePeriod(journeyDate, journeyDate, "EUR", BigDecimal(1.2))
+  val aCalculationResult: CalculationResult       =
     CalculationResult(aImportGoods, AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
 
   val aCalculationResultOverThousand: CalculationResult = aCalculationResult
@@ -197,16 +210,17 @@ trait CoreTestData {
 
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
-  val aDeclarationGood: DeclarationGoods = DeclarationGoods(Seq(aGoods))
-  val aCalculationResults: CalculationResults = CalculationResults(Seq(aCalculationResult))
-  val aCalculationResponse: CalculationResponse = CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
-  val aThresholdAllowance = ThresholdAllowance(aDeclarationGood, aDeclarationGood, aCalculationResponse, GreatBritain)
+  val aDeclarationGood: DeclarationGoods             = DeclarationGoods(Seq(aGoods))
+  val aCalculationResults: CalculationResults        = CalculationResults(Seq(aCalculationResult))
+  val aCalculationResponse: CalculationResponse      =
+    CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
+  val aThresholdAllowance                            = ThresholdAllowance(aDeclarationGood, aDeclarationGood, aCalculationResponse, GreatBritain)
 
   val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
 
-  val aEoriNumber: String = "GB025115110987654"
+  val aEoriNumber: String                 = "GB025115110987654"
   val aCheckEoriAddress: CheckEoriAddress = CheckEoriAddress("999 High Street", "CityName", "SS99 1AA")
-  val aCompanyDetails: CompanyDetails = CompanyDetails("Firstname LastName", aCheckEoriAddress)
+  val aCompanyDetails: CompanyDetails     = CompanyDetails("Firstname LastName", aCheckEoriAddress)
 
   val aCheckResponse: CheckResponse = CheckResponse(aEoriNumber, valid = true, Some(aCompanyDetails))
 
@@ -214,7 +228,15 @@ trait CoreTestData {
     1,
     LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS),
     DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
-    Some(TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))),
+    Some(
+      TotalCalculationResult(
+        aCalculationResults,
+        AmountInPence(100),
+        AmountInPence(100),
+        AmountInPence(100),
+        AmountInPence(100)
+      )
+    ),
     None
   )
 
@@ -247,12 +269,13 @@ trait CoreTestData {
       case Export => GoodsEntries(completedExportGoods)
     }
 
-  def generateDeclarationConfirmationPage(decType: DeclarationType, purchaseAmount: Long, journeyType: JourneyType = New)(
-    implicit app: Application,
-    message: Messages,
-    appConfig: AppConfig): String = {
-    val layout = app.injector.instanceOf[Layout]
-    val link = app.injector.instanceOf[uk.gov.hmrc.merchandiseinbaggage.views.html.components.link]
+  def generateDeclarationConfirmationPage(
+    decType: DeclarationType,
+    purchaseAmount: Long,
+    journeyType: JourneyType = New
+  )(implicit app: Application, message: Messages, appConfig: AppConfig): String = {
+    val layout      = app.injector.instanceOf[Layout]
+    val link        = app.injector.instanceOf[uk.gov.hmrc.merchandiseinbaggage.views.html.components.link]
     val dummyAmount = AmountInPence(0)
 
     def totalCalculationResult: TotalCalculationResult =
@@ -264,13 +287,17 @@ trait CoreTestData {
                 "sock",
                 GoodsVatRates.Twenty,
                 YesNoDontKnow.Yes,
-                PurchaseDetails(purchaseAmount.toString, Currency("GBP", "title.british_pounds_gbp", None, List.empty[String]))
+                PurchaseDetails(
+                  purchaseAmount.toString,
+                  Currency("GBP", "title.british_pounds_gbp", None, List.empty[String])
+                )
               ),
               AmountInPence(purchaseAmount),
               dummyAmount,
               dummyAmount,
               None
-            ))
+            )
+          )
         ),
         AmountInPence(purchaseAmount),
         dummyAmount,
@@ -279,20 +306,25 @@ trait CoreTestData {
       )
 
     val sessionId = SessionId()
-    val id = DeclarationId("456")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val id        = DeclarationId("456")
+    val created   = LocalDateTime.now.withSecond(0).withNano(0)
 
     val journey: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = decType, createdAt = created, declarationId = id)
 
     val persistedDeclaration = journey.declarationIfRequiredAndComplete.map { declaration =>
-      if (decType == DeclarationType.Import) declaration.copy(maybeTotalCalculationResult = Some(totalCalculationResult))
+      if (decType == DeclarationType.Import)
+        declaration.copy(maybeTotalCalculationResult = Some(totalCalculationResult))
       else declaration
     }
 
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
-    val result =
-      declarationConfirmationView.apply(persistedDeclaration.get, journeyType, false, AmountInPence(0))(fakeRequest, message, appConfig)
+    val result                      =
+      declarationConfirmationView.apply(persistedDeclaration.get, journeyType, false, AmountInPence(0))(
+        fakeRequest,
+        message,
+        appConfig
+      )
 
     result.body
   }
@@ -308,7 +340,13 @@ trait CoreTestData {
   }
 
   val aTotalCalculationResult =
-    TotalCalculationResult(aCalculationResults, AmountInPence(100), AmountInPence(100), AmountInPence(100), AmountInPence(100))
+    TotalCalculationResult(
+      aCalculationResults,
+      AmountInPence(100),
+      AmountInPence(100),
+      AmountInPence(100),
+      AmountInPence(100)
+    )
 
   val declarationWithAmendment = declaration.copy(amendments = Seq(completedAmendment(declaration.declarationType)))
 
@@ -316,13 +354,19 @@ trait CoreTestData {
     amendments = Seq(
       completedAmendment(declaration.declarationType),
       completedAmendment(declaration.declarationType),
-      completedAmendment(declaration.declarationType)))
+      completedAmendment(declaration.declarationType)
+    )
+  )
 
   val declarationWithPaidAmendment: Declaration = {
     val paidAmendment = completedAmendment(declaration.declarationType)
       .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult))
     declaration
-      .copy(paymentStatus = Some(Paid), maybeTotalCalculationResult = Some(aTotalCalculationResult), amendments = Seq(paidAmendment))
+      .copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(aTotalCalculationResult),
+        amendments = Seq(paidAmendment)
+      )
   }
 
   val journeyPort = Port("DVR", "title.dover", isGB = true, List("Port of Dover"))
@@ -354,15 +398,22 @@ trait CoreTestData {
     TotalCalculationResult(
       CalculationResults(
         Seq(
-          CalculationResult(aImportGoods, AmountInPence(amount), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
-        )),
+          CalculationResult(
+            aImportGoods,
+            AmountInPence(amount),
+            AmountInPence(5),
+            AmountInPence(7),
+            Some(aConversionRatePeriod)
+          )
+        )
+      ),
       AmountInPence(amount),
       AmountInPence(100),
       AmountInPence(100),
       AmountInPence(100)
     )
 
-  val calculationResultsOverLimit = createTotalCalculationResult(110000L) // £1100
+  val calculationResultsOverLimit  = createTotalCalculationResult(110000L) // £1100
   val calculationResultsUnderLimit = createTotalCalculationResult(40000L) // £400
 
 }

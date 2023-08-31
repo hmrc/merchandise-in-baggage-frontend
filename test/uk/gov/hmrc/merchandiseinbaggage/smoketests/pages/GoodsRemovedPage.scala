@@ -17,6 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 object GoodsRemovedPage {
-  val path: String = s"/declare-commercial-goods/goods-removed"
+  val path: String  = s"/declare-commercial-goods/goods-removed"
   val title: String = "You removed your goods"
 }

@@ -31,14 +31,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData with MockFactory {
 
-  val repo = app.injector.instanceOf[DeclarationJourneyRepository]
-  val view = app.injector.instanceOf[RemoveGoodsView]
+  val repo          = app.injector.instanceOf[DeclarationJourneyRepository]
+  val view          = app.injector.instanceOf[RemoveGoodsView]
   val mockNavigator = mock[Navigator]
-  val controller = new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
+  val controller    = new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
 
   "delegate to navigator for navigation in" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-    val postReq = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
+    val postReq                = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
       .withFormUrlEncodedBody("value" -> "Yes")
     val result: Future[Result] = controller.onSubmit(1)(postReq)
 

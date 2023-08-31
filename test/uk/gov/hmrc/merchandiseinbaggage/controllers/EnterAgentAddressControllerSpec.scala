@@ -25,11 +25,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec {
   "returnFromAddressLookup" must {
-    val connector = injector.instanceOf[AddressLookupFrontendConnector]
-    val controller = new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
-    val url = routes.EnterAgentAddressController.returnFromAddressLookup("id").url
-    val address =
-      Address(Seq("address line 1", "address line 2"), Some("AB12 3CD"), AddressLookupCountry("GB", Some("United Kingdom")))
+    val connector  = injector.instanceOf[AddressLookupFrontendConnector]
+    val controller =
+      new EnterAgentAddressController(controllerComponents, actionBuilder, declarationJourneyRepository, connector)
+    val url        = routes.EnterAgentAddressController.returnFromAddressLookup("id").url
+    val address    =
+      Address(
+        Seq("address line 1", "address line 2"),
+        Some("AB12 3CD"),
+        AddressLookupCountry("GB", Some("United Kingdom"))
+      )
 
     s"store address and redirect to ${routes.EoriNumberController.onPageLoad}" when {
       "a declaration journey has been started" in {
@@ -37,7 +42,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec {
 
         givenADeclarationJourneyIsPersisted(startedImportJourney)
         val request = buildGet(url, aSessionId)
-        val result = controller.returnFromAddressLookup("id")(request)
+        val result  = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.EoriNumberController.onPageLoad.url
@@ -57,7 +62,7 @@ class EnterAgentAddressControllerSpec extends DeclarationJourneyControllerSpec {
 
         givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
         val request = buildGet(url, aSessionId)
-        val result = controller.returnFromAddressLookup("id")(request)
+        val result  = controller.returnFromAddressLookup("id")(request)
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).get mustEqual routes.CheckYourAnswersController.onPageLoad.url

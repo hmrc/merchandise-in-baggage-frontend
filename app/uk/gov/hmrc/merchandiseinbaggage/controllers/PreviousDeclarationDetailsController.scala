@@ -30,14 +30,15 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsVie
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class PreviousDeclarationDetailsController @Inject()(
+class PreviousDeclarationDetailsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   mibConnector: MibConnector,
   navigator: Navigator,
   mibService: MibService,
-  view: PreviousDeclarationDetailsView)(implicit ec: ExecutionContext, appConf: AppConfig)
+  view: PreviousDeclarationDetailsView
+)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -46,17 +47,21 @@ class PreviousDeclarationDetailsController @Inject()(
       declaration <- OptionT(mibConnector.findDeclaration(declarationId))
       allowance   <- OptionT.liftF(mibService.thresholdAllowance(declaration))
     } yield Ok(view(declaration, allowance)))
-      .fold(actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}"))(view => view)
+      .fold(
+        actionProvider.invalidRequest(s"declaration not found for id:${request.declarationJourney.declarationId.value}")
+      )(view => view)
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     mibConnector.findDeclaration(request.declarationJourney.declarationId).flatMap { maybeOriginalDeclaration =>
       maybeOriginalDeclaration
-        .fold(actionProvider.invalidRequestF(s"declaration not found for id:${request.declarationJourney.declarationId.value}")) {
-          originalDeclaration =>
-            navigator
-              .nextPage(PreviousDeclarationDetailsRequest(request.declarationJourney, originalDeclaration, repo.upsert))
-              .map(Redirect)
+        .fold(
+          actionProvider
+            .invalidRequestF(s"declaration not found for id:${request.declarationJourney.declarationId.value}")
+        ) { originalDeclaration =>
+          navigator
+            .nextPage(PreviousDeclarationDetailsRequest(request.declarationJourney, originalDeclaration, repo.upsert))
+            .map(Redirect)
         }
     }
   }

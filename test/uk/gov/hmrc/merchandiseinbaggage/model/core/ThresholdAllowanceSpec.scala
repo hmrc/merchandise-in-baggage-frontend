@@ -23,15 +23,17 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
 
   "return threshold allowance left for import" in {
-    val allowance = aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7179)
-    val allowanceTwo = aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7180)
+    val allowance    =
+      aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7179)
+    val allowanceTwo =
+      aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7180)
     allowance.allowanceLeft mustBe 1428.21
     allowanceTwo.allowanceLeft mustBe 1428.20
   }
 
   "return threshold allowance left for export" in {
-    val goodOne = aExportGoods.modify(_.purchaseDetails.amount).setTo("71.75")
-    val goodTwo = aExportGoods.modify(_.purchaseDetails.amount).setTo("70.00")
+    val goodOne   = aExportGoods.modify(_.purchaseDetails.amount).setTo("71.75")
+    val goodTwo   = aExportGoods.modify(_.purchaseDetails.amount).setTo("70.00")
     val allowance = aThresholdAllowance
       .modify(_.allGoods.goods)
       .setTo(Seq(goodOne, goodTwo))

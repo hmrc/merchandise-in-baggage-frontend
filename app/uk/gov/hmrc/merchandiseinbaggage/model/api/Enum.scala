@@ -37,8 +37,10 @@ object EnumFormat {
     Format(
       Reads {
         case JsString(value) =>
-          e.withNameOption(value).map(JsSuccess(_)).getOrElse(JsError(s"Unknown ${e.getClass.getSimpleName} value: $value"))
-        case _ => JsError("Can only parse String")
+          e.withNameOption(value)
+            .map(JsSuccess(_))
+            .getOrElse(JsError(s"Unknown ${e.getClass.getSimpleName} value: $value"))
+        case _               => JsError("Can only parse String")
       },
       Writes(v => JsString(v.entryName))
     )

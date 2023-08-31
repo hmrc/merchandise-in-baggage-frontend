@@ -37,8 +37,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
 
-  private val view = app.injector.instanceOf[ReviewGoodsView]
-  private val mockNavigator = mock[Navigator]
+  private val view           = app.injector.instanceOf[ReviewGoodsView]
+  private val mockNavigator  = mock[Navigator]
   private val mockMibService = mock[MibService]
 
   def controller(declarationJourney: DeclarationJourney) =
@@ -48,27 +48,31 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
       stubRepo(declarationJourney),
       view,
       mockMibService,
-      mockNavigator)
+      mockNavigator
+    )
 
   forAll(declarationTypesTable) { importOrExport =>
-    val entries = completedGoodsEntries(importOrExport)
+    val entries                     = completedGoodsEntries(importOrExport)
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport, goodsEntries = entries)
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        val request = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
+        val request   = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
         val allowance =
-          if (importOrExport == Export) aThresholdAllowance.modify(_.currentGoods).setTo(entries.declarationGoodsIfComplete.get)
+          if (importOrExport == Export)
+            aThresholdAllowance.modify(_.currentGoods).setTo(entries.declarationGoodsIfComplete.get)
           else aThresholdAllowance
         (mockMibService
-          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
+          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(
+            _: HeaderCarrier
+          ))
           .expects(*, *, *, *, *)
           .returning(OptionT.pure[Future](allowance))
           .once()
 
         val eventualResult = controller(journey).onPageLoad()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         if (importOrExport == Import) {
@@ -85,7 +89,9 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
           .withFormUrlEncodedBody("value" -> "Yes")
 
         (mockMibService
-          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
+          .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(
+            _: HeaderCarrier
+          ))
           .expects(*, *, *, *, *)
           .returning(OptionT.pure[Future](aThresholdAllowance))
           .once()
@@ -105,13 +111,15 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .withFormUrlEncodedBody("value" -> "in valid")
 
       (mockMibService
-        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
+        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(
+          _: HeaderCarrier
+        ))
         .expects(*, *, *, *, *)
         .returning(OptionT.pure[Future](aThresholdAllowance))
         .once()
 
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))
@@ -122,7 +130,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
 
   forAll(declarationTypesTable) { importOrExport =>
     s"redirect to next page after successful form submit with No for $importOrExport" in {
-      val id = aSessionId
+      val id                          = aSessionId
       val journey: DeclarationJourney =
         DeclarationJourney(id, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
           .copy(journeyType = Amend)
@@ -134,10 +142,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
           stubRepo(journey),
           view,
           mockMibService,
-          injector.instanceOf[Navigator])
+          injector.instanceOf[Navigator]
+        )
 
       (mockMibService
-        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(_: HeaderCarrier))
+        .thresholdAllowance(_: Option[GoodsDestination], _: GoodsEntries, _: JourneyType, _: DeclarationId)(
+          _: HeaderCarrier
+        ))
         .expects(*, *, *, *, *)
         .returning(OptionT.pure[Future](aThresholdAllowance))
         .once()
@@ -147,10 +158,10 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Mo
         .expects(*, *)
         .returning(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))
 
-      val request = buildPost(ReviewGoodsController.onSubmit.url, id)
+      val request          = buildPost(ReviewGoodsController.onSubmit.url, id)
         .withFormUrlEncodedBody("value" -> "No")
 
-      val eventualResult = controller.onSubmit()(request)
+      val eventualResult   = controller.onSubmit()(request)
       val expectedRedirect =
         if (importOrExport == Export) Some(CheckYourAnswersController.onPageLoad.url)
         else Some(PaymentCalculationController.onPageLoad.url)

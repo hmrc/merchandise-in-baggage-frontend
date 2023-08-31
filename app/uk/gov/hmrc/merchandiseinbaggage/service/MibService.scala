@@ -32,10 +32,12 @@ import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionContext) {
+class MibService @Inject() (mibConnector: MibConnector)(implicit ec: ExecutionContext) {
   private val logger = Logger("MibService")
 
-  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+  def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit
+    hc: HeaderCarrier
+  ): Future[CalculationResponse] =
     mibConnector.calculatePayments(goods.map(_.calculationRequest(destination))).map(withLogging)
 
   def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
@@ -44,8 +46,9 @@ class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionCon
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
     mibConnector.findDeclaration(declarationId)
 
-  def amendPlusOriginalCalculations(declarationJourney: DeclarationJourney)(
-    implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] = {
+  def amendPlusOriginalCalculations(
+    declarationJourney: DeclarationJourney
+  )(implicit hc: HeaderCarrier): OptionT[Future, CalculationResponse] = {
     import declarationJourney._
     OptionT.liftF(
       mibConnector.calculatePaymentsAmendPlusExisting(
@@ -53,32 +56,47 @@ class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionCon
           amendmentIfRequiredAndComplete,
           maybeGoodsDestination,
           declarationId
-        )))
+        )
+      )
+    )
   }
 
   def thresholdAllowance(
     maybeGoodsDestination: Option[GoodsDestination],
     goodsEntries: GoodsEntries,
     journeyType: JourneyType,
-    declarationId: DeclarationId)(implicit hc: HeaderCarrier): OptionT[Future, ThresholdAllowance] =
+    declarationId: DeclarationId
+  )(implicit hc: HeaderCarrier): OptionT[Future, ThresholdAllowance] =
     for {
       declarationGoods <- OptionT.fromOption(goodsEntries.declarationGoodsIfComplete)
       destination      <- OptionT.fromOption(maybeGoodsDestination)
       totalGoods       <- addGoods(journeyType, declarationId, declarationGoods.goods)
       calculation      <- OptionT.liftF(paymentCalculations(totalGoods, destination))
-    } yield ThresholdAllowance(DeclarationGoods(declarationGoods.goods), DeclarationGoods(totalGoods), calculation, destination)
+    } yield ThresholdAllowance(
+      DeclarationGoods(declarationGoods.goods),
+      DeclarationGoods(totalGoods),
+      calculation,
+      destination
+    )
 
   def thresholdAllowance(declaration: Declaration)(implicit hc: HeaderCarrier): Future[ThresholdAllowance] = {
     import declaration._
     val totalGoods = allGoods(declaration)
     paymentCalculations(totalGoods, goodsDestination).map(calculation =>
-      ThresholdAllowance(DeclarationGoods(declarationGoods.goods), DeclarationGoods(totalGoods), calculation, goodsDestination))
+      ThresholdAllowance(
+        DeclarationGoods(declarationGoods.goods),
+        DeclarationGoods(totalGoods),
+        calculation,
+        goodsDestination
+      )
+    )
   }
 
-  private[service] def addGoods(journeyType: JourneyType, declarationId: DeclarationId, goods: Seq[Goods])(
-    implicit hc: HeaderCarrier): OptionT[Future, Seq[Goods]] =
+  private[service] def addGoods(journeyType: JourneyType, declarationId: DeclarationId, goods: Seq[Goods])(implicit
+    hc: HeaderCarrier
+  ): OptionT[Future, Seq[Goods]] =
     journeyType match {
-      case New => OptionT.pure(goods)
+      case New   => OptionT.pure(goods)
       case Amend =>
         OptionT(findDeclaration(declarationId)).map { declaration =>
           goods ++ allGoods(declaration)
@@ -87,7 +105,8 @@ class MibService @Inject()(mibConnector: MibConnector)(implicit ec: ExecutionCon
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>
-      logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]"))
+      logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]")
+    )
     response
   }
 }

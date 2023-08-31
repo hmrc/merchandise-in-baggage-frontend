@@ -29,9 +29,9 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with CoreTestData {
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
-  lazy val actionBuilder: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
-  implicit lazy val materializer = injector.instanceOf[Materializer]
-  lazy val messageApi: Map[String, String] = injector.instanceOf[MessagesApi].messages("en")
+  lazy val actionBuilder: DeclarationJourneyActionProvider    = injector.instanceOf[DeclarationJourneyActionProvider]
+  implicit lazy val materializer: Materializer                = injector.instanceOf[Materializer]
+  lazy val messageApi: Map[String, String]                    = injector.instanceOf[MessagesApi].messages("en")
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url)

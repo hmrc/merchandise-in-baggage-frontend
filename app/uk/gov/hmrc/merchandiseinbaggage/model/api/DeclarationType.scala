@@ -26,9 +26,9 @@ sealed trait DeclarationType extends EnumEntry {
 }
 
 object DeclarationType extends Enum[DeclarationType] {
-  override val baseMessageKey: String = "declarationType"
+  override val baseMessageKey: String                        = "declarationType"
   override val values: immutable.IndexedSeq[DeclarationType] = findValues
-  implicit val format: Format[DeclarationType] = EnumFormat(DeclarationType)
+  implicit val format: Format[DeclarationType]               = EnumFormat(DeclarationType)
 
   case object Import extends DeclarationType
   case object Export extends DeclarationType

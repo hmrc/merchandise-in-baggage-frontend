@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.NewOrExistingDeclarationPage.{path, title}
 
 object NewOrExistingDeclarationPage extends Page {
-  val path = "/declare-commercial-goods/new-or-existing"
+  val path  = "/declare-commercial-goods/new-or-existing"
   val title = "What do you want to do?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {

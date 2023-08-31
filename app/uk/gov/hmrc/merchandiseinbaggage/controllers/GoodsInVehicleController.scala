@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsInVehicleView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsInVehicleController @Inject()(
+class GoodsInVehicleController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -46,7 +46,8 @@ class GoodsInVehicleController @Inject()(
           .fold(form(request.declarationType))(form(request.declarationType).fill),
         request.declarationType,
         backButtonUrl
-      ))
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -57,7 +58,9 @@ class GoodsInVehicleController @Inject()(
         goodsInVehicle => {
           val updated = request.declarationJourney.copy(maybeTravellingByVehicle = Some(goodsInVehicle))
           navigator
-            .nextPage(GoodsInVehicleRequest(goodsInVehicle, updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .nextPage(
+              GoodsInVehicleRequest(goodsInVehicle, updated, repo.upsert, updated.declarationRequiredAndComplete)
+            )
             .map(Redirect)
         }
       )

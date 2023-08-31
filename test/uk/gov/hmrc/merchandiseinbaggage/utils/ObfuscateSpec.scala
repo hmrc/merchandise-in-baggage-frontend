@@ -65,7 +65,13 @@ class ObfuscateSpec extends BaseSpec with CoreTestData {
         Some(Email("***********")),
         maybeIsACustomsAgent,
         Some("**********"),
-        Some(Address(List("*************", "**********"), Some("*******"), AddressLookupCountry("**", Some("**************")))),
+        Some(
+          Address(
+            List("*************", "**********"),
+            Some("*******"),
+            AddressLookupCountry("**", Some("**************"))
+          )
+        ),
         Some(Eori("**************")),
         maybeJourneyDetailsEntry,
         maybeTravellingByVehicle,

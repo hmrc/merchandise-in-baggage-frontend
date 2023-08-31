@@ -26,7 +26,7 @@ sealed trait ImportExportChoice extends EnumEntry with EnumEntryRadioItemSupport
 }
 
 object ImportExportChoices extends Enum[ImportExportChoice] with RadioSupport[ImportExportChoice] {
-  override val baseMessageKey = "importExportChoice"
+  override val baseMessageKey                                   = "importExportChoice"
   override val values: immutable.IndexedSeq[ImportExportChoice] = findValues
 
   case object MakeImport extends ImportExportChoice

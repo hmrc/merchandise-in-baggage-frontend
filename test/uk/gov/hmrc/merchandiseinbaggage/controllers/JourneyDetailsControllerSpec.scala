@@ -30,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  private val view = app.injector.instanceOf[JourneyDetailsPage]
-  private val mockNavigator = mock[Navigator]
+  private val view                                                       = app.injector.instanceOf[JourneyDetailsPage]
+  private val mockNavigator                                              = mock[Navigator]
   private val controller: DeclarationJourney => JourneyDetailsController =
     declarationJourney =>
       new JourneyDetailsController(
@@ -39,7 +39,8 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
         stubProvider(declarationJourney),
         stubRepo(declarationJourney),
         view,
-        mockNavigator)
+        mockNavigator
+      )
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
@@ -47,9 +48,9 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
 
     "onPageLoad" should {
       s"return 200 with correct content for $importOrExport" in {
-        val request = buildGet(JourneyDetailsController.onPageLoad.url, aSessionId)
+        val request        = buildGet(JourneyDetailsController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         result must include(messageApi("journeyDetails.title"))
@@ -62,7 +63,7 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
-        val today = LocalDate.now()
+        val today   = LocalDate.now()
         val request = buildPost(JourneyDetailsController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody(
             "port"               -> "ABZ",
@@ -80,11 +81,11 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        val request = buildPost(JourneyDetailsController.onSubmit.url, aSessionId)
+        val request        = buildPost(JourneyDetailsController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("port111" -> "ABZ")
 
         val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 400
         result must include(messageApi("journeyDetails.title"))

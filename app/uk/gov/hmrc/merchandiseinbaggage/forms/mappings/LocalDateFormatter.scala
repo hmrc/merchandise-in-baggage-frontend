@@ -25,12 +25,12 @@ import LocalDateFormatter._
 import scala.util.{Failure, Success, Try}
 
 object LocalDateFormatter {
-  val dayBlankErrorKey = "error.date.day_blank"
-  val dayInvalidErrorKey = "error.date.day_invalid"
-  val monthBlankErrorKey = "error.date.month_blank"
+  val dayBlankErrorKey     = "error.date.day_blank"
+  val dayInvalidErrorKey   = "error.date.day_invalid"
+  val monthBlankErrorKey   = "error.date.month_blank"
   val monthInvalidErrorKey = "error.date.month_invalid"
-  val yearBlankErrorKey = "error.date.year_blank"
-  val yearInvalidErrorKey = "error.date.year_invalid"
+  val yearBlankErrorKey    = "error.date.year_blank"
+  val yearInvalidErrorKey  = "error.date.year_invalid"
 }
 
 class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with Formatters {
@@ -39,22 +39,30 @@ class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with F
     Try(LocalDate.of(year, month, day)) match {
       case Success(date) =>
         Right(date)
-      case Failure(_) =>
+      case Failure(_)    =>
         Left(Seq(FormError(key, invalidKey)))
     }
 
   override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], LocalDate] = {
-    def bindIntSubfield(subKey: String, blankErrorKey: String, invalidErrorKey: String, extraValidation: Int => Boolean) =
+    def bindIntSubfield(
+      subKey: String,
+      blankErrorKey: String,
+      invalidErrorKey: String,
+      extraValidation: Int => Boolean
+    ) =
       intFormatter(
         requiredKey = blankErrorKey,
         wholeNumberKey = invalidErrorKey,
         nonNumericKey = invalidErrorKey
       ).bind(s"$key.$subKey", data.map(set => (set._1, set._2.trim)))
-        .flatMap(int => if (extraValidation(int)) Right(int) else Left(Seq(FormError(s"$key.$subKey", invalidErrorKey))))
+        .flatMap(int =>
+          if (extraValidation(int)) Right(int) else Left(Seq(FormError(s"$key.$subKey", invalidErrorKey)))
+        )
 
     val dayField = bindIntSubfield("day", dayBlankErrorKey, dayInvalidErrorKey, day => day >= 1 && day <= 31)
 
-    val monthField = bindIntSubfield("month", monthBlankErrorKey, monthInvalidErrorKey, month => month >= 1 && month <= 12)
+    val monthField =
+      bindIntSubfield("month", monthBlankErrorKey, monthInvalidErrorKey, month => month >= 1 && month <= 12)
 
     val yearField = bindIntSubfield("year", yearBlankErrorKey, yearInvalidErrorKey, year => year >= 1)
 

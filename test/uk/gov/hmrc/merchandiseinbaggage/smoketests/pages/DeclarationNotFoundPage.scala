@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationNotFoundPage.{path, title}
 
 object DeclarationNotFoundPage extends Page {
-  val path = "/declare-commercial-goods/declaration-not-found"
+  val path  = "/declare-commercial-goods/declaration-not-found"
   val title =
     "Declaration not found - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 

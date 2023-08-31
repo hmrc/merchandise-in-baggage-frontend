@@ -27,8 +27,12 @@ class AmendmentSpec extends BaseSpec with CoreTestData {
     val stub = new JourneySourceFinder {
       override def findSource: Option[String] = Some("AssistedDigital")
     }
-    Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), aDeclarationGood, source = stub.findSource).source mustBe Some(
-      "AssistedDigital")
+    Amendment(
+      1,
+      LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS),
+      aDeclarationGood,
+      source = stub.findSource
+    ).source mustBe Some("AssistedDigital")
   }
 
   "populate the source to Digital if public facing" in new JourneySourceFinder {

@@ -24,8 +24,8 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage.path
 
 object ReviewGoodsPage extends Page {
-  val path: String = "/declare-commercial-goods/review-goods"
-  val title = "Review your goods - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+  val path: String           = "/declare-commercial-goods/review-goods"
+  val title                  = "Review your goods - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
   val addingDeclarationTitle =
     "Review the goods you are adding - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 
@@ -39,7 +39,7 @@ trait ReviewGoodsPage extends BaseUiSpec { this: Suite =>
 
   def goToReviewGoodsPagePage(journeyType: JourneyType): Assertion = {
     goto(path)
-    pageTitle must startWith(messages(s"reviewGoods.$journeyType.title"))
+    pageTitle                        must startWith(messages(s"reviewGoods.$journeyType.title"))
     elementText(findByTagName("h1")) must startWith(messages(s"reviewGoods.$journeyType.heading"))
   }
 }

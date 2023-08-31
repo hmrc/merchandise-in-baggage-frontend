@@ -28,7 +28,7 @@ sealed trait YesNoDontKnow extends EnumEntry with EnumEntryRadioItemSupport {
 object YesNoDontKnow extends Enum[YesNoDontKnow] with RadioSupport[YesNoDontKnow] {
   implicit val format: Format[YesNoDontKnow] = EnumFormat(YesNoDontKnow)
 
-  override val baseMessageKey: String = "yesNoDontKnow"
+  override val baseMessageKey: String                      = "yesNoDontKnow"
   override val values: immutable.IndexedSeq[YesNoDontKnow] = findValues
 
   case object Yes extends YesNoDontKnow {

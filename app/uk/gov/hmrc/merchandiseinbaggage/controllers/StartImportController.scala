@@ -25,9 +25,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class StartImportController @Inject()(
+class StartImportController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
-  override val repo: DeclarationJourneyRepository)(implicit val ec: ExecutionContext)
+  override val repo: DeclarationJourneyRepository
+)(implicit val ec: ExecutionContext)
     extends StartController {
 
   override val onPageLoad: Action[AnyContent] = Action {

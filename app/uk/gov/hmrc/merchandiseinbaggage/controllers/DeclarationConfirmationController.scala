@@ -30,33 +30,37 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationConfirmationController @Inject()(
+class DeclarationConfirmationController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   view: DeclarationConfirmationView,
   connector: MibConnector,
   val repo: DeclarationJourneyRepository
 )(implicit ec: ExecutionContext, appConf: AppConfig)
-    extends IsAssistedDigitalConfiguration with DeclarationJourneyController {
+    extends IsAssistedDigitalConfiguration
+    with DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
-    val journeyType = request.declarationJourney.journeyType
+    val journeyType   = request.declarationJourney.journeyType
     connector.findDeclaration(declarationId).flatMap {
       case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
         cleanAnswersAndConfirm(journeyType, declaration)
-      case Some(_) =>
-        clearAnswers().map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
-      case _ => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
+      case Some(_)                                                            =>
+        clearAnswers()
+          .map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
+      case _                                                                  => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
     }
   }
 
-  private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(
-    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(implicit
+    request: DeclarationJourneyRequest[AnyContent]
+  ): Future[Result] =
     if (isAssistedDigital)
       for {
         _   <- clearAnswers()
-        res <- connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
+        res <-
+          connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
       } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue))
     else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, AmountInPence(0))))
 
@@ -81,13 +85,13 @@ class DeclarationConfirmationController @Inject()(
 
   private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType): Boolean =
     (declaration.declarationType, journeyType, isAssistedDigital) match {
-      case (Export, _, _) => true
-      case (Import, New, true) =>
+      case (Export, _, _)        => true
+      case (Import, New, true)   =>
         declaration.paymentStatus.contains(Paid) || declaration.paymentStatus.contains(NotRequired)
-      case (Import, New, _) => declaration.paymentStatus.contains(NotRequired)
+      case (Import, New, _)      => declaration.paymentStatus.contains(NotRequired)
       case (Import, Amend, true) =>
         val latestAmendmentStatus = declaration.amendments.lastOption.flatMap(_.paymentStatus)
         latestAmendmentStatus.contains(Paid) || latestAmendmentStatus.contains(NotRequired)
-      case (Import, Amend, _) => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
+      case (Import, Amend, _)    => declaration.amendments.lastOption.flatMap(_.paymentStatus).contains(NotRequired)
     }
 }

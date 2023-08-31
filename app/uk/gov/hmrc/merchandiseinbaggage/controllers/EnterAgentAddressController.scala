@@ -25,7 +25,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class EnterAgentAddressController @Inject()(
+class EnterAgentAddressController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
@@ -44,7 +44,8 @@ class EnterAgentAddressController @Inject()(
       address <- addressLookupFrontendConnector.getAddress(id)
       _       <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
     } yield
-      if (request.declarationJourney.declarationRequiredAndComplete) Redirect(routes.CheckYourAnswersController.onPageLoad)
+      if (request.declarationJourney.declarationRequiredAndComplete)
+        Redirect(routes.CheckYourAnswersController.onPageLoad)
       else Redirect(routes.EoriNumberController.onPageLoad)
   }
 }

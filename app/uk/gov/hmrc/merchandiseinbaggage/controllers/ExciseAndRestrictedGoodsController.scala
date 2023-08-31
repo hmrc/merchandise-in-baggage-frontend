@@ -29,12 +29,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ExciseAndRestrictedGoodsController @Inject()(
+class ExciseAndRestrictedGoodsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: ExciseAndRestrictedGoodsView,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
@@ -54,19 +55,23 @@ class ExciseAndRestrictedGoodsController @Inject()(
           .fold(form(request.declarationType))(form(request.declarationType).fill),
         request.declarationJourney.declarationType,
         backButtonUrl
-      ))
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form(request.declarationType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
+        formWithErrors =>
+          Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         value => {
           import request._
           val updated = declarationJourney.copy(maybeExciseOrRestrictedGoods = Some(value))
           navigator
-            .nextPage(ExciseAndRestrictedGoodsRequest(value, updated, repo.upsert, updated.declarationRequiredAndComplete))
+            .nextPage(
+              ExciseAndRestrictedGoodsRequest(value, updated, repo.upsert, updated.declarationRequiredAndComplete)
+            )
             .map(Redirect)
         }
       )

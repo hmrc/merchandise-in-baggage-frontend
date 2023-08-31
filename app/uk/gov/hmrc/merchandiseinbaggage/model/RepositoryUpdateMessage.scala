@@ -22,7 +22,8 @@ trait RepositoryUpdateMessage {
 }
 
 case object UpdateRequestNotAcknowledged extends RepositoryUpdateMessage {
-  override val message: String = s"$prefix Request to update DeclarationJourneyRepository was not acknowledged. Data was not updated."
+  override val message: String =
+    s"$prefix Request to update DeclarationJourneyRepository was not acknowledged. Data was not updated."
 }
 
 case object UpdateRequestNothingToUpdate extends RepositoryUpdateMessage {

@@ -20,7 +20,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage.{path, title}
 
 object GoodsOverThresholdPage {
-  def path = s"/declare-commercial-goods/goods-over-threshold"
+  def path  = s"/declare-commercial-goods/goods-over-threshold"
   val title = "The total value of your goods is over"
 }
 

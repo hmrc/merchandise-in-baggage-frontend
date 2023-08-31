@@ -40,16 +40,18 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with MockFactory {
 
-  private lazy val httpClient = injector.instanceOf[HttpClient]
+  private lazy val httpClient             = injector.instanceOf[HttpClient]
   private lazy val mockTpsPaymentsService = mock[TpsPaymentsService]
-  private lazy val importView = injector.instanceOf[CheckYourAnswersImportView]
-  private lazy val exportView = injector.instanceOf[CheckYourAnswersExportView]
-  private lazy val mibConnector = injector.instanceOf[MibConnector]
-  private val auditConnector = injector.instanceOf[AuditConnector]
-  implicit val hc: HeaderCarrier = HeaderCarrier()
+  private lazy val importView             = injector.instanceOf[CheckYourAnswersImportView]
+  private lazy val exportView             = injector.instanceOf[CheckYourAnswersExportView]
+  private lazy val mibConnector           = injector.instanceOf[MibConnector]
+  private val auditConnector              = injector.instanceOf[AuditConnector]
+  implicit val hc: HeaderCarrier          = HeaderCarrier()
 
   private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
-    override def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
+    override def sendPaymentRequest(
+      requestBody: PayApiRequest
+    )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
@@ -60,10 +62,11 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
   private lazy val stubbedCalculation: CalculationResponse => MibService = calculationResponse =>
     new MibService(mibConnector) {
-      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit
+        hc: HeaderCarrier
+      ): Future[CalculationResponse] =
         Future.successful(calculationResponse)
-  }
+    }
 
   private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
     new CheckYourAnswersNewHandler(
@@ -78,9 +81,9 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
   declarationTypes.foreach { importOrExport: DeclarationType =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
-        val sessionId = SessionId()
-        val id = DeclarationId("xxx")
-        val created = LocalDateTime.now.withSecond(0).withNano(0)
+        val sessionId                   = SessionId()
+        val id                          = DeclarationId("xxx")
+        val created                     = LocalDateTime.now.withSecond(0).withNano(0)
         val journey: DeclarationJourney = completedDeclarationJourney
           .copy(sessionId = sessionId, declarationType = importOrExport, createdAt = created, declarationId = id)
 
@@ -95,9 +98,9 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       }
 
       s"return 303 for goods over threshold for $importOrExport" in {
-        val sessionId = SessionId()
-        val id = DeclarationId("xxx")
-        val created = LocalDateTime.now.withSecond(0).withNano(0)
+        val sessionId                   = SessionId()
+        val id                          = DeclarationId("xxx")
+        val created                     = LocalDateTime.now.withSecond(0).withNano(0)
         val journey: DeclarationJourney = completedDeclarationJourney
           .copy(sessionId = sessionId, declarationType = importOrExport, createdAt = created, declarationId = id)
 
@@ -119,9 +122,9 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
   "on submit" should {
     "will calculate tax and send payment request to pay api for Imports" in {
-      val sessionId = SessionId()
-      val id = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val sessionId                         = SessionId()
+      val id                                = DeclarationId("xxx")
+      val created                           = LocalDateTime.now.withSecond(0).withNano(0)
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(sessionId = sessionId, createdAt = created, declarationId = id)
 
@@ -134,10 +137,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
     }
 
     "will calculate tax and send payment request to TPS for Imports" in {
-      val sessionId = SessionId()
-      implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
-      val id = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val sessionId                         = SessionId()
+      implicit val request: Request[_]      = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+      val id                                = DeclarationId("xxx")
+      val created                           = LocalDateTime.now.withSecond(0).withNano(0)
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(sessionId = sessionId, createdAt = created, declarationId = id)
 
@@ -156,24 +159,25 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
     }
 
     "will redirect to confirmation if totalTax is £0 and should not call pay api" in {
-      val sessionId = SessionId()
-      val id = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val sessionId                         = SessionId()
+      val id                                = DeclarationId("xxx")
+      val created                           = LocalDateTime.now.withSecond(0).withNano(0)
       val importJourney: DeclarationJourney = completedDeclarationJourney
         .copy(sessionId = sessionId, createdAt = created, declarationId = id)
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      val eventualResult = newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
+      val eventualResult =
+        newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
 
       status(eventualResult) mustBe 303
       redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
 
     "will redirect to declaration-confirmation for Export" in {
-      val sessionId = SessionId()
-      val stubbedId = DeclarationId("xxx")
-      val created = LocalDateTime.now.withSecond(0).withNano(0)
+      val sessionId                         = SessionId()
+      val stubbedId                         = DeclarationId("xxx")
+      val created                           = LocalDateTime.now.withSecond(0).withNano(0)
       val exportJourney: DeclarationJourney = completedDeclarationJourney
         .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 

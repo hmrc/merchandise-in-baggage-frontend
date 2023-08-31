@@ -30,7 +30,7 @@ object JourneyType {
 }
 
 object JourneyTypes extends Enum[JourneyType] with RadioSupport[JourneyType] {
-  override val baseMessageKey = "journeyType"
+  override val baseMessageKey                            = "journeyType"
   override val values: immutable.IndexedSeq[JourneyType] = findValues
 
   case object New extends JourneyType

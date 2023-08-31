@@ -37,7 +37,11 @@ trait Formatters {
       Map(key -> value)
   }
 
-  private[mappings] def intFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String): Formatter[Int] =
+  private[mappings] def intFormatter(
+    requiredKey: String,
+    wholeNumberKey: String,
+    nonNumericKey: String
+  ): Formatter[Int] =
     new Formatter[Int] {
       val decimalRegexp = """^-?(\d*\.\d*)$"""
 
@@ -50,7 +54,7 @@ trait Formatters {
           .flatMap {
             case s if s.matches(decimalRegexp) =>
               Left(Seq(FormError(key, wholeNumberKey)))
-            case s =>
+            case s                             =>
               nonFatalCatch
                 .either(s.toInt)
                 .left
@@ -78,7 +82,8 @@ trait Formatters {
   private[mappings] def bigDecimalFormatter(
     requiredKey: String,
     nonNumericKey: String,
-    args: Seq[String] = Seq.empty): Formatter[BigDecimal] =
+    args: Seq[String] = Seq.empty
+  ): Formatter[BigDecimal] =
     new Formatter[BigDecimal] {
       private val baseFormatter = stringFormatter(requiredKey)
 
@@ -98,7 +103,11 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
-  private[mappings] def enumFormatter[A <: EnumEntry](enumerator: Enum[A], requiredKey: String, invalidKey: String): Formatter[A] =
+  private[mappings] def enumFormatter[A <: EnumEntry](
+    enumerator: Enum[A],
+    requiredKey: String,
+    invalidKey: String
+  ): Formatter[A] =
     new Formatter[A] {
 
       private val baseFormatter = stringFormatter(requiredKey)

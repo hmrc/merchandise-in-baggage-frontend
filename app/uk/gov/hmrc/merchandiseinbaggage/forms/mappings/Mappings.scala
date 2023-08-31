@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{Enum, YesNo, YesNoDontKnow}
 
 trait Mappings extends Formatters {
 
-  private val requiredKey = "error.required"
+  private val requiredKey   = "error.required"
   private val nonNumericKey = "error.nonNumeric"
 
   protected def text(errorKey: String = requiredKey): FieldMapping[String] =
@@ -38,15 +38,22 @@ trait Mappings extends Formatters {
   protected def yesNo(requiredKey: String = requiredKey, invalidKey: String = "error.yesNo"): FieldMapping[YesNo] =
     of(enumFormatter[YesNo](YesNo, requiredKey, invalidKey))
 
-  protected def yesNoDontKnow(requiredKey: String = requiredKey, invalidKey: String = "error.yesNoDontKnow"): FieldMapping[YesNoDontKnow] =
+  protected def yesNoDontKnow(
+    requiredKey: String = requiredKey,
+    invalidKey: String = "error.yesNoDontKnow"
+  ): FieldMapping[YesNoDontKnow] =
     of(enumFormatter[YesNoDontKnow](YesNoDontKnow, requiredKey, invalidKey))
 
-  protected def bigDecimal(requiredKey: String = requiredKey, nonNumericKey: String = nonNumericKey): FieldMapping[BigDecimal] =
+  protected def bigDecimal(
+    requiredKey: String = requiredKey,
+    nonNumericKey: String = nonNumericKey
+  ): FieldMapping[BigDecimal] =
     of(bigDecimalFormatter(requiredKey, nonNumericKey))
 
   protected def enumerator[A <: EnumEntry](
     enumerator: Enum[A],
     requiredKey: String = requiredKey,
-    invalidKey: String = "error.invalid"): FieldMapping[A] =
+    invalidKey: String = "error.invalid"
+  ): FieldMapping[A] =
     of(enumFormatter[A](enumerator, requiredKey, invalidKey))
 }

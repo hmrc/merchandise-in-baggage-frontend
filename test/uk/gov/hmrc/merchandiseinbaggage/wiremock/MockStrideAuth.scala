@@ -31,10 +31,12 @@ object MockStrideAuth {
             authRequestBody,
             true,
             true
-          ))
-        .willReturn(aResponse()
-          .withStatus(200)
-          .withBody(s"""
+          )
+        )
+        .willReturn(
+          aResponse()
+            .withStatus(200)
+            .withBody(s"""
                        |{
                        | "optionalCredentials": {
                        |  "providerId": "userId",
@@ -63,7 +65,9 @@ object MockStrideAuth {
                        |  }
                        | ]
                        |}
-       """.stripMargin)))
+       """.stripMargin)
+        )
+    )
 
   private val authRequestBody: String =
     s"""

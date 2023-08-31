@@ -29,10 +29,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
 
-  val view = injector.instanceOf[ImportExportChoice]
+  val view          = injector.instanceOf[ImportExportChoice]
   val mockNavigator = mock[Navigator]
-  val controller =
-    new ImportExportChoiceController(controllerComponents, view, actionBuilder, stubRepo(startedImportJourney), mockNavigator)
+  val controller    =
+    new ImportExportChoiceController(
+      controllerComponents,
+      view,
+      actionBuilder,
+      stubRepo(startedImportJourney),
+      mockNavigator
+    )
 
   "onPageLoad" should {
     "return 200 with radio button" in {
@@ -40,7 +46,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
       val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
 
       val eventualResult = controller.onPageLoad(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
       status(eventualResult) mustBe 200
       result must include(messageApi("importExportChoice.header"))
       result must include(messageApi("importExportChoice.title"))
@@ -89,7 +95,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
       givenTheUserIsAuthenticatedAndAuthorised()
 
       val eventualResult = controller.onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))

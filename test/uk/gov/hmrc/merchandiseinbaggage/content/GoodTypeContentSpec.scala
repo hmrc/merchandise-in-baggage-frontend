@@ -28,7 +28,7 @@ class GoodTypeContentSpec extends GoodsTypePage with CoreTestData with PropertyB
         givenAJourneyWithSession(declarationType = importOrExport, journeyType = newOrAmend)
         goToGoodsTypePage(1, newOrAmend)
 
-        elementText(findByTagName("label")) must include(messages("goodsType.category"))
+        elementText(findByTagName("label"))    must include(messages("goodsType.category"))
         elementText(findById("category-hint")) must include(messages("goodsType.category.hint"))
       }
     }

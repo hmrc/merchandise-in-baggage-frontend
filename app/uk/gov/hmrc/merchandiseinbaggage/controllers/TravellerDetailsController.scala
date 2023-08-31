@@ -27,19 +27,26 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TravellerDetailsController @Inject()(
+class TravellerDetailsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   navigator: Navigator,
-  view: TravellerDetailsPage)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: TravellerDetailsPage
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(EoriNumberController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
-    Ok(view(request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill), request.declarationType, backButtonUrl))
+    Ok(
+      view(
+        request.declarationJourney.maybeNameOfPersonCarryingTheGoods.fold(form)(form.fill),
+        request.declarationType,
+        backButtonUrl
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -48,7 +55,8 @@ class TravellerDetailsController @Inject()(
       .fold(
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
         nameOfPersonCarryingTheGoods => {
-          val updated = request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods))
+          val updated =
+            request.declarationJourney.copy(maybeNameOfPersonCarryingTheGoods = Some(nameOfPersonCarryingTheGoods))
           navigator
             .nextPage(
               TravellerDetailsRequest(updated, repo.upsert, updated.declarationRequiredAndComplete)

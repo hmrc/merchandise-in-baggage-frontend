@@ -28,26 +28,30 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
+class ExciseAndRestrictedGoodsControllerSpec
+    extends DeclarationJourneyControllerSpec
+    with PropertyBaseTables
+    with MockFactory {
 
-  val view = app.injector.instanceOf[ExciseAndRestrictedGoodsView]
-  val mockNavigator = mock[Navigator]
+  val view                                               = app.injector.instanceOf[ExciseAndRestrictedGoodsView]
+  val mockNavigator                                      = mock[Navigator]
   def controller(declarationJourney: DeclarationJourney) =
     new ExciseAndRestrictedGoodsController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       view,
-      mockNavigator)
+      mockNavigator
+    )
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
+        val request        = buildGet(ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe 200
         result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
@@ -72,11 +76,11 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(ExciseAndRestrictedGoodsController.onSubmit.url, aSessionId)
+      val request        = buildPost(ExciseAndRestrictedGoodsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe 400
       result must include(messageApi("error.summary.title"))

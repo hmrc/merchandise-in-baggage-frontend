@@ -23,9 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.TravellerDetailsForm
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
 
 object TravellerDetailsPage extends Page {
-  val path: String = "/declare-commercial-goods/traveller-details"
+  val path: String  = "/declare-commercial-goods/traveller-details"
   val title: String = "What is the name of the person carrying the goods?"
-  val hint: String = "Enter their full legal name as it appears on their passport or birth certificate."
+  val hint: String  = "Enter their full legal name as it appears on their passport or birth certificate."
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     val name = formData match {

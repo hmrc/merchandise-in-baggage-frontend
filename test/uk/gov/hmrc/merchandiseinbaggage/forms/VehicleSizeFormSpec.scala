@@ -25,7 +25,7 @@ class VehicleSizeFormSpec extends YesNoFieldBehaviours {
 
   val importRequiredKey = "vehicleSize.error.Import.required"
   val exportRequiredKey = "vehicleSize.error.Export.required"
-  val invalidKey = "error.yesNo"
+  val invalidKey        = "error.yesNo"
 
   ".value" must {
 

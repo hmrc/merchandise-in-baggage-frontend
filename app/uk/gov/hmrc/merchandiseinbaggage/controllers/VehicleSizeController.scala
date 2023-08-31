@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class VehicleSizeController @Inject()(
+class VehicleSizeController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -46,14 +46,16 @@ class VehicleSizeController @Inject()(
           .fold(form(request.declarationType))(form(request.declarationType).fill),
         request.declarationJourney.declarationType,
         backButtonUrl
-      ))
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form(request.declarationType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
+        formWithErrors =>
+          Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backButtonUrl)),
         isSmallVehicle => {
           val updated = request.declarationJourney.copy(maybeTravellingBySmallVehicle = Some(isSmallVehicle))
           navigator
@@ -63,7 +65,8 @@ class VehicleSizeController @Inject()(
                 updated,
                 repo.upsert,
                 updated.declarationRequiredAndComplete
-              ))
+              )
+            )
             .map(Redirect)
         }
       )

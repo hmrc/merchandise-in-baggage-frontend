@@ -37,13 +37,13 @@ import scala.concurrent.Future
 class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with MockFactory with OptionValues {
 
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val mockConnector = mock[MibConnector]
-  private val service = new MibService(mockConnector)
+  private val mockConnector              = mock[MibConnector]
+  private val service                    = new MibService(mockConnector)
 
   "retrieve payment calculations from mib backend" in {
     val stubbedResult =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
+    val expected      = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
@@ -56,7 +56,7 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
   "check if over threshold for amend journey" in {
     val stubbedResult =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val amended = completedImportJourneyWithGoodsOverThreshold
+    val amended       = completedImportJourneyWithGoodsOverThreshold
       .copy(journeyType = Amend)
 
     (mockConnector
@@ -68,9 +68,15 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
   }
 
   "check threshold allowance" in {
-    val entries = completedGoodsEntries(Import)
-    val stubbedResult =
-      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
+    val entries             = completedGoodsEntries(Import)
+    val stubbedResult       =
+      CalculationResult(
+        aImportGoods,
+        AmountInPence(7835),
+        AmountInPence(0),
+        AmountInPence(1567),
+        Some(aConversionRatePeriod)
+      )
     val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
 
     (mockConnector
@@ -80,16 +86,28 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
 
     val actual = service.thresholdAllowance(Some(GreatBritain), entries, New, aDeclarationId).value.futureValue
     actual mustBe Some(
-      ThresholdAllowance(DeclarationGoods(List(aImportGoods)), DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
+      ThresholdAllowance(
+        DeclarationGoods(List(aImportGoods)),
+        DeclarationGoods(List(aImportGoods)),
+        calculationResponse,
+        GreatBritain
+      )
+    )
   }
 
   "check threshold allowance including existing declaration for amends" in {
     val entries: GoodsEntries = completedGoodsEntries(Import)
-    val declarationId = aDeclarationId
-    val existingDeclaration = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
-    val stubbedResult =
-      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
+    val declarationId         = aDeclarationId
+    val existingDeclaration   = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
+    val stubbedResult         =
+      CalculationResult(
+        aImportGoods,
+        AmountInPence(7835),
+        AmountInPence(0),
+        AmountInPence(1567),
+        Some(aConversionRatePeriod)
+      )
+    val calculationResponse   = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
 
     (mockConnector
       .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
@@ -101,7 +119,7 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
       .expects(*, *)
       .returning(Future.successful(calculationResponse))
 
-    val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
+    val actual   = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
     val allGoods = existingDeclaration.declarationGoods.goods ++ entries.declarationGoodsIfComplete.get.goods
 
     actual.value.currentGoods mustBe entries.declarationGoodsIfComplete.value
@@ -111,9 +129,9 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
   }
 
   s"add only goods in $Paid or $NotRequired status" in {
-    val declarationId = aDeclarationId
-    val unknown = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
-    val expectedGoods = Seq(aImportGoods)
+    val declarationId   = aDeclarationId
+    val unknown         = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
+    val expectedGoods   = Seq(aImportGoods)
     val plusUnsetStatus = declaration
       .copy(declarationId = declarationId)
       .modify(_.amendments)
@@ -125,13 +143,15 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
       .returning(Future.successful(Some(plusUnsetStatus)))
 
     service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(
-      expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus))
+      expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus)
+    )
   }
 
   s"send a request for calculation including declared goods plus amendments goods" in {
-    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-    val foundDeclaration = declaration.modify(_.amendments).setTo(amendments)
-    val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
+    val amendments         = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration   = declaration.modify(_.amendments).setTo(amendments)
+    val expectedTotalGoods =
+      foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
 
     (mockConnector
       .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
@@ -146,8 +166,8 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
   }
 
   s"send a request for calculation including declared goods plus amendments goods for export" in {
-    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-    val foundDeclaration = declaration
+    val amendments                     = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration               = declaration
       .modify(_.declarationType)
       .setTo(Export)
       .modify(_.amendments)

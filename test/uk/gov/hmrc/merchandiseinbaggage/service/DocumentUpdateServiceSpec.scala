@@ -34,10 +34,10 @@ import scala.concurrent.{ExecutionContext, Future}
 class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with RecoverMethods with MockitoSugar {
 
   val mockDeclarationJourneyMongo: DeclarationJourneyRepository = mock[DeclarationJourneyRepository]
-  val mockLockKeeper: LockRepositoryProvider = mock[LockRepositoryProvider]
-  val mockServicesConfig: ServicesConfig = mock[ServicesConfig]
+  val mockLockKeeper: LockRepositoryProvider                    = mock[LockRepositoryProvider]
+  val mockServicesConfig: ServicesConfig                        = mock[ServicesConfig]
 
-  val mockCc: ControllerComponents = stubControllerComponents()
+  val mockCc: ControllerComponents  = stubControllerComponents()
   implicit val ec: ExecutionContext = mockCc.executionContext
 
   class Setup() {
@@ -62,7 +62,8 @@ class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with Re
         when(mockDeclarationJourneyMongo.updateDate(any()))
           .thenReturn(Future.successful(2L))
 
-        val updateMessage: RepositoryUpdateMessage = result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
+        val updateMessage: RepositoryUpdateMessage =
+          result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
 
         updateMessage mustBe UpdateRequestAcknowledged(2)
 
@@ -76,7 +77,8 @@ class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with Re
         when(mockDeclarationJourneyMongo.findCreatedAtString(any()))
           .thenReturn(Future.successful(Seq()))
 
-        val updateMessage: RepositoryUpdateMessage = result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
+        val updateMessage: RepositoryUpdateMessage =
+          result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
 
         updateMessage mustBe UpdateRequestNothingToUpdate
 
@@ -92,7 +94,8 @@ class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with Re
         when(mockDeclarationJourneyMongo.updateDate(any()))
           .thenReturn(Future.successful(0L))
 
-        val updateMessage: RepositoryUpdateMessage = result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
+        val updateMessage: RepositoryUpdateMessage =
+          result(documentUpdateService.updateMissingCreatedAtFields(), Duration.Inf)
 
         updateMessage mustBe UpdateRequestNotAcknowledged
 

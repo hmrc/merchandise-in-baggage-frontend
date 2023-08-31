@@ -22,10 +22,11 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.views.html.NoDeclarationNeededView
 
 @Singleton
-class NoDeclarationNeededController @Inject()(
+class NoDeclarationNeededController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  view: NoDeclarationNeededView)(implicit val appConfig: AppConfig)
+  view: NoDeclarationNeededView
+)(implicit val appConfig: AppConfig)
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

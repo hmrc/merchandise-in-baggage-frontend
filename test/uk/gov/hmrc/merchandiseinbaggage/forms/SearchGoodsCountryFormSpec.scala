@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 
 class SearchGoodsCountryFormSpec extends BaseSpecWithApplication with FieldBehaviours {
   ".country" must {
-    val fieldName = "country"
+    val fieldName   = "country"
     val requiredKey = "searchGoodsCountry.error.required"
 
     behave like mandatoryField(

@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser._
 
 object VehicleRegistrationNumberPage extends Page {
-  val path = "/declare-commercial-goods/vehicle-registration-number"
+  val path  = "/declare-commercial-goods/vehicle-registration-number"
   val title = "What is the registration number of the vehicle?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
