@@ -37,7 +37,10 @@
   document.getElementById("printLink").classList.remove("govuk-!-display-none");
   document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print");
   document.getElementById("printLink").setAttribute("aria-hidden", "false");
-  document.getElementById("printDeclarationId").addEventListener("click", () => window.print());
+  document.getElementById("printDeclarationId").addEventListener("click", event => {
+    event.preventDefault();
+    window.print();
+   });
  </script>
 }
 
@@ -68,7 +71,7 @@
 </dl>
 
  <p id="printLink" class="govuk-!-display-none" aria-hidden="true">
-   <a id="printDeclarationId" class="govuk-link">@messages("declarationConfirmation.printOrSave.label")</a>
+   <a id="printDeclarationId" class="govuk-link" href="#">@messages("declarationConfirmation.printOrSave.label")</a>
  </p>
 
  <h2 id="whatToDoNextId" class="govuk-heading-m">@messages("declarationConfirmation.h2.1")</h2>
