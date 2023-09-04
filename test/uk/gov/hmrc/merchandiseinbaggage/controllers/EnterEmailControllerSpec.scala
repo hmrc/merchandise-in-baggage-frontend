@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
@@ -27,13 +29,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.{EnterEmailView, EnterOptiona
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view    = app.injector.instanceOf[EnterEmailView]
-  private val viewOpt = app.injector.instanceOf[EnterOptionalEmailView]
-  val mockNavigator   = mock[Navigator]
+  private val view: EnterEmailView            = app.injector.instanceOf[EnterEmailView]
+  private val viewOpt: EnterOptionalEmailView = app.injector.instanceOf[EnterOptionalEmailView]
+  val mockNavigator: Navigator                = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): EnterEmailController =
     new EnterEmailController(
       controllerComponents,
       stubProvider(declarationJourney),
@@ -47,13 +49,13 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
 
   //TODO move content test in UI
   "onPageLoad" should {
-    s"return 200 with correct content" in {
+    "return 200 with correct content" in {
 
       val request        = buildGet(EnterEmailController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messages("enterEmail.title"))
       result must include(messages("enterEmail.heading"))
       result must include(messages("enterEmail.email"))
@@ -62,28 +64,28 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec with Moc
   }
 
   "onSubmit" should {
-    s"redirect to /journey-details after successful form submit" in {
+    "redirect to /journey-details after successful form submit" in {
       val request = buildPost(EnterEmailController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("email" -> "test@email.com")
 
-      (mockNavigator
-        .nextPage(_: EnterEmailRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future.successful(JourneyDetailsController.onPageLoad))
-        .once()
+      when(mockNavigator.nextPage(any[EnterEmailRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(JourneyDetailsController.onPageLoad))
 
-      controller(journey).onSubmit()(request).futureValue
+      val result: Future[Result] = controller(journey).onSubmit()(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/journey-details")
     }
   }
 
-  s"return 400 with any form errors" in {
+  "return 400 with any form errors" in {
     val request        = buildPost(EnterEmailController.onSubmit.url, aSessionId)
       .withFormUrlEncodedBody("email" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit()(request)
     val result         = contentAsString(eventualResult)
 
-    status(eventualResult) mustBe 400
+    status(eventualResult) mustBe BAD_REQUEST
     result must include(messages("enterEmail.title"))
     result must include(messages("enterEmail.heading"))
     result must include(messages("enterEmail.email"))

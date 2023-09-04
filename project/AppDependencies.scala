@@ -11,7 +11,7 @@ object AppDependencies {
     "uk.gov.hmrc"                %% "play-frontend-hmrc"         % "7.19.0-play-28",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "1.3.0",
     "com.github.pureconfig"      %% "pureconfig"                 % "0.17.4",
-    "com.beachape"               %% "enumeratum-play"            % "1.7.0", //caused issue on update
+    "com.beachape"               %% "enumeratum-play"            % "1.7.0",
     "org.webjars.npm"             % "accessible-autocomplete"    % "2.0.4",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.6",
     "org.typelevel"              %% "cats-core"                  % "2.10.0",
@@ -24,7 +24,6 @@ object AppDependencies {
     "com.vladsch.flexmark"   % "flexmark-all"            % "0.64.8",
     "org.scalatestplus"     %% "scalacheck-1-17"         % "3.2.16.0",
     "org.mockito"           %% "mockito-scala-scalatest" % "1.17.22",
-    "org.scalamock"         %% "scalamock"               % "5.2.0",
     "com.github.tomakehurst" % "wiremock-standalone"     % "2.27.2"
   ) ++ pact).map(_ % Test)
 

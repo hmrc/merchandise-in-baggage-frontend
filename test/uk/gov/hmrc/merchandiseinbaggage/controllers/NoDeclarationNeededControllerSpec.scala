@@ -39,7 +39,7 @@ class NoDeclarationNeededControllerSpec extends DeclarationJourneyControllerSpec
       val eventualResult = controller(journey).onPageLoad()(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi(s"noDeclarationNeeded.title"))
       result must include(messageApi(s"noDeclarationNeeded.heading"))
       result must include(messageApi(s"noDeclarationNeeded.p"))

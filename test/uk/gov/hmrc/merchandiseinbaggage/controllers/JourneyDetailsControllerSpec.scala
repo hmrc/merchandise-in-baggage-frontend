@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
@@ -28,10 +30,10 @@ import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view                                                       = app.injector.instanceOf[JourneyDetailsPage]
-  private val mockNavigator                                              = mock[Navigator]
+  private val view: JourneyDetailsPage                                   = app.injector.instanceOf[JourneyDetailsPage]
+  private val mockNavigator: Navigator                                   = mock[Navigator]
   private val controller: DeclarationJourney => JourneyDetailsController =
     declarationJourney =>
       new JourneyDetailsController(
@@ -52,7 +54,7 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi("journeyDetails.title"))
         result must include(messageApi("journeyDetails.heading"))
         result must include(messageApi(s"journeyDetails.port.$importOrExport.label"))
@@ -72,12 +74,13 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
             "dateOfTravel.year"  -> today.getYear.toString
           )
 
-        (mockNavigator
-          .nextPage(_: JourneyDetailsRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(GoodsInVehicleController.onPageLoad))
+        when(mockNavigator.nextPage(any[JourneyDetailsRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(GoodsInVehicleController.onPageLoad))
 
-        controller(journey).onSubmit(request).futureValue
+        val result: Future[Result] = controller(journey).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/goods-in-vehicle")
       }
 
       s"return 400 with any form errors for $importOrExport" in {
@@ -87,7 +90,7 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec with
         val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 400
+        status(eventualResult) mustBe BAD_REQUEST
         result must include(messageApi("journeyDetails.title"))
         result must include(messageApi("journeyDetails.heading"))
         result must include(messageApi(s"journeyDetails.port.$importOrExport.label"))

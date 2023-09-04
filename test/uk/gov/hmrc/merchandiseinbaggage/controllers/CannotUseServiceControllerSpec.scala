@@ -40,7 +40,7 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
         val eventualResult = controller(journey).onPageLoad()(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"cannotUseService.$importOrExport.title"))
         result must include(messageApi(s"cannotUseService.$importOrExport.heading"))
         result must include(messageApi(s"cannotUseService.$importOrExport.p1"))

@@ -37,13 +37,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
 
   implicit val formats: DefaultFormats.type = DefaultFormats
 
-  val CONSUMER: String = "merchandise-in-baggage-frontend"
-  val PROVIDER: String = "merchandise-in-baggage"
+  val CONSUMER: String           = "merchandise-in-baggage-frontend"
+  val PROVIDER: String           = "merchandise-in-baggage"
   val mibConnector: MibConnector = injector.instanceOf[MibConnector]
 
   val findByDeclaration: Declaration = declaration.copy(mibReference = mibReference, eori = eori)
-  val today: LocalDate = LocalDate.now
-  val period: ConversionRatePeriod = ConversionRatePeriod(today, today, "EUR", BigDecimal(1.1))
+  val today: LocalDate               = LocalDate.now
+  val period: ConversionRatePeriod   = ConversionRatePeriod(today, today, "EUR", BigDecimal(1.1))
 
   val pact: ScalaPactDescription = forgePact
     .between(CONSUMER)

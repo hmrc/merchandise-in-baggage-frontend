@@ -39,7 +39,7 @@ class GoodsRemovedControllerSpec extends DeclarationJourneyControllerSpec {
       val eventualResult = controller(journey).onPageLoad()(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi(s"goodsRemoved.title"))
       result must include(messageApi(s"goodsRemoved.heading"))
       result must include(messageApi(s"goodsRemoved.p1"))

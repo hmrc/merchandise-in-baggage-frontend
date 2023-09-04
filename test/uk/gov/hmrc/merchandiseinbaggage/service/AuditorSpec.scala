@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.MockitoSugar.mock
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.audit.HandlerResult
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
@@ -30,10 +31,11 @@ import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Suc
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with MockFactory {
-  private val failed = Failure("failed")
+class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures {
 
-  private val aMessagesApi: MessagesApi              = mock[MessagesApi]
+  private val failed: Failure           = Failure("failed")
+  private val aMessagesApi: MessagesApi = mock[MessagesApi]
+
   private implicit val aHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
   "auditDeclaration" should {
@@ -59,9 +61,9 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
     }
 
     "use DeclarationPaymentAttempted event for amendments" in {
-      val aDeclarationWithAmendment = declaration.copy(amendments = List(aAmendment))
+      val aDeclarationWithAmendment: Declaration = declaration.copy(amendments = List(aAmendment))
 
-      val testAuditConnector = new TestAuditConnector("TestApp") {
+      val testAuditConnector: TestAuditConnector = new TestAuditConnector("TestApp") {
         override def sendResult(path: String, event: JsValue): Future[HandlerResult] = {
           (event \ "auditSource").get.toString mustBe "\"merchandise-in-baggage-frontend\""
           (event \ "auditType").get.toString mustBe "\"DeclarationPaymentAttempted\""
@@ -70,7 +72,7 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
         }
       }
 
-      val auditService = new Auditor {
+      val auditService: Auditor = new Auditor {
         override val auditConnector: AuditConnector = testAuditConnector
         override val messagesApi: MessagesApi       = aMessagesApi
       }
@@ -79,14 +81,14 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures with Mock
     }
 
     "handle auditConnector failure" in {
-      val aDeclarationWithAmendment = declaration.copy(amendments = List(aAmendment))
+      val aDeclarationWithAmendment: Declaration = declaration.copy(amendments = List(aAmendment))
 
-      val testAuditConnector = new TestAuditConnector("TestApp") {
+      val testAuditConnector: TestAuditConnector = new TestAuditConnector("TestApp") {
         override def sendResult(path: String, event: JsValue): Future[HandlerResult] =
           Future.successful(HandlerResult.Failure)
       }
 
-      val auditService = new Auditor {
+      val auditService: Auditor = new Auditor {
         override val auditConnector: AuditConnector = testAuditConnector
         override val messagesApi: MessagesApi       = aMessagesApi
       }

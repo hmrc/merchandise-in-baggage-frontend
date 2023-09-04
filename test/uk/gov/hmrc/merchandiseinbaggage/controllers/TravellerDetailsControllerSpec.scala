@@ -47,7 +47,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val eventualResult = controller(journey).onPageLoad(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi("travellerDetails.title"))
       result must include(messageApi("travellerDetails.heading"))
       result must include(messageApi("travellerDetails.hint"))
@@ -62,7 +62,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         .withFormUrlEncodedBody("firstName" -> "Foo", "lastName" -> "Bar")
 
       val eventualResult = controller(journey).onSubmit(request)
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       redirectLocation(eventualResult) mustBe Some(routes.EnterEmailController.onPageLoad.url)
     }
 
@@ -73,7 +73,7 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("travellerDetails.title"))
       result must include(messageApi("travellerDetails.heading"))
       result must include(messageApi("travellerDetails.hint"))

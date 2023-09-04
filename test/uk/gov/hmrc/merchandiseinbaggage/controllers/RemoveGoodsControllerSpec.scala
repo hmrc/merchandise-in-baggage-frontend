@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import play.mvc.Http.Status
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
@@ -29,24 +29,26 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.RemoveGoodsView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData with MockFactory {
+class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
-  val repo          = app.injector.instanceOf[DeclarationJourneyRepository]
-  val view          = app.injector.instanceOf[RemoveGoodsView]
-  val mockNavigator = mock[Navigator]
-  val controller    = new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
+  val repo: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
+  val view: RemoveGoodsView              = app.injector.instanceOf[RemoveGoodsView]
+  val mockNavigator: Navigator           = mock[Navigator]
+  val controller: RemoveGoodsController  =
+    new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
 
   "delegate to navigator for navigation in" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-    val postReq                = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
+
+    val postReq = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
       .withFormUrlEncodedBody("value" -> "Yes")
+
+    when(mockNavigator.nextPage(any[RemoveGoodsRequest])(any[ExecutionContext]))
+      .thenReturn(Future.successful(CheckYourAnswersController.onPageLoad))
+
     val result: Future[Result] = controller.onSubmit(1)(postReq)
 
-    (mockNavigator
-      .nextPage(_: RemoveGoodsRequest)(_: ExecutionContext))
-      .expects(*, *)
-      .returning(Future.successful(CheckYourAnswersController.onPageLoad))
-
-    status(result) mustBe Status.SEE_OTHER
+    status(result) mustBe SEE_OTHER
+    redirectLocation(result) mustBe Some("/declare-commercial-goods/check-your-answers")
   }
 }

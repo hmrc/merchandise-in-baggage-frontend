@@ -52,7 +52,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"valueWeightOfGoods.GreatBritain.title"))
         result must include(messageApi(s"valueWeightOfGoods.GreatBritain.heading"))
       }
@@ -66,7 +66,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
         val eventualResult = controller(journey).onSubmit(request)
 
-        status(eventualResult) mustBe 303
+        status(eventualResult) mustBe SEE_OTHER
         redirectLocation(eventualResult) mustBe Some(routes.GoodsTypeController.onPageLoad(1).url)
       }
     }
@@ -79,7 +79,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
       result must include(messageApi(s"valueWeightOfGoods.GreatBritain.title"))
       result must include(messageApi(s"valueWeightOfGoods.GreatBritain.heading"))

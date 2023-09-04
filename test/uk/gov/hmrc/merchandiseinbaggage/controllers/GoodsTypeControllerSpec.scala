@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.{Call, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -28,11 +30,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsTypeView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view                                       = app.injector.instanceOf[GoodsTypeView]
-  val mockNavigator                                      = mock[Navigator]
-  def controller(declarationJourney: DeclarationJourney) =
+  private val view: GoodsTypeView = app.injector.instanceOf[GoodsTypeView]
+  val mockNavigator: Navigator    = mock[Navigator]
+
+  def controller(declarationJourney: DeclarationJourney): GoodsTypeController =
     new GoodsTypeController(
       controllerComponents,
       stubProvider(declarationJourney),
@@ -51,7 +54,7 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with Mock
           val eventualResult = controller(journey).onPageLoad(1)(request)
           val result         = contentAsString(eventualResult)
 
-          status(eventualResult) mustBe 200
+          status(eventualResult) mustBe OK
           result must include(messageApi(s"goodsType.$journeyType.title"))
           result must include(messageApi(s"goodsType.$journeyType.heading"))
           result must include(messageApi("goodsType.p"))
@@ -60,20 +63,24 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with Mock
 
       "onSubmit" should {
         s"redirect to next page after successful form submit for $importOrExport for journeyType $journeyType" in {
-          val request = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
+          val request    = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
             .withFormUrlEncodedBody("category" -> "clothes")
-          val page    =
-            if (importOrExport == Import)
-              GoodsVatRateController.onPageLoad(1)
-            else SearchGoodsCountryController.onPageLoad(1)
+          val page: Call = if (importOrExport == Import) {
+            GoodsVatRateController.onPageLoad(1)
+          } else {
+            SearchGoodsCountryController.onPageLoad(1)
+          }
 
-          (mockNavigator
-            .nextPage(_: GoodsTypeRequest)(_: ExecutionContext))
-            .expects(*, *)
-            .returning(Future successful page)
-            .once()
+          when(mockNavigator.nextPage(any[GoodsTypeRequest])(any[ExecutionContext])).thenReturn(Future.successful(page))
 
-          controller(journey).onSubmit(1)(request).futureValue
+          val result: Future[Result] = controller(journey).onSubmit(1)(request)
+
+          status(result) mustBe SEE_OTHER
+          if (importOrExport == Import) {
+            redirectLocation(result) mustBe Some("/declare-commercial-goods/goods-vat-rate/1")
+          } else {
+            redirectLocation(result) mustBe Some("/declare-commercial-goods/search-goods-country/1")
+          }
         }
 
         s"return 400 with any form errors for $importOrExport for journeyType $journeyType" in {
@@ -83,7 +90,7 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec with Mock
           val eventualResult = controller(journey).onSubmit(1)(request)
           val result         = contentAsString(eventualResult)
 
-          status(eventualResult) mustBe 400
+          status(eventualResult) mustBe BAD_REQUEST
           result must include(messageApi("error.summary.title"))
           result must include(messageApi(s"goodsType.$journeyType.title"))
           result must include(messageApi(s"goodsType.$journeyType.heading"))

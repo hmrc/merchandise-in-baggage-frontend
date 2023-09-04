@@ -51,7 +51,7 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
 
     val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete.url, id))
 
-    status(result) mustBe 200
+    status(result) mustBe OK
   }
 
   "onServiceTimeout" should {
@@ -61,7 +61,7 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
       val eventualResult = controller.onServiceTimeout()(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
 
       result must include(messageApi(s"timeOut.title"))
       result must include(messageApi(s"timeOut.title"))

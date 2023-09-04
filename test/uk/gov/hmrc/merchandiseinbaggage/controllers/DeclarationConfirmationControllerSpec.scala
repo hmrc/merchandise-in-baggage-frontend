@@ -59,7 +59,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 200
+    status(eventualResult) mustBe OK
 
     import exportJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType)
@@ -88,7 +88,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 200
+    status(eventualResult) mustBe OK
 
     import importJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType)
@@ -115,7 +115,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(declarationWithPaidAmendment, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 303
+    status(eventualResult) mustBe SEE_OTHER
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 
@@ -138,7 +138,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     val request    = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, aSessionId)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 303
+    status(eventualResult) mustBe SEE_OTHER
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 }

@@ -40,7 +40,7 @@ class CannotUseServiceIrelandControllerSpec extends DeclarationJourneyController
         val eventualResult = controller(journey).onPageLoad()(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"cannotUseServiceIreland.title"))
         result must include(messageApi(s"cannotUseServiceIreland.heading"))
         result must include(messageApi(s"cannotUseServiceIreland.p1"))

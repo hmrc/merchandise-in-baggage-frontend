@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.MockitoSugar.mock
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -26,16 +27,16 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view          = injector.instanceOf[EoriNumberView]
-  val client        = injector.instanceOf[HttpClient]
-  val mockNavigator = mock[Navigator]
-  val connector     = new MibConnector(client, "some url") {
+  val view: EoriNumberView             = injector.instanceOf[EoriNumberView]
+  val client: HttpClient               = injector.instanceOf[HttpClient]
+  val mockNavigator: Navigator         = mock[Navigator]
+  val connector: MibConnector          = new MibConnector(client, "some url") {
     override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
-      Future.successful(CheckResponse("123", false, None))
+      Future.successful(CheckResponse("123", valid = false, None))
   }
-  val controller    =
+  val controller: EoriNumberController =
     new EoriNumberController(
       controllerComponents,
       actionBuilder,
@@ -53,18 +54,19 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with Moc
         .withFormUrlEncodedBody(("eori", "GB123467800022"))
     )
 
-    status(result) mustBe 400
+    status(result) mustBe BAD_REQUEST
     contentAsString(result) must include(messages("eoriNumber.error.notFound"))
     contentAsString(result) must include("GB123467800022")
   }
 
   "return an error if API return 404" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-    val connector  = new MibConnector(client, "some url") {
+    val connector = new MibConnector(client, "some url") {
       override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
         Future.failed(new Exception("API returned 404"))
     }
-    val controller =
+
+    val controller: EoriNumberController =
       new EoriNumberController(
         controllerComponents,
         actionBuilder,
@@ -74,12 +76,12 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec with Moc
         mockNavigator
       )
 
-    val result = controller.onSubmit()(
+    val result: Future[Result] = controller.onSubmit()(
       buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody(("eori", "GB123467800000"))
     )
 
-    status(result) mustBe 400
+    status(result) mustBe BAD_REQUEST
     contentAsString(result) must include(messages("eoriNumber.error.notFound"))
   }
 }

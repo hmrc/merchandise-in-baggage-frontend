@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
-import play.api.test.Helpers.{status, _}
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -27,11 +29,11 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view                                       = injector.instanceOf[NewOrExistingView]
-  private val mockNavigator                              = mock[Navigator]
-  def controller(declarationJourney: DeclarationJourney) =
+  private val view: NewOrExistingView                                             = injector.instanceOf[NewOrExistingView]
+  private val mockNavigator: Navigator                                            = mock[Navigator]
+  def controller(declarationJourney: DeclarationJourney): NewOrExistingController =
     new NewOrExistingController(
       controllerComponents,
       stubProvider(declarationJourney),
@@ -49,7 +51,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"newOrExisting.title"))
         result must include(messageApi(s"newOrExisting.heading"))
         result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
@@ -61,28 +63,28 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
         val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "New")
 
-        (mockNavigator
-          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(GoodsDestinationController.onPageLoad))
-          .once()
+        when(mockNavigator.nextPage(any[NewOrExistingRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
 
-        val eventualResult = controller(journey).onSubmit(request)
-        session(eventualResult).get("journeyType") mustBe Some("new")
+        val result: Future[Result] = controller(journey).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/goods-destination")
+        session(result).get("journeyType") mustBe Some("new")
       }
 
       s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
         val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "Amend")
 
-        (mockNavigator
-          .nextPage(_: NewOrExistingRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(RetrieveDeclarationController.onPageLoad))
-          .once()
+        when(mockNavigator.nextPage(any[NewOrExistingRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(RetrieveDeclarationController.onPageLoad))
 
-        val eventualResult = controller(journey).onSubmit(request)
-        session(eventualResult).get("journeyType") mustBe Some("amend")
+        val result: Future[Result] = controller(journey).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/retrieve-declaration")
+        session(result).get("journeyType") mustBe Some("amend")
       }
     }
 
@@ -93,7 +95,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec with 
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
     }
   }

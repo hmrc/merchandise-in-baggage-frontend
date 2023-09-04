@@ -71,7 +71,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
 
         importOrExport match {
           case Import =>
-            status(eventualResult) mustBe 200
+            status(eventualResult) mustBe OK
 
             result must include(messages("paymentCalculation.greenchannel.p1"))
             result must include(messages("paymentCalculation.greenchannel.p2"))
@@ -87,7 +87,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
             result must include(messages("paymentCalculation.h3"))
 
           case Export =>
-            status(eventualResult) mustBe 303
+            status(eventualResult) mustBe SEE_OTHER
             redirectLocation(eventualResult) mustBe Some(CustomsAgentController.onPageLoad.url)
         }
       }
@@ -106,7 +106,7 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
         val eventualResult =
           controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
 
-        status(eventualResult) mustBe 303
+        status(eventualResult) mustBe SEE_OTHER
         redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
       }
     }

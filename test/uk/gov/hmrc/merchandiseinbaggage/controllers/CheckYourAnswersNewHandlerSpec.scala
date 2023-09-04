@@ -17,8 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.softwaremill.quicklens._
-import org.scalamock.scalatest.MockFactory
-import play.api.mvc.Request
+import org.mockito.ArgumentMatchersSugar.{any, eqTo}
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
@@ -38,24 +39,25 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration with MockFactory {
+class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
 
-  private lazy val httpClient             = injector.instanceOf[HttpClient]
-  private lazy val mockTpsPaymentsService = mock[TpsPaymentsService]
-  private lazy val importView             = injector.instanceOf[CheckYourAnswersImportView]
-  private lazy val exportView             = injector.instanceOf[CheckYourAnswersExportView]
-  private lazy val mibConnector           = injector.instanceOf[MibConnector]
-  private val auditConnector              = injector.instanceOf[AuditConnector]
-  implicit val hc: HeaderCarrier          = HeaderCarrier()
+  private lazy val httpClient: HttpClient                     = injector.instanceOf[HttpClient]
+  private lazy val importView: CheckYourAnswersImportView     = injector.instanceOf[CheckYourAnswersImportView]
+  private lazy val exportView: CheckYourAnswersExportView     = injector.instanceOf[CheckYourAnswersExportView]
+  private lazy val mibConnector: MibConnector                 = injector.instanceOf[MibConnector]
+  private val auditConnector: AuditConnector                  = injector.instanceOf[AuditConnector]
+  private lazy val mockTpsPaymentsService: TpsPaymentsService = mock[TpsPaymentsService]
 
-  private lazy val testPaymentConnector = new PaymentConnector(httpClient, "") {
+  implicit val hc: HeaderCarrier = HeaderCarrier()
+
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, "") {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val testMibConnector = new MibConnector(httpClient, "") {
+  private lazy val testMibConnector: MibConnector = new MibConnector(httpClient, "") {
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
       Future.successful(DeclarationId("abc"))
   }
@@ -68,7 +70,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
         Future.successful(calculationResponse)
     }
 
-  private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse) =
+  private def newHandler(paymentCalcs: CalculationResponse = aCalculationResponse): CheckYourAnswersNewHandler =
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
       mockTpsPaymentsService,
@@ -91,10 +93,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
-        val eventualResult = newHandler().onPageLoad(declaration, YesNo.Yes)
+        val result = newHandler().onPageLoad(declaration, YesNo.Yes)
 
-        status(eventualResult) mustBe OK
-        contentAsString(eventualResult) must include(messageApi("checkYourAnswers.title"))
+        status(result) mustBe OK
+        contentAsString(result) must include(messageApi("checkYourAnswers.title"))
       }
 
       s"return 303 for goods over threshold for $importOrExport" in {
@@ -112,10 +114,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
-        val eventualResult = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
+        val result = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
 
-        status(eventualResult) mustBe 303
-        redirectLocation(eventualResult) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
       }
     }
   }
@@ -130,10 +132,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      val eventualResult = newHandler().onSubmit(declaration)
+      val result: Future[Result] = newHandler().onSubmit(declaration)
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some("http://host")
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("http://host")
     }
 
     "will calculate tax and send payment request to TPS for Imports" in {
@@ -146,16 +148,17 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersistedWithStub(importJourney)
 
-      (mockTpsPaymentsService
-        .createTpsPayments(_: String, _: Option[Int], _: Declaration, _: CalculationResults)(_: HeaderCarrier))
-        .expects("123", None, *, *, *)
-        .returning(Future.successful(TpsId("someid")))
-        .once()
+      when(
+        mockTpsPaymentsService.createTpsPayments(eqTo("123"), eqTo(None), any[Declaration], any[CalculationResults])(
+          any[HeaderCarrier]
+        )
+      )
+        .thenReturn(Future.successful(TpsId("someid")))
 
-      val eventualResult = newHandler().onSubmit(importJourney.toDeclaration, "123")
+      val result: Future[Result] = newHandler().onSubmit(importJourney.toDeclaration, "123")
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
     }
 
     "will redirect to confirmation if totalTax is £0 and should not call pay api" in {
@@ -167,11 +170,11 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      val eventualResult =
+      val result: Future[Result] =
         newHandler(CalculationResponse(aCalculationResultsWithNoTax, WithinThreshold)).onSubmit(declaration)
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
 
     "will redirect to declaration-confirmation for Export" in {
@@ -183,10 +186,10 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
       givenADeclarationJourneyIsPersisted(exportJourney)
 
-      val eventualResult = newHandler().onSubmit(declaration.copy(declarationType = Export))
+      val result: Future[Result] = newHandler().onSubmit(declaration.copy(declarationType = Export))
 
-      status(eventualResult) mustBe 303
-      redirectLocation(eventualResult) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
 
   }

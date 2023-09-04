@@ -52,7 +52,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messages(s"searchGoodsCountry.title", "test good"))
       result must include(messages(s"searchGoodsCountry.heading", "test good"))
 
@@ -67,7 +67,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
       val eventualResult = controller(journey).onSubmit(1)(request)
 
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       redirectLocation(eventualResult) mustBe Some(routes.ReviewGoodsController.onPageLoad.url)
     }
 
@@ -78,7 +78,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       val eventualResult = controller(journey).onSubmit(1)(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
       result must include(messages(s"searchGoodsCountry.title", "test good"))
       result must include(messages(s"searchGoodsCountry.heading", "test good"))

@@ -30,7 +30,7 @@ class LanguageSwitchControllerSpec extends DeclarationJourneyControllerSpec with
       val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("en").url, aSessionId)
       val eventualResult = controller.switchToLanguage("en")(request)
 
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "en"
     }
 
@@ -39,7 +39,7 @@ class LanguageSwitchControllerSpec extends DeclarationJourneyControllerSpec with
       val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("cy").url, aSessionId)
       val eventualResult = controller.switchToLanguage("cy")(request)
 
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "cy"
     }
   }

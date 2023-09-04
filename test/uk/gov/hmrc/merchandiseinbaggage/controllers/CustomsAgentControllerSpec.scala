@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -27,10 +29,10 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.CustomsAgentView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view                                                     = app.injector.instanceOf[CustomsAgentView]
-  val mockNavigator                                            = mock[Navigator]
+  val view: CustomsAgentView                                   = app.injector.instanceOf[CustomsAgentView]
+  val mockNavigator: Navigator                                 = mock[Navigator]
   val controller: DeclarationJourney => CustomsAgentController =
     declarationJourney =>
       new CustomsAgentController(
@@ -45,13 +47,13 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
 
   //TODO move content test in UI
   "onPageLoad" should {
-    s"return 200 with radio buttons" in {
+    "return 200 with radio buttons" in {
 
       val request        = buildGet(CustomsAgentController.onPageLoad.url, aSessionId)
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onPageLoad(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi("customsAgent.title"))
       result must include(messageApi("customsAgent.heading"))
       result must include(messageApi("customsAgent.hint"))
@@ -59,27 +61,27 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec with M
   }
 
   "onSubmit" should {
-    s"delegate to Navigator" in {
+    "delegate to Navigator" in {
       val request = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
-      (mockNavigator
-        .nextPage(_: CustomsAgentRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future successful AgentDetailsController.onPageLoad)
-        .once()
+      when(mockNavigator.nextPage(any[CustomsAgentRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(AgentDetailsController.onPageLoad))
 
-      controller(journey).onSubmit(request).futureValue
+      val result: Future[Result] = controller(journey).onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/agent-details")
     }
 
-    s"return 400 with any form errors" in {
+    "return 400 with any form errors" in {
       val request        = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
       result must include(messageApi("customsAgent.title"))
       result must include(messageApi("customsAgent.heading"))

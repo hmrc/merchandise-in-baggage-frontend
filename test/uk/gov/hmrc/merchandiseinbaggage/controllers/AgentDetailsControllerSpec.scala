@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
@@ -28,12 +30,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.AgentDetailsView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view          = app.injector.instanceOf[AgentDetailsView]
-  private val mockNavigator = mock[Navigator]
+  private val view: AgentDetailsView   = app.injector.instanceOf[AgentDetailsView]
+  private val mockNavigator: Navigator = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): AgentDetailsController =
     new AgentDetailsController(
       controllerComponents,
       stubProvider(declarationJourney),
@@ -46,41 +48,41 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec with M
     DeclarationJourney(aSessionId, Import).copy(maybeGoodsDestination = Some(GreatBritain))
 
   "onPageLoad" should {
-    s"return 200 with correct content" in {
+    "return 200 with correct content" in {
 
       val request        = buildGet(routes.AgentDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(request)
       val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
-      result must include(messageApi(s"agentDetails.title"))
-      result must include(messageApi(s"agentDetails.heading"))
+      status(eventualResult) mustBe OK
+      result must include(messageApi("agentDetails.title"))
+      result must include(messageApi("agentDetails.heading"))
     }
   }
 
   "onSubmit" should {
-    s"redirect to /enter-agent-address after successful form" in {
+    "redirect to /enter-agent-address after successful form" in {
       val request = buildPost(routes.AgentDetailsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "business name")
 
-      (mockNavigator
-        .nextPage(_: AgentDetailsRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future successful EnterAgentAddressController.onPageLoad)
-        .once()
+      when(mockNavigator.nextPage(any[AgentDetailsRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(EnterAgentAddressController.onPageLoad))
 
-      controller(journey).onSubmit(request).futureValue
+      val result: Future[Result] = controller(journey).onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/enter-agent-address")
     }
   }
 
-  s"return 400 with any form errors" in {
-    val request        = buildPost(routes.AgentDetailsController.onSubmit.url, aSessionId)
+  "return 400 with any form errors" in {
+    val request                        = buildPost(routes.AgentDetailsController.onSubmit.url, aSessionId)
       .withFormUrlEncodedBody("value1" -> "in valid")
 
-    val eventualResult = controller(journey).onSubmit(request)
-    val result         = contentAsString(eventualResult)
+    val eventualResult: Future[Result] = controller(journey).onSubmit(request)
+    val result                         = contentAsString(eventualResult)
 
-    status(eventualResult) mustBe 400
+    status(eventualResult) mustBe BAD_REQUEST
     result must include(messageApi("error.summary.title"))
     result must include(messageApi(s"agentDetails.title"))
     result must include(messageApi(s"agentDetails.heading"))
