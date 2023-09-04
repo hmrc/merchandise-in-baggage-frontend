@@ -27,15 +27,17 @@ import scala.concurrent.{ExecutionContext, Future}
 case class TpsPaymentsException(message: String) extends RuntimeException(message)
 
 @Singleton
-class TpsPaymentsBackendConnector @Inject()(httpClient: HttpClient, @Named("tpsBackendBaseUrl") baseUrl: String) {
+class TpsPaymentsBackendConnector @Inject() (httpClient: HttpClient, @Named("tpsBackendBaseUrl") baseUrl: String) {
 
   def tpsPayments(requestBody: TpsPaymentsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[TpsId] =
-    httpClient.POST[TpsPaymentsRequest, HttpResponse](s"$baseUrl/tps-payments-backend/tps-payments", requestBody).map { response =>
-      response.status match {
-        case Status.CREATED => response.json.as[TpsId]
-        case other: Int =>
-          throw TpsPaymentsException(
-            s"unexpected status from tps-payments-backend for reference: ${requestBody.payments.head.chargeReference}, status: $other")
-      }
+    httpClient.POST[TpsPaymentsRequest, HttpResponse](s"$baseUrl/tps-payments-backend/tps-payments", requestBody).map {
+      response =>
+        response.status match {
+          case Status.CREATED => response.json.as[TpsId]
+          case other: Int     =>
+            throw TpsPaymentsException(
+              s"unexpected status from tps-payments-backend for reference: ${requestBody.payments.head.chargeReference}, status: $other"
+            )
+        }
     }
 }

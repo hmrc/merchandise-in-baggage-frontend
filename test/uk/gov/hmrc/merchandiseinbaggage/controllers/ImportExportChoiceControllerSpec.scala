@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport}
@@ -27,21 +29,29 @@ import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view = injector.instanceOf[ImportExportChoice]
-  val mockNavigator = mock[Navigator]
-  val controller =
-    new ImportExportChoiceController(controllerComponents, view, actionBuilder, stubRepo(startedImportJourney), mockNavigator)
+  val view: ImportExportChoice                 = injector.instanceOf[ImportExportChoice]
+  val mockNavigator: Navigator                 = mock[Navigator]
+  val controller: ImportExportChoiceController =
+    new ImportExportChoiceController(
+      controllerComponents,
+      view,
+      actionBuilder,
+      stubRepo(startedImportJourney),
+      mockNavigator
+    )
 
   "onPageLoad" should {
     "return 200 with radio button" in {
       givenTheUserIsAuthenticatedAndAuthorised()
+
       val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
 
       val eventualResult = controller.onPageLoad(request)
-      val result = contentAsString(eventualResult)
-      status(eventualResult) mustBe 200
+      val result         = contentAsString(eventualResult)
+
+      status(eventualResult) mustBe OK
       result must include(messageApi("importExportChoice.header"))
       result must include(messageApi("importExportChoice.title"))
       result must include(messageApi("importExportChoice.MakeImport"))
@@ -53,45 +63,48 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
   "onSubmit" should {
     "redirect with navigator adding 'new' to header" in {
       givenTheUserIsAuthenticatedAndAuthorised()
+
       val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> MakeExport.toString)
 
-      (mockNavigator
-        .nextPage(_: ImportExportChoiceRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future successful GoodsDestinationController.onPageLoad)
-        .once()
+      when(mockNavigator.nextPage(any[ImportExportChoiceRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
 
-      val eventualResult = controller.onSubmit(request)
-      session(eventualResult).get("journeyType") mustBe Some("new")
+      val result: Future[Result] = controller.onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/goods-destination")
+      session(result).get("journeyType") mustBe Some("new")
     }
 
     "redirect with navigator adding 'amend' to header" in {
       givenTheUserIsAuthenticatedAndAuthorised()
+
       val request = buildGet(routes.ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> AddToExisting.toString)
 
-      (mockNavigator
-        .nextPage(_: ImportExportChoiceRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future successful GoodsDestinationController.onPageLoad)
-        .once()
+      when(mockNavigator.nextPage(any[ImportExportChoiceRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
 
-      val eventualResult = controller.onSubmit(request)
-      session(eventualResult).get("journeyType") mustBe Some("amend")
+      val result: Future[Result] = controller.onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/goods-destination")
+      session(result).get("journeyType") mustBe Some("amend")
     }
 
     "return 400 with required form error" in {
       givenTheUserIsAuthenticatedAndAuthorised()
+
       val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "")
 
       givenTheUserIsAuthenticatedAndAuthorised()
 
       val eventualResult = controller.onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
       result must include(messageApi("importExportChoice.header"))
       result must include(messageApi("importExportChoice.error.required"))

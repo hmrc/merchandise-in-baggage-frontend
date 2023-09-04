@@ -31,7 +31,7 @@ import com.softwaremill.quicklens._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class SearchGoodsCountryController @Inject()(
+class SearchGoodsCountryController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
@@ -46,7 +46,7 @@ class SearchGoodsCountryController @Inject()(
   def onPageLoad(idx: Int): Action[AnyContent] = actionProvider.goodsAction(idx).async { implicit request =>
     withGoodsCategory(request.goodsEntry) { category =>
       request.goodsEntry match {
-        case _: ImportGoodsEntry => Future successful Redirect(GoodsOriginController.onPageLoad(idx))
+        case _: ImportGoodsEntry     => Future successful Redirect(GoodsOriginController.onPageLoad(idx))
         case entry: ExportGoodsEntry =>
           val preparedForm = entry.maybeDestination
             .fold(form)(c => form.fill(c.code))
@@ -73,9 +73,10 @@ class SearchGoodsCountryController @Inject()(
                       request.goodsEntry.modify(_.when[ExportGoodsEntry].maybeDestination).setTo(Some(country)),
                       idx,
                       repo.upsert
-                    ))
+                    )
+                  )
                   .map(Redirect)
-            }
+              }
         )
     }
   }

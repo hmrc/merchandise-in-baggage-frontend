@@ -27,6 +27,7 @@ object ImportExportChoiceForm extends Mappings {
       "value" -> enumerator[ImportExportChoice](
         ImportExportChoices,
         "importExportChoice.error.required",
-        "importExportChoice.error.required")
+        "importExportChoice.error.required"
+      )
     )
 }

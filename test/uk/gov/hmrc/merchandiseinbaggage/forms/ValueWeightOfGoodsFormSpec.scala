@@ -23,9 +23,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritai
 
 class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
 
-  val requiredKeyWhenGoodsDestinationIsGreatBritain = "valueWeightOfGoods.GreatBritain.error.required"
+  val requiredKeyWhenGoodsDestinationIsGreatBritain    = "valueWeightOfGoods.GreatBritain.error.required"
   val requiredKeyWhenGoodsDestinationIsNorthernIreland = "valueWeightOfGoods.NorthernIreland.error.required"
-  val invalidKey = "error.yesNo"
+  val invalidKey                                       = "error.yesNo"
 
   ".value" must {
 

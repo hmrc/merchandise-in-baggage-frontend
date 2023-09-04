@@ -28,7 +28,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsDestinationController @Inject()(
+class GoodsDestinationController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -47,14 +47,16 @@ class GoodsDestinationController @Inject()(
           .fold(form(request.declarationType))(form(request.declarationType).fill),
         request.declarationJourney.declarationType,
         backLink
-      ))
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     form(request.declarationType)
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
         value => {
           val updated = request.declarationJourney.copy(maybeGoodsDestination = Some(value))
           navigator
@@ -64,7 +66,8 @@ class GoodsDestinationController @Inject()(
                 updated,
                 repo.upsert,
                 updated.declarationRequiredAndComplete
-              ))
+              )
+            )
             .map(Redirect)
         }
       )

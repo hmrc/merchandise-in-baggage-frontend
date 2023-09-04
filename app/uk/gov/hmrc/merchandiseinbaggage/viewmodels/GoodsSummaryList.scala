@@ -27,7 +27,7 @@ object GoodsSummaryList {
   def summaryList(declarationGoods: DeclarationGoods)(implicit messages: Messages): Seq[SummaryList] =
     declarationGoods.goods.zipWithIndex.map { item =>
       val goods = item._1
-      val idx = item._2 + 1
+      val idx   = item._2 + 1
 
       goods match {
         case ig: ImportGoods => importSummary(ig, idx)
@@ -35,8 +35,14 @@ object GoodsSummaryList {
       }
     }
 
-  private def rowWithChange(key: String, value: String, changeUrl: String, changeId: String, hiddenTxt: String, hiddenTxtArgs: String)(
-    implicit messages: Messages): SummaryListRow =
+  private def rowWithChange(
+    key: String,
+    value: String,
+    changeUrl: String,
+    changeId: String,
+    hiddenTxt: String,
+    hiddenTxtArgs: String
+  )(implicit messages: Messages): SummaryListRow =
     SummaryListRow(
       key = Key(Text(messages(key))),
       value = Value(Text(value)),
@@ -50,7 +56,8 @@ object GoodsSummaryList {
               attributes = Map("id" -> s"$changeId")
             )
           )
-        ))
+        )
+      )
     )
 
   private def importSummary(goods: ImportGoods, idx: Int)(implicit messages: Messages): SummaryList =

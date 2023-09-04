@@ -26,7 +26,8 @@ case class ThresholdAllowance(
   currentGoods: DeclarationGoods,
   allGoods: DeclarationGoods,
   calculationResponse: CalculationResponse,
-  destination: GoodsDestination)
+  destination: GoodsDestination
+)
 
 object ThresholdAllowance {
 
@@ -48,7 +49,8 @@ object ThresholdAllowance {
     goods: DeclarationGoods,
     calculationResponse: CalculationResponse,
     destination: GoodsDestination,
-    good: Goods): Double =
+    good: Goods
+  ): Double =
     Try {
       good match {
         case _: ImportGoods =>

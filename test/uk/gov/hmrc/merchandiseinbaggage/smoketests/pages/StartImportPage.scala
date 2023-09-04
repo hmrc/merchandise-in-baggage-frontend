@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 object StartImportPage {
-  val path = "/declare-commercial-goods/start-import"
-  val title = "Where in the UK are the goods going to? - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
+  val path  = "/declare-commercial-goods/start-import"
+  val title =
+    "Where in the UK are the goods going to? - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 }

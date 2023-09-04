@@ -36,18 +36,31 @@ class GoodsOriginContentSpec extends GoodsOriginPage with CoreTestData {
       findById("DontKnow-item-hint").getText mustBe "From 1 Jan 2021, Customs Duty is charged at 3.3%"
 
       findByClassName("govuk-warning-text__text").getText must include(
-        "You must carry proof your goods were made in the EU if they have a total value of more than £1,000.")
+        "You must carry proof your goods were made in the EU if they have a total value of more than £1,000."
+      )
 
       findByClassName("govuk-details__summary-text").getText mustBe "What you can use as proof"
 
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/p[1]").getText mustBe "Evidence can be include one of the following:"
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/p[1]"
+      ).getText mustBe "Evidence can be include one of the following:"
 
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[1]").getText mustBe "packaging or a label attached to the item showing that it was produced or made in the EU"
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[2]").getText mustBe "evidence the item is handmade or homegrown in the EU"
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[3]").getText mustBe "documents given to you by the seller that show the item was produced or made in the EU"
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[4]").getText mustBe "a ‘statement on origin’ from the supplier of the item"
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[1]"
+      ).getText mustBe "packaging or a label attached to the item showing that it was produced or made in the EU"
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[2]"
+      ).getText mustBe "evidence the item is handmade or homegrown in the EU"
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[3]"
+      ).getText mustBe "documents given to you by the seller that show the item was produced or made in the EU"
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/ul/li[4]"
+      ).getText mustBe "a ‘statement on origin’ from the supplier of the item"
 
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/p[2]").getText mustBe "If you do not have the appropriate evidence you will have to pay customs duty on this item."
+      findByXPath(
+        "//*[@id=\"main-content\"]/div/div/form/div[3]/details/div/p[2]"
+      ).getText mustBe "If you do not have the appropriate evidence you will have to pay customs duty on this item."
 
       findByClassName("govuk-button").getText mustBe "Continue"
     }

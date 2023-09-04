@@ -33,17 +33,23 @@ import scala.concurrent.Future
 class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
 
   import mibConf._
-  private val view = app.injector.instanceOf[DeclarationConfirmationView]
-  private val client = app.injector.instanceOf[HttpClient]
-  private val connector = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
+  private val view       = app.injector.instanceOf[DeclarationConfirmationView]
+  private val client     = app.injector.instanceOf[HttpClient]
+  private val connector  = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
   private val controller =
-    new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
+    new DeclarationConfirmationController(
+      controllerComponents,
+      actionBuilder,
+      view,
+      connector,
+      declarationJourneyRepository
+    )
 
   "on page load return 200 if declaration exists and resets the journey for Exports" in {
     val sessionId = SessionId()
-    val id = DeclarationId("456")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
+    val id        = DeclarationId("456")
+    val created   = LocalDateTime.now.withSecond(0).withNano(0)
+    val request   = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = DeclarationType.Export, createdAt = created, declarationId = id)
@@ -53,67 +59,86 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 200
+    status(eventualResult) mustBe OK
 
     import exportJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+    declarationJourneyRepository
+      .findBySessionId(sessionId)
+      .futureValue
+      .get
+      .declarationType mustBe resetJourney.declarationType
   }
 
   "on page load return 200 if declaration exists and resets the journey for Import with no payment required" in {
     val sessionId = SessionId()
-    val id = DeclarationId("456")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
+    val id        = DeclarationId("456")
+    val created   = LocalDateTime.now.withSecond(0).withNano(0)
+    val request   = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
-    val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
-    val declarationWithNoPaymentRequired = importJourney.declarationIfRequiredAndComplete.get.copy(paymentStatus = Some(NotRequired))
+    val importJourney: DeclarationJourney =
+      completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
+    val declarationWithNoPaymentRequired  =
+      importJourney.declarationIfRequiredAndComplete.get.copy(paymentStatus = Some(NotRequired))
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
     givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 200
+    status(eventualResult) mustBe OK
 
     import importJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
-    declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.declarationType mustBe resetJourney.declarationType
+    declarationJourneyRepository
+      .findBySessionId(sessionId)
+      .futureValue
+      .get
+      .declarationType mustBe resetJourney.declarationType
   }
 
   "on page load return 200 return an invalid request for Import with payment required as the confirmation is hosted by payments team" in {
     val sessionId = SessionId()
-    val id = DeclarationId("456")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
+    val id        = DeclarationId("456")
+    val created   = LocalDateTime.now.withSecond(0).withNano(0)
+    val request   = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, sessionId)
 
-    val importJourney: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
+    val importJourney: DeclarationJourney =
+      completedDeclarationJourney.copy(sessionId = sessionId, createdAt = created, declarationId = id)
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
     givenPersistedDeclarationIsFound(declarationWithPaidAmendment, id)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 303
+    status(eventualResult) mustBe SEE_OTHER
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
     val connector = new MibConnector(client, "") {
-      override def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
+      override def findDeclaration(declarationId: DeclarationId)(implicit
+        hc: HeaderCarrier
+      ): Future[Option[Declaration]] =
         Future.failed(new Exception("not found"))
     }
 
     val controller =
-      new DeclarationConfirmationController(controllerComponents, actionBuilder, view, connector, declarationJourneyRepository)
-    val request = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, aSessionId)
+      new DeclarationConfirmationController(
+        controllerComponents,
+        actionBuilder,
+        view,
+        connector,
+        declarationJourneyRepository
+      )
+    val request    = buildGet(routes.DeclarationConfirmationController.onPageLoad.url, aSessionId)
 
     val eventualResult = controller.onPageLoad()(request)
-    status(eventualResult) mustBe 303
+    status(eventualResult) mustBe SEE_OTHER
     redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/cannot-access-page")
   }
 }

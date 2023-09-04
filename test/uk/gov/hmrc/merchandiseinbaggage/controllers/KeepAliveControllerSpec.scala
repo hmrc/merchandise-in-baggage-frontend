@@ -27,13 +27,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
-  val repo = app.injector.instanceOf[DeclarationJourneyRepository]
-  val deletedView = app.injector.instanceOf[ProgressDeletedView]
+  val repo               = app.injector.instanceOf[DeclarationJourneyRepository]
+  val deletedView        = app.injector.instanceOf[ProgressDeletedView]
   val serviceTimeoutView = app.injector.instanceOf[ServiceTimeoutView]
-  val controller = new KeepAliveController(controllerComponents, actionBuilder, repo, deletedView, serviceTimeoutView)
+  val controller         = new KeepAliveController(controllerComponents, actionBuilder, repo, deletedView, serviceTimeoutView)
 
   "return NoContent with no changes to declaration journey" in {
-    val id = SessionId("unchanged")
+    val id      = SessionId("unchanged")
     val created = LocalDateTime.now.withSecond(0).withNano(0)
     val journey = startedImportToGreatBritainJourney.copy(sessionId = id, createdAt = created)
     givenADeclarationJourneyIsPersisted(journey)
@@ -45,13 +45,13 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
   }
 
   "return 200" in {
-    val id = SessionId("unchanged")
+    val id      = SessionId("unchanged")
     val journey = startedImportToGreatBritainJourney.copy(sessionId = id)
     givenADeclarationJourneyIsPersisted(journey)
 
     val result = controller.onProgressDelete(buildGet(routes.KeepAliveController.onProgressDelete.url, id))
 
-    status(result) mustBe 200
+    status(result) mustBe OK
   }
 
   "onServiceTimeout" should {
@@ -59,9 +59,9 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
       val request = buildGet(routes.KeepAliveController.onServiceTimeout.url, aSessionId)
 
       val eventualResult = controller.onServiceTimeout()(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
 
       result must include(messageApi(s"timeOut.title"))
       result must include(messageApi(s"timeOut.title"))

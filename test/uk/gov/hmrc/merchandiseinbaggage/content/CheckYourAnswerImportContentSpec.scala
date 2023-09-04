@@ -29,20 +29,22 @@ import scala.jdk.CollectionConverters._
 class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTestData {
 
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
-    setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) { bulletPoints =>
-      bulletPoints.size mustBe 3
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
-      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
-      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
-      elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
+    setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) {
+      bulletPoints =>
+        bulletPoints.size mustBe 3
+        elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
+        elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
+        elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
+        elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
     }
   }
 
   "render proof of origin needed if good EU origin goods amount is > 1000 for CustomsAgent" in {
-    setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(Yes))) { bulletPoints =>
-      bulletPoints.size mustBe 3
-      elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.1")}"
-      elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.2")}"
+    setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(Yes))) {
+      bulletPoints =>
+        bulletPoints.size mustBe 3
+        elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.1")}"
+        elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.2")}"
     }
   }
 
@@ -62,7 +64,8 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
   }
 
   private def setUp(calculationResult: CalculationResult, journey: DeclarationJourney = completedDeclarationJourney)(
-    fn: List[WebElement] => Any): Any = fn {
+    fn: List[WebElement] => Any
+  ): Any = fn {
     givenAPaymentCalculation(calculationResult)
     givenAJourneyWithSession(declarationJourney = journey)
     goToCYAPage()

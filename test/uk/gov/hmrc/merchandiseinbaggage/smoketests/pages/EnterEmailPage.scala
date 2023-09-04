@@ -22,7 +22,7 @@ import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
 object EnterEmailPage extends Page {
-  val path: String = "/declare-commercial-goods/enter-email"
+  val path: String  = "/declare-commercial-goods/enter-email"
   val title: String = "Enter an email address"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {

@@ -29,13 +29,14 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ValueWeightOfGoodsView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ValueWeightOfGoodsController @Inject()(
+class ValueWeightOfGoodsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   navigator: Navigator,
   mibConnector: MibConnector,
-  view: ValueWeightOfGoodsView)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  view: ValueWeightOfGoodsView
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
@@ -47,12 +48,14 @@ class ValueWeightOfGoodsController @Inject()(
         .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
           Ok(
             view(
-              request.declarationJourney.maybeValueWeightOfGoodsBelowThreshold.fold(form(goodsDestination))(form(goodsDestination).fill),
+              request.declarationJourney.maybeValueWeightOfGoodsBelowThreshold
+                .fold(form(goodsDestination))(form(goodsDestination).fill),
               goodsDestination,
               request.declarationType,
               exchangeUrl.url,
               backButtonUrl
-            ))
+            )
+          )
         }
     }
   }
@@ -68,7 +71,8 @@ class ValueWeightOfGoodsController @Inject()(
             .fold(
               formWithErrors =>
                 Future successful BadRequest(
-                  view(formWithErrors, goodsDestination, request.declarationType, exchangeUrl.url, backButtonUrl)),
+                  view(formWithErrors, goodsDestination, request.declarationType, exchangeUrl.url, backButtonUrl)
+                ),
               belowThreshold => {
                 val updated = declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold))
                 navigator
@@ -79,7 +83,8 @@ class ValueWeightOfGoodsController @Inject()(
                       updated,
                       repo.upsert,
                       updated.declarationRequiredAndComplete
-                    ))
+                    )
+                  )
                   .map(Redirect)
               }
             )

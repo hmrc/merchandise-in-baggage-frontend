@@ -26,7 +26,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class AddressLookupFrontendConnectorSpec extends BaseSpecWithApplication with Eventually {
   private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private lazy val connector = injector.instanceOf[AddressLookupFrontendConnector]
+  private lazy val connector             = injector.instanceOf[AddressLookupFrontendConnector]
 
   "init a journey" in {
     givenInitJourney(wireMockServer)

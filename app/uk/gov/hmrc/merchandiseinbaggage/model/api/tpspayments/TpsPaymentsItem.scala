@@ -24,7 +24,8 @@ case class TpsPaymentsItem(
   amount: BigDecimal,
   taxRegimeDisplay: String = "MODS",
   taxType: String = "MIB",
-  paymentSpecificData: PaymentSpecificData)
+  paymentSpecificData: PaymentSpecificData
+)
 
 object TpsPaymentsItem {
   implicit val format: OFormat[TpsPaymentsItem] = Json.format[TpsPaymentsItem]

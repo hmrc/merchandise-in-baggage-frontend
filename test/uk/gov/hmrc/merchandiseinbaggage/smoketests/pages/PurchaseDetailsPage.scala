@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage.pat
 
 object PurchaseDetailsPage extends Page {
   def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
-  def title(idx: Int) = "How much did you pay for the test good?"
+  def title(idx: Int)        = "How much did you pay for the test good?"
 
   def selectCurrency(implicit webDriver: HtmlUnitDriver): Select = new Select(find(IdQuery("currency")).get.underlying)
 
@@ -47,7 +47,7 @@ trait PurchaseDetailsPage extends BaseUiSpec { this: Suite =>
 
   def goToPurchaseDetailsPage(idx: Int): Assertion = {
     goto(path(idx))
-    pageTitle must startWith(messages(s"purchaseDetails.title", "wine"))
+    pageTitle                        must startWith(messages(s"purchaseDetails.title", "wine"))
     elementText(findByTagName("h1")) must startWith(messages(s"purchaseDetails.heading", "wine"))
   }
 }

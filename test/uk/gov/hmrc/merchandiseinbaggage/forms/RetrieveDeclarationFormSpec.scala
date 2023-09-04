@@ -25,7 +25,7 @@ class RetrieveDeclarationFormSpec extends FieldBehaviours {
   "form" should {
 
     val requiredMibRefMessageKey = "retrieveDeclaration.mibReference.error.required"
-    val requiredEoriMessageKey = "retrieveDeclaration.eori.error.required"
+    val requiredEoriMessageKey   = "retrieveDeclaration.eori.error.required"
 
     behave like mandatoryField(form, "mibReference", FormError("mibReference", requiredMibRefMessageKey))
     behave like mandatoryField(form, "eori", FormError("eori", requiredEoriMessageKey))
@@ -38,7 +38,8 @@ class RetrieveDeclarationFormSpec extends FieldBehaviours {
       form.bind(Map("mibReference" -> "XAMB00000100", "eori" -> "GB1234567800")).errors mustBe
         Seq(
           FormError("mibReference", "retrieveDeclaration.mibReference.error.invalid"),
-          FormError("eori", "retrieveDeclaration.eori.error.invalid"))
+          FormError("eori", "retrieveDeclaration.eori.error.invalid")
+        )
     }
   }
 }

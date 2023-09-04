@@ -27,10 +27,14 @@ class EoriNumberPageContentSpec extends EoriNumberPage with CoreTestData {
       givenAJourneyWithSession()
       goToEoriPage(Yes, completedDeclarationJourney.declarationType)
 
-      findById("eori-hint").getText mustBe "Your client will need an EORI number that starts with GB to use this service. For example, GB123467800000."
+      findById(
+        "eori-hint"
+      ).getText mustBe "Your client will need an EORI number that starts with GB to use this service. For example, GB123467800000."
       findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include("Your client can")
       findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include("apply for an EORI number")
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include("(usually takes less than 10 minutes)")
+      findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include(
+        "(usually takes less than 10 minutes)"
+      )
     }
 
     "show content specific to trader if the user is a trader" in {
@@ -38,9 +42,13 @@ class EoriNumberPageContentSpec extends EoriNumberPage with CoreTestData {
       givenAJourneyWithSession(declarationJourney = updatedJourney)
       goToEoriPage(No, updatedJourney.declarationType)
 
-      findById("eori-hint").getText mustBe "You need an EORI number that starts with GB to use this service. For example, GB123467800000."
+      findById(
+        "eori-hint"
+      ).getText mustBe "You need an EORI number that starts with GB to use this service. For example, GB123467800000."
       findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include("Apply for an EORI number")
-      findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include("(usually takes less than 10 minutes)")
+      findByXPath("//*[@id=\"main-content\"]/div/div/form/p").getText must include(
+        "(usually takes less than 10 minutes)"
+      )
     }
   }
 }

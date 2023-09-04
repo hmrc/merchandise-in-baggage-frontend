@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
-class RemoveGoodsController @Inject()(
+class RemoveGoodsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
@@ -51,7 +51,8 @@ class RemoveGoodsController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, idx, category, request.declarationType, backButtonUrl))),
           removeGoods =>
             navigator
               .nextPage(
@@ -60,7 +61,8 @@ class RemoveGoodsController @Inject()(
                   request.declarationJourney,
                   removeGoods,
                   repo.upsert
-                ))
+                )
+              )
               .map(Redirect)
         )
     }

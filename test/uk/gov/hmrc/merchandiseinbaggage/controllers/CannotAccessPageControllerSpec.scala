@@ -32,11 +32,11 @@ class CannotAccessPageControllerSpec extends DeclarationJourneyControllerSpec {
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.CannotAccessPageController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.CannotAccessPageController.onPageLoad.url, aSessionId)
         val eventualResult = controller.onPageLoad()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"invalidRequest.li1"))
         result must include(messageApi(s"invalidRequest.li2"))
         result must include(messageApi(s"invalidRequest.$importOrExport.restart"))

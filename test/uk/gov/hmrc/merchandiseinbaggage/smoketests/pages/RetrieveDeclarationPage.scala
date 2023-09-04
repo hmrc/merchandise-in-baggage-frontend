@@ -22,7 +22,7 @@ import org.scalatestplus.selenium.WebBrowser._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 
 object RetrieveDeclarationPage extends Page {
-  val path = "/declare-commercial-goods/retrieve-declaration"
+  val path  = "/declare-commercial-goods/retrieve-declaration"
   val title =
     "What are the details of your existing declaration? - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
 

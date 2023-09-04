@@ -35,11 +35,11 @@ class GoodsRemovedControllerSpec extends DeclarationJourneyControllerSpec {
   "onPageLoad" should {
     s"return 200 with expected content" in {
 
-      val request = buildGet(routes.GoodsRemovedController.onPageLoad.url, aSessionId)
+      val request        = buildGet(routes.GoodsRemovedController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad()(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi(s"goodsRemoved.title"))
       result must include(messageApi(s"goodsRemoved.heading"))
       result must include(messageApi(s"goodsRemoved.p1"))

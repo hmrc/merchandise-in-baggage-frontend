@@ -19,10 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.config
 import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json}
 
-class AddressLookupConfig @Inject()() {
+class AddressLookupConfig @Inject() () {
 
   def config(continueUrl: String) =
-    Json.parse(s"""{
+    Json
+      .parse(s"""{
                   |  "version": 2,
                   |  "options": {
                   |    "continueUrl": "$continueUrl"
@@ -40,5 +41,6 @@ class AddressLookupConfig @Inject()() {
                   |    }
                   |  }
                   |}
-                  |""".stripMargin).as[JsObject]
+                  |""".stripMargin)
+      .as[JsObject]
 }

@@ -30,19 +30,30 @@ import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 @Singleton
-class TpsPaymentsService @Inject()(connector: TpsPaymentsBackendConnector, val auditConnector: AuditConnector, val messagesApi: MessagesApi)(
-  implicit ec: ExecutionContext,
-  appConfig: AppConfig)
+class TpsPaymentsService @Inject() (
+  connector: TpsPaymentsBackendConnector,
+  val auditConnector: AuditConnector,
+  val messagesApi: MessagesApi
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends Auditor {
 
-  def createTpsPayments(pid: String, amendmentRef: Option[Int], declaration: Declaration, paymentDue: CalculationResults)(
-    implicit hc: HeaderCarrier): Future[TpsId] =
+  def createTpsPayments(
+    pid: String,
+    amendmentRef: Option[Int],
+    declaration: Declaration,
+    paymentDue: CalculationResults
+  )(implicit hc: HeaderCarrier): Future[TpsId] =
     for {
       _     <- auditDeclaration(declaration)
       tpsId <- connector.tpsPayments(buildTpsRequest(pid, amendmentRef, declaration, paymentDue))
     } yield tpsId
 
-  private[service] def buildTpsRequest(pid: String, amendmentRef: Option[Int], declaration: Declaration, paymentDue: CalculationResults) =
+  private[service] def buildTpsRequest(
+    pid: String,
+    amendmentRef: Option[Int],
+    declaration: Declaration,
+    paymentDue: CalculationResults
+  ) =
     TpsPaymentsRequest(
       pid = pid,
       payments = Seq(

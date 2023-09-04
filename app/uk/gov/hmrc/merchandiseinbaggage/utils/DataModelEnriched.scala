@@ -42,10 +42,11 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
 
   implicit class AmountInPenceEnriched(amountInPence: AmountInPence) {
     import amountInPence._
-    val inPounds: BigDecimal = (BigDecimal(value) / 100).setScale(2)
-    val formattedInPounds: String =
-      if (value == 0) getCurrencyInstance(UK).format(inPounds) else getCurrencyInstance(UK).format(inPounds).split("\\.00")(0)
-    lazy val isPaymentRequired: Boolean = inPounds.compareTo(BigDecimal(0.0)) > 0
+    val inPounds: BigDecimal                          = (BigDecimal(value) / 100).setScale(2)
+    val formattedInPounds: String                     =
+      if (value == 0) getCurrencyInstance(UK).format(inPounds)
+      else getCurrencyInstance(UK).format(inPounds).split("\\.00")(0)
+    lazy val isPaymentRequired: Boolean               = inPounds.compareTo(BigDecimal(0.0)) > 0
     def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
   }
 
@@ -180,14 +181,15 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
               Text(messages("paymentCalculation.table.col5.head")),
               attributes = Map("nowrap" -> "nowrap")
             )
-          ))
+          )
+        )
       )
     }
   }
 
   implicit class DeclarationEnriched(declaration: Declaration) {
     implicit val localDateOrdering: Ordering[LocalDateTime] = Ordering.by(_.toEpochSecond(ZoneOffset.UTC))
-    def latestGoods: Seq[Goods] =
+    def latestGoods: Seq[Goods]                             =
       if (declaration.amendments.isEmpty) declaration.declarationGoods.goods
       else declaration.amendments.maxBy(_.dateOfAmendment).goods.goods
   }

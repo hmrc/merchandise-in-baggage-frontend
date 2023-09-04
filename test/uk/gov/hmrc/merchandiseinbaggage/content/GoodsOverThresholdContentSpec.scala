@@ -40,18 +40,30 @@ class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTest
         elementText(findByTagName("h1")) mustBe messages("goodsOverThreshold.GreatBritain.heading")
 
         findByXPath("""//*[@id="main-content"]/div/div/p[1]""").getText mustBe messages(
-          s"goodsOverThreshold.GreatBritain.$importOrExport.p1")
+          s"goodsOverThreshold.GreatBritain.$importOrExport.p1"
+        )
 
-        findByXPath("""//*[@id="main-content"]/div/div/p[2]""").getText must startWith(messages("goodsOverThreshold.p2"))
-        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(s"goodsOverThreshold.p2.$importOrExport.a.text")
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]""").getText must startWith(
+          messages("goodsOverThreshold.p2")
+        )
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(
+          s"goodsOverThreshold.p2.$importOrExport.a.text"
+        )
         findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getAttribute("href") mustBe messages(
-          s"goodsOverThreshold.p2.$importOrExport.a.href")
-        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(s"goodsOverThreshold.p2.$importOrExport.a.text")
+          s"goodsOverThreshold.p2.$importOrExport.a.href"
+        )
+        findByXPath("""//*[@id="main-content"]/div/div/p[2]/a""").getText mustBe messages(
+          s"goodsOverThreshold.p2.$importOrExport.a.text"
+        )
 
         if (importOrExport == Import) {
-          findByXPath("""//*[@id="main-content"]/div/div/p[8]""").getText must startWith(messages(s"goodsOverThreshold.p8.1"))
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]""").getText   must startWith(
+            messages(s"goodsOverThreshold.p8.1")
+          )
           findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getAttribute("href") mustBe "https://something"
-          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getText must startWith(messages("goodsOverThreshold.p8.a.text"))
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getText must startWith(
+            messages("goodsOverThreshold.p8.a.text")
+          )
         }
       }
     }

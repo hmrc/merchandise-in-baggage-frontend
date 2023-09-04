@@ -30,7 +30,7 @@ object GoodsDestination {
 }
 
 object GoodsDestinations extends Enum[GoodsDestination] with RadioSupport[GoodsDestination] {
-  override val baseMessageKey: String = "goodsDestination"
+  override val baseMessageKey: String                         = "goodsDestination"
   override val values: immutable.IndexedSeq[GoodsDestination] = findValues
 
   case object NorthernIreland extends GoodsDestination {
@@ -38,7 +38,7 @@ object GoodsDestinations extends Enum[GoodsDestination] with RadioSupport[GoodsD
   }
 
   case object GreatBritain extends GoodsDestination {
-    override val threshold: AmountInPence = AmountInPence(150000)
+    override val threshold: AmountInPence            = AmountInPence(150000)
     override val maybeHintMessageKey: Option[String] = Some(s"$baseMessageKey.$entryName.hint")
   }
 }

@@ -34,7 +34,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersNewHandler @Inject()(
+class CheckYourAnswersNewHandler @Inject() (
   mibService: MibService,
   tpsPaymentsService: TpsPaymentsService,
   paymentService: PaymentService,
@@ -43,15 +43,18 @@ class CheckYourAnswersNewHandler @Inject()(
   exportView: CheckYourAnswersExportView
 )(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  def onPageLoad(
-    declaration: Declaration,
-    isAgent: YesNo)(implicit hc: HeaderCarrier, request: Request[_], messages: Messages): Future[Result] =
-    mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map { calculationResponse =>
-      (calculationResponse.thresholdCheck, declaration.declarationType) match {
-        case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad)
-        case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
-        case (WithinThreshold, Export) => Ok(exportView(form, declaration, isAgent))
-      }
+  def onPageLoad(declaration: Declaration, isAgent: YesNo)(implicit
+    hc: HeaderCarrier,
+    request: Request[_],
+    messages: Messages
+  ): Future[Result] =
+    mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map {
+      calculationResponse =>
+        (calculationResponse.thresholdCheck, declaration.declarationType) match {
+          case (OverThreshold, _)        => Redirect(routes.GoodsOverThresholdController.onPageLoad)
+          case (WithinThreshold, Import) => Ok(importView(form, declaration, calculationResponse.results, isAgent))
+          case (WithinThreshold, Export) => Ok(exportView(form, declaration, isAgent))
+        }
     }
 
   def onSubmit(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
@@ -75,34 +78,40 @@ class CheckYourAnswersNewHandler @Inject()(
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     for {
-      calculationResponse <- mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
-      declarationWithCalculationResponse = declaration.copy(
-        maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
-      _           <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
-      redirectUrl <- paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
+      calculationResponse               <-
+        mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      declarationWithCalculationResponse =
+        declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
+      _                                 <- mibConnector.persistDeclaration(declarationWithCalculationResponse)
+      redirectUrl                       <-
+        paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 
-  private def persistAndRedirectToPayments(declaration: Declaration, pid: String)(
-    implicit rh: RequestHeader,
-    hc: HeaderCarrier): Future[Result] =
+  private def persistAndRedirectToPayments(declaration: Declaration, pid: String)(implicit
+    rh: RequestHeader,
+    hc: HeaderCarrier
+  ): Future[Result] =
     for {
-      calculationResponse <- mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
-      _ <- mibConnector.persistDeclaration(
-            declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)))
-      redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, declaration, pid)
+      calculationResponse <-
+        mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination)
+      _                   <- mibConnector.persistDeclaration(
+                               declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
+                             )
+      redirect            <- redirectToPaymentsIfNecessary(calculationResponse.results, declaration, pid)
     } yield redirect
 
-  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration, pid: String)(
-    implicit rh: RequestHeader,
-    hc: HeaderCarrier): Future[Result] =
+  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration, pid: String)(implicit
+    rh: RequestHeader,
+    hc: HeaderCarrier
+  ): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
       Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
         .createTpsPayments(pid, None, declaration, calculations)
-        .map(
-          tpsId =>
-            Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-              .addingToSession("TPS_ID" -> tpsId.value))
+        .map(tpsId =>
+          Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
+            .addingToSession("TPS_ID" -> tpsId.value)
+        )
     }
 }

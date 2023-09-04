@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
@@ -28,28 +30,29 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ExciseAndRestrictedGoodsView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
+class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
-  val view = app.injector.instanceOf[ExciseAndRestrictedGoodsView]
-  val mockNavigator = mock[Navigator]
-  def controller(declarationJourney: DeclarationJourney) =
+  val view: ExciseAndRestrictedGoodsView                                                     = app.injector.instanceOf[ExciseAndRestrictedGoodsView]
+  val mockNavigator: Navigator                                                               = mock[Navigator]
+  def controller(declarationJourney: DeclarationJourney): ExciseAndRestrictedGoodsController =
     new ExciseAndRestrictedGoodsController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       view,
-      mockNavigator)
+      mockNavigator
+    )
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
+        val request        = buildGet(ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
         result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))
         result must include(messageApi("exciseAndRestrictedGoods.details"))
@@ -61,24 +64,24 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val request = buildPost(ExciseAndRestrictedGoodsController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "No")
 
-        (mockNavigator
-          .nextPage(_: ExciseAndRestrictedGoodsRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(ValueWeightOfGoodsController.onPageLoad))
-          .once()
+        when(mockNavigator.nextPage(any[ExciseAndRestrictedGoodsRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(ValueWeightOfGoodsController.onPageLoad))
 
-        controller(journey).onSubmit(request).futureValue
+        val result: Future[Result] = controller(journey).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/value-weight-of-goods")
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(ExciseAndRestrictedGoodsController.onSubmit.url, aSessionId)
+      val request        = buildPost(ExciseAndRestrictedGoodsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
       result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
       result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))

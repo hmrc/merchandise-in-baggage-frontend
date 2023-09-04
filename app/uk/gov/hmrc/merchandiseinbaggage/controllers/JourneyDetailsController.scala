@@ -28,12 +28,13 @@ import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
-class JourneyDetailsController @Inject()(
+class JourneyDetailsController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
   view: JourneyDetailsPage,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
@@ -45,7 +46,9 @@ class JourneyDetailsController @Inject()(
       view(
         request.declarationJourney.maybeJourneyDetailsEntry.fold(journeyForm)(details => journeyForm.fill(details)),
         request.declarationType,
-        backButtonUrl))
+        backButtonUrl
+      )
+    )
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -61,7 +64,8 @@ class JourneyDetailsController @Inject()(
                 updated,
                 repo.upsert,
                 updated.declarationRequiredAndComplete
-              ))
+              )
+            )
             .map(Redirect)
         }
       )

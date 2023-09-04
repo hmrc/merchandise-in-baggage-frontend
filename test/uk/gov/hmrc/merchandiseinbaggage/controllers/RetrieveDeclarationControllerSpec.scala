@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
-import play.api.test.Helpers.{status, _}
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
@@ -31,20 +33,21 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec with MockFactory with PropertyBaseTables {
+class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
-  val view = injector.instanceOf[RetrieveDeclarationView]
-  val connector = injector.instanceOf[MibConnector]
-  val mockNavigator = mock[Navigator]
+  val view: RetrieveDeclarationView = injector.instanceOf[RetrieveDeclarationView]
+  val connector: MibConnector       = injector.instanceOf[MibConnector]
+  val mockNavigator: Navigator      = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): RetrieveDeclarationController =
     new RetrieveDeclarationController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       connector,
       mockNavigator,
-      view)
+      view
+    )
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
 
@@ -54,11 +57,11 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
 
-        val request = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"retrieveDeclaration.title"))
         result must include(messageApi(s"retrieveDeclaration.heading"))
         result must include(messageApi(s"retrieveDeclaration.p"))
@@ -73,35 +76,38 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
   }
 
   "onSubmit" should {
-    s"redirect by delegating to Navigator" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, 404)
+    "redirect by delegating to Navigator" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, NOT_FOUND)
       val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
-      (mockNavigator
-        .nextPage(_: RetrieveDeclarationRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future.successful(DeclarationNotFoundController.onPageLoad))
+      when(mockNavigator.nextPage(any[NavigationRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(DeclarationNotFoundController.onPageLoad))
 
-      controller(journey).onSubmit(request).futureValue
+      val result: Future[Result] = controller(journey).onSubmit(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/declaration-not-found")
     }
 
-    s"redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, 500)
-      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
+    "redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
+      givenFindByDeclarationReturnStatus(mibReference, eori, INTERNAL_SERVER_ERROR)
+      val request                = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
-      val eventualResult = controller(journey).onSubmit(request)
-      status(eventualResult) mustBe 500
+      val result: Future[Result] = controller(journey).onSubmit(request)
+
+      status(result) mustBe INTERNAL_SERVER_ERROR
+
     }
 
     "return 400 for invalid form data" in {
-      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
+      val request        = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi(s"retrieveDeclaration.mibReference.error.invalid"))
       result must include(messageApi(s"retrieveDeclaration.eori.error.invalid"))
     }

@@ -23,10 +23,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsRemovedView
 
 @Singleton
-class GoodsRemovedController @Inject()(
+class GoodsRemovedController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
-  view: GoodsRemovedView)(implicit val appConfig: AppConfig)
+  view: GoodsRemovedView
+)(implicit val appConfig: AppConfig)
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

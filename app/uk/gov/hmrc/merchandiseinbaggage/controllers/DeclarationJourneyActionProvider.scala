@@ -28,10 +28,11 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DeclarationJourneyActionProvider @Inject()(
+class DeclarationJourneyActionProvider @Inject() (
   defaultActionBuilder: DefaultActionBuilder,
   repo: DeclarationJourneyRepository,
-  strideAuthAction: StrideAuthAction)(implicit ec: ExecutionContext)
+  strideAuthAction: StrideAuthAction
+)(implicit ec: ExecutionContext)
     extends IsAssistedDigitalConfiguration {
 
   val initJourneyAction: ActionBuilder[AuthRequest, AnyContent] = defaultActionBuilder andThen strideAuthAction
@@ -47,7 +48,9 @@ class DeclarationJourneyActionProvider @Inject()(
     defaultActionBuilder andThen journeyActionRefiner andThen goodsActionRefiner(idx)
 
   def invalidRequest(warnMessage: String)(implicit request: RequestHeader): Result = {
-    DeclarationJourneyLogger.info(s"$warnMessage so redirecting to ${routes.CannotAccessPageController.onPageLoad}")(request)
+    DeclarationJourneyLogger.info(s"$warnMessage so redirecting to ${routes.CannotAccessPageController.onPageLoad}")(
+      request
+    )
     Redirect(routes.CannotAccessPageController.onPageLoad)
   }
 
@@ -59,12 +62,13 @@ class DeclarationJourneyActionProvider @Inject()(
 
       override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] =
         request.session.get(SessionKeys.sessionId) match {
-          case None => Future successful Left(invalidRequest("Session Id not found")(request))
+          case None            => Future successful Left(invalidRequest("Session Id not found")(request))
           case Some(sessionId) =>
             repo.findBySessionId(SessionId(sessionId)).map {
               case Some(declarationJourney) =>
                 Right(new DeclarationJourneyRequest(declarationJourney, AuthRequest(request, None)))
-              case _ => Left(invalidRequest(s"Persisted declaration journey not found for session: $sessionId")(request))
+              case _                        =>
+                Left(invalidRequest(s"Persisted declaration journey not found for session: $sessionId")(request))
             }
         }
 
@@ -74,9 +78,11 @@ class DeclarationJourneyActionProvider @Inject()(
   private def goodsActionRefiner(idx: Int): ActionRefiner[DeclarationJourneyRequest, DeclarationGoodsRequest] =
     new ActionRefiner[DeclarationJourneyRequest, DeclarationGoodsRequest] {
 
-      override protected def refine[A](request: DeclarationJourneyRequest[A]): Future[Either[Result, DeclarationGoodsRequest[A]]] =
+      override protected def refine[A](
+        request: DeclarationJourneyRequest[A]
+      ): Future[Either[Result, DeclarationGoodsRequest[A]]] =
         Future successful (request.declarationJourney.goodsEntries.entries.lift(idx - 1) match {
-          case None =>
+          case None             =>
             Left(invalidRequest(s"Goods entry not found for index $idx")(request))
           case Some(goodsEntry) =>
             Right(new DeclarationGoodsRequest(request, goodsEntry))

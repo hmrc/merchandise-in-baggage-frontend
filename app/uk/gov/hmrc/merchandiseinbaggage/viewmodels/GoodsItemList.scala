@@ -26,7 +26,7 @@ object GoodsItemList {
   def summaryList(declarationGoods: Seq[Goods])(implicit messages: Messages): Seq[SummaryList] =
     declarationGoods.zipWithIndex.map { item =>
       val goods = item._1
-      val idx = item._2 + 1
+      val idx   = item._2 + 1
 
       goods match {
         case ig: ImportGoods => importSummary(ig, idx)

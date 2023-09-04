@@ -37,13 +37,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
 
   implicit val formats: DefaultFormats.type = DefaultFormats
 
-  val CONSUMER = "merchandise-in-baggage-frontend"
-  val PROVIDER = "merchandise-in-baggage"
-  val mibConnector = injector.instanceOf[MibConnector]
+  val CONSUMER: String           = "merchandise-in-baggage-frontend"
+  val PROVIDER: String           = "merchandise-in-baggage"
+  val mibConnector: MibConnector = injector.instanceOf[MibConnector]
 
   val findByDeclaration: Declaration = declaration.copy(mibReference = mibReference, eori = eori)
-  val today = LocalDate.now
-  val period = ConversionRatePeriod(today, today, "EUR", BigDecimal(1.1))
+  val today: LocalDate               = LocalDate.now
+  val period: ConversionRatePeriod   = ConversionRatePeriod(today, today, "EUR", BigDecimal(1.1))
 
   val pact: ScalaPactDescription = forgePact
     .between(CONSUMER)
@@ -52,7 +52,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
       interaction
         .description("Persisting a declaration")
         .provided("persistDeclarationTest")
-        .uponReceiving(POST, s"$declarationsUrl", None, Map("Content-Type" -> "application/json"), Json.toJson(declaration).toString)
+        .uponReceiving(
+          POST,
+          s"$declarationsUrl",
+          None,
+          Map("Content-Type" -> "application/json"),
+          Json.toJson(declaration).toString
+        )
         .willRespondWith(201, s""""\\"${declaration.declarationId.value}\\""""")
     )
     .addInteraction(
@@ -64,7 +70,8 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           s"$declarationsUrl",
           None,
           Map("Content-Type" -> "application/json"),
-          Json.toJson(declarationWithAmendment).toString)
+          Json.toJson(declarationWithAmendment).toString
+        )
         .willRespondWith(200, s""""\\"${declarationWithAmendment.declarationId.value}\\""""")
     )
     .addInteraction(
@@ -89,23 +96,29 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
                 Some(declarationWithAmendment.amendments.head),
                 Some(declarationWithAmendment.goodsDestination),
                 DeclarationId("id789")
-              ))
+              )
+            )
             .toString
         )
         .willRespondWith(
           200,
           Json
-            .toJson(CalculationResponse(
-              CalculationResults(
-                Seq(
-                  CalculationResult(
-                    declarationWithAmendment.declarationGoods.goods.head.asInstanceOf[ImportGoods],
-                    AmountInPence(9090),
-                    AmountInPence(0),
-                    AmountInPence(1818),
-                    Some(period)))),
-              WithinThreshold
-            ))
+            .toJson(
+              CalculationResponse(
+                CalculationResults(
+                  Seq(
+                    CalculationResult(
+                      declarationWithAmendment.declarationGoods.goods.head.asInstanceOf[ImportGoods],
+                      AmountInPence(9090),
+                      AmountInPence(0),
+                      AmountInPence(1818),
+                      Some(period)
+                    )
+                  )
+                ),
+                WithinThreshold
+              )
+            )
             .toString
         )
     )
@@ -118,13 +131,21 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
           s"$calculationsUrl",
           None,
           Map("Content-Type" -> "application/json"),
-          Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString)
+          Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString
+        )
         .willRespondWith(
           200,
           Json
-            .toJson(CalculationResponse(
-              CalculationResults(Seq(CalculationResult(aGoods, AmountInPence(18181), AmountInPence(0), AmountInPence(3636), Some(period)))),
-              WithinThreshold))
+            .toJson(
+              CalculationResponse(
+                CalculationResults(
+                  Seq(
+                    CalculationResult(aGoods, AmountInPence(18181), AmountInPence(0), AmountInPence(3636), Some(period))
+                  )
+                ),
+                WithinThreshold
+              )
+            )
             .toString
         )
     )

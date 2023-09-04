@@ -24,7 +24,8 @@ case class CalculationResult(
   gbpAmount: AmountInPence,
   duty: AmountInPence,
   vat: AmountInPence,
-  conversionRatePeriod: Option[ConversionRatePeriod]) {
+  conversionRatePeriod: Option[ConversionRatePeriod]
+) {
 
   def taxDue: AmountInPence = AmountInPence(duty.value + vat.value)
 }

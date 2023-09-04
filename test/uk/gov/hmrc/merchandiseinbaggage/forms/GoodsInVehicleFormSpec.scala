@@ -25,7 +25,7 @@ class GoodsInVehicleFormSpec extends YesNoFieldBehaviours {
 
   val importRequiredKey = "goodsInVehicle.error.Import.required"
   val exportRequiredKey = "goodsInVehicle.error.Export.required"
-  val invalidKey = "error.yesNo"
+  val invalidKey        = "error.yesNo"
 
   ".value" must {
 

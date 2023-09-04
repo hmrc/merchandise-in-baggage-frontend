@@ -30,12 +30,13 @@ import com.softwaremill.quicklens._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsOriginController @Inject()(
+class GoodsOriginController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
   view: GoodsOriginView,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
@@ -47,7 +48,7 @@ class GoodsOriginController @Inject()(
         case entry: ImportGoodsEntry =>
           val preparedForm = entry.maybeProducedInEu.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, backButtonUrl(idx)))
-        case _: ExportGoodsEntry =>
+        case _: ExportGoodsEntry     =>
           Future successful Redirect(SearchGoodsCountryController.onPageLoad(idx))
       }
     }
@@ -67,7 +68,8 @@ class GoodsOriginController @Inject()(
                   request.goodsEntry.modify(_.when[ImportGoodsEntry].maybeProducedInEu).setTo(Some(producedInEu)),
                   idx,
                   repo.upsert
-                ))
+                )
+              )
               .map(Redirect)
         )
     }

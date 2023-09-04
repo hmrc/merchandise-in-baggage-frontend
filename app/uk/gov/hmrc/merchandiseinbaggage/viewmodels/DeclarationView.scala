@@ -27,34 +27,38 @@ object DeclarationView {
     declaration.declarationGoods.goods ++ validAmendments(declaration).flatMap(_.goods.goods)
 
   def totalDutyDue(declaration: Declaration): AmountInPence = {
-    val originalDuty: Long = declaration.maybeTotalCalculationResult.map(_.totalDutyDue.value).getOrElse(0)
-    val allAmendmentsDuty: Long = validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalDutyDue.value).sum
+    val originalDuty: Long      = declaration.maybeTotalCalculationResult.map(_.totalDutyDue.value).getOrElse(0)
+    val allAmendmentsDuty: Long =
+      validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalDutyDue.value).sum
     AmountInPence(originalDuty + allAmendmentsDuty)
   }
 
   def totalVatDue(declaration: Declaration): AmountInPence = {
-    val originalVat: Long = declaration.maybeTotalCalculationResult.map(_.totalVatDue.value).getOrElse(0)
-    val allAmendmentsVat: Long = validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalVatDue.value).sum
+    val originalVat: Long      = declaration.maybeTotalCalculationResult.map(_.totalVatDue.value).getOrElse(0)
+    val allAmendmentsVat: Long =
+      validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalVatDue.value).sum
     AmountInPence(originalVat + allAmendmentsVat)
   }
 
   def totalTaxDue(declaration: Declaration): AmountInPence = {
-    val originalTax: Long = declaration.maybeTotalCalculationResult.map(_.totalTaxDue.value).getOrElse(0)
-    val allAmendmentsTax: Long = validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalTaxDue.value).sum
+    val originalTax: Long      = declaration.maybeTotalCalculationResult.map(_.totalTaxDue.value).getOrElse(0)
+    val allAmendmentsTax: Long =
+      validAmendments(declaration).flatMap(_.maybeTotalCalculationResult).map(_.totalTaxDue.value).sum
     AmountInPence(originalTax + allAmendmentsTax)
   }
 
   private def validAmendments(declaration: Declaration) =
     declaration.declarationType match {
       case Export => declaration.amendments
-      case Import => declaration.amendments.filter(a => a.paymentStatus.contains(Paid) || a.paymentStatus.contains(NotRequired))
+      case Import =>
+        declaration.amendments.filter(a => a.paymentStatus.contains(Paid) || a.paymentStatus.contains(NotRequired))
     }
 
   def journeyDateWithInAllowedRange(declaration: Declaration): Boolean = {
-    val now = LocalDate.now()
-    val travelDate = declaration.journeyDetails.dateOfTravel
+    val now          = LocalDate.now()
+    val travelDate   = declaration.journeyDetails.dateOfTravel
     val startOfRange = travelDate.minusDays(5)
-    val endOfRange = travelDate.plusDays(30)
+    val endOfRange   = travelDate.plusDays(30)
 
     (now.isAfter(startOfRange) || now.isEqual(startOfRange)) &&
     (now.isBefore(endOfRange) || now.isEqual(endOfRange))

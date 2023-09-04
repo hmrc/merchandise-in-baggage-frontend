@@ -26,9 +26,9 @@ sealed trait YesNo extends EnumEntry {
 }
 
 object YesNo extends Enum[YesNo] {
-  override val baseMessageKey: String = "site"
+  override val baseMessageKey: String              = "site"
   override val values: immutable.IndexedSeq[YesNo] = findValues
-  implicit val format: Format[YesNo] = EnumFormat(YesNo)
+  implicit val format: Format[YesNo]               = EnumFormat(YesNo)
 
   def from(bool: Boolean): YesNo = if (bool) Yes else No
 

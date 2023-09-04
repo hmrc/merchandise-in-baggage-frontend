@@ -28,9 +28,12 @@ object PortService {
 
   def isValidPortCode(code: String): Boolean = getPortByCode(code).isDefined
 
-  def getDisplayNameByCode(code: String): Option[String] = for (c <- ports.find(c => c.code == code)) yield c.displayName
+  def getDisplayNameByCode(code: String): Option[String] = for (c <- ports.find(c => c.code == code))
+    yield c.displayName
 
-  def getCodeByDisplayName(displayName: String): Option[String] = for (c <- ports.find(c => c.displayName == displayName)) yield c.code
+  def getCodeByDisplayName(displayName: String): Option[String] = for (
+    c <- ports.find(c => c.displayName == displayName)
+  ) yield c.code
 
   def isInGB(code: String): Boolean = ports.exists(c => c.code == code && c.isGB)
 
@@ -108,7 +111,12 @@ object PortService {
     Port("LBA", "title.leeds_bradford_airport", isGB = true, List("Leeds Airport", "Bradford Airport", "LBA")),
     Port("LEI", "title.leith", isGB = true, Nil),
     Port("LER", "title.lerwick", isGB = true, Nil),
-    Port("LPL", "title.liverpool_john_lennon_airport", isGB = true, List("Liverpool Airport", "John Lennon Airport", "LPL")),
+    Port(
+      "LPL",
+      "title.liverpool_john_lennon_airport",
+      isGB = true,
+      List("Liverpool Airport", "John Lennon Airport", "LPL")
+    ),
     Port("LCY", "title.london_city_airport", isGB = true, List("LCY")),
     Port("LGP", "title.london_gateway", isGB = true, Nil),
     Port("LTN", "title.luton_airport", isGB = true, List("London Luton Airport", "LTN")),

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -29,14 +31,14 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, P
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val importView = app.injector.instanceOf[PurchaseDetailsImportView]
-  private val exportView = app.injector.instanceOf[PurchaseDetailsExportView]
-  private val mibConnector = injector.instanceOf[MibConnector]
-  private val mockNavigator = mock[Navigator]
+  private val importView: PurchaseDetailsImportView = app.injector.instanceOf[PurchaseDetailsImportView]
+  private val exportView: PurchaseDetailsExportView = app.injector.instanceOf[PurchaseDetailsExportView]
+  private val mibConnector: MibConnector            = injector.instanceOf[MibConnector]
+  private val mockNavigator: Navigator              = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): PurchaseDetailsController =
     new PurchaseDetailsController(
       controllerComponents,
       stubProvider(declarationJourney),
@@ -44,7 +46,8 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       mockNavigator,
       mibConnector,
       importView,
-      exportView)
+      exportView
+    )
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney = DeclarationJourney(
@@ -57,11 +60,11 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
       s"return 200 with radio buttons for $importOrExport" in {
         givenExchangeRateURL("http://something")
 
-        val request = buildGet(PurchaseDetailsController.onPageLoad(1).url, aSessionId)
+        val request        = buildGet(PurchaseDetailsController.onPageLoad(1).url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(1)(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messages("purchaseDetails.title", "clothes"))
         result must include(messages("purchaseDetails.heading", "clothes"))
 
@@ -82,25 +85,26 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec wit
         val request = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
 
-        (mockNavigator
-          .nextPage(_: PurchaseDetailsRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(ReviewGoodsController.onPageLoad))
+        when(mockNavigator.nextPage(any[PurchaseDetailsRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(ReviewGoodsController.onPageLoad))
 
-        val eventualResult = controller(journey).onSubmit(1)(request)
-        status(eventualResult) mustBe 303
+        val result: Future[Result] = controller(journey).onSubmit(1)(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/review-goods")
+
       }
 
       s"return 400 with any form errors for $importOrExport" in {
         givenExchangeRateURL("http://something")
 
-        val request = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
+        val request        = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("abcd" -> "in valid")
 
         val eventualResult = controller(journey).onSubmit(1)(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 400
+        status(eventualResult) mustBe BAD_REQUEST
         result must include(messageApi("error.summary.title"))
         result must include(messages("purchaseDetails.title", "clothes"))
         result must include(messages("purchaseDetails.heading", "clothes"))

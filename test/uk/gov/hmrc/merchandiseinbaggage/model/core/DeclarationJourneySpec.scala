@@ -31,7 +31,7 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
     forAll(journeyTypesTable) { journeyType =>
       s"instantiate a declaration journey for $declarationType $journeyType" in {
         val sessionId = aSessionId
-        val actual = DeclarationJourney(sessionId, declarationType, journeyType)
+        val actual    = DeclarationJourney(sessionId, declarationType, journeyType)
         actual.sessionId mustBe sessionId
         actual.declarationType mustBe declarationType
         actual.journeyType mustBe journeyType
@@ -51,16 +51,16 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
     userEmail(false, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("zz@y"))
   }
 
-  val date = LocalDate.of(2018, 2, 1).atStartOfDay
-  val dateTimeWithoutZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500)
-  val dateTimeWithZ = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500).toString + "Z"
-  val dateString = date.toString
-  val dateStringWithZ = dateTimeWithZ.toString
-  val dateMillis = 1517443200000L
+  val date                             = LocalDate.of(2018, 2, 1).atStartOfDay
+  val dateTimeWithoutZ                 = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500)
+  val dateTimeWithZ                    = LocalDateTime.of(2018, 2, 1, 14, 30, 30, 500).toString + "Z"
+  val dateString                       = date.toString
+  val dateStringWithZ                  = dateTimeWithZ.toString
+  val dateMillis                       = 1517443200000L
   val dateMillisBigDecimal: BigDecimal = 1517443200000L
-  val jsonMillis = Json.obj(s"$$date"     -> dateMillis)
-  val jsonBigDecimal = Json.obj(s"$$date" -> dateMillisBigDecimal)
-  val json = Json.obj(s"$$date"           -> date)
+  val jsonMillis                       = Json.obj(s"$$date" -> dateMillis)
+  val jsonBigDecimal                   = Json.obj(s"$$date" -> dateMillisBigDecimal)
+  val json                             = Json.obj(s"$$date" -> date)
 
   "parseDateString" should {
     "convert a zonedDateString to a dateTime" in {

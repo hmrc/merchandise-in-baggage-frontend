@@ -16,25 +16,25 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.views.html.VehicleRegistrationNumberView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view = injector.instanceOf[VehicleRegistrationNumberView]
-  val navigator = injector.instanceOf[Navigator]
+  val view: VehicleRegistrationNumberView = injector.instanceOf[VehicleRegistrationNumberView]
+  val navigator: Navigator                = injector.instanceOf[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): VehicleRegistrationNumberController =
     new VehicleRegistrationNumberController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       navigator,
-      view)
+      view
+    )
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
@@ -42,10 +42,10 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         contentAsString(eventualResult) must include(messages("vehicleRegistrationNumber.title"))
         contentAsString(eventualResult) must include(messages("vehicleRegistrationNumber.heading"))
         contentAsString(eventualResult) must include(messages("vehicleRegistrationNumber.hint"))
@@ -55,24 +55,24 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
 
-        val request = buildPost(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
+        val request        = buildPost(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "KM04 123")
 
         val eventualResult = controller(journey).onSubmit()(request)
 
-        status(eventualResult) mustBe 303
+        status(eventualResult) mustBe SEE_OTHER
         redirectLocation(eventualResult) mustBe Some(routes.CheckYourAnswersController.onPageLoad.url)
       }
 
       s"return 400 with required form error for $importOrExport" in {
 
-        val request = buildGet(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
+        val request        = buildGet(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value123" -> "")
 
         val eventualResult = controller(journey).onSubmit()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 400
+        status(eventualResult) mustBe BAD_REQUEST
         result must include(messageApi("error.summary.title"))
         result must include(messages("vehicleRegistrationNumber.error.required"))
       }

@@ -21,7 +21,8 @@ import com.google.inject.name.Names.named
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuration: Configuration) extends AbstractModule {
+class MerchandiseInBaggageFrontendConfigModule(unused: Environment, configuration: Configuration)
+    extends AbstractModule {
   val servicesConfig: ServicesConfig = new ServicesConfig(configuration)
 
   def bindBaseUrl(name: String, service: String): Unit =

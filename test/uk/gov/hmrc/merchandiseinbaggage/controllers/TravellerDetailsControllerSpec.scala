@@ -26,22 +26,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = injector.instanceOf[TravellerDetailsPage]
+  private val view      = injector.instanceOf[TravellerDetailsPage]
   private val navigator = injector.instanceOf[Navigator]
 
   val controller: DeclarationJourney => TravellerDetailsController =
     declarationJourney =>
-      new TravellerDetailsController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), navigator, view)
+      new TravellerDetailsController(
+        controllerComponents,
+        stubProvider(declarationJourney),
+        stubRepo(declarationJourney),
+        navigator,
+        view
+      )
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(maybeIsACustomsAgent = Some(YesNo.No))
   "onPageLoad" should {
     s"return 200 with correct content for" in {
 
-      val request = buildGet(routes.TravellerDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(routes.TravellerDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi("travellerDetails.title"))
       result must include(messageApi("travellerDetails.heading"))
       result must include(messageApi("travellerDetails.hint"))
@@ -52,22 +58,22 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to next page after successful form submit" in {
-      val request = buildPost(routes.TravellerDetailsController.onSubmit.url, aSessionId)
+      val request        = buildPost(routes.TravellerDetailsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("firstName" -> "Foo", "lastName" -> "Bar")
 
       val eventualResult = controller(journey).onSubmit(request)
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       redirectLocation(eventualResult) mustBe Some(routes.EnterEmailController.onPageLoad.url)
     }
 
     s"return 400 with required form errors" in {
-      val request = buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
+      val request        = buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("firstName" -> "", "lastName" -> "")
 
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("travellerDetails.title"))
       result must include(messageApi("travellerDetails.heading"))
       result must include(messageApi("travellerDetails.hint"))

@@ -27,7 +27,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 
 @Singleton
-class VehicleRegistrationNumberController @Inject()(
+class VehicleRegistrationNumberController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -57,7 +57,8 @@ class VehicleRegistrationNumberController @Inject()(
                 request.declarationJourney,
                 vehicleReg,
                 repo.upsert
-              ))
+              )
+            )
             .map(Redirect)
       )
   }

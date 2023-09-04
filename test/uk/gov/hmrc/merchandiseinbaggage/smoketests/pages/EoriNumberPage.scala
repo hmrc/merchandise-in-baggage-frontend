@@ -26,10 +26,10 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.EoriNumberPage.{expectedAgentExportTitle, expectedAgentImportTitle, expectedNonAgentTitle, path}
 
 object EoriNumberPage extends Page {
-  val path = "/declare-commercial-goods/enter-eori-number"
+  val path                     = "/declare-commercial-goods/enter-eori-number"
   val expectedAgentImportTitle = "What is the EORI number of the business bringing the goods into Great Britain?"
   val expectedAgentExportTitle = "What is the EORI number of the business taking the goods out of Great Britain?"
-  val expectedNonAgentTitle = "What is your EORI number?"
+  val expectedNonAgentTitle    = "What is your EORI number?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     find(IdQuery("eori")).get.underlying.sendKeys(formData.toString)

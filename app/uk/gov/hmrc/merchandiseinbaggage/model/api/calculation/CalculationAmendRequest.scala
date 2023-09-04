@@ -19,7 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, DeclarationId, GoodsDestination}
 
-case class CalculationAmendRequest(amend: Option[Amendment], maybeGoodsDestination: Option[GoodsDestination], declarationId: DeclarationId)
+case class CalculationAmendRequest(
+  amend: Option[Amendment],
+  maybeGoodsDestination: Option[GoodsDestination],
+  declarationId: DeclarationId
+)
 
 object CalculationAmendRequest {
   implicit val format: OFormat[CalculationAmendRequest] = Json.format[CalculationAmendRequest]

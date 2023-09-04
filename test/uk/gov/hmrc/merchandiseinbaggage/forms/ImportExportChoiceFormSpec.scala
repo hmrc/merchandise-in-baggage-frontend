@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices
 class ImportExportChoiceFormSpec extends FieldBehaviours {
 
   val requiredKey = "importExportChoice.error.required"
-  val invalidKey = "importExportChoice.error.required"
+  val invalidKey  = "importExportChoice.error.required"
 
   ".value" must {
 

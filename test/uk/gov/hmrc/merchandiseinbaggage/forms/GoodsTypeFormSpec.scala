@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 class GoodsTypeFormSpec extends FieldBehaviours {
 
   ".category" must {
-    val fieldName = "category"
+    val fieldName   = "category"
     val requiredKey = "goodsType.category.error.required"
 
     behave like mandatoryField(

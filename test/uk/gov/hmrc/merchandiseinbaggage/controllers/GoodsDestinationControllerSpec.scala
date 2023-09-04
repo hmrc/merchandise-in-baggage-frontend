@@ -16,8 +16,10 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
-import play.api.test.Helpers.{status, _}
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
+import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
@@ -28,29 +30,31 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsDestinationView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables with MockFactory {
+class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
-  val view = injector.instanceOf[GoodsDestinationView]
+  val view: GoodsDestinationView = injector.instanceOf[GoodsDestinationView]
+
   val mockNavigator: Navigator = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): GoodsDestinationController =
     new GoodsDestinationController(
       controllerComponents,
       stubProvider(declarationJourney),
       stubRepo(declarationJourney),
       mockNavigator,
-      view)
+      view
+    )
 
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request = buildGet(GoodsDestinationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(GoodsDestinationController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"goodsDestination.$importOrExport.title"))
         result must include(messageApi(s"goodsDestination.$importOrExport.heading"))
         result must include(messageApi("goodsDestination.NorthernIreland"))
@@ -65,24 +69,24 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
         val request = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
           .withFormUrlEncodedBody("value" -> "GreatBritain")
 
-        (mockNavigator
-          .nextPage(_: GoodsDestinationRequest)(_: ExecutionContext))
-          .expects(*, *)
-          .returning(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad))
-          .once()
+        when(mockNavigator.nextPage(any[GoodsDestinationRequest])(any[ExecutionContext]))
+          .thenReturn(Future.successful(ExciseAndRestrictedGoodsController.onPageLoad))
 
-        controller(journey).onSubmit(request).futureValue
+        val result: Future[Result] = controller(journey).onSubmit(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some("/declare-commercial-goods/excise-and-restricted-goods")
       }
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
+      val request        = buildPost(GoodsDestinationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "in valid")
 
       val eventualResult = controller(journey).onSubmit(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 400
+      status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
     }
   }

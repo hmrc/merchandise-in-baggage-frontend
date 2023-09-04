@@ -1,4 +1,3 @@
-
 # merchandise-in-baggage-frontend
 
 **Who uses the repo/service**
@@ -9,8 +8,13 @@ Business travellers carrying commercial goods for both import or export.
 
 `sbt run` This will only start the service as standalone but unable to interact with any other services including Backend and DataBase
 
-SM profile : MERCHANDISE_IN_BAGGAGE_ALL
-`sm MERCHANDISE_IN_BAGGAGE_ALL` This will start all the required services to complete a journey
+To load all related services:
+
+```bash
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL
+```
+
+This will start all the required services to complete a journey
 
 `local url` http://localhost:8281/declare-commercial-goods/start-import
 `local url` http://localhost:8281/declare-commercial-goods/start-export
@@ -24,15 +28,21 @@ The generated contracts test will then being used from the Backend contract veri
 
 **UI Tests Repo**
 
-See the companion Reposirory https://github.com/hmrc/merchandise-in-baggage-ui-tests for UI tests using this repo.
+See the companion Repository https://github.com/hmrc/merchandise-in-baggage-ui-tests for UI tests using this repo.
 
-1: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL -wait 30 && sm2 --stop MERCHANDISE_IN_BAGGAGE_FRONTEND`
-To run all mods services and stop this one,
+1: To run all mods services and stop the frontend.
 
-2: `./run-locally.sh` to run up this individual service locally
+```bash
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL -wait 30 && sm2 --stop MERCHANDISE_IN_BAGGAGE_FRONTEND
+```
+
+2: Start this service locally with the correct flags.
+
+```bash
+./run-locally.sh
+```
 
 3: Run the UI tests
-
 
 OR
 

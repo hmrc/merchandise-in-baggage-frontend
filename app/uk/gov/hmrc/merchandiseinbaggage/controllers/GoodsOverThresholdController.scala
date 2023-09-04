@@ -29,12 +29,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsOverThresholdController @Inject()(
+class GoodsOverThresholdController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   mibService: MibService,
   mibConnector: MibConnector,
-  view: GoodsOverThresholdView)(implicit val appConfig: AppConfig, ec: ExecutionContext)
+  view: GoodsOverThresholdView
+)(implicit val appConfig: AppConfig, ec: ExecutionContext)
     extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -53,7 +54,9 @@ class GoodsOverThresholdController @Inject()(
                         calculations.results.totalGbpValue,
                         calculationResults.flatMap(_.conversionRatePeriod).distinct,
                         exchangeUrl.url,
-                        Import))
+                        Import
+                      )
+                    )
                   }
                 case Export =>
                   val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal

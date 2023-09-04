@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.FieldBehaviours
 
 class VehicleRegistrationNumberFormSpec extends FieldBehaviours {
   ".value" must {
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "vehicleRegistrationNumber.error.required"
 
     behave like mandatoryField(

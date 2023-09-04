@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 
 trait Validators extends Mappings {
 
-  val mibRegex = """^X([A-Z])MB(\d{10})$"""
+  val mibRegex          = """^X([A-Z])MB(\d{10})$"""
   val eoriRegex: String = "^GB[0-9]{12}$"
 
   def isValidEori(errorKey: String = "eoriNumber.error.invalid"): Constraint[String] = Constraint { value: String =>

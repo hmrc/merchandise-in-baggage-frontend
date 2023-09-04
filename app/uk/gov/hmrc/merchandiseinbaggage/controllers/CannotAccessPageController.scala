@@ -25,9 +25,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class CannotAccessPageController @Inject()(override val controllerComponents: MessagesControllerComponents, view: CannotAccessPageView)(
-  implicit val ec: ExecutionContext,
-  appConfig: AppConfig)
+class CannotAccessPageController @Inject() (
+  override val controllerComponents: MessagesControllerComponents,
+  view: CannotAccessPageView
+)(implicit val ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendBaseController {
 
   def onPageLoad(): Action[AnyContent] = Action { implicit request =>

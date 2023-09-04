@@ -32,13 +32,16 @@ class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData w
     givenTaxArePaid(tpsId)
 
     val actual =
-      paymentService.createTpsPayments(tpsId.value, None, completedDeclarationJourney.toDeclaration, aCalculationResults).futureValue
+      paymentService
+        .createTpsPayments(tpsId.value, None, completedDeclarationJourney.toDeclaration, aCalculationResults)
+        .futureValue
 
     actual mustBe tpsId
   }
 
   "build a TpsPaymentsRequest from a declaration" in {
-    val actual = paymentService.buildTpsRequest("pid", Some(123), completedDeclarationJourney.toDeclaration, aCalculationResults)
+    val actual   =
+      paymentService.buildTpsRequest("pid", Some(123), completedDeclarationJourney.toDeclaration, aCalculationResults)
     val payments = actual.payments.head
 
     actual mustBe a[TpsPaymentsRequest]

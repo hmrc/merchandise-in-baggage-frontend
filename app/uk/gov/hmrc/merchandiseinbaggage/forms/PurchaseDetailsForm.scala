@@ -31,7 +31,7 @@ object PurchaseDetailsForm extends Mappings {
         if (bigDecimal <= 0) Invalid("error.must.be.positive")
         else if (bigDecimal.scale > 3) Invalid("error.max.3.decimals")
         else Valid
-      case _ =>
+      case _                   =>
         Invalid("purchaseDetails.price.error.invalid")
     }
   }

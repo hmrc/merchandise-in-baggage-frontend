@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 class RemoveGoodsFormSpec extends YesNoFieldBehaviours {
 
   val requiredKey = "removeGoods.error.required"
-  val invalidKey = "error.yesNo"
+  val invalidKey  = "error.yesNo"
 
   ".value" must {
 

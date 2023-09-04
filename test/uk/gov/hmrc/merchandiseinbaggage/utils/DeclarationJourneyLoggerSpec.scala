@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.request.RequestTarget
 import play.api.mvc.{Cookies, Headers, RequestHeader}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 
-class DeclarationJourneyLoggerSpec extends BaseSpec with MockFactory {
+class DeclarationJourneyLoggerSpec extends BaseSpec {
 
   "DeclarationJourneyLogger" should {
     "be able to warn" in {
@@ -30,14 +30,16 @@ class DeclarationJourneyLoggerSpec extends BaseSpec with MockFactory {
 
       val mockTarget = mock[RequestTarget]
 
-      (() => mockTarget.path).stubs().returns("PATH")
+      when(mockTarget.path).thenReturn("PATH")
 
-      (() => mockRequest.target).stubs().returns(mockTarget)
-      (() => mockRequest.method).stubs().returns("METHOD")
-      (() => mockRequest.headers).stubs().returns(Headers.create())
-      (() => mockRequest.cookies).stubs().returns(Cookies(Seq()))
+      when(mockRequest.target).thenReturn(mockTarget)
+      when(mockRequest.method).thenReturn("METHOD")
+      when(mockRequest.headers).thenReturn(Headers.create())
+      when(mockRequest.cookies).thenReturn(Cookies(Seq()))
 
       DeclarationJourneyLogger.warn("Test")
+
+      //TODO Should there be an assertion for this or remove this test
     }
   }
 }

@@ -45,7 +45,7 @@ object EnterEmailForm extends Mappings with IsAssistedDigitalConfiguration {
   )
 
   private val optionalEmailAddress: Constraint[Option[String]] = Constraint[Option[String]]("constraint.email") {
-    case None => Valid
+    case None        => Valid
     case Some(email) =>
       emailRegex
         .findFirstMatchIn(email)

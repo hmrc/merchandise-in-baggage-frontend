@@ -30,12 +30,18 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[GoodsOverThresholdView]
+  private val view              = app.injector.instanceOf[GoodsOverThresholdView]
   private val calculatorService = app.injector.instanceOf[MibService]
-  private val mibConnector = app.injector.instanceOf[MibConnector]
+  private val mibConnector      = app.injector.instanceOf[MibConnector]
 
   def controller(declarationJourney: DeclarationJourney) =
-    new GoodsOverThresholdController(controllerComponents, stubProvider(declarationJourney), calculatorService, mibConnector, view)
+    new GoodsOverThresholdController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      calculatorService,
+      mibConnector,
+      view
+    )
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney =
@@ -47,11 +53,11 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
         givenExchangeRateURL("https://something")
         givenAPaymentCalculation(aCalculationResult)
 
-        val request = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
-        val result = contentAsString(eventualResult)
+        val result         = contentAsString(eventualResult)
 
-        status(eventualResult) mustBe 200
+        status(eventualResult) mustBe OK
         result must include(messageApi(s"goodsOverThreshold.GreatBritain.title"))
         result must include(messageApi(s"goodsOverThreshold.GreatBritain.heading"))
         result must include(messageApi(s"goodsOverThreshold.GreatBritain.$importOrExport.p1"))

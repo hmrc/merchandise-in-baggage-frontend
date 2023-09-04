@@ -26,7 +26,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
-import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 
 import java.time.temporal.ChronoUnit
 import java.time.{Instant, LocalDateTime, ZoneOffset, ZonedDateTime}
@@ -49,7 +48,8 @@ case class GoodsEntries(entries: Seq[GoodsEntry]) {
     if (entries.lastOption.fold(true)(_.isComplete)) entries.head match {
       case _: ImportGoodsEntry => GoodsEntries(entries :+ ImportGoodsEntry())
       case _: ExportGoodsEntry => GoodsEntries(entries :+ ExportGoodsEntry())
-    } else this
+    }
+    else this
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
@@ -58,7 +58,8 @@ case class GoodsEntries(entries: Seq[GoodsEntry]) {
     if (entries.size == 1) entries.head match {
       case _: ImportGoodsEntry => GoodsEntries(ImportGoodsEntry())
       case _: ExportGoodsEntry => GoodsEntries(ExportGoodsEntry())
-    } else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
+    }
+    else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
 }
 
 object GoodsEntries {
@@ -89,8 +90,9 @@ case class DeclarationJourney(
   maybeTravellingBySmallVehicle: Option[YesNo] = None,
   maybeRegistrationNumber: Option[String] = None,
   maybeRetrieveDeclaration: Option[RetrieveDeclaration] = None,
-  declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString))
-    extends MibReferenceGenerator with IsAssistedDigitalConfiguration {
+  declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)
+) extends MibReferenceGenerator
+    with IsAssistedDigitalConfiguration {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
@@ -103,17 +105,17 @@ case class DeclarationJourney(
   val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap { journeyDetailsEntry =>
     val maybePort = PortService.getPortByCode(journeyDetailsEntry.portCode)
     (maybePort, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
-      case (Some(port), Some(No), _, _) =>
+      case (Some(port), Some(No), _, _)                                 =>
         Some(JourneyOnFoot(port, journeyDetailsEntry.dateOfTravel))
       case (Some(port), Some(Yes), Some(Yes), Some(registrationNumber)) =>
         Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfTravel, registrationNumber))
-      case _ => None
+      case _                                                            => None
     }
   }
 
   val declarationIfRequiredAndComplete: Option[Declaration] = journeyType match {
     case Amend => None
-    case New =>
+    case New   =>
       val discardedAnswersAreCompleteAndRequireADeclaration =
         maybeGoodsDestination.contains(GreatBritain) &&
           maybeExciseOrRestrictedGoods.contains(No) &&
@@ -128,30 +130,30 @@ case class DeclarationJourney(
         eori                         <- maybeEori
         journeyDetails               <- maybeCompleteJourneyDetails
         if discardedAnswersAreCompleteAndRequireADeclaration
-      } yield {
-        Declaration(
-          declarationId,
-          sessionId,
-          declarationType,
-          goodsDestination,
-          goods,
-          nameOfPersonCarryingTheGoods,
-          userEmail(isAssistedDigital, maybeEmailAddress, email),
-          maybeCustomsAgent,
-          eori,
-          journeyDetails,
-          LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-          mibReference
-        )
-      }
+      } yield Declaration(
+        declarationId,
+        sessionId,
+        declarationType,
+        goodsDestination,
+        goods,
+        nameOfPersonCarryingTheGoods,
+        userEmail(isAssistedDigital, maybeEmailAddress, email),
+        maybeCustomsAgent,
+        eori,
+        journeyDetails,
+        LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
+        mibReference
+      )
   }
 
   val declarationRequiredAndComplete: Boolean = declarationIfRequiredAndComplete.isDefined
 
   val amendmentIfRequiredAndComplete: Option[Amendment] = journeyType match {
-    case New => None
+    case New   => None
     case Amend =>
-      goodsEntries.declarationGoodsIfComplete.map(goods => Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), goods))
+      goodsEntries.declarationGoodsIfComplete.map(goods =>
+        Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), goods)
+      )
   }
 
   val amendmentRequiredAndComplete: Boolean = amendmentIfRequiredAndComplete.isDefined
@@ -182,20 +184,25 @@ object DeclarationJourney {
   implicit val localDateTimeRead: Reads[LocalDateTime] = {
     case JsObject(map) if map.contains("$date") =>
       map("$date") match {
-        case JsNumber(bigDecimal) => parseBigDecimal(bigDecimal)
-        case JsObject(stringObject) if (stringObject.contains("$numberLong")) =>
+        case JsNumber(bigDecimal)                                           => parseBigDecimal(bigDecimal)
+        case JsObject(stringObject) if stringObject.contains("$numberLong") =>
           val extractedBigDecimal: BigDecimal = BigDecimal(stringObject("$numberLong").as[JsString].value)
           parseBigDecimal(extractedBigDecimal)
-        case JsString(dateValue) =>
+        case JsString(dateValue)                                            =>
           parseDateString(dateValue)
-        case _ => JsError("Unexpected LocalDateTime Format")
+        case _                                                              => JsError("Unexpected LocalDateTime Format")
       }
-    case JsString(dateValue) =>
+    case JsString(dateValue)                    =>
       parseDateString(dateValue)
-    case _ => JsError("Unexpected LocalDateTime Format")
+    case _                                      => JsError("Unexpected LocalDateTime Format")
   }
 
-  implicit val dateFormat: Format[LocalDateTime] = Format(localDateTimeRead, MongoJavatimeFormats.localDateTimeWrites)
+  implicit val localDateTimeWrites: Writes[LocalDateTime] =
+    Writes
+      .at[String](__ \ "$date" \ "$numberLong")
+      .contramap(_.toInstant(ZoneOffset.UTC).toEpochMilli.toString)
+
+  implicit val dateFormat: Format[LocalDateTime]   = Format(localDateTimeRead, localDateTimeWrites)
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =

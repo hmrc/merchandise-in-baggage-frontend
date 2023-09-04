@@ -75,7 +75,13 @@ object CountryService {
     Country("CF", "title.central_african_republic", "CF", isEu = false, List("CAR")),
     Country("TD", "title.chad", "TD", isEu = false, Nil),
     Country("CL", "title.chile", "CL", isEu = false, Nil),
-    Country("CN", "title.china", "CN", isEu = false, List("People's Republic of China", "PRC", "Peoples Republic of China")),
+    Country(
+      "CN",
+      "title.china",
+      "CN",
+      isEu = false,
+      List("People's Republic of China", "PRC", "Peoples Republic of China")
+    ),
     Country("CX", "title.christmas_island", "CX", isEu = false, List("Christmas Islands")),
     Country("CC", "title.cocos_keeling_islands", "CC", isEu = false, Nil),
     Country("CO", "title.colombia", "CO", isEu = false, List("Columbia")),
@@ -84,7 +90,13 @@ object CountryService {
     Country("CG", "title.republic_of_the_congo", "CG", isEu = false, List("Congo-Brazzaville", "Congo Republic")),
     Country("CK", "title.cook_islands", "CK", isEu = false, Nil),
     Country("CR", "title.costa_rica", "CR", isEu = false, Nil),
-    Country("CI", "title.cote_divoire", "CI", isEu = false, List("Ivory Coast", "Cote d'Ivoire", "Cote dIvoire", "Cote d Ivoire")),
+    Country(
+      "CI",
+      "title.cote_divoire",
+      "CI",
+      isEu = false,
+      List("Ivory Coast", "Cote d'Ivoire", "Cote dIvoire", "Cote d Ivoire")
+    ),
     Country("HR", "title.croatia", "HR", isEu = true, Nil),
     Country("CU", "title.cuba", "CU", isEu = false, Nil),
     Country("CW", "title.curacao", "CW", isEu = false, List("Curacao", "Curacoa")),
@@ -210,7 +222,13 @@ object CountryService {
     Country("PG", "title.papua_new_guinea", "PG", isEu = false, Nil),
     Country("PY", "title.paraguay", "PY", isEu = false, Nil),
     Country("PE", "title.peru", "PE", isEu = false, Nil),
-    Country("PH", "title.philippines", "PH", isEu = false, List("Philippenes", "Phillipines", "Phillippines", "Philipines")),
+    Country(
+      "PH",
+      "title.philippines",
+      "PH",
+      isEu = false,
+      List("Philippenes", "Phillipines", "Phillippines", "Philipines")
+    ),
     Country("PN", "title.pitcairn", "PN", isEu = false, Nil),
     Country("PL", "title.poland", "PL", isEu = true, Nil),
     Country("PT", "title.portugal", "PT", isEu = true, Nil),
@@ -269,8 +287,20 @@ object CountryService {
     Country("TV", "title.tuvalu", "TV", isEu = false, Nil),
     Country("UG", "title.uganda", "UG", isEu = false, Nil),
     Country("UA", "title.ukraine", "UA", isEu = false, Nil),
-    Country("AE", "title.united_arab_emirates", "AE", isEu = false, List("UAE", "emirati", "dubai", "abu dahbi", "abu dhabi")),
-    Country("GB", "title.united_kingdom", "GB", isEu = true, List("England", "Scotland", "Wales", "Northern Ireland", "GB", "UK")),
+    Country(
+      "AE",
+      "title.united_arab_emirates",
+      "AE",
+      isEu = false,
+      List("UAE", "emirati", "dubai", "abu dahbi", "abu dhabi")
+    ),
+    Country(
+      "GB",
+      "title.united_kingdom",
+      "GB",
+      isEu = true,
+      List("England", "Scotland", "Wales", "Northern Ireland", "GB", "UK")
+    ),
     Country("UM", "title.united_states_minor_outlying_islands", "UM", isEu = false, Nil),
     Country("US", "title.united_states_of_america", "US", isEu = false, List("USA", "US", "American")),
     Country("UY", "title.uruguay", "UY", isEu = false, Nil),

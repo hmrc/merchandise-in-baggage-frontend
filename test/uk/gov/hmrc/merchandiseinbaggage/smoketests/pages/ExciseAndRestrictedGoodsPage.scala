@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ExciseAndRestrictedGoodsPage.{exportTitle, importTitle, path}
 
 object ExciseAndRestrictedGoodsPage extends Page {
-  val path = "/declare-commercial-goods/excise-and-restricted-goods"
+  val path        = "/declare-commercial-goods/excise-and-restricted-goods"
   val importTitle = "Are you bringing excise, controlled or restricted goods to Great Britain?"
   val exportTitle = "Are you taking excise, controlled or restricted goods out of Great Britain?"
 

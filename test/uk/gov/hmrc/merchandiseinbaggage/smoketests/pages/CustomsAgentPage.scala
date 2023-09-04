@@ -20,7 +20,7 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser._
 
 object CustomsAgentPage extends Page {
-  val path = "/declare-commercial-goods/customs-agent"
+  val path  = "/declare-commercial-goods/customs-agent"
   val title = "Are you a customs agent?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {

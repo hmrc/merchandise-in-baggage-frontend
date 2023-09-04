@@ -21,12 +21,12 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationNotFoundView
 
 class DeclarationNotFoundControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view = injector.instanceOf[DeclarationNotFoundView]
+  val view       = injector.instanceOf[DeclarationNotFoundView]
   val controller = new DeclarationNotFoundController(controllerComponents, stubProvider(startedImportJourney), view)
 
   "return 200 on pageLoad" in {
     val request = buildGet(routes.DeclarationNotFoundController.onPageLoad.url, aSessionId)
 
-    status(controller.onPageLoad(request)) mustBe 200
+    status(controller.onPageLoad(request)) mustBe OK
   }
 }

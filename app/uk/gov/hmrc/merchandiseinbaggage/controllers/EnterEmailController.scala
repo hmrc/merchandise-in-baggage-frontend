@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.EnterOptionalEmailView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EnterEmailController @Inject()(
+class EnterEmailController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -36,7 +36,8 @@ class EnterEmailController @Inject()(
   viewOptional: EnterOptionalEmailView,
   navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController with IsAssistedDigitalConfiguration {
+    extends DeclarationJourneyUpdateController
+    with IsAssistedDigitalConfiguration {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.TravellerDetailsController.onPageLoad)
@@ -57,21 +58,24 @@ class EnterEmailController @Inject()(
       optionalForm
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(viewOptional(formWithErrors, request.declarationType, backButtonUrl))),
-          email => {
-            val updated = request.declarationJourney.copy(maybeEmailAddress = email)
-            navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
-          }.map(Redirect)
+          formWithErrors =>
+            Future.successful(BadRequest(viewOptional(formWithErrors, request.declarationType, backButtonUrl))),
+          email =>
+            {
+              val updated = request.declarationJourney.copy(maybeEmailAddress = email)
+              navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+            }.map(Redirect)
         )
     } else {
       mandatoryForm
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, request.declarationType, backButtonUrl))),
-          email => {
-            val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
-            navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
-          }.map(Redirect)
+          email =>
+            {
+              val updated = request.declarationJourney.copy(maybeEmailAddress = Some(email))
+              navigator.nextPage(EnterEmailRequest(updated, repo.upsert, updated.declarationRequiredAndComplete))
+            }.map(Redirect)
         )
     }
   }

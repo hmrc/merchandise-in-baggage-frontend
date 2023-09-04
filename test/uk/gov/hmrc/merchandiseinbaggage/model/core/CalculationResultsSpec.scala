@@ -27,7 +27,7 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
   "Calculate each total tax due" in {
     val calculationResult: CalculationResult =
       CalculationResult(aGoods, AmountInPence(20L), AmountInPence(10), AmountInPence(30), None)
-    val calculations = CalculationResults(Seq(calculationResult))
+    val calculations                         = CalculationResults(Seq(calculationResult))
 
     calculations.totalTaxDue mustBe AmountInPence(10 + 30)
     calculations.totalDutyDue mustBe AmountInPence(10)
@@ -44,7 +44,8 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
         AmountInPence(20L),
         AmountInPence(10),
         AmountInPence(30),
-        None)
+        None
+      )
 
     val calculations = CalculationResults(Seq(calculationResultEU, calculationResultUSA))
 

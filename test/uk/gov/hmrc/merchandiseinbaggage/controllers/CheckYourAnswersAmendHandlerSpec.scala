@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
-import play.api.mvc.Request
+import org.mockito.ArgumentMatchersSugar.{any, eqTo}
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
@@ -30,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAnAmendPaymentCalculations, givenDeclarationIsAmendedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 
 import java.time.LocalDateTime
@@ -38,22 +39,28 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CheckYourAnswersAmendHandlerSpec
-    extends DeclarationJourneyControllerSpec with MibConfiguration with MockFactory with PropertyBaseTables {
+    extends DeclarationJourneyControllerSpec
+    with MibConfiguration
+    with PropertyBaseTables {
 
-  private val importView = injector.instanceOf[CheckYourAnswersAmendImportView]
-  private val exportView = injector.instanceOf[CheckYourAnswersAmendExportView]
-  private val mibConnector = injector.instanceOf[MibConnector]
-  private val mockTpsPaymentsService = mock[TpsPaymentsService]
-  private val paymentService = mock[PaymentService]
-  private val mockMibService = mock[MibService]
+  private val importView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
+  private val exportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
+  private val mibConnector: MibConnector                  = injector.instanceOf[MibConnector]
+  private val mockTpsPaymentsService: TpsPaymentsService  = mock[TpsPaymentsService]
+  private val paymentService: PaymentService              = mock[PaymentService]
+  private val mockMibService: MibService                  = mock[MibService]
+
+  private val sessionId: SessionId = SessionId()
+
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
   private lazy val stubbedCalculation: CalculationResults => MibService = _ =>
     new MibService(mibConnector) {
-      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(
-        implicit hc: HeaderCarrier): Future[CalculationResponse] =
+      override def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit
+        hc: HeaderCarrier
+      ): Future[CalculationResponse] =
         Future.successful(aCalculationResponse)
-  }
+    }
 
   private def amendHandler(paymentCalcs: CalculationResults = aCalculationResults) =
     new CheckYourAnswersAmendHandler(
@@ -68,15 +75,23 @@ class CheckYourAnswersAmendHandlerSpec
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
-        val sessionId = SessionId()
-        val id = DeclarationId("abc")
-        val created = LocalDateTime.now.withSecond(0).withNano(0)
+        val id                          = DeclarationId("abc")
+        val created                     = LocalDateTime.now.withSecond(0).withNano(0)
         val journey: DeclarationJourney = completedDeclarationJourney
-          .copy(sessionId = sessionId, declarationType = importOrExport, createdAt = created, declarationId = id, journeyType = Amend)
+          .copy(
+            sessionId = sessionId,
+            declarationType = importOrExport,
+            createdAt = created,
+            declarationId = id,
+            journeyType = Amend
+          )
 
         givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
         givenADeclarationJourneyIsPersisted(journey)
-        givenPersistedDeclarationIsFound(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)), id)
+        givenPersistedDeclarationIsFound(
+          declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)),
+          id
+        )
 
         implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
@@ -89,13 +104,13 @@ class CheckYourAnswersAmendHandlerSpec
       }
 
       s"will calculate tax and send payment request to TPS for $importOrExport" in {
-        val sessionId = SessionId()
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
-        val id = DeclarationId("xxx")
-        val created = LocalDateTime.now.withSecond(0).withNano(0)
-        val journey: DeclarationJourney = completedDeclarationJourney
+
+        implicit val request: Request[_]          = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+        val id: DeclarationId                     = DeclarationId("xxx")
+        val created: LocalDateTime                = LocalDateTime.now.withSecond(0).withNano(0)
+        val journey: DeclarationJourney           = completedDeclarationJourney
           .copy(sessionId = sessionId, createdAt = created, declarationId = id, declarationType = importOrExport)
-        val handler = new CheckYourAnswersAmendHandler(
+        val handler: CheckYourAnswersAmendHandler = new CheckYourAnswersAmendHandler(
           actionBuilder,
           mockMibService,
           mockTpsPaymentsService,
@@ -106,45 +121,42 @@ class CheckYourAnswersAmendHandlerSpec
 
         givenADeclarationJourneyIsPersistedWithStub(journey)
 
-        (mockMibService
-          .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-          .expects(*, *)
-          .returning(Future.successful(Some(journey.toDeclaration)))
+        when(mockMibService.findDeclaration(any[DeclarationId])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(Some(journey.toDeclaration)))
+        when(mockMibService.amendDeclaration(any[Declaration])(any[HeaderCarrier]))
+          .thenReturn(Future.successful(journey.declarationId))
 
         if (importOrExport == Import) {
-          (mockMibService
-            .paymentCalculations(_: Seq[Goods], _: GoodsDestination)(_: HeaderCarrier))
-            .expects(*, *, *)
-            .returning(Future.successful(aCalculationResponse))
+          when(mockMibService.paymentCalculations(any[Seq[Goods]], any[GoodsDestination])(any[HeaderCarrier]))
+            .thenReturn(Future.successful(aCalculationResponse))
+          when(
+            mockTpsPaymentsService.createTpsPayments(
+              eqTo("123"),
+              eqTo(Some(1)),
+              any[Declaration],
+              any[CalculationResults]
+            )(any[HeaderCarrier])
+          )
+            .thenReturn(Future.successful(TpsId("someid")))
         }
 
-        (mockMibService
-          .amendDeclaration(_: Declaration)(_: HeaderCarrier))
-          .expects(*, *)
-          .returning(Future.successful(journey.declarationId))
+        val amendment: Amendment   = completedAmendment(Import)
+        val result: Future[Result] = handler.onSubmit(journey.toDeclaration.declarationId, "123", amendment)
 
-        if (importOrExport == Import) {
-          (mockTpsPaymentsService
-            .createTpsPayments(_: String, _: Option[Int], _: Declaration, _: CalculationResults)(_: HeaderCarrier))
-            .expects("123", Some(1), *, *, *)
-            .returning(Future.successful(TpsId("someid")))
+        status(result) mustBe SEE_OTHER
+
+        if (importOrExport == Export) {
+          redirectLocation(result) mustBe Some("/declare-commercial-goods/declaration-confirmation")
+        } else {
+          redirectLocation(result) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
         }
-
-        val amendment = completedAmendment(Import)
-        val eventualResult = handler.onSubmit(journey.toDeclaration.declarationId, "123", amendment)
-
-        status(eventualResult) mustBe 303
-        if (importOrExport == Export) redirectLocation(eventualResult) mustBe Some("/declare-commercial-goods/declaration-confirmation")
-        if (importOrExport == Import)
-          redirectLocation(eventualResult) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
       }
     }
   }
 
   "will redirect to declaration-confirmation for Export" in {
-    val sessionId = SessionId()
-    val stubbedId = DeclarationId("xxx")
-    val created = LocalDateTime.now.withSecond(0).withNano(0)
+    val stubbedId                         = DeclarationId("xxx")
+    val created                           = LocalDateTime.now.withSecond(0).withNano(0)
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
@@ -158,7 +170,7 @@ class CheckYourAnswersAmendHandlerSpec
 
     val eventualResult = amendHandler().onSubmit(stubbedId, newAmendment)
 
-    status(eventualResult) mustBe 303
+    status(eventualResult) mustBe SEE_OTHER
     redirectLocation(eventualResult) mustBe Some(routes.DeclarationConfirmationController.onPageLoad.url)
   }
 }

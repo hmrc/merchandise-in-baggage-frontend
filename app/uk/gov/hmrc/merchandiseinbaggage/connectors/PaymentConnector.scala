@@ -30,24 +30,28 @@ import scala.concurrent.{ExecutionContext, Future}
 case class PayApiException(message: String) extends RuntimeException(message)
 
 @Singleton
-class PaymentConnector @Inject()(httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) extends Logging {
+class PaymentConnector @Inject() (httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) extends Logging {
 
   private val url = s"$baseUrl$payUrl"
 
-  def sendPaymentRequest(requestBody: PayApiRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] = {
+  def sendPaymentRequest(
+    requestBody: PayApiRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] = {
     logger.warn(s"payments requestBody: ${Json.toJson(requestBody)}")
 
     httpClient.POST[PayApiRequest, HttpResponse](url, requestBody).map { response =>
       response.status match {
         case Status.CREATED => response.json.as[PayApiResponse]
-        case other: Int =>
-          throw PayApiException(s"unexpected status from pay-api for reference:${requestBody.mibReference.value}, status:$other")
+        case other: Int     =>
+          throw PayApiException(
+            s"unexpected status from pay-api for reference:${requestBody.mibReference.value}, status:$other"
+          )
       }
     }
   }
 }
 
 object PaymentApiUrls {
-  val payUrl = "/pay-api/mib-frontend/mib/journey/start"
+  val payUrl                 = "/pay-api/mib-frontend/mib/journey/start"
   val payInitiatedJourneyUrl = "/pay/initiate-journey"
 }

@@ -28,28 +28,44 @@ class ExciseAndRestrictedGoodsContentSpec extends ExciseAndRestrictedGoodsPage w
       givenAJourneyWithSession()
       goToExciseAndRestrictedPage(Import)
 
-      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/check-your-answers")
+      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl(
+        "/declare-commercial-goods/check-your-answers"
+      )
     }
 
     "link to /goods-destination when a New journey is not complete" in {
       givenAJourneyWithSession(declarationJourney = startedImportJourney)
       goToExciseAndRestrictedPage(Import)
 
-      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/goods-destination")
+      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl(
+        "/declare-commercial-goods/goods-destination"
+      )
     }
 
     "link to /check-your-answers when an Amend journey is complete" in {
-      givenAJourneyWithSession(journeyType = Amend, declarationType = Export, declarationJourney = completeAmendExportJourney)
+      givenAJourneyWithSession(
+        journeyType = Amend,
+        declarationType = Export,
+        declarationJourney = completeAmendExportJourney
+      )
       goToExciseAndRestrictedPage(Export)
 
-      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/check-your-answers")
+      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl(
+        "/declare-commercial-goods/check-your-answers"
+      )
     }
 
     "link to /previous-declaration-details when an Amend journey is not complete" in {
-      givenAJourneyWithSession(journeyType = Amend, declarationType = Export, declarationJourney = startedAmendExportJourney)
+      givenAJourneyWithSession(
+        journeyType = Amend,
+        declarationType = Export,
+        declarationJourney = startedAmendExportJourney
+      )
       goToExciseAndRestrictedPage(Export)
 
-      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl("/declare-commercial-goods/previous-declaration-details")
+      findByClassName("govuk-back-link").getAttribute("href") mustBe fullUrl(
+        "/declare-commercial-goods/previous-declaration-details"
+      )
     }
   }
 }

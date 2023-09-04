@@ -65,7 +65,7 @@ class PurchaseDetailsFormSpec extends FieldBehaviours {
   }
 
   ".currency" must {
-    val fieldName = "currency"
+    val fieldName   = "currency"
     val requiredKey = "purchaseDetails.currency.error.required"
 
     behave like mandatoryField(

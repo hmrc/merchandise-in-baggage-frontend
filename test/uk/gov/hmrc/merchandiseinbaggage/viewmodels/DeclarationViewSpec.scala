@@ -25,58 +25,69 @@ class DeclarationViewSpec extends BaseSpec with CoreTestData {
 
   "allGoods" should {
     "return all paid goods when there are no amendments" in {
-      DeclarationView.allGoods(declaration) mustBe completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
+      DeclarationView.allGoods(
+        declaration
+      ) mustBe completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
     }
 
     "return all goods when there are amendments" in {
       val declarationGoods = completedDeclarationJourney.goodsEntries.declarationGoodsIfComplete.get.goods
-      val amendmentGoods = declarationWithPaidAmendment.amendments.flatMap(_.goods.goods)
+      val amendmentGoods   = declarationWithPaidAmendment.amendments.flatMap(_.goods.goods)
       DeclarationView.allGoods(declarationWithPaidAmendment) mustBe declarationGoods ++ amendmentGoods
     }
   }
 
   "totalDutyDue" should {
     "return correct value when there are no amendments" in {
-      DeclarationView.totalDutyDue(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))) mustBe AmountInPence(100)
+      DeclarationView.totalDutyDue(
+        declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
+      ) mustBe AmountInPence(100)
     }
 
     "return correct value when there are amendments" in {
       val declarationDuty: Long =
         declarationWithPaidAmendment.maybeTotalCalculationResult.map(_.totalDutyDue).getOrElse(AmountInPence(0)).value
-      val amendmentDuty: Long = declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalDutyDue.value)).sum
+      val amendmentDuty: Long   =
+        declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalDutyDue.value)).sum
       DeclarationView.totalDutyDue(declarationWithPaidAmendment) mustBe AmountInPence(declarationDuty + amendmentDuty)
     }
   }
 
   "totalVatDue" should {
     "return correct value when there are no amendments" in {
-      DeclarationView.totalVatDue(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))) mustBe AmountInPence(100)
+      DeclarationView.totalVatDue(
+        declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
+      ) mustBe AmountInPence(100)
     }
 
     "return correct value when there are amendments" in {
       val declarationDuty: Long =
         declarationWithPaidAmendment.maybeTotalCalculationResult.map(_.totalVatDue).getOrElse(AmountInPence(0)).value
-      val amendmentDuty: Long = declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalVatDue.value)).sum
+      val amendmentDuty: Long   =
+        declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalVatDue.value)).sum
       DeclarationView.totalDutyDue(declarationWithPaidAmendment) mustBe AmountInPence(declarationDuty + amendmentDuty)
     }
   }
 
   "totalTaxDue" should {
     "return correct value when there are no amendments" in {
-      DeclarationView.totalTaxDue(declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))) mustBe AmountInPence(100)
+      DeclarationView.totalTaxDue(
+        declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
+      ) mustBe AmountInPence(100)
     }
 
     "return correct value when there are amendments" in {
       val declarationDuty: Long =
         declarationWithPaidAmendment.maybeTotalCalculationResult.map(_.totalTaxDue).getOrElse(AmountInPence(0)).value
-      val amendmentDuty: Long = declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalTaxDue.value)).sum
+      val amendmentDuty: Long   =
+        declarationWithPaidAmendment.amendments.flatMap(_.maybeTotalCalculationResult.map(_.totalTaxDue.value)).sum
       DeclarationView.totalDutyDue(declarationWithPaidAmendment) mustBe AmountInPence(declarationDuty + amendmentDuty)
     }
   }
 
   "journeyDateWithInAllowedRange" should {
     "more than 5 days before travel" in {
-      val travelDate = LocalDate.now().plusDays(10)
+      val travelDate         = LocalDate.now().plusDays(10)
       val updatedDeclaration = declaration.copy(journeyDetails = JourneyOnFoot(journeyPort, travelDate))
 
       val result = DeclarationView.journeyDateWithInAllowedRange(updatedDeclaration)
@@ -84,7 +95,7 @@ class DeclarationViewSpec extends BaseSpec with CoreTestData {
     }
 
     "within 5 days of travel" in {
-      val travelDate = LocalDate.now().plusDays(2)
+      val travelDate         = LocalDate.now().plusDays(2)
       val updatedDeclaration = declaration.copy(journeyDetails = JourneyOnFoot(journeyPort, travelDate))
 
       val result = DeclarationView.journeyDateWithInAllowedRange(updatedDeclaration)
@@ -92,7 +103,7 @@ class DeclarationViewSpec extends BaseSpec with CoreTestData {
     }
 
     "within 30 days to allow update" in {
-      val travelDate = LocalDate.now().minusDays(20)
+      val travelDate         = LocalDate.now().minusDays(20)
       val updatedDeclaration = declaration.copy(journeyDetails = JourneyOnFoot(journeyPort, travelDate))
 
       val result = DeclarationView.journeyDateWithInAllowedRange(updatedDeclaration)
@@ -100,7 +111,7 @@ class DeclarationViewSpec extends BaseSpec with CoreTestData {
     }
 
     "greater than 30 days after travel" in {
-      val travelDate = LocalDate.now().minusDays(32)
+      val travelDate         = LocalDate.now().minusDays(32)
       val updatedDeclaration = declaration.copy(journeyDetails = JourneyOnFoot(journeyPort, travelDate))
 
       val result = DeclarationView.journeyDateWithInAllowedRange(updatedDeclaration)

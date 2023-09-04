@@ -31,12 +31,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsVatRateView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GoodsVatRateController @Inject()(
+class GoodsVatRateController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
   view: GoodsVatRateView,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
   private def backButtonUrl(index: Int)(implicit request: DeclarationGoodsRequest[_]) =
@@ -48,7 +49,7 @@ class GoodsVatRateController @Inject()(
         case entry: ImportGoodsEntry =>
           val preparedForm = entry.maybeGoodsVatRate.fold(form)(form.fill)
           Future successful Ok(view(preparedForm, idx, category, Import, backButtonUrl(idx)))
-        case _: ExportGoodsEntry =>
+        case _: ExportGoodsEntry     =>
           Future successful Redirect(SearchGoodsCountryController.onPageLoad(idx))
       }
     }
@@ -59,7 +60,8 @@ class GoodsVatRateController @Inject()(
       form
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, idx, category, Import, backButtonUrl(idx)))),
           goodsVatRate =>
             navigator
               .nextPage(
@@ -68,7 +70,8 @@ class GoodsVatRateController @Inject()(
                   request.goodsEntry.modify(_.when[ImportGoodsEntry].maybeGoodsVatRate).setTo(Some(goodsVatRate)),
                   idx,
                   repo.upsert
-                ))
+                )
+              )
               .map(Redirect)
         )
     }

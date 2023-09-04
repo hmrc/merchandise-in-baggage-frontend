@@ -30,8 +30,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, E
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl") base: String)(implicit ec: ExecutionContext)
-    extends MibConfiguration with Logging {
+class MibConnector @Inject() (httpClient: HttpClient, @Named("mibBackendBaseUrl") base: String)(implicit
+  ec: ExecutionContext
+) extends MibConfiguration
+    with Logging {
 
   def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
     httpClient.POST[Declaration, DeclarationId](s"$base$declarationsUrl", declaration)
@@ -43,30 +45,40 @@ class MibConnector @Inject()(httpClient: HttpClient, @Named("mibBackendBaseUrl")
     httpClient.GET[HttpResponse](s"$base$declarationsUrl/${declarationId.value}").map { response =>
       response.status match {
         case Status.OK => response.json.asOpt[Declaration]
-        case other =>
+        case other     =>
           logger.warn(s"unexpected status for findDeclaration, status:$other")
           None
       }
     }
 
-  def findBy(mibReference: MibReference, eori: Eori)(implicit hc: HeaderCarrier): EitherT[Future, String, Option[Declaration]] =
+  def findBy(mibReference: MibReference, eori: Eori)(implicit
+    hc: HeaderCarrier
+  ): EitherT[Future, String, Option[Declaration]] =
     EitherT(
-      httpClient.GET[HttpResponse](s"$base$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}").map { response =>
-        response.status match {
-          case Status.OK        => Right(response.json.asOpt[Declaration])
-          case Status.NOT_FOUND => Right(None)
-          case other =>
-            logger.warn(s"unexpected status for findBy for mibReference:${mibReference.value}, and eori:${eori.value}, status:$other")
-            Left(s"unexpected status for findBy, status:$other")
-        }
+      httpClient.GET[HttpResponse](s"$base$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}").map {
+        response =>
+          response.status match {
+            case Status.OK        => Right(response.json.asOpt[Declaration])
+            case Status.NOT_FOUND => Right(None)
+            case other            =>
+              logger.warn(
+                s"unexpected status for findBy for mibReference:${mibReference.value}, and eori:${eori.value}, status:$other"
+              )
+              Left(s"unexpected status for findBy, status:$other")
+          }
       }
     )
 
-  def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+  def calculatePayments(calculationRequests: Seq[CalculationRequest])(implicit
+    hc: HeaderCarrier
+  ): Future[CalculationResponse] =
     httpClient.POST[Seq[CalculationRequest], CalculationResponse](s"$base$calculationsUrl", calculationRequests)
 
-  def calculatePaymentsAmendPlusExisting(amendRequest: CalculationAmendRequest)(implicit hc: HeaderCarrier): Future[CalculationResponse] =
-    httpClient.POST[CalculationAmendRequest, CalculationResponse](s"$base$amendsPlusExistingCalculationsUrl", amendRequest)
+  def calculatePaymentsAmendPlusExisting(
+    amendRequest: CalculationAmendRequest
+  )(implicit hc: HeaderCarrier): Future[CalculationResponse] =
+    httpClient
+      .POST[CalculationAmendRequest, CalculationResponse](s"$base$amendsPlusExistingCalculationsUrl", amendRequest)
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
     httpClient.GET[CheckResponse](s"$base$checkEoriUrl$eori")

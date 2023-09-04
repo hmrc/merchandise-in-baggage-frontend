@@ -25,8 +25,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, JourneyDetai
 import java.time.LocalDate
 
 class JourneyDetailsFormSpec extends FieldBehaviours {
-  private val firstJanuary = LocalDate.of(2021, 1, 1)
-  private val next5DaysMessageKey = "journeyDetails.dateOfTravel.error.notWithinTheNext5Days"
+  private val firstJanuary         = LocalDate.of(2021, 1, 1)
+  private val next5DaysMessageKey  = "journeyDetails.dateOfTravel.error.notWithinTheNext5Days"
   private val dateInPastMessageKey = "journeyDetails.dateOfTravel.error.Import.dateInPast"
 
   port must {
@@ -61,8 +61,8 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
     "bind date of declaration retrospectively for year 2021 but restrict the earliest date allowable to be 1/1/21" in {
       val dateFromInPastFrom2020 = LocalDate.of(2020, 12, 31)
-      val importSubmittedForm = form(Import, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
-      val exportSubmittedForm = form(Export, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
+      val importSubmittedForm    = form(Import, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
+      val exportSubmittedForm    = form(Export, firstJanuary.plusDays(1)).bind(formData(dateFromInPastFrom2020))
 
       importSubmittedForm.errors.head.message mustBe dateInPastMessageKey
       exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast"
@@ -70,9 +70,9 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
 
     "bind date of declaration retrospectively for year 2021 but restrict the earliest date allowable to be 1/1/21 and within 30 days" in {
       val dateFromInPastFrom2020 = LocalDate.of(2021, 1, 1)
-      val thirtyFirstJanuary = firstJanuary.plusDays(31)
-      val importSubmittedForm = form(Import, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
-      val exportSubmittedForm = form(Export, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
+      val thirtyFirstJanuary     = firstJanuary.plusDays(31)
+      val importSubmittedForm    = form(Import, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
+      val exportSubmittedForm    = form(Export, thirtyFirstJanuary).bind(formData(dateFromInPastFrom2020))
 
       importSubmittedForm.errors.head.message mustBe s"$dateInPastMessageKey.within.30.days"
       exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days"
@@ -85,5 +85,5 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       s"$dateOfTravel.day"   -> dateOfArrival.getDayOfMonth.toString,
       s"$dateOfTravel.month" -> dateOfArrival.getMonthValue.toString,
       s"$dateOfTravel.year"  -> dateOfArrival.getYear.toString
-  )
+    )
 }

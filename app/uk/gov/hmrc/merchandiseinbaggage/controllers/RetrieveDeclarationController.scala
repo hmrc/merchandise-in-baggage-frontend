@@ -32,7 +32,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RetrieveDeclarationController @Inject()(
+class RetrieveDeclarationController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -52,27 +52,30 @@ class RetrieveDeclarationController @Inject()(
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          BadRequest(view(formWithErrors, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType)).asFuture,
+          BadRequest(
+            view(formWithErrors, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType)
+          ).asFuture,
         retrieveDeclaration => processRequest(retrieveDeclaration)
       )
   }
 
-  private def processRequest(retrieveDeclaration: RetrieveDeclaration)(
-    implicit request: DeclarationJourneyRequest[AnyContent],
-    hc: HeaderCarrier,
-    ec: ExecutionContext) =
+  private def processRequest(
+    retrieveDeclaration: RetrieveDeclaration
+  )(implicit request: DeclarationJourneyRequest[AnyContent], hc: HeaderCarrier, ec: ExecutionContext) =
     mibConnector
       .findBy(retrieveDeclaration.mibReference, retrieveDeclaration.eori)
       .fold(
-        error => Future successful InternalServerError(error), { maybeDeclaration =>
+        error => Future successful InternalServerError(error),
+        maybeDeclaration =>
           navigator
             .nextPage(
               RetrieveDeclarationRequest(
                 maybeDeclaration,
                 request.declarationJourney.copy(maybeRetrieveDeclaration = Some(retrieveDeclaration)),
-                repo.upsert))
+                repo.upsert
+              )
+            )
             .map(Redirect)
-        }
       )
       .flatten
 }

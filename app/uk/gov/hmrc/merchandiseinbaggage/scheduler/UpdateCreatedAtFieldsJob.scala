@@ -24,13 +24,13 @@ import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
 
 trait UpdateCreatedAtFieldsJob extends ScheduledJob
 
-class UpdateCreatedAtFieldsJobImpl @Inject()(
+class UpdateCreatedAtFieldsJobImpl @Inject() (
   val config: Configuration,
   val documentUpdateService: DocumentUpdateService
 ) extends UpdateCreatedAtFieldsJob {
 
-  override def jobName: String = "update-created-at-field-job"
-  val actorSystem: ActorSystem = ActorSystem(jobName)
+  override def jobName: String               = "update-created-at-field-job"
+  val actorSystem: ActorSystem               = ActorSystem(jobName)
   val scheduledMessage: UpdateDocumentsClass = UpdateDocumentsClass(documentUpdateService)
 
   schedule

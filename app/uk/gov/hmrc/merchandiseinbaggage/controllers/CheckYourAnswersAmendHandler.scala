@@ -39,105 +39,131 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportV
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CheckYourAnswersAmendHandler @Inject()(
+class CheckYourAnswersAmendHandler @Inject() (
   actionProvider: DeclarationJourneyActionProvider,
   mibService: MibService,
   tpsPaymentsService: TpsPaymentsService,
   paymentService: PaymentService,
   amendImportView: CheckYourAnswersAmendImportView,
-  amendExportView: CheckYourAnswersAmendExportView)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
+  amendExportView: CheckYourAnswersAmendExportView
+)(implicit val ec: ExecutionContext, val appConfig: AppConfig) {
 
-  def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(
-    implicit hc: HeaderCarrier,
+  def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(implicit
+    hc: HeaderCarrier,
     request: Request[_],
-    messages: Messages): Future[Result] =
+    messages: Messages
+  ): Future[Result] =
     (for {
       amendPlusOriginal <- mibService.amendPlusOriginalCalculations(declarationJourney)
       goods             <- OptionT.fromOption(declarationJourney.goodsEntries.declarationGoodsIfComplete)
       destination       <- OptionT.fromOption(declarationJourney.maybeGoodsDestination)
       outstanding       <- OptionT.liftF(mibService.paymentCalculations(goods.goods, destination))
-    } yield
-      (declarationJourney.declarationType, outstanding.thresholdCheck) match {
-        case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad)
-        case (Import, _)        => Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue, isAgent))
-        case (Export, _)        => Ok(amendExportView(form, amendment, isAgent))
-      }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
+    } yield (declarationJourney.declarationType, outstanding.thresholdCheck) match {
+      case (_, OverThreshold) => Redirect(GoodsOverThresholdController.onPageLoad)
+      case (Import, _)        =>
+        Ok(amendImportView(form, amendment, amendPlusOriginal.results, outstanding.results.totalTaxDue, isAgent))
+      case (Export, _)        => Ok(amendExportView(form, amendment, isAgent))
+    }).value.map(mayBeResult => mayBeResult.fold(actionProvider.invalidRequest(declarationNotFoundMessage))(r => r))
 
-  def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Result] =
     mibService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
-      maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage).asFuture) { originalDeclaration =>
-        originalDeclaration.declarationType match {
-          case Export =>
-            persistAndRedirect(newAmendment, originalDeclaration)
-          case Import =>
-            persistAndRedirectToPayments(newAmendment, originalDeclaration)
-        }
+      maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage).asFuture) {
+        originalDeclaration =>
+          originalDeclaration.declarationType match {
+            case Export =>
+              persistAndRedirect(newAmendment, originalDeclaration)
+            case Import =>
+              persistAndRedirectToPayments(newAmendment, originalDeclaration)
+          }
       }
     }
 
-  private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] = {
-    val updatedAmendment = amendment.copy(reference = originalDeclaration.amendments.size + 1)
+  private def persistAndRedirect(amendment: Amendment, originalDeclaration: Declaration)(implicit
+    hc: HeaderCarrier
+  ): Future[Result] = {
+    val updatedAmendment   = amendment.copy(reference = originalDeclaration.amendments.size + 1)
     val amendedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
     mibService.amendDeclaration(amendedDeclaration).map(_ => Redirect(DeclarationConfirmationController.onPageLoad))
   }
 
-  private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(
-    implicit hc: HeaderCarrier): Future[Result] =
-    mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResults =>
-      val amendmentRef = originalDeclaration.amendments.size + 1
-      val updatedAmendment =
-        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResults.results.totalCalculationResult))
+  private def persistAndRedirectToPayments(amendment: Amendment, originalDeclaration: Declaration)(implicit
+    hc: HeaderCarrier
+  ): Future[Result] =
+    mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap {
+      calculationResults =>
+        val amendmentRef     = originalDeclaration.amendments.size + 1
+        val updatedAmendment =
+          amendment.copy(
+            reference = amendmentRef,
+            maybeTotalCalculationResult = Some(calculationResults.results.totalCalculationResult)
+          )
 
-      val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+        val updatedDeclaration =
+          originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
-      for {
-        _ <- mibService.amendDeclaration(updatedDeclaration)
-        redirectUrl <- paymentService
-                        .sendPaymentRequest(updatedDeclaration, Some(updatedAmendment.reference), calculationResults.results)
-      } yield Redirect(redirectUrl)
+        for {
+          _           <- mibService.amendDeclaration(updatedDeclaration)
+          redirectUrl <-
+            paymentService
+              .sendPaymentRequest(updatedDeclaration, Some(updatedAmendment.reference), calculationResults.results)
+        } yield Redirect(redirectUrl)
     }
 
-  def onSubmit(declarationId: DeclarationId, pid: String, newAmendment: Amendment)(
-    implicit hc: HeaderCarrier,
-    request: Request[_]): Future[Result] =
+  def onSubmit(declarationId: DeclarationId, pid: String, newAmendment: Amendment)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Result] =
     mibService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
-      maybeOriginalDeclaration.fold(Future.successful(actionProvider.invalidRequest(declarationNotFoundMessage))) { originalDeclaration =>
-        originalDeclaration.declarationType match {
-          case Export =>
-            persistAndRedirect(newAmendment, originalDeclaration)
-          case Import =>
-            persistAndRedirectToPayments(newAmendment, pid, originalDeclaration)
-        }
+      maybeOriginalDeclaration.fold(Future.successful(actionProvider.invalidRequest(declarationNotFoundMessage))) {
+        originalDeclaration =>
+          originalDeclaration.declarationType match {
+            case Export =>
+              persistAndRedirect(newAmendment, originalDeclaration)
+            case Import =>
+              persistAndRedirectToPayments(newAmendment, pid, originalDeclaration)
+          }
       }
     }
 
-  private def persistAndRedirectToPayments(amendment: Amendment, pid: String, originalDeclaration: Declaration)(
-    implicit request: Request[_],
-    hc: HeaderCarrier): Future[Result] =
-    mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap { calculationResponse =>
-      val amendmentRef = originalDeclaration.amendments.size + 1
-      val updatedAmendment =
-        amendment.copy(reference = amendmentRef, maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
+  private def persistAndRedirectToPayments(amendment: Amendment, pid: String, originalDeclaration: Declaration)(implicit
+    request: Request[_],
+    hc: HeaderCarrier
+  ): Future[Result] =
+    mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap {
+      calculationResponse =>
+        val amendmentRef     = originalDeclaration.amendments.size + 1
+        val updatedAmendment =
+          amendment.copy(
+            reference = amendmentRef,
+            maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult)
+          )
 
-      val updatedDeclaration = originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
+        val updatedDeclaration =
+          originalDeclaration.copy(amendments = originalDeclaration.amendments :+ updatedAmendment)
 
-      for {
-        _        <- mibService.amendDeclaration(updatedDeclaration)
-        redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, pid, amendmentRef)
-      } yield redirect
+        for {
+          _        <- mibService.amendDeclaration(updatedDeclaration)
+          redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, pid, amendmentRef)
+        } yield redirect
     }
 
-  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration, pid: String, amendmentRef: Int)(
-    implicit rh: RequestHeader,
-    hc: HeaderCarrier): Future[Result] =
+  def redirectToPaymentsIfNecessary(
+    calculations: CalculationResults,
+    declaration: Declaration,
+    pid: String,
+    amendmentRef: Int
+  )(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
       Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
         .createTpsPayments(pid, Some(amendmentRef), declaration, calculations)
-        .map(
-          tpsId =>
-            Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-              .addingToSession("TPS_ID" -> tpsId.value))
+        .map(tpsId =>
+          Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
+            .addingToSession("TPS_ID" -> tpsId.value)
+        )
     }
 }

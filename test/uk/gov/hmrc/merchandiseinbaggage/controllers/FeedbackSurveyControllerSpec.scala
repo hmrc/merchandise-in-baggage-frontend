@@ -25,10 +25,10 @@ class FeedbackSurveyControllerSpec extends DeclarationJourneyControllerSpec {
   "startSurvey" should {
     s"redirect to correct service as expected" in {
 
-      val request = buildGet(routes.FeedbackSurveyController.startSurvey().url, aSessionId)
+      val request        = buildGet(routes.FeedbackSurveyController.startSurvey().url, aSessionId)
       val eventualResult = controller.startSurvey()(request)
 
-      status(eventualResult) mustBe 303
+      status(eventualResult) mustBe SEE_OTHER
       redirectLocation(eventualResult) mustBe Some("http://localhost:9514/feedback/mib")
     }
   }

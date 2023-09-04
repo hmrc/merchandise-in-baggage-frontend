@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDetailsPage.{path, title}
 
 object PreviousDeclarationDetailsPage extends Page {
-  val path = "/declare-commercial-goods/previous-declaration-details"
+  val path  = "/declare-commercial-goods/previous-declaration-details"
   val title = "Details of your existing declaration"
 
   override def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit =

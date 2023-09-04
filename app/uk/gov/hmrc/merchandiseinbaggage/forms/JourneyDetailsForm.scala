@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 
 object JourneyDetailsForm extends Mappings {
-  val port = "port"
+  val port         = "port"
   val dateOfTravel = "dateOfTravel"
 
   private val dateErrorKey = "journeyDetails.dateOfTravel.error"
@@ -38,17 +38,21 @@ object JourneyDetailsForm extends Mappings {
   private val dateValidation: (LocalDate, DeclarationType) => Constraint[LocalDate] =
     (declarationDate, declarationType) =>
       Constraint { value: LocalDate =>
-        (isPastAnd2020(value, declarationDate), afterFiveDays(value, declarationDate), isPastWithin30Days(value, declarationDate)) match {
+        (
+          isPastAnd2020(value, declarationDate),
+          afterFiveDays(value, declarationDate),
+          isPastWithin30Days(value, declarationDate)
+        ) match {
           case (true, _, _) => Invalid(s"$dateErrorKey.$declarationType.dateInPast")
           case (_, _, true) => Invalid(s"$dateErrorKey.$declarationType.dateInPast.within.30.days")
           case (_, true, _) => Invalid(s"$dateErrorKey.notWithinTheNext5Days")
           case _            => Valid
         }
-    }
+      }
 
   def form(declarationType: DeclarationType, today: LocalDate = LocalDate.now): Form[JourneyDetailsEntry] = Form(
     mapping(
-      port -> text(s"$portErrorKey.$declarationType.required")
+      port         -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
       dateOfTravel -> localDate.verifying(dateValidation(today, declarationType))
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)

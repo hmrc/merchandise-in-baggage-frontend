@@ -30,12 +30,13 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ImportExportChoiceController @Inject()(
+class ImportExportChoiceController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   view: ImportExportChoice,
   actionProvider: DeclarationJourneyActionProvider,
   val repo: DeclarationJourneyRepository,
-  navigator: Navigator)(implicit ec: ExecutionContext, appConf: AppConfig)
+  navigator: Navigator
+)(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad = actionProvider.initJourneyAction { implicit request =>
@@ -55,7 +56,7 @@ class ImportExportChoiceController @Inject()(
                 case AddToExisting => Redirect(call).addingToSession("journeyType" -> "amend")
                 case _             => Redirect(call).addingToSession("journeyType" -> "new")
               }
-          }
+            }
       )
   }
 }

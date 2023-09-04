@@ -35,9 +35,9 @@ import java.util.UUID
 
 class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val completedNonCustomsAgentJourney = completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))
-  private val incompleteGoodsEntry = completedImportGoods.copy(maybePurchaseDetails = None)
-  private val incompleteGoodEntries = GoodsEntries(Seq(incompleteGoodsEntry))
-  private val vehicleRegistrationNumber = "reg"
+  private val incompleteGoodsEntry            = completedImportGoods.copy(maybePurchaseDetails = None)
+  private val incompleteGoodEntries           = GoodsEntries(Seq(incompleteGoodsEntry))
+  private val vehicleRegistrationNumber       = "reg"
 
   "PurchaseDetails toString" should {
     "include the price string as entered" in {
@@ -112,7 +112,10 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "JourneyOnFoot" should {
     "serialise and de-serialise" in {
-      val journey = JourneyOnFoot(Port("LHR", "title.heathrow_airport", isGB = true, List("London Heathrow Airport", "LHR")), journeyDate)
+      val journey = JourneyOnFoot(
+        Port("LHR", "title.heathrow_airport", isGB = true, List("London Heathrow Airport", "LHR")),
+        journeyDate
+      )
       parse(toJson(journey).toString()).validate[JourneyOnFoot].get mustBe journey
     }
   }
@@ -120,7 +123,11 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   "JourneyInSmallVehicle" should {
     "serialise and de-serialise" in {
       val journey =
-        JourneyInSmallVehicle(Port("DVR", "title.dover", isGB = true, List("Port of Dover")), journeyDate, vehicleRegistrationNumber)
+        JourneyInSmallVehicle(
+          Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
+          journeyDate,
+          vehicleRegistrationNumber
+        )
       parse(toJson(journey).toString()).validate[JourneyInSmallVehicle].get mustBe journey
     }
   }
@@ -140,7 +147,9 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           Address(
             lines = Seq("*************", "**********"),
             postcode = Some("*******"),
-            country = AddressLookupCountry("**", Some("**************"))))
+            country = AddressLookupCountry("**", Some("**************"))
+          )
+        )
       completedDeclarationJourney.obfuscated.maybeEori mustBe Some(Eori("**************"))
       completedDeclarationJourney.obfuscated.maybeRegistrationNumber mustBe Some("******")
     }
@@ -149,7 +158,11 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       "the user has provided all the required details" in {
         completedDeclarationJourney.maybeCustomsAgent mustBe
           Some(
-            CustomsAgent(completedDeclarationJourney.maybeCustomsAgentName.get, completedDeclarationJourney.maybeCustomsAgentAddress.get))
+            CustomsAgent(
+              completedDeclarationJourney.maybeCustomsAgentName.get,
+              completedDeclarationJourney.maybeCustomsAgentAddress.get
+            )
+          )
       }
     }
 
@@ -173,8 +186,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
     "be complete" when {
       "the user has completed the journey" in {
-        val now = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
-        val reference = MibReference("xx")
+        val now           = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
+        val reference     = MibReference("xx")
         val declarationId = DeclarationId(UUID.randomUUID().toString)
         completedDeclarationJourney.declarationIfRequiredAndComplete
           .map(_.copy(dateOfDeclaration = now).copy(mibReference = reference, declarationId = declarationId)) mustBe
@@ -205,7 +218,10 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the user has supplied a customs agent name and address but then navigates back and answers 'No' to maybeIsACustomsAgent" in {
-        completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No)).declarationIfRequiredAndComplete.isDefined mustBe true
+        completedDeclarationJourney
+          .copy(maybeIsACustomsAgent = Some(No))
+          .declarationIfRequiredAndComplete
+          .isDefined mustBe true
       }
 
       "the user is not travelling by vehicle" in {
@@ -218,7 +234,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           .get
           .journeyDetails mustBe JourneyOnFoot(
           Port("LHR", "title.heathrow_airport", isGB = true, List("London Heathrow Airport", "LHR")),
-          journeyDate)
+          journeyDate
+        )
       }
 
       "the trader is travelling by small vehicle has supplied the " + vehicleRegistrationNumber + "istration number of a small vehicle" in {
@@ -234,7 +251,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
           .journeyDetails mustBe JourneyInSmallVehicle(
           Port("DVR", "title.dover", isGB = true, List("Port of Dover")),
           journeyDate,
-          vehicleRegistrationNumber)
+          vehicleRegistrationNumber
+        )
       }
     }
 
@@ -284,11 +302,15 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the user has not confirmed whether they are carrying excise or restricted goods" in {
-        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = None).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(maybeExciseOrRestrictedGoods = None)
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has confirmed that they are carrying excise or restricted goods" in {
-        completedDeclarationJourney.copy(maybeExciseOrRestrictedGoods = Some(Yes)).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(maybeExciseOrRestrictedGoods = Some(Yes))
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not confirmed the destination of the goods whether its GB or NI" in {
@@ -296,23 +318,33 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       }
 
       "the user has not confirmed whether the goods are below the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = None).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(maybeValueWeightOfGoodsBelowThreshold = None)
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has confirmed that the goods are not below the threshold" in {
-        completedDeclarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(No)).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(maybeValueWeightOfGoodsBelowThreshold = Some(No))
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not entered any goods" in {
-        completedDeclarationJourney.copy(goodsEntries = GoodsEntries(Seq(ImportGoodsEntry()))).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(goodsEntries = GoodsEntries(Seq(ImportGoodsEntry())))
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has incomplete goods entries" in {
-        completedDeclarationJourney.copy(goodsEntries = incompleteGoodEntries).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(goodsEntries = incompleteGoodEntries)
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided the name of the person carrying the goods" in {
-        completedDeclarationJourney.copy(maybeNameOfPersonCarryingTheGoods = None).declarationRequiredAndComplete mustBe false
+        completedDeclarationJourney
+          .copy(maybeNameOfPersonCarryingTheGoods = None)
+          .declarationRequiredAndComplete mustBe false
       }
 
       "the user has not provided an email address" in {
@@ -419,17 +451,20 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
       amendments = Seq.empty
     )
 
-    val latestAmendment = aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusMinutes(10))
+    val latestAmendment =
+      aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusMinutes(10))
 
     declarationWithGoods.latestGoods mustBe declarationWithGoods.declarationGoods.goods
     declarationWithGoods
       .modify(_.amendments)
-      .setTo(Seq(
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusDays(1)),
-        aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).plusMinutes(1)),
-        latestAmendment
-      ))
+      .setTo(
+        Seq(
+          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusDays(1)),
+          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).plusMinutes(1)),
+          latestAmendment
+        )
+      )
       .latestGoods mustBe latestAmendment.goods.goods
   }
 }

@@ -25,7 +25,8 @@ object SearchGoodsCountryPage extends Page {
 
   def importTitle(idx: Int) = "In what country did you buy the test good?"
   def exportTitle(idx: Int) = "What country are you taking the test good to?"
-  val importHint = "If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase."
+  val importHint            =
+    "If you bought the goods on a plane or boat, enter the country you were travelling from at the time of purchase."
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     new Select(find(IdQuery("country")).get.underlying).selectByValue(formData.toString)

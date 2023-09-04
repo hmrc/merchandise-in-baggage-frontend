@@ -28,23 +28,26 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
 
 @Singleton
-class AppConfig @Inject()(val config: Configuration, val env: Environment)() extends MibConfiguration with IsAssistedDigitalConfiguration {
+class AppConfig @Inject() (val config: Configuration, val env: Environment)()
+    extends MibConfiguration
+    with IsAssistedDigitalConfiguration {
 
   val serviceIdentifier = "mib"
 
-  val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
+  val contactHost     = configSource("contact-frontend.host").loadOrThrow[String]
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$serviceIdentifier"
-  val contactUrl = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
+  val contactUrl      = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
   lazy val strideRoles: Seq[String] = config.get[Seq[String]]("stride.roles")
-  lazy val timeout: Int = configSource("timeout.timeout").loadOrThrow[Int]
-  lazy val countdown: Int = configSource("timeout.countdown").loadOrThrow[Int]
+  lazy val timeout: Int             = configSource("timeout.timeout").loadOrThrow[Int]
+  lazy val countdown: Int           = configSource("timeout.countdown").loadOrThrow[Int]
 
   lazy val paymentsReturnUrl: String = configSource("payments.returnUrl").loadOrThrow[String]
-  lazy val paymentsBackUrl: String = configSource("payments.backUrl").loadOrThrow[String]
+  lazy val paymentsBackUrl: String   = configSource("payments.backUrl").loadOrThrow[String]
 
   lazy val tpsNavigation: TpsNavigation = configSource("tps-navigation").loadOrThrow[TpsNavigation]
-  lazy val tpsFrontendBaseUrl: String = configSource("microservice.services.tps-payments-frontend.url").loadOrThrow[String]
+  lazy val tpsFrontendBaseUrl: String   =
+    configSource("microservice.services.tps-payments-frontend.url").loadOrThrow[String]
 
   lazy val mongoTTL: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
 
@@ -69,16 +72,21 @@ object AppConfigSource {
   val configSource: String => ConfigSource = ConfigSource.default.at
 }
 
-final case class MongoConf(uri: String, host: String = "localhost", port: Int = 27017, collectionName: String = "declaration")
+final case class MongoConf(
+  uri: String,
+  host: String = "localhost",
+  port: Int = 27017,
+  collectionName: String = "declaration"
+)
 
 trait MibConfiguration {
-  lazy val mibConf: MIBConf = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
-  lazy val baseUrl: String = "/declare-commercial-goods"
-  lazy val declarationsUrl: String = s"$baseUrl/declarations"
-  lazy val calculationsUrl: String = s"$baseUrl/calculations"
+  lazy val mibConf: MIBConf                          = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
+  lazy val baseUrl: String                           = "/declare-commercial-goods"
+  lazy val declarationsUrl: String                   = s"$baseUrl/declarations"
+  lazy val calculationsUrl: String                   = s"$baseUrl/calculations"
   lazy val amendsPlusExistingCalculationsUrl: String = s"$baseUrl/amend-calculations"
-  lazy val checkEoriUrl: String = s"$baseUrl/validate/eori/"
-  lazy val exchangeRateUrl: String = s"$baseUrl/exchange-rate-url"
+  lazy val checkEoriUrl: String                      = s"$baseUrl/validate/eori/"
+  lazy val exchangeRateUrl: String                   = s"$baseUrl/exchange-rate-url"
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)

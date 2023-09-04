@@ -17,8 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import com.softwaremill.quicklens._
-import org.scalamock.scalatest.MockFactory
-import org.scalatest.OptionValues
+import org.mockito.ArgumentMatchersSugar.{any, eqTo}
+import org.mockito.MockitoSugar.{mock, reset, when}
+import org.mockito.invocation.InvocationOnMock
+import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -26,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{GoodsEntries, ThresholdAllowance}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -34,75 +36,86 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with MockFactory with OptionValues {
+class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with OptionValues with BeforeAndAfterEach {
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val mockConnector = mock[MibConnector]
-  private val service = new MibService(mockConnector)
+  private implicit val hc: HeaderCarrier  = HeaderCarrier()
+  private val mockConnector: MibConnector = mock[MibConnector]
+  private val service: MibService         = new MibService(mockConnector)
+
+  private val (gbpAmount, duty, vat)           = (7835, 0, 1567)
+  private val stubbedResult: CalculationResult =
+    CalculationResult(
+      aGoods,
+      AmountInPence(gbpAmount),
+      AmountInPence(duty),
+      AmountInPence(vat),
+      Some(aConversionRatePeriod)
+    )
+
+  override def beforeEach(): Unit =
+    reset(mockConnector)
 
   "retrieve payment calculations from mib backend" in {
-    val stubbedResult =
-      CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val expected = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
 
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(expected.results.calculationResults.map(_.goods.calculationRequest(GreatBritain)), *)
-      .returning(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
+    val expected: CalculationResponse = CalculationResponse(CalculationResults(List(stubbedResult)), WithinThreshold)
+
+    val calculationRequests: Seq[CalculationRequest] =
+      expected.results.calculationResults.map(_.goods.calculationRequest(GreatBritain))
+
+    when(mockConnector.calculatePayments(eqTo(calculationRequests))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
 
     service.paymentCalculations(Seq(aGoods), GreatBritain).futureValue mustBe expected
   }
 
-  "check if over threshold for amend journey" in {
-    val stubbedResult =
-      CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val amended = completedImportJourneyWithGoodsOverThreshold
+  "check if over threshold for amend journey" in { //not right
+    val amended: DeclarationJourney = completedImportJourneyWithGoodsOverThreshold
       .copy(journeyType = Amend)
 
-    (mockConnector
-      .calculatePaymentsAmendPlusExisting(_: CalculationAmendRequest)(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)))
+    when(mockConnector.calculatePaymentsAmendPlusExisting(any[CalculationAmendRequest])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(CalculationResponse(CalculationResults(Seq(stubbedResult)), OverThreshold)))
 
-    service.amendPlusOriginalCalculations(amended).value.futureValue.get.thresholdCheck mustBe WithinThreshold
+    service.amendPlusOriginalCalculations(amended).value.futureValue.get.thresholdCheck mustBe OverThreshold
   }
 
   "check threshold allowance" in {
-    val entries = completedGoodsEntries(Import)
-    val stubbedResult =
-      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
+    val entries                                  = completedGoodsEntries(Import)
+    val calculationResponse: CalculationResponse =
+      CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
 
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(Future.successful(calculationResponse))
+    when(mockConnector.calculatePayments(any[Seq[CalculationRequest]])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(calculationResponse))
 
-    val actual = service.thresholdAllowance(Some(GreatBritain), entries, New, aDeclarationId).value.futureValue
+    val actual: Option[ThresholdAllowance] =
+      service.thresholdAllowance(Some(GreatBritain), entries, New, aDeclarationId).value.futureValue
     actual mustBe Some(
-      ThresholdAllowance(DeclarationGoods(List(aImportGoods)), DeclarationGoods(List(aImportGoods)), calculationResponse, GreatBritain))
+      ThresholdAllowance(
+        DeclarationGoods(List(aImportGoods)),
+        DeclarationGoods(List(aImportGoods)),
+        calculationResponse,
+        GreatBritain
+      )
+    )
   }
 
   "check threshold allowance including existing declaration for amends" in {
     val entries: GoodsEntries = completedGoodsEntries(Import)
-    val declarationId = aDeclarationId
-    val existingDeclaration = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
-    val stubbedResult =
-      CalculationResult(aImportGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), Some(aConversionRatePeriod))
-    val calculationResponse = CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
+    val declarationId         = aDeclarationId
+    val existingDeclaration   = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
 
-    (mockConnector
-      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(Future.successful(Some(existingDeclaration)))
+    val calculationResponse: CalculationResponse =
+      CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
 
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(Future.successful(calculationResponse))
+    when(mockConnector.findDeclaration(any[DeclarationId])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some(existingDeclaration)))
 
-    val actual = service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
-    val allGoods = existingDeclaration.declarationGoods.goods ++ entries.declarationGoodsIfComplete.get.goods
+    when(mockConnector.calculatePayments(any[Seq[CalculationRequest]])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(calculationResponse))
+
+    val actual: Option[ThresholdAllowance] =
+      service.thresholdAllowance(Some(GreatBritain), entries, Amend, declarationId).value.futureValue
+    val allGoods: Seq[Goods]               =
+      existingDeclaration.declarationGoods.goods ++ entries.declarationGoodsIfComplete.get.goods
 
     actual.value.currentGoods mustBe entries.declarationGoodsIfComplete.value
     actual.value.allGoods.goods must contain theSameElementsAs allGoods
@@ -111,59 +124,64 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Mock
   }
 
   s"add only goods in $Paid or $NotRequired status" in {
-    val declarationId = aDeclarationId
-    val unknown = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
-    val expectedGoods = Seq(aImportGoods)
+    val declarationId   = aDeclarationId
+    val unknown         = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
+    val expectedGoods   = Seq(aImportGoods)
     val plusUnsetStatus = declaration
       .copy(declarationId = declarationId)
       .modify(_.amendments)
       .using(_ ++ Seq(unknown))
 
-    (mockConnector
-      .findDeclaration(_: DeclarationId)(_: HeaderCarrier))
-      .expects(*, *)
-      .returning(Future.successful(Some(plusUnsetStatus)))
+    when(mockConnector.findDeclaration(any[DeclarationId])(any[HeaderCarrier]))
+      .thenReturn(Future.successful(Some(plusUnsetStatus)))
 
     service.addGoods(Amend, declarationId, expectedGoods).value.futureValue mustBe Some(
-      expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus))
+      expectedGoods ++ DeclarationView.allGoods(plusUnsetStatus)
+    )
   }
 
-  s"send a request for calculation including declared goods plus amendments goods" in {
-    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-    val foundDeclaration = declaration.modify(_.amendments).setTo(amendments)
-    val expectedTotalGoods = foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
+  "send a request for calculation including declared goods plus amendments goods" in {
+    val amendments: Seq[Amendment]     = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration: Declaration  = declaration.modify(_.amendments).setTo(amendments)
+    val expectedTotalGoods: Seq[Goods] =
+      foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
 
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
-        calculationRequests
-          .map(_.goods) == expectedTotalGoods
-      })
-      .returning(Future.successful(aCalculationResponse))
+    when(mockConnector.calculatePayments(any[Seq[CalculationRequest]])(any[HeaderCarrier]))
+      .thenAnswer { (invocation: InvocationOnMock) =>
+        val calculationRequests: Seq[CalculationRequest] =
+          invocation.getArguments.head.asInstanceOf[Seq[CalculationRequest]]
+        if (calculationRequests.map(_.goods) == expectedTotalGoods) {
+          Future.successful(aCalculationResponse)
+        } else {
+          Future.failed(new Exception("Arguments not matching"))
+        }
+      }
 
-    val actual = service.thresholdAllowance(foundDeclaration).futureValue
+    val actual: ThresholdAllowance = service.thresholdAllowance(foundDeclaration).futureValue
     actual mustBe a[ThresholdAllowance]
   }
 
-  s"send a request for calculation including declared goods plus amendments goods for export" in {
-    val amendments = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-    val foundDeclaration = declaration
+  "send a request for calculation including declared goods plus amendments goods for export" in {
+    val amendments: Seq[Amendment]     = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
+    val foundDeclaration: Declaration  = declaration
       .modify(_.declarationType)
       .setTo(Export)
       .modify(_.amendments)
       .setTo(amendments)
     val expectedTotalGoods: Seq[Goods] = foundDeclaration.declarationGoods.goods ++ amendments.flatMap(_.goods.goods)
 
-    (mockConnector
-      .calculatePayments(_: Seq[CalculationRequest])(_: HeaderCarrier))
-      .expects(where { (calculationRequests: Seq[CalculationRequest], _: HeaderCarrier) =>
-        calculationRequests
-          .map(_.goods)
-          .size == expectedTotalGoods.size
-      })
-      .returning(Future.successful(aCalculationResponse))
+    when(mockConnector.calculatePayments(any[Seq[CalculationRequest]])(any[HeaderCarrier]))
+      .thenAnswer { (invocation: InvocationOnMock) =>
+        val calculationRequests: Seq[CalculationRequest] =
+          invocation.getArguments.head.asInstanceOf[Seq[CalculationRequest]]
+        if (calculationRequests.map(_.goods).size == expectedTotalGoods.size) {
+          Future.successful(aCalculationResponse)
+        } else {
+          Future.failed(new Exception("Arguments not matching"))
+        }
+      }
 
-    val actual = service.thresholdAllowance(foundDeclaration).futureValue
+    val actual: ThresholdAllowance = service.thresholdAllowance(foundDeclaration).futureValue
     actual mustBe a[ThresholdAllowance]
   }
 }

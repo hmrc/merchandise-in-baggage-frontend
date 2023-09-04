@@ -27,7 +27,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class KeepAliveController @Inject()(
+class KeepAliveController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   repo: DeclarationJourneyRepository,
@@ -50,5 +50,6 @@ class KeepAliveController @Inject()(
     removeSession(request)(Ok(serviceTimeoutView()))
   }
 
-  private def removeSession(implicit request: Request[_]): Result => Result = result => result.removingFromSession(SessionKeys.sessionId)
+  private def removeSession(implicit request: Request[_]): Result => Result = result =>
+    result.removingFromSession(SessionKeys.sessionId)
 }

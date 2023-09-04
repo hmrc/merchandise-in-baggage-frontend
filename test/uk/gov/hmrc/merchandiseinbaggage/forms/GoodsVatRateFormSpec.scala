@@ -25,7 +25,7 @@ class GoodsVatRateFormSpec extends OptionFieldBehaviours {
 
   ".value" must {
 
-    val fieldName = "value"
+    val fieldName   = "value"
     val requiredKey = "goodsVatRate.error.required"
 
     behave like optionsField[GoodsVatRate](

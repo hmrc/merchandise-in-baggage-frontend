@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
+import play.api.libs.json.JsonConfiguration.Aux
 import play.api.libs.json._
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 
@@ -44,7 +45,7 @@ final case class ImportGoodsEntry(
 }
 
 object ImportGoodsEntry {
-  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+  implicit val config: Aux[Json.MacroOptions] = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
 
   implicit val format: OFormat[ImportGoodsEntry] = Json.format[ImportGoodsEntry]
 
@@ -65,7 +66,7 @@ final case class ExportGoodsEntry(
 }
 
 object ExportGoodsEntry {
-  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+  implicit val config: Aux[Json.MacroOptions] = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
 
   implicit val format: OFormat[ExportGoodsEntry] = Json.format[ExportGoodsEntry]
 
@@ -73,7 +74,7 @@ object ExportGoodsEntry {
 }
 
 object GoodsEntry {
-  implicit val config = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
+  implicit val config: Aux[Json.MacroOptions] = JsonConfiguration(optionHandlers = OptionHandlers.WritesNull)
 
   implicit val writes: Writes[GoodsEntry] = Writes[GoodsEntry] {
     case ig: ImportGoodsEntry => ImportGoodsEntry.format.writes(ig)
@@ -84,8 +85,8 @@ object GoodsEntry {
   implicit val reads: Reads[GoodsEntry] = Reads[GoodsEntry] {
     case json: JsObject if json.keys.contains("maybeProducedInEu") =>
       JsSuccess(json.as[ImportGoodsEntry])
-    case json: JsObject if json.keys.contains("maybeDestination") =>
+    case json: JsObject if json.keys.contains("maybeDestination")  =>
       JsSuccess(json.as[ExportGoodsEntry])
-    case _ => JsError()
+    case _                                                         => JsError()
   }
 }

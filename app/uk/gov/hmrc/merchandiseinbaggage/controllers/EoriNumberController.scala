@@ -32,7 +32,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class EoriNumberController @Inject()(
+class EoriNumberController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -40,7 +40,8 @@ class EoriNumberController @Inject()(
   mibConnector: MibConnector,
   navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController with Logging {
+    extends DeclarationJourneyUpdateController
+    with Logging {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(CustomsAgentController.onPageLoad)
@@ -63,21 +64,27 @@ class EoriNumberController @Inject()(
       form(isAgent, request.declarationType)
         .bindFromRequest()
         .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
+          formWithErrors =>
+            Future.successful(BadRequest(view(formWithErrors, isAgent, backButtonUrl, declarationType))),
           eori => checkEori(eori, isAgent, declarationType)
         )
     }
   }
 
-  private def checkEori(eori: String, isAgent: YesNo, declarationType: DeclarationType)(
-    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def checkEori(eori: String, isAgent: YesNo, declarationType: DeclarationType)(implicit
+    request: DeclarationJourneyRequest[AnyContent]
+  ): Future[Result]                                                          =
     (for {
       validated <- mibConnector.checkEoriNumber(eori)
       result    <- validateEoriAndRedirect(eori, isAgent, declarationType, validated)
     } yield result).recover { case _ => badRequestResult(isAgent, declarationType, eori) }
 
-  private def validateEoriAndRedirect(eori: String, isAgent: YesNo, declarationType: DeclarationType, response: CheckResponse)(
-    implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
+  private def validateEoriAndRedirect(
+    eori: String,
+    isAgent: YesNo,
+    declarationType: DeclarationType,
+    response: CheckResponse
+  )(implicit request: DeclarationJourneyRequest[AnyContent]): Future[Result] =
     if (response.valid) {
       val updated = request.declarationJourney.copy(maybeEori = Some(Eori(eori)))
       navigator
@@ -86,7 +93,8 @@ class EoriNumberController @Inject()(
     } else
       Future.successful(badRequestResult(isAgent, declarationType, eori))
 
-  private def badRequestResult(isAgent: YesNo, declarationType: DeclarationType, eori: String)(
-    implicit request: DeclarationJourneyRequest[AnyContent]): Result =
+  private def badRequestResult(isAgent: YesNo, declarationType: DeclarationType, eori: String)(implicit
+    request: DeclarationJourneyRequest[AnyContent]
+  ): Result =
     BadRequest(view(formWithError(isAgent, request.declarationType, eori), isAgent, backButtonUrl, declarationType))
 }

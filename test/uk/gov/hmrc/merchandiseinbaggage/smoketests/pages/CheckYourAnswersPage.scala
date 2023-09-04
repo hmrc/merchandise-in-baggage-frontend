@@ -27,8 +27,8 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage.{amendTitle, newTitle, path}
 
 object CheckYourAnswersPage extends Page {
-  val path = "/declare-commercial-goods/check-your-answers"
-  val newTitle =
+  val path       = "/declare-commercial-goods/check-your-answers"
+  val newTitle   =
     "Check your answers before making your declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"
   val amendTitle =
     "Check your answers before adding these goods to your declaration - Declare commercial goods carried in accompanied baggage or small vehicles - GOV.UK"

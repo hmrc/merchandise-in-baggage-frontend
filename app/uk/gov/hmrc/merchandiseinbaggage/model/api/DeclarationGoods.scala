@@ -54,9 +54,9 @@ object Goods {
   implicit val reads: Reads[Goods] = Reads[Goods] {
     case json: JsObject if json.keys.contains("producedInEu") =>
       JsSuccess(json.as[ImportGoods])
-    case json: JsObject if json.keys.contains("destination") =>
+    case json: JsObject if json.keys.contains("destination")  =>
       JsSuccess(json.as[ExportGoods])
-    case _ => JsError()
+    case _                                                    => JsError()
   }
 }
 

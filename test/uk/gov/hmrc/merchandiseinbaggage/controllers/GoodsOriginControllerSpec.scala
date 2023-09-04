@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.scalamock.scalatest.MockFactory
+import org.mockito.ArgumentMatchersSugar.any
+import org.mockito.MockitoSugar.{mock, when}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
@@ -26,23 +28,31 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with MockFactory {
+class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view = app.injector.instanceOf[GoodsOriginView]
-  val mockNavigator = mock[Navigator]
+  private val view: GoodsOriginView = app.injector.instanceOf[GoodsOriginView]
+  val mockNavigator: Navigator      = mock[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
-    new GoodsOriginController(controllerComponents, stubProvider(declarationJourney), stubRepo(declarationJourney), view, mockNavigator)
+  def controller(declarationJourney: DeclarationJourney): GoodsOriginController =
+    new GoodsOriginController(
+      controllerComponents,
+      stubProvider(declarationJourney),
+      stubRepo(declarationJourney),
+      view,
+      mockNavigator
+    )
 
-  val journey = startedImportToGreatBritainJourney.copy(goodsEntries = GoodsEntries(completedImportGoods.copy(maybePurchaseDetails = None)))
+  val journey: DeclarationJourney = startedImportToGreatBritainJourney.copy(goodsEntries =
+    GoodsEntries(completedImportGoods.copy(maybePurchaseDetails = None))
+  )
 
   "onPageLoad" should {
-    s"return 200 with radio buttons" in {
-      val request = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId)
+    "return 200 with radio buttons" in {
+      val request        = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId)
       val eventualResult = controller(journey).onPageLoad(1)(request)
-      val result = contentAsString(eventualResult)
+      val result         = contentAsString(eventualResult)
 
-      status(eventualResult) mustBe 200
+      status(eventualResult) mustBe OK
       result must include(messageApi(s"goodsOrigin.title"))
       result must include(messageApi(s"goodsOrigin.heading"))
     }
@@ -53,24 +63,24 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec with Mo
       val request = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
         .withFormUrlEncodedBody("value" -> "Yes")
 
-      (mockNavigator
-        .nextPage(_: GoodsOriginRequest)(_: ExecutionContext))
-        .expects(*, *)
-        .returning(Future successful PurchaseDetailsController.onPageLoad(1))
-        .once()
+      when(mockNavigator.nextPage(any[GoodsOriginRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(PurchaseDetailsController.onPageLoad(1)))
 
-      controller(journey).onSubmit(1)(request).futureValue
+      val result: Future[Result] = controller(journey).onSubmit(1)(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some("/declare-commercial-goods/purchase-details/1")
     }
   }
 
   s"return 400 with any form errors" in {
-    val request = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
+    val request        = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
       .withFormUrlEncodedBody("value" -> "in valid")
 
     val eventualResult = controller(journey).onSubmit(1)(request)
-    val result = contentAsString(eventualResult)
+    val result         = contentAsString(eventualResult)
 
-    status(eventualResult) mustBe 400
+    status(eventualResult) mustBe BAD_REQUEST
     result must include(messageApi("error.summary.title"))
     result must include(messageApi(s"goodsOrigin.title"))
     result must include(messageApi(s"goodsOrigin.heading"))

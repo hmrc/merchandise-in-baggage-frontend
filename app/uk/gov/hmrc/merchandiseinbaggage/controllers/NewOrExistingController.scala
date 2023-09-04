@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.views.html.NewOrExistingView
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class NewOrExistingController @Inject()(
+class NewOrExistingController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
   override val repo: DeclarationJourneyRepository,
@@ -44,7 +44,8 @@ class NewOrExistingController @Inject()(
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
+        formWithErrors =>
+          Future successful BadRequest(view(formWithErrors, request.declarationJourney.declarationType)),
         journeyType => {
           val updated = request.declarationJourney.copy(journeyType = journeyType)
           navigator
