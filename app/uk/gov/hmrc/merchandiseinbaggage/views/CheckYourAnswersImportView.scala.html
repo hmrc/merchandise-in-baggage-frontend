@@ -192,7 +192,7 @@
  }
 
 
- <ul class="govuk-list govuk-list--bullet" name="declarationAcknowledgement">
+ <ul class="govuk-list govuk-list--bullet" id="declarationAcknowledgement">
   @if(calculationResults.proofOfOriginNeeded) { <li>@messages(s"checkYourAnswers.sendDeclaration.acknowledgement.${agentOrTrader}.EU.over.thousand")</li> }
   @if(calculationResults.isNothingToPay) { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1.zero")</li> } else { <li>@messages(s"checkYourAnswers.sendDeclaration.Import.${agentOrTrader}.acknowledgement.1")</li> }
   <li>@messages(s"checkYourAnswers.sendDeclaration.Import.$agentOrTrader.acknowledgement.2")</li>

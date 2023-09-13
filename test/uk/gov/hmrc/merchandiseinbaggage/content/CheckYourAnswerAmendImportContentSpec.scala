@@ -88,7 +88,7 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     givenAJourneyWithSession(Amend, declarationJourney = journey)
     goToCYAPage(Amend)
 
-    findByXPath("//ul[@name='declarationAcknowledgement']")
+    findById("declarationAcknowledgement")
       .findElements(By.tagName("li"))
       .asScala
       .toList
