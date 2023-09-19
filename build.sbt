@@ -24,6 +24,9 @@ lazy val microservice = Project(appName, file("."))
     coverageFailOnMinimum := true,
     coverageHighlighting := true
   )
+  .settings(
+    A11yTest / unmanagedSourceDirectories += (baseDirectory.value / "test" / "a11y")
+  )
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt A11y/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle A11y/scalastyle")
