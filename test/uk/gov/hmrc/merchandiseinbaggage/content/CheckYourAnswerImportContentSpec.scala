@@ -70,7 +70,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
     givenAJourneyWithSession(declarationJourney = journey)
     goToCYAPage()
 
-    findByXPath("//ul[@name='declarationAcknowledgement']")
+    findById("declarationAcknowledgement")
       .findElements(By.tagName("li"))
       .asScala
       .toList

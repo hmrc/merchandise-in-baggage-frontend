@@ -17,15 +17,13 @@
 package uk.gov.hmrc.merchandiseinbaggage.config
 
 import com.google.inject.Inject
-import play.api.i18n.Lang
-import play.api.mvc.Call
-import javax.inject.Singleton
 import play.api.{Configuration, Environment}
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
+
+import javax.inject.Singleton
 
 @Singleton
 class AppConfig @Inject() (val config: Configuration, val env: Environment)()
@@ -58,26 +56,11 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment)()
 
   lazy val languageTranslationEnabled: Boolean = configSource("features.welsh-translation").loadOrThrow[Boolean]
 
-  def languageMap: Map[String, Lang] = Map(
-    "english" -> Lang("en"),
-    "cymraeg" -> Lang("cy")
-  )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
 }
 
 object AppConfigSource {
   val configSource: String => ConfigSource = ConfigSource.default.at
 }
-
-final case class MongoConf(
-  uri: String,
-  host: String = "localhost",
-  port: Int = 27017,
-  collectionName: String = "declaration"
-)
 
 trait MibConfiguration {
   lazy val mibConf: MIBConf                          = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]

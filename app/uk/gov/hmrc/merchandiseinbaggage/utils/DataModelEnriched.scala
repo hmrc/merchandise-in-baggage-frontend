@@ -170,16 +170,13 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
               Text(messages("paymentCalculation.table.col2.head"))
             ),
             HeadCell(
-              Text(messages("paymentCalculation.table.col3.head")),
-              attributes = Map("nowrap" -> "nowrap")
+              Text(messages("paymentCalculation.table.col3.head"))
             ),
             HeadCell(
-              Text(messages("paymentCalculation.table.col4.head")),
-              attributes = Map("nowrap" -> "nowrap")
+              Text(messages("paymentCalculation.table.col4.head"))
             ),
             HeadCell(
-              Text(messages("paymentCalculation.table.col5.head")),
-              attributes = Map("nowrap" -> "nowrap")
+              Text(messages("paymentCalculation.table.col5.head"))
             )
           )
         )
