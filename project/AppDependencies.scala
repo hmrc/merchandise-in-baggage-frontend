@@ -10,7 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"                %% "play-frontend-hmrc"         % "7.20.0-play-28",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "1.3.0",
     "com.github.pureconfig"      %% "pureconfig"                 % "0.17.4",
-    "com.beachape"               %% "enumeratum-play"            % "1.7.3",
+    "com.beachape"               %% "enumeratum-play"            % "1.7.0",
     "org.webjars.npm"             % "accessible-autocomplete"    % "2.0.4",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.6",
     "org.typelevel"              %% "cats-core"                  % "2.10.0",
