@@ -28,7 +28,6 @@
         govukHeader: GovukHeader,
         govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
-        phaseBanner: components.phaseBanner,
         languageSelection: components.languageSelection,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
@@ -72,9 +71,6 @@
 
 @beforeContentDefault = {
 
-@if(!appConfig.isAssistedDigital) {
-    @phaseBanner("beta")
-}
 @{
     maybeBackButtonUrl.fold(Html("")) { call =>
         if(call.url == "#") {
