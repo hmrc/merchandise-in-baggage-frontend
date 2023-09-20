@@ -22,10 +22,10 @@ import play.api.data.Forms._
 import play.twirl.api.Html
 import config.AppConfig
 import forms._
-import model.api.{Amendment, Declaration, DeclarationType, Email, GoodsDestination, GoodsDestinations, JourneyDetailsEntry, JourneyType, JourneyTypes, Name, YesNo}
+import model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{PurchaseDetailsInput, ThresholdAllowance}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.PayApiStub.{aAmendment, aCalculationResultsWithNoTax, aThresholdAllowance, declaration, doverJourneyEntry, journeyDate}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.PayApiStub._
 import views.html._
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
 
