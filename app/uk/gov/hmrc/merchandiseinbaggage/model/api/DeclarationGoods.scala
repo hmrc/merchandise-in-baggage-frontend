@@ -24,7 +24,7 @@ sealed trait Goods {
 }
 
 final case class ImportGoods(
-  val category: String,
+  category: String,
   goodsVatRate: GoodsVatRate,
   producedInEu: YesNoDontKnow,
   purchaseDetails: PurchaseDetails
@@ -35,7 +35,7 @@ object ImportGoods {
 }
 
 final case class ExportGoods(
-  val category: String,
+  category: String,
   destination: Country,
   purchaseDetails: PurchaseDetails
 ) extends Goods

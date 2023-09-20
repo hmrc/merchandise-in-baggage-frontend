@@ -29,6 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 object JourneyDetailsForm extends Mappings {
   val port         = "port"
   val dateOfTravel = "dateOfTravel"
+  val daysToAdd    = 5
 
   private val dateErrorKey = "journeyDetails.dateOfTravel.error"
   private val portErrorKey = "journeyDetails.port.error"
@@ -58,7 +59,7 @@ object JourneyDetailsForm extends Mappings {
     )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
   )
 
-  private def afterFiveDays(value: LocalDate, today: LocalDate): Boolean = value.isAfter(today.plusDays(5))
+  private def afterFiveDays(value: LocalDate, today: LocalDate): Boolean = value.isAfter(today.plusDays(daysToAdd))
 
   private def isPastAnd2020(value: LocalDate, today: LocalDate): Boolean = value.isBefore(today) && value.getYear < 2021
 

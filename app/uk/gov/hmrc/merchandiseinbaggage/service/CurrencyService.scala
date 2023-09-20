@@ -24,16 +24,7 @@ object CurrencyService {
 
   def getCurrencyByCode(code: String): Option[Currency] = currencies.find(c => c.code == code)
 
-  def isValidCurrencyCode(code: String): Boolean = getCurrencyByCode(code).isDefined
-
-  def getDisplayNameByCode(code: String): Option[String] = for (c <- currencies.find(c => c.code == code))
-    yield c.displayName
-
-  def getCodeByDisplayName(displayName: String): Option[String] = for (
-    c <- currencies.find(c => c.displayName == displayName)
-  ) yield c.code
-
-  val currencies = List(
+  private val currencies: List[Currency] = List(
     Currency(
       "AED",
       "title.united_arab_emirates_dirham_aed",

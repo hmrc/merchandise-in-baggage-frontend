@@ -19,5 +19,4 @@ package uk.gov.hmrc.merchandiseinbaggage.auth
 import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-case class AuthRequest[A](val request: Request[A], val credentials: Option[Credentials])
-    extends WrappedRequest[A](request)
+case class AuthRequest[A](request: Request[A], credentials: Option[Credentials]) extends WrappedRequest[A](request)

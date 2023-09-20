@@ -39,7 +39,7 @@ object DeclarationJourneyLogger {
 
   private case object Warn extends LogLevel
 
-  def logMessage(message: => String, level: LogLevel)(implicit request: RequestHeader): Unit = {
+  private def logMessage(message: => String, level: LogLevel)(implicit request: RequestHeader): Unit = {
     lazy val richMessage = makeRichMessage(message)
     level match {
       case Info => logger.info(richMessage)
@@ -47,7 +47,7 @@ object DeclarationJourneyLogger {
     }
   }
 
-  def headerCarrier(implicit request: Request[_]): HeaderCarrier = HcProvider.headerCarrier
+  private def headerCarrier(implicit request: Request[_]): HeaderCarrier = HcProvider.headerCarrier
 
   private def sessionId(implicit r: RequestHeader): String = {
     val hc = r match {

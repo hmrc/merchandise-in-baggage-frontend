@@ -21,7 +21,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
 
 object TpsPaymentsBackendStub extends CoreTestData {
 

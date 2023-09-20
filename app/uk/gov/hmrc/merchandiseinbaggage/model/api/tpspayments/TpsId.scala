@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.tpspayments
+package uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments
 
 import play.api.libs.json.Format
 import play.api.libs.functional.syntax._

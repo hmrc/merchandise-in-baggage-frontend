@@ -21,7 +21,7 @@ import play.api.{Configuration, Environment}
 import pureconfig.ConfigSource
 import pureconfig.generic.auto._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
-import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsNavigation
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsNavigation
 
 import javax.inject.Singleton
 
@@ -30,10 +30,10 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment)()
     extends MibConfiguration
     with IsAssistedDigitalConfiguration {
 
-  val serviceIdentifier = "mib"
+  private val serviceIdentifier = "mib"
 
-  val contactHost = configSource("contact-frontend.host").loadOrThrow[String]
-  val contactUrl  = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
+  private val contactHost: String = configSource("contact-frontend.host").loadOrThrow[String]
+  val contactUrl                  = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
 
   lazy val strideRoles: Seq[String] = config.get[Seq[String]]("stride.roles")
   lazy val timeout: Int             = configSource("timeout.timeout").loadOrThrow[Int]

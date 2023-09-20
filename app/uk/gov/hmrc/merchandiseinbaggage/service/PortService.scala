@@ -22,22 +22,11 @@ object PortService {
 
   def getAllPorts: List[Port] = ports
 
-  def getAllPortsNI: List[Port] = ports.filter(_.isGB == false)
-
   def getPortByCode(code: String): Option[Port] = ports.find(c => c.code == code)
 
   def isValidPortCode(code: String): Boolean = getPortByCode(code).isDefined
 
-  def getDisplayNameByCode(code: String): Option[String] = for (c <- ports.find(c => c.code == code))
-    yield c.displayName
-
-  def getCodeByDisplayName(displayName: String): Option[String] = for (
-    c <- ports.find(c => c.displayName == displayName)
-  ) yield c.code
-
-  def isInGB(code: String): Boolean = ports.exists(c => c.code == code && c.isGB)
-
-  val ports = List(
+  private val ports = List(
     Port("ABZ", "title.aberdeen_airport", isGB = true, Nil),
     Port("ABD", "title.aberdeen_port", isGB = true, Nil),
     Port("AFK", "title.ashford", isGB = true, Nil),

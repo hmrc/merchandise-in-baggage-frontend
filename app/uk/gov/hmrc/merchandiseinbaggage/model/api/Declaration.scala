@@ -77,7 +77,7 @@ object Declaration extends JourneySourceFinder {
       mibReference,
       maybeTotalCalculationResult,
       paymentStatus,
-      false,
+      emailsSent = false,
       "en",
       source,
       amendments
