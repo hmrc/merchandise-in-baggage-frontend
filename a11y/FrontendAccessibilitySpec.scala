@@ -33,9 +33,12 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
   private val emailForm: Form[Email]               = EnterEmailForm.mandatoryForm
   private val optionEmailForm: Form[Option[Email]] = EnterEmailForm.optionalForm
   private val booleanForm: Form[Boolean]           = Form("value" -> boolean)
+  private val stringForm: Form[String]             = Form("value" -> text)
 
   implicit val arbHtml: Arbitrary[Html]                                        = fixed(Html(""))
   implicit val arbForm: Arbitrary[Form[_]]                                     = fixed(booleanForm)
+  implicit val arbString: Arbitrary[String]                                    = fixed("http://something")
+  implicit val arbFormString: Arbitrary[Form[String]]                          = fixed(stringForm)
   implicit val arbAppConfig: Arbitrary[AppConfig]                              = fixed(appConfig)
   implicit val arbEnterEmailForm: Arbitrary[Form[Email]]                       = fixed(emailForm)
   implicit val arbEnterOptionEmailForm: Arbitrary[Form[Option[Email]]]         = fixed(optionEmailForm)
@@ -94,6 +97,9 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case retrieveDeclarationView: RetrieveDeclarationView                 => render(retrieveDeclarationView)
     case reviewGoodsView: ReviewGoodsView                                 => render(reviewGoodsView)
     case searchGoodsCountryView: SearchGoodsCountryView                   => render(searchGoodsCountryView)
+    case serviceTimeoutView: ServiceTimeoutView                           => render(serviceTimeoutView)
+    case sessionExpiredView: SessionExpiredView                           => render(sessionExpiredView)
+    case testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage   => render(testOnlyDeclarationJourneyPage)
     case travellerDetailsPage: TravellerDetailsPage                       => render(travellerDetailsPage)
     case valueWeightOfGoodsView: ValueWeightOfGoodsView                   => render(valueWeightOfGoodsView)
     case vehicleRegistrationNumberView: VehicleRegistrationNumberView     => render(vehicleRegistrationNumberView)
