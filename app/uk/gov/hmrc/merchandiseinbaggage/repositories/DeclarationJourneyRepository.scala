@@ -81,7 +81,7 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
       .toFuture()
   }
 
-  def updateDate(documentIds: Seq[ObjectId]) = {
+  def updateDate(documentIds: Seq[ObjectId]): Future[Long] = {
     val time = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     val zdt  = ZonedDateTime.of(time, ZoneId.systemDefault())
 

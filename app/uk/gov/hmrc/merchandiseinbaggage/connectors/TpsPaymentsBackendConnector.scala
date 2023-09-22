@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.{TpsId, TpsPaymentsRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{TpsId, TpsPaymentsRequest}
 import javax.inject.{Inject, Named, Singleton}
 
 import scala.concurrent.{ExecutionContext, Future}

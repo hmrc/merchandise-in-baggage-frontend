@@ -42,8 +42,6 @@ case class GoodsEntries(entries: Seq[GoodsEntry]) {
     else None
   }
 
-  val declarationGoodsComplete: Boolean = declarationGoodsIfComplete.isDefined
-
   def addEmptyIfNecessary(): GoodsEntries =
     if (entries.lastOption.fold(true)(_.isComplete)) entries.head match {
       case _: ImportGoodsEntry => GoodsEntries(entries :+ ImportGoodsEntry())
@@ -102,15 +100,16 @@ case class DeclarationJourney(
       if maybeIsACustomsAgent.exists(yn => YesNo.to(yn))
     } yield CustomsAgent(customsAgentName, customsAgentAddress)
 
-  val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap { journeyDetailsEntry =>
-    val maybePort = PortService.getPortByCode(journeyDetailsEntry.portCode)
-    (maybePort, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
-      case (Some(port), Some(No), _, _)                                 =>
-        Some(JourneyOnFoot(port, journeyDetailsEntry.dateOfTravel))
-      case (Some(port), Some(Yes), Some(Yes), Some(registrationNumber)) =>
-        Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfTravel, registrationNumber))
-      case _                                                            => None
-    }
+  private val maybeCompleteJourneyDetails: Option[JourneyDetails] = maybeJourneyDetailsEntry.flatMap {
+    journeyDetailsEntry =>
+      val maybePort = PortService.getPortByCode(journeyDetailsEntry.portCode)
+      (maybePort, maybeTravellingByVehicle, maybeTravellingBySmallVehicle, maybeRegistrationNumber) match {
+        case (Some(port), Some(No), _, _)                                 =>
+          Some(JourneyOnFoot(port, journeyDetailsEntry.dateOfTravel))
+        case (Some(port), Some(Yes), Some(Yes), Some(registrationNumber)) =>
+          Some(JourneyInSmallVehicle(port, journeyDetailsEntry.dateOfTravel, registrationNumber))
+        case _                                                            => None
+      }
   }
 
   val declarationIfRequiredAndComplete: Option[Declaration] = journeyType match {
@@ -175,7 +174,7 @@ object DeclarationJourney {
     }
   }
 
-  def parseBigDecimal(bigDecimal: BigDecimal): JsResult[LocalDateTime] =
+  private def parseBigDecimal(bigDecimal: BigDecimal): JsResult[LocalDateTime] =
     LocalDateTime.ofInstant(Instant.ofEpochMilli(bigDecimal.toLong), ZoneOffset.UTC) match {
       case d: LocalDateTime => JsSuccess(d)
       case _                => JsError("Unexpected LocalDateTime Format")
@@ -239,7 +238,7 @@ object DeclarationJourney {
   def defaultEmail(isAssistedDigital: Boolean, maybeEmailAddress: Option[Email]): Option[Email] =
     if (isAssistedDigital) Some(Email("")) else maybeEmailAddress
 
-  def userEmail(isAssistedDigital: Boolean, maybeEmailAddress: Option[Email], email: Email) =
+  def userEmail(isAssistedDigital: Boolean, maybeEmailAddress: Option[Email], email: Email): Option[Email] =
     if (isAssistedDigital) maybeEmailAddress else Some(email)
 
   implicit class UpdateGoodsEntries(declarationJourney: DeclarationJourney) {

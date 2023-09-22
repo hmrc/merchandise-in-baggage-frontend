@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.{TpsId, TpsPaymentsRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{TpsId, TpsPaymentsRequest}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.TpsPaymentsBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}

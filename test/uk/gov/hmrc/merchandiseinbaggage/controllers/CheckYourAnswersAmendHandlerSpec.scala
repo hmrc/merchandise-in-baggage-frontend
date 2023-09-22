@@ -29,7 +29,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.model.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}

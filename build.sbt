@@ -11,6 +11,8 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies(),
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
+    // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
+    dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1",
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.merchandiseinbaggage.config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
@@ -25,5 +27,5 @@ lazy val microservice = Project(appName, file("."))
     coverageHighlighting := true
   )
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt A11y/scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle A11y/scalastyle")

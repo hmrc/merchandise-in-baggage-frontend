@@ -25,12 +25,12 @@ import LocalDateFormatter._
 import scala.util.{Failure, Success, Try}
 
 object LocalDateFormatter {
-  val dayBlankErrorKey     = "error.date.day_blank"
-  val dayInvalidErrorKey   = "error.date.day_invalid"
-  val monthBlankErrorKey   = "error.date.month_blank"
-  val monthInvalidErrorKey = "error.date.month_invalid"
-  val yearBlankErrorKey    = "error.date.year_blank"
-  val yearInvalidErrorKey  = "error.date.year_invalid"
+  val dayBlankErrorKey             = "error.date.day_blank"
+  private val dayInvalidErrorKey   = "error.date.day_invalid"
+  val monthBlankErrorKey           = "error.date.month_blank"
+  private val monthInvalidErrorKey = "error.date.month_invalid"
+  val yearBlankErrorKey            = "error.date.year_blank"
+  private val yearInvalidErrorKey  = "error.date.year_invalid"
 }
 
 class LocalDateFormatter(invalidKey: String) extends Formatter[LocalDate] with Formatters {

@@ -7,7 +7,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc"                %% "play-frontend-hmrc"         % "7.19.0-play-28",
+    "uk.gov.hmrc"                %% "play-frontend-hmrc"         % "7.20.0-play-28",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "1.3.0",
     "com.github.pureconfig"      %% "pureconfig"                 % "0.17.4",
     "com.beachape"               %% "enumeratum-play"            % "1.7.0",
@@ -23,7 +23,7 @@ object AppDependencies {
     "org.scalatest"       %% "scalatest"               % "3.2.17",
     "org.scalatestplus"   %% "scalacheck-1-17"         % "3.2.17.0",
     "org.mockito"         %% "mockito-scala-scalatest" % "1.17.22",
-    "org.wiremock"         % "wiremock-standalone"     % "3.0.4"
+    "org.wiremock"         % "wiremock-standalone"     % "3.1.0"
   ) ++ pact).map(_ % Test)
 
   private lazy val pact   = Seq(

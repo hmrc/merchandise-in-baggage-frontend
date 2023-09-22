@@ -37,7 +37,7 @@ class DeclarationJourneyActionProvider @Inject() (
 
   val initJourneyAction: ActionBuilder[AuthRequest, AnyContent] = defaultActionBuilder andThen strideAuthAction
 
-  val internalJourneyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
+  private val internalJourneyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
 
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =

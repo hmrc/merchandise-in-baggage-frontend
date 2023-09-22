@@ -315,7 +315,7 @@ object NavigatorMapping {
         persistAndRedirect(declarationJourney, updatedGoodsEntry, idx, GoodsOriginController.onPageLoad(idx), upsert)
       }
 
-  def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =
+  private def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =
     goodsEntry match {
       case entry: ImportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))
       case entry: ExportGoodsEntry => entry.copy(maybePurchaseDetails = Some(PurchaseDetails(amount, currency)))

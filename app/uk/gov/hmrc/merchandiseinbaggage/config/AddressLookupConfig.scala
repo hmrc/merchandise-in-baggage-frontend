@@ -21,7 +21,7 @@ import play.api.libs.json.{JsObject, Json}
 
 class AddressLookupConfig @Inject() () {
 
-  def config(continueUrl: String) =
+  def config(continueUrl: String): JsObject =
     Json
       .parse(s"""{
                   |  "version": 2,

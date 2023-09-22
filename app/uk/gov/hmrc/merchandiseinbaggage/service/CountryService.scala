@@ -22,8 +22,6 @@ object CountryService {
 
   def getAllCountries: List[Country] = countries
 
-  def isInEu(code: String): Boolean = countries.exists(c => c.code == code && c.isEu)
-
   def isValidCountryCode(code: String): Boolean = getCountryByCode(code).isDefined
 
   def getCountryByCode(code: String): Option[Country] = countries.find(_.code == code)

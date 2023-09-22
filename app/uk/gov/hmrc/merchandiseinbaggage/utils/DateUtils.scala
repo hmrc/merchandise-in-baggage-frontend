@@ -25,10 +25,10 @@ import java.util.Locale
 
 object DateUtils {
 
-  val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mma", Locale.ENGLISH)
-  val dateFormatter: DateTimeFormatter     = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
+  private val dateTimeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM YYYY, h:mma", Locale.ENGLISH)
+  private val dateFormatter: DateTimeFormatter     = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.ENGLISH)
 
-  def translatedDate(date: String)(implicit messages: Messages): String = {
+  private def translatedDate(date: String)(implicit messages: Messages): String = {
     val result = if (messages.lang.code == "cy") {
       val englishMonth = date.split(" ")(1)
       date.replace(englishMonth, messages(s"title.${englishMonth.toLowerCase}"))
