@@ -41,8 +41,11 @@ class DeclarationJourneyActionProvider @Inject() (
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
 
   val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
-    if (isAssistedDigital) internalJourneyAction
-    else defaultActionBuilder andThen journeyActionRefiner
+    if (isAssistedDigital) {
+      internalJourneyAction
+    } else {
+      defaultActionBuilder andThen journeyActionRefiner
+    }
 
   def goodsAction(idx: Int): ActionBuilder[DeclarationGoodsRequest, AnyContent] =
     defaultActionBuilder andThen journeyActionRefiner andThen goodsActionRefiner(idx)
