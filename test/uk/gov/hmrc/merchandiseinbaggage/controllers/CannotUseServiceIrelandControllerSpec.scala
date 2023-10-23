@@ -26,7 +26,7 @@ class CannotUseServiceIrelandControllerSpec extends DeclarationJourneyController
 
   private val view = app.injector.instanceOf[CannotUseServiceIrelandView]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): CannotUseServiceIrelandController =
     new CannotUseServiceIrelandController(controllerComponents, stubProvider(declarationJourney), view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>

@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.connectors.AddressLookupFrontendConnector
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -44,8 +44,10 @@ class EnterAgentAddressController @Inject() (
       address <- addressLookupFrontendConnector.getAddress(id)
       _       <- repo.upsert(request.declarationJourney.copy(maybeCustomsAgentAddress = Some(address)))
     } yield
-      if (request.declarationJourney.declarationRequiredAndComplete)
+      if (request.declarationJourney.declarationRequiredAndComplete) {
         Redirect(routes.CheckYourAnswersController.onPageLoad)
-      else Redirect(routes.EoriNumberController.onPageLoad)
+      } else {
+        Redirect(routes.EoriNumberController.onPageLoad)
+      }
   }
 }

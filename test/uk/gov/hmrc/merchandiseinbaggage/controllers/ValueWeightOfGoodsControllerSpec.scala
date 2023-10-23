@@ -28,10 +28,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val view                                       = injector.instanceOf[ValueWeightOfGoodsView]
-  private val navigator                                  = injector.instanceOf[Navigator]
-  private val mibConnector                               = injector.instanceOf[MibConnector]
-  def controller(declarationJourney: DeclarationJourney) =
+  private val view                                                                     = injector.instanceOf[ValueWeightOfGoodsView]
+  private val navigator                                                                = injector.instanceOf[Navigator]
+  private val mibConnector                                                             = injector.instanceOf[MibConnector]
+  def controller(declarationJourney: DeclarationJourney): ValueWeightOfGoodsController =
     new ValueWeightOfGoodsController(
       controllerComponents,
       stubProvider(declarationJourney),

@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.goodsDestinationUnansweredMessage
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotUseServiceView
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class CannotUseServiceController @Inject() (
@@ -34,12 +35,15 @@ class CannotUseServiceController @Inject() (
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
-    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url))
+    if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url)) {
       routes.ExciseAndRestrictedGoodsController.onPageLoad
-    else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad.url))
+    } else if (referer.contains(routes.ValueWeightOfGoodsController.onPageLoad.url)) {
       routes.ValueWeightOfGoodsController.onPageLoad
-    else if (referer.contains(routes.VehicleSizeController.onPageLoad.url)) routes.VehicleSizeController.onPageLoad
-    else backUrl
+    } else if (referer.contains(routes.VehicleSizeController.onPageLoad.url)) {
+      routes.VehicleSizeController.onPageLoad
+    } else {
+      backUrl
+    }
   }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
