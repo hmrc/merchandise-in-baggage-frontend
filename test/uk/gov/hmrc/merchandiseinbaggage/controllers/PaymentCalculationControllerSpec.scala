@@ -44,7 +44,10 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
         Future.successful(calculationResults)
     }
 
-  def controller(declarationJourney: DeclarationJourney, thresholdCheck: ThresholdCheck = WithinThreshold) =
+  def controller(
+    declarationJourney: DeclarationJourney,
+    thresholdCheck: ThresholdCheck = WithinThreshold
+  ): PaymentCalculationController =
     new PaymentCalculationController(
       controllerComponents,
       stubProvider(declarationJourney),

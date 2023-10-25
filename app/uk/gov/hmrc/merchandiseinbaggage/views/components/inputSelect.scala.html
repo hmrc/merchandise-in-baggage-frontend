@@ -31,13 +31,16 @@
         hint: Option[String] = None,
         classes: Option[String] = None,
         labelClasses: Option[String] = None,
-        attributes: Map[String, String] = Map.empty
+        attributes: Map[String, String] = Map.empty,
+        labelOption: String
 )(implicit messages: Messages)
 
 @govukSelect(Select(
     id = id,
     name = name,
-    items = Seq(SelectItem.defaultObject) ++ items,
+    items = Seq(
+        SelectItem(disabled = true, selected = true, attributes = Map("label" -> labelOption))
+    ) ++ items,
     label = Label(
         content = Text(messages(label, headingMessageArgs:_*)),
         isPageHeading = isPageHeading,

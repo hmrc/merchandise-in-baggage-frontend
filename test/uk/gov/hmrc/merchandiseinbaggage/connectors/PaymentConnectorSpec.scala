@@ -17,6 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
+import play.api.http.Status
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HttpClient
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
@@ -39,10 +40,10 @@ class PaymentConnectorSpec extends BaseSpecWithApplication with CoreTestData {
       .stubFor(
         post(urlPathEqualTo(payUrl))
           .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
-          .willReturn(okJson(stubbedResponse).withStatus(201))
+          .willReturn(okJson(stubbedResponse).withStatus(Status.CREATED))
       )
 
-    val response = sendPaymentRequest(payApiRequest).futureValue
+    val response: PayApiResponse = sendPaymentRequest(payApiRequest).futureValue
     response mustBe PayApiResponse(JourneyId("5f3bc55"), URL("http://localhost:9056/pay/initiate-journey"))
   }
 }

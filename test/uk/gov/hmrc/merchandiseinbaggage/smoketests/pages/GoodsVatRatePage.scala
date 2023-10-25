@@ -23,8 +23,8 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsVatRatePage.{path, title}
 
 object GoodsVatRatePage extends Page {
-  def path(idx: Int)  = s"/declare-commercial-goods/goods-vat-rate/$idx"
-  def title(idx: Int) = "Check which VAT rate applies to the goods "
+  def path(idx: Int): String  = s"/declare-commercial-goods/goods-vat-rate/$idx"
+  def title(idx: Int): String = "Check which VAT rate applies to the goods "
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     click.on(IdQuery(formData.toString))

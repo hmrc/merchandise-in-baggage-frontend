@@ -26,7 +26,7 @@ class NoDeclarationNeededControllerSpec extends DeclarationJourneyControllerSpec
 
   private val view = app.injector.instanceOf[NoDeclarationNeededView]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): NoDeclarationNeededController =
     new NoDeclarationNeededController(controllerComponents, stubProvider(declarationJourney), view)
 
   "onPageLoad" should {

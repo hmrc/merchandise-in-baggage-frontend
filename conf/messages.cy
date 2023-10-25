@@ -192,6 +192,7 @@ goodsOrigin.proof.summary.p2 = Os nad oes gennych y dystiolaeth briodol, bydd yn
 searchGoodsCountry.title = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.heading = I ba wlad rydych yn cymryd y {0}?
 searchGoodsCountry.error.required = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
+searchGoodsCountry.option.label = Dewiswch y wlad y mae’r nwyddau’n mynd iddi
 searchGoodsCountry.error.invalid = Dewiswch wlad ddilys
 
 # PurchaseDetails
@@ -206,6 +207,7 @@ purchaseDetails.p.2 = a’r gyfradd yn y mis pan fyddwch yn cyflwyno’ch datgan
 purchaseDetails.price.error.required = Nodwch y swm y gwnaethoch ei dalu am y nwyddau
 purchaseDetails.price.error.invalid = Mae’n rhaid i’r swm a dalwyd fod yn rhif
 purchaseDetails.currency.error.required = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
+purchaseDetails.currency.option.label = Dewiswch yr arian cyfred a ddefnyddiwyd i brynu’r nwyddau
 purchaseDetails.type.of.goods = Math o nwyddau:
 
 # ReviewGoods
@@ -331,6 +333,8 @@ journeyDetails.heading = Manylion y siwrnai
 journeyDetails.port.Import.label = Man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.Export.label = Man ymadael ym Mhrydain Fawr
 journeyDetails.port.hint = Er enghraifft, maes awyr Heathrow neu Dover
+journeyDetails.port.Import.option.label = Nodwch eich man cyrraedd ym Mhrydain Fawr
+journeyDetails.port.Export.option.label = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.port.error.Import.required = Nodwch eich man cyrraedd ym Mhrydain Fawr
 journeyDetails.port.error.Export.required = Nodwch eich man ymadael ym Mhrydain Fawr
 journeyDetails.port.error.Import.invalid = Nodwch eich man cyrraedd ym Mhrydain Fawr

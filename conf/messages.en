@@ -201,6 +201,7 @@ goodsOrigin.proof.summary.p2 = If you do not have the appropriate evidence you w
 searchGoodsCountry.title = What country are you taking the {0} to?
 searchGoodsCountry.heading = What country are you taking the {0} to?
 searchGoodsCountry.error.required = Select the country the goods are going to
+searchGoodsCountry.option.label = Select the country the goods are going to
 searchGoodsCountry.error.invalid = Select a valid country
 
 # PurchaseDetails
@@ -215,6 +216,7 @@ purchaseDetails.p.2 = and the rate of the month in which you make your declarati
 purchaseDetails.price.error.required = Enter the amount you paid for the goods
 purchaseDetails.price.error.invalid = Amount paid must be a number
 purchaseDetails.currency.error.required = Select the currency used to buy the goods
+purchaseDetails.currency.option.label = Select the currency used to buy the goods
 purchaseDetails.type.of.goods = Type of goods:
 
 # ReviewGoods
@@ -341,6 +343,8 @@ journeyDetails.heading = Journey details
 journeyDetails.port.Import.label = Place of arrival in Great Britain
 journeyDetails.port.Export.label = Place of departure in Great Britain
 journeyDetails.port.hint = For example, Heathrow airport or Dover
+journeyDetails.port.Import.option.label = Select your place of arrival in Great Britain
+journeyDetails.port.Export.option.label = Select your place of departure in Great Britain
 journeyDetails.port.error.Import.required = Select your place of arrival in Great Britain
 journeyDetails.port.error.Export.required = Select your place of departure in Great Britain
 journeyDetails.port.error.Import.invalid = Please enter a valid place of arrival

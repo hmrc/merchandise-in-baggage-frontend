@@ -25,7 +25,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class StartExportControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
-  def controller(declarationJourney: DeclarationJourney = startedExportJourney) =
+  def controller(declarationJourney: DeclarationJourney = startedExportJourney): StartExportController =
     new StartExportController(controllerComponents, stubRepo(declarationJourney))
 
   "onPageLoad" should {

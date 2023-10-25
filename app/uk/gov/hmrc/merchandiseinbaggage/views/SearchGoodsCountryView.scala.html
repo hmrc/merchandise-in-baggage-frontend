@@ -70,7 +70,8 @@ button: components.button
                 selected = form("country").value.contains(c.code)
             )),
             label = messages(s"searchGoodsCountry.heading", goodsCategory),
-            isPageHeading = true
+            isPageHeading = true,
+            labelOption = messages("searchGoodsCountry.option.label")
         )
 
         @button("site.continue", name = Some("continue"))

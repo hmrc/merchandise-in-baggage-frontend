@@ -313,14 +313,19 @@ trait CoreTestData {
       .copy(sessionId = sessionId, declarationType = decType, createdAt = created, declarationId = id)
 
     val persistedDeclaration = journey.declarationIfRequiredAndComplete.map { declaration =>
-      if (decType == DeclarationType.Import)
+      if (decType == DeclarationType.Import) {
         declaration.copy(maybeTotalCalculationResult = Some(totalCalculationResult))
-      else declaration
+      } else declaration
     }
 
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
     val result                      =
-      declarationConfirmationView.apply(persistedDeclaration.get, journeyType, false, AmountInPence(0))(
+      declarationConfirmationView.apply(
+        persistedDeclaration.get,
+        journeyType,
+        isAssistedDigital = false,
+        AmountInPence(0)
+      )(
         fakeRequest,
         message,
         appConfig
@@ -373,7 +378,8 @@ trait CoreTestData {
 
   implicit class JourneyToDeclaration(declarationJourney: DeclarationJourney) {
     import declarationJourney._
-    def toDeclaration =
+
+    def toDeclaration: Declaration =
       Declaration(
         declarationId,
         sessionId,
