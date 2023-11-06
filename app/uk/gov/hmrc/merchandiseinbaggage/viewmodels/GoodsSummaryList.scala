@@ -97,7 +97,7 @@ object GoodsSummaryList {
         )
       ),
       classes = "govuk-!-margin-bottom-1",
-      attributes = Map("id" -> "summaryListId")
+      attributes = Map("id" -> s"summaryListId$idx")
     )
 
   private def exportSummary(goods: ExportGoods, idx: Int)(implicit messages: Messages): SummaryList =
