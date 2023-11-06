@@ -26,7 +26,7 @@ class GoodsRemovedControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view = app.injector.instanceOf[GoodsRemovedView]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): GoodsRemovedController =
     new GoodsRemovedController(controllerComponents, stubProvider(declarationJourney), view)
 
   val journey: DeclarationJourney =

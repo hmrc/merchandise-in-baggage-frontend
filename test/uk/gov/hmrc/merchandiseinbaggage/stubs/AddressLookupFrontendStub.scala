@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 
 object AddressLookupFrontendStub {
 
-  def confirmJourneyResponse(address: Address) =
+  def confirmJourneyResponse(address: Address): String =
     s"""{
        |    "auditRef" : "bed4bd24-72da-42a7-9338-f43431b7ed72",
        |    "id" : "GB990091234524",

@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 object PaymentCalculationPage extends Page {
   val path: String = "/declare-commercial-goods/payment-calculation"
 
-  def title(amountInPence: AmountInPence) = s"Payment due on these goods ${amountInPence.formattedInPounds}"
+  def title(amountInPence: AmountInPence): String = s"Payment due on these goods ${amountInPence.formattedInPounds}"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     val button = find(ClassNameQuery("govuk-button")).get

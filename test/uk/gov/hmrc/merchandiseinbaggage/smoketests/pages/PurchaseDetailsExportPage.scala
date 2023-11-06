@@ -20,8 +20,8 @@ import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatestplus.selenium.WebBrowser._
 
 object PurchaseDetailsExportPage extends Page {
-  def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
-  def title(idx: Int)        = "How much did you pay for the test good?"
+  def path(idx: Int): String  = s"/declare-commercial-goods/purchase-details/$idx"
+  def title(idx: Int): String = "How much did you pay for the test good?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     find(NameQuery("price")).get.underlying.sendKeys(formData.toString)

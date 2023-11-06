@@ -42,13 +42,13 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
   }
 
   "return empty email as default" in {
-    defaultEmail(true, Some(Email("x@y"))) mustBe Some(Email(""))
-    defaultEmail(false, Some(Email("x@y"))) mustBe Some(Email("x@y"))
+    defaultEmail(isAssistedDigital = true, Some(Email("x@y"))) mustBe Some(Email(""))
+    defaultEmail(isAssistedDigital = false, Some(Email("x@y"))) mustBe Some(Email("x@y"))
   }
 
   "set user email" in {
-    userEmail(true, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("x@y"))
-    userEmail(false, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("zz@y"))
+    userEmail(isAssistedDigital = true, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("x@y"))
+    userEmail(isAssistedDigital = false, Some(Email("x@y")), Email("zz@y")) mustBe Some(Email("zz@y"))
   }
 
   val date                             = LocalDate.of(2018, 2, 1).atStartOfDay

@@ -34,7 +34,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
   private val calculatorService = app.injector.instanceOf[MibService]
   private val mibConnector      = app.injector.instanceOf[MibConnector]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): GoodsOverThresholdController =
     new GoodsOverThresholdController(
       controllerComponents,
       stubProvider(declarationJourney),

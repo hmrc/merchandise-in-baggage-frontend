@@ -22,8 +22,8 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOriginPage.{path, title}
 
 object GoodsOriginPage extends Page {
-  def path(idx: Int) = s"/declare-commercial-goods/goods-origin/$idx"
-  val title          = "Were these goods made in the EU?"
+  def path(idx: Int): String = s"/declare-commercial-goods/goods-origin/$idx"
+  val title                  = "Were these goods made in the EU?"
 
   def submitPage[T](formData: T)(implicit webDriver: HtmlUnitDriver): Unit = {
     click.on(IdQuery(formData.toString))

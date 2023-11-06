@@ -26,8 +26,8 @@ import uk.gov.hmrc.merchandiseinbaggage.smoketests.BaseUiSpec
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage.path
 
 object PurchaseDetailsPage extends Page {
-  def path(idx: Int): String = s"/declare-commercial-goods/purchase-details/$idx"
-  def title(idx: Int)        = "How much did you pay for the test good?"
+  def path(idx: Int): String  = s"/declare-commercial-goods/purchase-details/$idx"
+  def title(idx: Int): String = "How much did you pay for the test good?"
 
   def selectCurrency(implicit webDriver: HtmlUnitDriver): Select = new Select(find(IdQuery("currency")).get.underlying)
 

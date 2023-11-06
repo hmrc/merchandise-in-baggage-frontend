@@ -39,7 +39,7 @@ class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually w
 
   def getCurrentUrl: String = webDriver.getCurrentUrl
 
-  def fullUrl(path: String) = s"$baseUrl$path"
+  def fullUrl(path: String): String = s"$baseUrl$path"
 
   private val findElement: By => WebElement = webDriver.findElement
 
