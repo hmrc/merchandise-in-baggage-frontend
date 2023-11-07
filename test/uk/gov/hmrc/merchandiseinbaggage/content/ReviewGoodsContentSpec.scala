@@ -62,7 +62,7 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
   }
 
   private def rowTest(rowNumber: Int, key: String, value: String, changeLink: String): Assertion = {
-    val row                              = findById("summaryListId1").findElements(By.className("govuk-summary-list__row")).get(rowNumber)
+    val row                              = findById("summaryListId_1").findElements(By.className("govuk-summary-list__row")).get(rowNumber)
     val rowElement: String => WebElement = className => row.findElement(By.className(className))
 
     rowElement("govuk-summary-list__key").getText mustBe messages(key)
