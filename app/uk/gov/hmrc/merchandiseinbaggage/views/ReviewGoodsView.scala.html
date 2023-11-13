@@ -49,18 +49,18 @@ button: components.button
         case WithinThreshold => {
             @h2(messages("reviewGoods.h2"), classes = Some("govuk-heading-m"))
             <div class="govuk-inset-text">@messages("reviewGoods.allowance.declared")<span class="govuk-!-font-weight-bold"> @allowance.toUIString </span>@messages("reviewGoods.allowance.left")</div>
+
+            @inputYesNo(
+                form = form,
+                legend = messages(s"reviewGoods.h2"),
+                legendAsHeading = false,
+                classes = "govuk-visually-hidden"
+            )
     }
         case OverThreshold   => {
             <div class="govuk-inset-text">@messages("reviewGoods.allowance.over")</div>
         }
     }
-
-        @inputYesNo(
-            form = form,
-            legend = messages(s"reviewGoods.h2"),
-            legendAsHeading = false,
-            classes = "govuk-visually-hidden"
-        )
 
         @button("site.continue", name = Some("continue"))
     }
