@@ -17,8 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.OptionT
-import javax.inject.{Inject, Singleton}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents, Result}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.{declarationNotFoundMessage, goodsDeclarationIncompleteMessage}
@@ -26,13 +25,15 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.ReviewGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.No
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ReviewGoodsRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
@@ -46,7 +47,7 @@ class ReviewGoodsController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
     request.declarationJourney.declarationType match {
       case Import => GoodsVatRateController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
       case Export => SearchGoodsCountryController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
@@ -70,9 +71,13 @@ class ReviewGoodsController @Inject() (
           .bindFromRequest()
           .fold(
             formWithErrors =>
-              Future.successful(
-                BadRequest(view(formWithErrors, thresholdAllowance, backButtonUrl, declarationType, journeyType))
-              ),
+              if (thresholdAllowance.currentStatus == OverThreshold) {
+                redirectTo(declareMoreGoods = No)
+              } else {
+                Future.successful(
+                  BadRequest(view(formWithErrors, thresholdAllowance, backButtonUrl, declarationType, journeyType))
+                )
+              },
             redirectTo
           )
       }

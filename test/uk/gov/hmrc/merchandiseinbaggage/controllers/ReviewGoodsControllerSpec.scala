@@ -27,9 +27,9 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, GoodsDestination, JourneyType}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
@@ -89,6 +89,26 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
           result must include(messageApi("reviewGoods.list.destination"))
         }
       }
+
+      s"redirect to CannotAccessPageController when no ThresholdAllowance is received from mibService for $importOrExport" in {
+        val request = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
+
+        when(
+          mockMibService.thresholdAllowance(
+            any[Option[GoodsDestination]],
+            any[GoodsEntries],
+            any[JourneyType],
+            any[DeclarationId]
+          )(any[HeaderCarrier])
+        )
+          .thenReturn(OptionT.none)
+
+        val result = controller(journey).onPageLoad()(request)
+
+        status(result) mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(CannotAccessPageController.onPageLoad.url)
+
+      }
     }
 
     "onSubmit" should {
@@ -138,23 +158,31 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       result must include(messageApi("reviewGoods.New.title"))
       result must include(messageApi("reviewGoods.New.heading"))
     }
-  }
 
-  forAll(declarationTypesTable) { importOrExport =>
+    s"redirect to CannotAccessPage when no ThresholdAllowance is received from mibService for $importOrExport" in {
+      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
+
+      when(
+        mockMibService.thresholdAllowance(
+          any[Option[GoodsDestination]],
+          any[GoodsEntries],
+          any[JourneyType],
+          any[DeclarationId]
+        )(any[HeaderCarrier])
+      )
+        .thenReturn(OptionT.none)
+
+      val result = controller(journey).onSubmit()(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(CannotAccessPageController.onPageLoad.url)
+
+    }
+
     s"redirect to next page after successful form submit with No for $importOrExport" in {
       val journey: DeclarationJourney =
         DeclarationJourney(aSessionId, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
           .copy(journeyType = Amend)
-
-      val controller: ReviewGoodsController =
-        new ReviewGoodsController(
-          controllerComponents,
-          stubProvider(journey),
-          stubRepo(journey),
-          view,
-          mockMibService,
-          injector.instanceOf[Navigator]
-        )
 
       when(
         mockMibService.thresholdAllowance(
@@ -172,16 +200,49 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       val request                = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("value" -> "No")
 
-      val result: Future[Result] = controller.onSubmit()(request)
       val expectedRedirect       =
         if (importOrExport == Export) {
+          when(mockNavigator.nextPage(any[ReviewGoodsRequest])(any[ExecutionContext]))
+            .thenReturn(Future.successful(CheckYourAnswersController.onPageLoad))
           Some(CheckYourAnswersController.onPageLoad.url)
         } else {
+          when(mockNavigator.nextPage(any[ReviewGoodsRequest])(any[ExecutionContext]))
+            .thenReturn(Future.successful(PaymentCalculationController.onPageLoad))
           Some(PaymentCalculationController.onPageLoad.url)
         }
+      val result: Future[Result] = controller(journey).onSubmit()(request)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe expectedRedirect
+    }
+
+    s"redirect to GoodsOverThreshold page after form is submitted when allowance has been exceeded for $importOrExport" in {
+
+      val overThresholdCalculationResponse: CalculationResponse =
+        aCalculationResponse.copy(thresholdCheck = OverThreshold)
+      val overThresholdAllowance: ThresholdAllowance            =
+        aThresholdAllowance.copy(calculationResponse = overThresholdCalculationResponse)
+
+      when(
+        mockMibService.thresholdAllowance(
+          any[Option[GoodsDestination]],
+          any[GoodsEntries],
+          any[JourneyType],
+          any[DeclarationId]
+        )(any[HeaderCarrier])
+      )
+        .thenReturn(OptionT.pure[Future](overThresholdAllowance))
+
+      when(mockNavigator.nextPage(any[ReviewGoodsRequest])(any[ExecutionContext]))
+        .thenReturn(Future.successful(GoodsOverThresholdController.onPageLoad))
+
+      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
+
+      val result: Future[Result] = controller(journey).onSubmit()(request)
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(GoodsOverThresholdController.onPageLoad.url)
+
     }
   }
 }

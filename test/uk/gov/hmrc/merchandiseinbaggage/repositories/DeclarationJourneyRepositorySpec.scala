@@ -62,7 +62,7 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
       val indices = declarationJourneyRepository.collection.listIndexes().toFuture().futureValue
 
       val actualTimeToLive =
-        indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt64().intValue()
+        indices.find(_.toString.contains("timeToLive")).get("expireAfterSeconds").asInt32().intValue()
 
       actualTimeToLive mustBe expectedTimeToLive
     }

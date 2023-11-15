@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResponse
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationGoods, ExportGoods, Goods, GoodsDestination, ImportGoods}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, ThresholdCheck}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.util.Try
@@ -27,7 +27,9 @@ case class ThresholdAllowance(
   allGoods: DeclarationGoods,
   calculationResponse: CalculationResponse,
   destination: GoodsDestination
-)
+) {
+  val currentStatus: ThresholdCheck = calculationResponse.thresholdCheck
+}
 
 object ThresholdAllowance {
 
