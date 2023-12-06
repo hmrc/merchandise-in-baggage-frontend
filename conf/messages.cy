@@ -91,9 +91,9 @@ previousDeclarationDetails.journey.arrival = Man cyrraedd
 previousDeclarationDetails.journey.date = Dyddiad cyrraedd
 previousDeclarationDetails.add = Ychwanegu rhagor o nwyddau at y datganiad hwn
 previousDeclarationDetails.expired = Ni allwch ychwanegu at hen ddatganiad.
-previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £1,500.
+previousDeclarationDetails.add_goods = Gallwch ond ychwanegu rhagor o nwyddau at y datganiad hwn, ni allwch newid unrhyw fanylion eraill. Gwnewch yn siŵr bod cyfanswm gwerth y nwyddau i gyd ddim yn fwy na £2,500.
 previousDeclarationDetails.allowance.p1 = Mae gennych £
-previousDeclarationDetails.allowance.p2 = yn weddill o’ch lwfans o £1,500.
+previousDeclarationDetails.allowance.p2 = yn weddill o’ch lwfans o £2,500.
 previousDeclarationDetails.add.button.text = Ychwanegu rhagor o nwyddau
 
 # ExciseAndRestrictedGoods
@@ -127,10 +127,10 @@ goodsDestination.error.Export.required = Dewiswch a yw’r nwyddau’n gadael o 
 
 # ValueWeightOfGoods
 valueWeightOfGoods.NorthernIreland.title = A yw cyfanswm gwerth y nwyddau o dan £873 ac a ydynt yn pwyso llai na 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.title = A yw cyfanswm gwerth y nwyddau o dan £2,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
 valueWeightOfGoods.NorthernIreland.heading = A yw cyfanswm gwerth y nwyddau o dan £873 ac a ydynt yn pwyso llai na 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan £1,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
-valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £1,500 ac os ydynt yn pwyso llai na 1,000 cilogram
+valueWeightOfGoods.GreatBritain.heading = A yw cyfanswm gwerth y nwyddau o dan £2,500 ac a ydynt yn pwyso llai na 1,000 cilogram?
+valueWeightOfGoods.GreatBritain.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £2,500 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.NorthernIreland.error.required = Dewiswch ‘Iawn’ os yw cyfanswm gwerth y nwyddau o dan £873 ac os ydynt yn pwyso llai na 1,000 cilogram
 valueWeightOfGoods.rate.1=Byddwn yn cyfrifo cyfanswm gwerth gan ddefnyddio
 valueWeightOfGoods.rate.2= cyfraddau cyfnewid misol CThEF (yn agor tab newydd)
@@ -228,8 +228,8 @@ reviewGoods.list.invoice=Rhif anfoneb
 reviewGoods.list.paymentMade = Taliad a wnaed
 reviewGoods.h2 = A oes angen i chi ddatgan rhagor o fathau o nwyddau masnachol?
 reviewGoods.allowance.declared = Mae gennych
-reviewGoods.allowance.left = yn weddill o’ch lwfans o £1,500.
-reviewGoods.allowance.over = Ni allwch ychwanegu nwyddau sydd werth cyfanswm o fwy na £1,500 at y datganiad hwn.
+reviewGoods.allowance.left = yn weddill o’ch lwfans o £2,500.
+reviewGoods.allowance.over = Ni allwch ychwanegu nwyddau sydd werth cyfanswm o fwy na £2,500 at y datganiad hwn.
 reviewGoods.error.required = Dewiswch ‘Iawn’ os hoffech ddatgan rhagor o fathau o nwyddau masnachol
 
 # RemoveGoods
@@ -245,13 +245,13 @@ goodsRemoved.link = Ychwanegu nwyddau eraill
 
 # GoodsOverThreshold
 goodsOverThreshold.NorthernIreland.title = Mae cyfanswm gwerth eich nwyddau dros £873
-goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £1,500
+goodsOverThreshold.GreatBritain.title = Mae cyfanswm gwerth eich nwyddau dros £2,500
 goodsOverThreshold.NorthernIreland.heading = TMae cyfanswm gwerth eich nwyddau dros £873
-goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £1,500
+goodsOverThreshold.GreatBritain.heading = Mae cyfanswm gwerth eich nwyddau dros £2,500
 goodsOverThreshold.NorthernIreland.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sydd werth dros £873 yr ydych yn dod â nhw i mewn i Ogledd Iwerddon.
 goodsOverThreshold.NorthernIreland.Export.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sy’n werth dros £873 yr ydych yn mynd â nhw allan o Ogledd Iwerddon.
-goodsOverThreshold.GreatBritain.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau rydych yn dod â nhw gyda chi i Brydain Fawr sydd â gwerth dros £1,500.
-goodsOverThreshold.GreatBritain.Export.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sy’n werth dros £1,500 yr ydych yn eu cymryd allan o Brydain Fawr.
+goodsOverThreshold.GreatBritain.Import.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau rydych yn dod â nhw gyda chi i Brydain Fawr sydd â gwerth dros £2,500.
+goodsOverThreshold.GreatBritain.Export.p1 = Ni allwch ddefnyddio’r gwasanaeth hwn i ddatgan nwyddau sy’n werth dros £2,500 yr ydych yn eu cymryd allan o Brydain Fawr.
 goodsOverThreshold.p2 = Er mwyn datgan eich nwyddau bydd angen i chi
 goodsOverThreshold.p2.Import.a.text = gyflwyno datganiad mewnforio llawn.
 goodsOverThreshold.p2.Export.a.text = gyflwyno datganiad allforio llawn.

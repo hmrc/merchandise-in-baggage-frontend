@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with PropertyBaseTables {
 
-  s"render contents" in {
+  "render contents" in {
     givenAJourneyWithSession()
     givenAPaymentCalculation(aCalculationResult)
     goToReviewGoodsPagePage(New)
@@ -39,20 +39,20 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
     rowTest(2, "reviewGoods.list.producedInEu", "Yes", "/goods-origin/1")
     rowTest(3, "reviewGoods.list.vatRate", "20%", "/goods-vat-rate/1")
 
-    findByClassName("govuk-inset-text").getText mustBe s"${messages("reviewGoods.allowance.declared")} £1,499.90 ${messages("reviewGoods.allowance.left")}"
+    findByClassName("govuk-inset-text").getText mustBe s"${messages("reviewGoods.allowance.declared")} £2,499.90 ${messages("reviewGoods.allowance.left")}"
     findByTagName("a").getAttribute("href") must include("review-goods#main-content")
     radioButtonTest
     elementText(findByTagName("button")) mustBe "Continue"
   }
 
-  s"render different title&header for amending an existing declaration" in {
+  "render different title&header for amending an existing declaration" in {
     givenAJourneyWithSession(Amend)
     givenAPaymentCalculation(aCalculationResult, WithinThreshold)
     givenPersistedDeclarationIsFound()
     goToReviewGoodsPagePage(Amend)
   }
 
-  s"render contents when over threshold" in {
+  "render contents when over threshold" in {
     givenAJourneyWithSession()
     givenAPaymentCalculation(aCalculationResultOverThousand, OverThreshold)
     goToReviewGoodsPagePage(New)
@@ -72,7 +72,7 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
       .getAttribute("href") must include(changeLink)
   }
 
-  private def radioButtonTest = {
+  private def radioButtonTest: Assertion = {
     findByXPath("//div[@class='govuk-radios__item'][1]/input").getAttribute("type") mustBe "radio"
     findByXPath("//div[@class='govuk-radios__item'][2]/input").getAttribute("type") mustBe "radio"
     findByXPath("//div[@class='govuk-radios__item'][1]/label").getText mustBe "Yes"
