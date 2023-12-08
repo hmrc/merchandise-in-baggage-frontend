@@ -17,15 +17,22 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
+import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestination
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
 
 object ValueWeightOfGoodsForm extends Mappings {
 
-  def form(goodsDestination: GoodsDestination): Form[YesNo] =
+  def form(goodsDestination: GoodsDestination)(implicit messages: Messages): Form[YesNo] =
     Form(
-      "value" -> yesNo(s"valueWeightOfGoods.${goodsDestination.entryName}.error.required")
+      "value" -> yesNo(
+        Messages(
+          s"valueWeightOfGoods.${goodsDestination.entryName}.error.required",
+          goodsDestination.threshold.formattedInPounds
+        )
+      )
     )
 
 }

@@ -39,7 +39,10 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
     rowTest(2, "reviewGoods.list.producedInEu", "Yes", "/goods-origin/1")
     rowTest(3, "reviewGoods.list.vatRate", "20%", "/goods-vat-rate/1")
 
-    findByClassName("govuk-inset-text").getText mustBe s"${messages("reviewGoods.allowance.declared")} £2,499.90 ${messages("reviewGoods.allowance.left")}"
+    val expectedAllowanceText: String =
+      s"${messages("reviewGoods.allowance.declared")} £2,499.90 ${messages("reviewGoods.allowance.left", thresholdValueInUI)}"
+
+    findByClassName("govuk-inset-text").getText mustBe expectedAllowanceText
     findByTagName("a").getAttribute("href") must include("review-goods#main-content")
     radioButtonTest
     elementText(findByTagName("button")) mustBe "Continue"
@@ -58,7 +61,7 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
     goToReviewGoodsPagePage(New)
 
     elementText(findByTagName("h2")) must not include messages("reviewGoods.h2")
-    findByClassName("govuk-inset-text").getText mustBe messages("reviewGoods.allowance.over")
+    findByClassName("govuk-inset-text").getText mustBe messages("reviewGoods.allowance.over", thresholdValueInUI)
   }
 
   private def rowTest(rowNumber: Int, key: String, value: String, changeLink: String): Assertion = {

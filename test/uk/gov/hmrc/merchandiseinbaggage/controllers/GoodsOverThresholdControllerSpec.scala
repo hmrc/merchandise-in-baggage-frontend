@@ -58,10 +58,10 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.title"))
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.heading"))
-        result must include(messageApi(s"goodsOverThreshold.GreatBritain.$importOrExport.p1"))
-        result must include(messageApi(s"goodsOverThreshold.p2"))
+        result must include(messageApi("goodsOverThreshold.GreatBritain.title", thresholdValueInUI))
+        result must include(messageApi("goodsOverThreshold.GreatBritain.heading", thresholdValueInUI))
+        result must include(messageApi(s"goodsOverThreshold.GreatBritain.$importOrExport.p1", thresholdValueInUI))
+        result must include(messageApi("goodsOverThreshold.p2"))
         result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.text"))
         if (importOrExport == Import) {
           result must include("https://something")

@@ -37,10 +37,11 @@ class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTest
 
         pageTitle must startWith(title)
 
-        elementText(findByTagName("h1")) mustBe messages("goodsOverThreshold.GreatBritain.heading")
+        elementText(findByTagName("h1")) mustBe messages("goodsOverThreshold.GreatBritain.heading", thresholdValueInUI)
 
         findByXPath("""//*[@id="main-content"]/div/div/p[1]""").getText mustBe messages(
-          s"goodsOverThreshold.GreatBritain.$importOrExport.p1"
+          s"goodsOverThreshold.GreatBritain.$importOrExport.p1",
+          thresholdValueInUI
         )
 
         findByXPath("""//*[@id="main-content"]/div/div/p[2]""").getText must startWith(

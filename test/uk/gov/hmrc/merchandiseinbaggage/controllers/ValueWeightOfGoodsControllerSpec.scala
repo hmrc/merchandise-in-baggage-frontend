@@ -53,8 +53,8 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"valueWeightOfGoods.GreatBritain.title"))
-        result must include(messageApi(s"valueWeightOfGoods.GreatBritain.heading"))
+        result must include(messageApi("valueWeightOfGoods.GreatBritain.title", thresholdValueInUI))
+        result must include(messageApi("valueWeightOfGoods.GreatBritain.heading", thresholdValueInUI))
       }
     }
 
@@ -81,8 +81,8 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
       status(eventualResult) mustBe BAD_REQUEST
       result must include(messageApi("error.summary.title"))
-      result must include(messageApi(s"valueWeightOfGoods.GreatBritain.title"))
-      result must include(messageApi(s"valueWeightOfGoods.GreatBritain.heading"))
+      result must include(messageApi("valueWeightOfGoods.GreatBritain.title", thresholdValueInUI))
+      result must include(messageApi("valueWeightOfGoods.GreatBritain.heading", thresholdValueInUI))
     }
   }
 }

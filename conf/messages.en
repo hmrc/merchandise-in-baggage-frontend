@@ -100,9 +100,9 @@ previousDeclarationDetails.journey.arrival = Place of arrival
 previousDeclarationDetails.journey.date = Date of arrival
 previousDeclarationDetails.add = Add more goods to this declaration
 previousDeclarationDetails.expired = You cannot add to an old declaration.
-previousDeclarationDetails.add_goods = You can only add more goods to this declaration, you cannot change any other details. Make sure the total value of all the goods is less than £2,500 and the weight is less than 1,000kg.
+previousDeclarationDetails.add_goods = You can only add more goods to this declaration, you cannot change any other details. Make sure the total value of all the goods is less than {0} and the weight is less than 1,000kg.
 previousDeclarationDetails.allowance.p1 = You have
-previousDeclarationDetails.allowance.p2 = left of your £2,500 allowance.
+previousDeclarationDetails.allowance.p2 = left of your {0} allowance.
 previousDeclarationDetails.add.button.text = Add more goods
 
 # ExciseAndRestrictedGoods
@@ -135,12 +135,12 @@ goodsDestination.error.Export.required = Select if the goods are leaving from No
 
 
 # ValueWeightOfGoods
-valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than £2,500 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than £873 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less than £2,500 and do they weigh less than 1,000 kilograms?
-valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than £2,500 and they weigh less than 1,000 kilograms
-valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than £873 and they weigh less than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.title = Is the total value of the goods less than {0} and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.title = Is the total value of the goods less than {0} and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.NorthernIreland.heading = Is the total value of the goods less than {0} and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.heading = Is the total value of the goods less than {0} and do they weigh less than 1,000 kilograms?
+valueWeightOfGoods.GreatBritain.error.required = Select yes if the total value of the goods is less than {0} and they weigh less than 1,000 kilograms
+valueWeightOfGoods.NorthernIreland.error.required = Select yes if the total value of the goods is less than {0} and they weigh less than 1,000 kilograms
 valueWeightOfGoods.rate.1=We will work out the total value using
 valueWeightOfGoods.rate.2=HMRC''s monthly exchange rates (opens in new tab)
 valueWeightOfGoods.rate.3=and the rate in the month in which you make your declaration.
@@ -237,8 +237,8 @@ reviewGoods.list.invoice = Invoice number
 reviewGoods.list.paymentMade = Payment made
 reviewGoods.h2 = Do you need to declare more types of commercial goods?
 reviewGoods.allowance.declared = You have
-reviewGoods.allowance.left = left of your £2,500 allowance.
-reviewGoods.allowance.over = You cannot add more than £2,500 of goods to this declaration.
+reviewGoods.allowance.left = left of your {0} allowance.
+reviewGoods.allowance.over = You cannot add more than {0} of goods to this declaration.
 reviewGoods.error.required = Select yes if you want to declare more goods
 
 # RemoveGoods
@@ -253,14 +253,14 @@ goodsRemoved.p1 = You have no goods to declare.
 goodsRemoved.link = Add other goods
 
 # GoodsOverThreshold
-goodsOverThreshold.NorthernIreland.title = The total value of your goods is over £873
-goodsOverThreshold.GreatBritain.title = The total value of your goods is over £2,500
-goodsOverThreshold.NorthernIreland.heading = The total value of your goods is over £873
-goodsOverThreshold.GreatBritain.heading = The total value of your goods is over £2,500
-goodsOverThreshold.NorthernIreland.Import.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of £873.
-goodsOverThreshold.NorthernIreland.Export.p1 = You cannot use this service to declare goods you are taking out of Northern Ireland that are over the value of £873.
-goodsOverThreshold.GreatBritain.Import.p1 = You cannot use this service to declare goods you are bringing to Great Britain that are over the value of £2,500.
-goodsOverThreshold.GreatBritain.Export.p1 = You cannot use this service to declare goods you are taking out of Great Britain that are over the value of £2,500.
+goodsOverThreshold.NorthernIreland.title = The total value of your goods is over {0}
+goodsOverThreshold.GreatBritain.title = The total value of your goods is over {0}
+goodsOverThreshold.NorthernIreland.heading = The total value of your goods is over {0}
+goodsOverThreshold.GreatBritain.heading = The total value of your goods is over {0}
+goodsOverThreshold.NorthernIreland.Import.p1 = You cannot use this service to declare goods you are bringing to Northern Ireland that are over the value of {0}.
+goodsOverThreshold.NorthernIreland.Export.p1 = You cannot use this service to declare goods you are taking out of Northern Ireland that are over the value of {0}.
+goodsOverThreshold.GreatBritain.Import.p1 = You cannot use this service to declare goods you are bringing to Great Britain that are over the value of {0}.
+goodsOverThreshold.GreatBritain.Export.p1 = You cannot use this service to declare goods you are taking out of Great Britain that are over the value of {0}.
 goodsOverThreshold.p2 = To declare your goods you will need to
 goodsOverThreshold.p2.Import.a.text = make a full import declaration.
 goodsOverThreshold.p2.Export.a.text = make a full export declaration.

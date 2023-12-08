@@ -17,15 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.FormError
+import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
 import uk.gov.hmrc.merchandiseinbaggage.forms.ValueWeightOfGoodsForm.form
 import uk.gov.hmrc.merchandiseinbaggage.forms.behaviours.YesNoFieldBehaviours
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
 
-class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
+class ValueWeightOfGoodsFormSpec extends BaseSpecWithApplication with YesNoFieldBehaviours {
 
-  val requiredKeyWhenGoodsDestinationIsGreatBritain    = "valueWeightOfGoods.GreatBritain.error.required"
-  val requiredKeyWhenGoodsDestinationIsNorthernIreland = "valueWeightOfGoods.NorthernIreland.error.required"
-  val invalidKey                                       = "error.yesNo"
+  private val requiredMessageWhenGoodsDestinationIsGreatBritain    =
+    messages("valueWeightOfGoods.GreatBritain.error.required", "£2,500")
+  private val requiredMessageWhenGoodsDestinationIsNorthernIreland =
+    messages("valueWeightOfGoods.NorthernIreland.error.required", "£873")
+  private val invalidKey                                           = "error.yesNo"
 
   ".value" must {
 
@@ -40,13 +43,13 @@ class ValueWeightOfGoodsFormSpec extends YesNoFieldBehaviours {
     behave like mandatoryField(
       form(GreatBritain),
       fieldName,
-      requiredError = FormError(fieldName, requiredKeyWhenGoodsDestinationIsGreatBritain)
+      requiredError = FormError(fieldName, requiredMessageWhenGoodsDestinationIsGreatBritain)
     )
 
     behave like mandatoryField(
       form(NorthernIreland),
       fieldName,
-      requiredError = FormError(fieldName, requiredKeyWhenGoodsDestinationIsNorthernIreland)
+      requiredError = FormError(fieldName, requiredMessageWhenGoodsDestinationIsNorthernIreland)
     )
   }
 }

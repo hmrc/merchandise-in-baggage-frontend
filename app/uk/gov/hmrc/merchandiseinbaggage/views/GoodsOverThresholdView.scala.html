@@ -23,18 +23,18 @@
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 @this(
-layout: Layout,
-h1: components.h1,
-h2: components.h2,
-p: components.p
+    layout: Layout,
+    h1: components.h1,
+    h2: components.h2,
+    p: components.p
 )
 
 @(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], exchangeUrl:String, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
-    @h1(s"goodsOverThreshold.${dest.toString}.heading")
+@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+    @h1(messages(s"goodsOverThreshold.${dest.toString}.heading", dest.threshold.formattedInPounds))
 
-    <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.${declarationType}.p1")</p>
+    <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.${declarationType}.p1", dest.threshold.formattedInPounds)</p>
 
     <p class="govuk-body">
         @messages("goodsOverThreshold.p2")
