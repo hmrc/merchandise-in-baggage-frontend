@@ -30,7 +30,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -149,11 +148,11 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersistedWithStub(importJourney)
 
       when(
-        mockTpsPaymentsService.createTpsPayments(eqTo("123"), eqTo(None), any[Declaration], any[CalculationResults])(
+        mockTpsPaymentsService.createTpsPayments(eqTo(None), any[Declaration], any[CalculationResults])(
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(TpsId("someid")))
+        .thenReturn(Future.successful(PayApiResponse(JourneyId("someid"), URL("http://localhost:9124/tps-payments/make-payment/mib/someid"))))
 
       val result: Future[Result] = newHandler().onSubmit(importJourney.toDeclaration, "123")
 

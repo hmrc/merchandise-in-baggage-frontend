@@ -17,7 +17,9 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import org.scalatest.concurrent.ScalaFutures
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{TpsId, TpsPaymentsRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsPaymentsRequest
+import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 import uk.gov.hmrc.merchandiseinbaggage.stubs.TpsPaymentsBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
@@ -25,15 +27,16 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData with ScalaFutures {
 
   val paymentService = app.injector.instanceOf[TpsPaymentsService]
+  private val amendRef = 123
 
   "makes the payment to TPS" in {
-    val tpsId = TpsId("123")
+    val tpsId = PayApiResponse(JourneyId("123"), URL("url"))
 
     givenTaxArePaid(tpsId)
 
     val actual =
       paymentService
-        .createTpsPayments(tpsId.value, None, completedDeclarationJourney.toDeclaration, aCalculationResults)
+        .createTpsPayments(None, completedDeclarationJourney.toDeclaration, aCalculationResults)
         .futureValue
 
     actual mustBe tpsId
@@ -41,17 +44,15 @@ class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData w
 
   "build a TpsPaymentsRequest from a declaration" in {
     val actual   =
-      paymentService.buildTpsRequest("pid", Some(123), completedDeclarationJourney.toDeclaration, aCalculationResults)
+      paymentService.buildTpsRequest(Some(amendRef), completedDeclarationJourney.toDeclaration, aCalculationResults)
     val payments = actual.payments.head
 
     actual mustBe a[TpsPaymentsRequest]
-    actual.pid mustBe "pid"
-    payments.paymentSpecificData.amendmentReference mustBe Some(123)
-    payments.chargeReference mustBe "xx"
+    payments.amendmentReference mustBe Some(amendRef)
+    payments.mibReference mustBe "xx"
     payments.customerName mustBe "Terry Test"
-    payments.paymentSpecificData.chargeReference mustBe "xx"
     payments.amount mustBe aCalculationResults.totalTaxDue.inPounds
-    payments.paymentSpecificData.vat mustBe aCalculationResults.totalVatDue.inPounds
-    payments.paymentSpecificData.customs mustBe aCalculationResults.totalDutyDue.inPounds
+    payments.totalVatDue mustBe aCalculationResults.totalVatDue.inPounds
+    payments.totalDutyDue mustBe aCalculationResults.totalDutyDue.inPounds
   }
 }

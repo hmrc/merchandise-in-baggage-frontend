@@ -108,10 +108,10 @@ class CheckYourAnswersNewHandler @Inject() (
       Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
-        .createTpsPayments(pid, None, declaration, calculations)
-        .map(tpsId =>
-          Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-            .addingToSession("TPS_ID" -> tpsId.value)
+        .createTpsPayments(None, declaration, calculations)
+        .map(tpsResponse =>
+          Redirect(tpsResponse.nextUrl.value)
+            .addingToSession("TPS_ID" -> tpsResponse.journeyId.value)
         )
     }
 }

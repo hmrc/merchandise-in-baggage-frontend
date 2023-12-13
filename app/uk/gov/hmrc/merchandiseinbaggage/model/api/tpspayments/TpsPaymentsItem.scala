@@ -19,12 +19,15 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments
 import play.api.libs.json.{Json, OFormat}
 
 case class TpsPaymentsItem(
-  chargeReference: String,
+  mibReference: String,
   customerName: String,
   amount: BigDecimal,
-  taxRegimeDisplay: String = "MODS",
-  taxType: String = "MIB",
-  paymentSpecificData: PaymentSpecificData
+  amendmentReference: Option[Int],
+  totalVatDue: BigDecimal,
+  totalDutyDue: BigDecimal,
+  backUrl: String,
+  resetUrl: String,
+  finishUrl: String
 )
 
 object TpsPaymentsItem {

@@ -22,11 +22,12 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.TpsPaymentsBackendConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{PaymentSpecificData, TpsId, TpsPaymentsItem, TpsPaymentsRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{TpsPaymentsItem, TpsPaymentsRequest}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.i18n.MessagesApi
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 @Singleton
@@ -38,37 +39,33 @@ class TpsPaymentsService @Inject() (
     extends Auditor {
 
   def createTpsPayments(
-    pid: String,
     amendmentRef: Option[Int],
     declaration: Declaration,
     paymentDue: CalculationResults
-  )(implicit hc: HeaderCarrier): Future[TpsId] =
+  )(implicit hc: HeaderCarrier): Future[PayApiResponse] =
     for {
       _     <- auditDeclaration(declaration)
-      tpsId <- connector.tpsPayments(buildTpsRequest(pid, amendmentRef, declaration, paymentDue))
-    } yield tpsId
+      tpsResponse <- connector.tpsPayments(buildTpsRequest(amendmentRef, declaration, paymentDue))
+    } yield tpsResponse
 
   private[service] def buildTpsRequest(
-    pid: String,
     amendmentRef: Option[Int],
     declaration: Declaration,
     paymentDue: CalculationResults
   ) =
     TpsPaymentsRequest(
-      pid = pid,
       payments = Seq(
         TpsPaymentsItem(
-          chargeReference = declaration.mibReference.value,
+          mibReference = declaration.mibReference.value,
           customerName = declaration.nameOfPersonCarryingTheGoods.toString,
           amount = paymentDue.totalTaxDue.inPounds,
-          paymentSpecificData = PaymentSpecificData(
-            declaration.mibReference.value,
-            amendmentRef,
-            paymentDue.totalVatDue.inPounds,
-            paymentDue.totalDutyDue.inPounds
-          )
+          amendmentReference = amendmentRef,
+          totalVatDue = paymentDue.totalVatDue.inPounds,
+          totalDutyDue = paymentDue.totalDutyDue.inPounds,
+          backUrl = appConfig.tpsNavigation.back,
+          resetUrl = appConfig.tpsNavigation.reset,
+          finishUrl = appConfig.tpsNavigation.finish
         )
-      ),
-      navigation = appConfig.tpsNavigation
+      )
     )
 }

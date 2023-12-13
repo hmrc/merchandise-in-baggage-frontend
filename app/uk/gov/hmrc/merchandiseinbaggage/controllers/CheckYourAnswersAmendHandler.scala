@@ -146,24 +146,23 @@ class CheckYourAnswersAmendHandler @Inject() (
 
         for {
           _        <- mibService.amendDeclaration(updatedDeclaration)
-          redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, pid, amendmentRef)
+          redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, amendmentRef)
         } yield redirect
     }
 
   def redirectToPaymentsIfNecessary(
     calculations: CalculationResults,
     declaration: Declaration,
-    pid: String,
     amendmentRef: Int
   )(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
       Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
-        .createTpsPayments(pid, Some(amendmentRef), declaration, calculations)
-        .map(tpsId =>
-          Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-            .addingToSession("TPS_ID" -> tpsId.value)
+        .createTpsPayments(Some(amendmentRef), declaration, calculations)
+        .map(tpsResponse =>
+          Redirect(tpsResponse.nextUrl.value)
+            .addingToSession("TPS_ID" -> tpsResponse.journeyId.value)
         )
     }
 }

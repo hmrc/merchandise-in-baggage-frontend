@@ -19,20 +19,21 @@ package uk.gov.hmrc.merchandiseinbaggage.stubs
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.Status.{CREATED, OK}
 import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 
 object TpsPaymentsBackendStub extends CoreTestData {
 
-  def givenTaxArePaid(tpsId: TpsId)(implicit server: WireMockServer): StubMapping = {
+  def givenTaxArePaid(tpsResponse: PayApiResponse)(implicit server: WireMockServer): StubMapping = {
     server.stubFor(
-      post(urlPathEqualTo("/tps-payments-backend/tps-payments"))
-        .willReturn(okJson(Json.toJson(tpsId).toString).withStatus(201))
+      post(urlPathEqualTo("/tps-payments-backend/start-tps-journey/mib"))
+        .willReturn(okJson(Json.toJson(tpsResponse).toString).withStatus(CREATED))
     )
     server.stubFor(
       get(urlPathEqualTo("/tps-payments/make-payment/mib/123"))
-        .willReturn(aResponse().withStatus(200))
+        .willReturn(aResponse().withStatus(OK))
     )
   }
 
