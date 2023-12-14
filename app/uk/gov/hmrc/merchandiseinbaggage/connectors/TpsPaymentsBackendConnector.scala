@@ -30,9 +30,12 @@ case class TpsPaymentsException(message: String) extends RuntimeException(messag
 @Singleton
 class TpsPaymentsBackendConnector @Inject() (httpClient: HttpClient, @Named("tpsBackendBaseUrl") baseUrl: String) {
 
-  def tpsPayments(requestBody: TpsPaymentsRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
-    httpClient.POST[TpsPaymentsRequest, HttpResponse](s"$baseUrl/tps-payments-backend/start-tps-journey/mib", requestBody).map {
-      response =>
+  def tpsPayments(
+    requestBody: TpsPaymentsRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
+    httpClient
+      .POST[TpsPaymentsRequest, HttpResponse](s"$baseUrl/tps-payments-backend/start-tps-journey/mib", requestBody)
+      .map { response =>
         response.status match {
           case Status.CREATED => response.json.as[PayApiResponse]
           case other: Int     =>
@@ -40,5 +43,5 @@ class TpsPaymentsBackendConnector @Inject() (httpClient: HttpClient, @Named("tps
               s"unexpected status from tps-payments-backend for reference: ${requestBody.payments.head.mibReference}, status: $other"
             )
         }
-    }
+      }
 }

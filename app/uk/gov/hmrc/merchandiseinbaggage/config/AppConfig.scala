@@ -43,8 +43,6 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment)()
   lazy val paymentsBackUrl: String   = configSource("payments.backUrl").loadOrThrow[String]
 
   lazy val tpsNavigation: TpsNavigation = configSource("tps-navigation").loadOrThrow[TpsNavigation]
-  lazy val tpsFrontendBaseUrl: String   =
-    configSource("microservice.services.tps-payments-frontend.url").loadOrThrow[String]
 
   lazy val mongoTTL: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
 

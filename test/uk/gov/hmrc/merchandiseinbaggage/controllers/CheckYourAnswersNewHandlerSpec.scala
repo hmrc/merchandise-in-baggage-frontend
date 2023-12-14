@@ -152,7 +152,11 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(PayApiResponse(JourneyId("someid"), URL("http://localhost:9124/tps-payments/make-payment/mib/someid"))))
+        .thenReturn(
+          Future.successful(
+            PayApiResponse(JourneyId("someid"), URL("http://localhost:9124/tps-payments/make-payment/mib/someid"))
+          )
+        )
 
       val result: Future[Result] = newHandler().onSubmit(importJourney.toDeclaration, "123")
 

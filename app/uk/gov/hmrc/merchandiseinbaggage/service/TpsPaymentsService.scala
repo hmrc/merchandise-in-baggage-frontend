@@ -44,7 +44,7 @@ class TpsPaymentsService @Inject() (
     paymentDue: CalculationResults
   )(implicit hc: HeaderCarrier): Future[PayApiResponse] =
     for {
-      _     <- auditDeclaration(declaration)
+      _           <- auditDeclaration(declaration)
       tpsResponse <- connector.tpsPayments(buildTpsRequest(amendmentRef, declaration, paymentDue))
     } yield tpsResponse
 

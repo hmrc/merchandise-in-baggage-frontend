@@ -26,7 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData with ScalaFutures {
 
-  val paymentService = app.injector.instanceOf[TpsPaymentsService]
+  val paymentService   = app.injector.instanceOf[TpsPaymentsService]
   private val amendRef = 123
 
   "makes the payment to TPS" in {
