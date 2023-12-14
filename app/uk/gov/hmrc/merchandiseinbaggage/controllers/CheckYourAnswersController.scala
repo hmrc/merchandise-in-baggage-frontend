@@ -61,22 +61,24 @@ class CheckYourAnswersController @Inject() (
       case New   =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            if (isAssistedDigital)
+            if (isAssistedDigital) {
               newHandler.onSubmit(declaration.copy(lang = messages.lang.code), request.pid)
-            else
+            } else {
               newHandler.onSubmit(declaration.copy(lang = messages.lang.code))
+            }
           }
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            if (isAssistedDigital)
+            if (isAssistedDigital) {
               amendHandler.onSubmit(
-                request.declarationJourney.declarationId,
-                request.pid,
-                amendment.copy(lang = messages.lang.code)
+                declarationId = request.declarationJourney.declarationId,
+                pid = request.pid,
+                newAmendment = amendment.copy(lang = messages.lang.code)
               )
-            else
+            } else {
               amendHandler.onSubmit(request.declarationJourney.declarationId, amendment.copy(lang = messages.lang.code))
+            }
           }
     }
   }

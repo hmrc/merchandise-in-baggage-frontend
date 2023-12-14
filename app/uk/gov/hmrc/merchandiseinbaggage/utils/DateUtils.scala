@@ -32,8 +32,9 @@ object DateUtils {
     val result = if (messages.lang.code == "cy") {
       val englishMonth = date.split(" ")(1)
       date.replace(englishMonth, messages(s"title.${englishMonth.toLowerCase}"))
-    } else
+    } else {
       date
+    }
 
     result
       .replace("AM", "am")

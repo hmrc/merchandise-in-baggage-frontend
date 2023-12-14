@@ -44,8 +44,11 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
     import amountInPence._
     val inPounds: BigDecimal                          = (BigDecimal(value) / 100).setScale(2)
     val formattedInPounds: String                     =
-      if (value == 0) getCurrencyInstance(UK).format(inPounds)
-      else getCurrencyInstance(UK).format(inPounds).split("\\.00")(0)
+      if (value == 0) {
+        getCurrencyInstance(UK).format(inPounds)
+      } else {
+        getCurrencyInstance(UK).format(inPounds).split("\\.00")(0)
+      }
     lazy val isPaymentRequired: Boolean               = inPounds.compareTo(BigDecimal(0.0)) > 0
     def fromBigDecimal(in: BigDecimal): AmountInPence = AmountInPence((in * 100).toLong)
   }
@@ -139,8 +142,11 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
           ),
           TableRow(
             Text(
-              if (goods.goodsVatRate == Zero) s"${goods.goodsVatRate.value}%"
-              else messages("paymentCalculation.table.col3.row", tc.vat.formattedInPounds, goods.goodsVatRate.value)
+              if (goods.goodsVatRate == Zero) {
+                s"${goods.goodsVatRate.value}%"
+              } else {
+                messages("paymentCalculation.table.col3.row", tc.vat.formattedInPounds, goods.goodsVatRate.value)
+              }
             )
           ),
           TableRow(
@@ -187,7 +193,10 @@ object DataModelEnriched extends IsAssistedDigitalConfiguration {
   implicit class DeclarationEnriched(declaration: Declaration) {
     implicit val localDateOrdering: Ordering[LocalDateTime] = Ordering.by(_.toEpochSecond(ZoneOffset.UTC))
     def latestGoods: Seq[Goods]                             =
-      if (declaration.amendments.isEmpty) declaration.declarationGoods.goods
-      else declaration.amendments.maxBy(_.dateOfAmendment).goods.goods
+      if (declaration.amendments.isEmpty) {
+        declaration.declarationGoods.goods
+      } else {
+        declaration.amendments.maxBy(_.dateOfAmendment).goods.goods
+      }
   }
 }

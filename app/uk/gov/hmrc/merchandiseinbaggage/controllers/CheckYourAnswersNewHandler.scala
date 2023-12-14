@@ -97,10 +97,10 @@ class CheckYourAnswersNewHandler @Inject() (
       _                   <- mibConnector.persistDeclaration(
                                declaration.copy(maybeTotalCalculationResult = Some(calculationResponse.results.totalCalculationResult))
                              )
-      redirect            <- redirectToPaymentsIfNecessary(calculationResponse.results, declaration, pid)
+      redirect            <- redirectToPaymentsIfNecessary(calculationResponse.results, declaration)
     } yield redirect
 
-  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration, pid: String)(implicit
+  def redirectToPaymentsIfNecessary(calculations: CalculationResults, declaration: Declaration)(implicit
     rh: RequestHeader,
     hc: HeaderCarrier
   ): Future[Result] =

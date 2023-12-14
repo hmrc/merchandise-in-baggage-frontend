@@ -28,9 +28,13 @@ object PurchaseDetailsForm extends Mappings {
   private val isAValidPurchasePrice: Constraint[String] = Constraint { value =>
     Try(BigDecimal(value)) match {
       case Success(bigDecimal) =>
-        if (bigDecimal <= 0) Invalid("error.must.be.positive")
-        else if (bigDecimal.scale > 3) Invalid("error.max.3.decimals")
-        else Valid
+        if (bigDecimal <= 0) {
+          Invalid("error.must.be.positive")
+        } else if (bigDecimal.scale > 3) {
+          Invalid("error.max.3.decimals")
+        } else {
+          Valid
+        }
       case _                   =>
         Invalid("purchaseDetails.price.error.invalid")
     }

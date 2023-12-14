@@ -68,7 +68,7 @@ object DeclarationJourneyLogger {
   private def makeRichMessage(message: String)(implicit request: RequestHeader): String = request match {
     case declarationJourneyRequest: DeclarationJourneyRequest[_] =>
       s"$message ${obfuscatedDeclarationJourney(declarationJourneyRequest)} $context"
-    case r                                                       =>
+    case _                                                       =>
       s"$message declarationJourney: [] $context"
   }
 }

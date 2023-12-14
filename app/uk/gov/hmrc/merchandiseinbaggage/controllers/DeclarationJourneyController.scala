@@ -35,9 +35,11 @@ trait DeclarationJourneyController extends FrontendBaseController {
   )(implicit request: DeclarationJourneyRequest[_]): Call =
     if (
       request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete
-    )
+    ) {
       routes.CheckYourAnswersController.onPageLoad
-    else backIfIncomplete
+    } else {
+      backIfIncomplete
+    }
 }
 
 object DeclarationJourneyController {
@@ -56,9 +58,11 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
     ec: ExecutionContext
   ): Future[Result] =
     repo.upsert(updatedDeclarationJourney).map { _ =>
-      if (updatedDeclarationJourney.declarationRequiredAndComplete)
+      if (updatedDeclarationJourney.declarationRequiredAndComplete) {
         Redirect(routes.CheckYourAnswersController.onPageLoad)
-      else Redirect(redirectIfNotComplete)
+      } else {
+        Redirect(redirectIfNotComplete)
+      }
     }
 }
 

@@ -27,9 +27,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyDetailsEntry
 import uk.gov.hmrc.merchandiseinbaggage.service.PortService
 
 object JourneyDetailsForm extends Mappings {
-  val port         = "port"
-  val dateOfTravel = "dateOfTravel"
-  val daysToAdd    = 5
+  val port              = "port"
+  val dateOfTravel      = "dateOfTravel"
+  private val daysToAdd = 5
 
   private val dateErrorKey = "journeyDetails.dateOfTravel.error"
   private val portErrorKey = "journeyDetails.port.error"

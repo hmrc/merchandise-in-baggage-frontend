@@ -62,9 +62,11 @@ class StrideAuthAction @Inject() (
 
     authorised(AuthProviders(PrivilegedApplication))
       .retrieve(credentials and allEnrolments) { case creds ~ enrolments =>
-        if (hasRequiredRoles(enrolments))
+        if (hasRequiredRoles(enrolments)) {
           block(AuthRequest(request, creds))
-        else Future successful Unauthorized("Insufficient Roles")
+        } else {
+          Future successful Unauthorized("Insufficient Roles")
+        }
       }
       .recover {
         case e: NoActiveSession        =>

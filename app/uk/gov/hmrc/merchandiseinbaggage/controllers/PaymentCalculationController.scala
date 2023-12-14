@@ -45,9 +45,11 @@ class PaymentCalculationController @Inject() (
     ReviewGoodsController.onPageLoad
 
   private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
-    if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend)
+    if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend) {
       CheckYourAnswersController.onPageLoad
-    else default
+    } else {
+      default
+    }
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
