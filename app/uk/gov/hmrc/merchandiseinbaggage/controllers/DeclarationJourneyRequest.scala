@@ -25,5 +25,4 @@ final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJour
     extends WrappedRequest[A](request) {
 
   def declarationType: DeclarationType = declarationJourney.declarationType
-  def pid: String                      = request.credentials.map(_.providerId).getOrElse("PID not found")
 }

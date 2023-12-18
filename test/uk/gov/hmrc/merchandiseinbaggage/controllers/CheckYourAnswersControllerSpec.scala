@@ -182,12 +182,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
         journeyType match {
           case New   =>
-            when(mockHandler.onSubmit(any[Declaration], any[String])(any[RequestHeader], any[HeaderCarrier]))
+            when(mockHandler.onSubmitTps(any[Declaration])(any[RequestHeader], any[HeaderCarrier]))
               .thenReturn(Future.successful(Redirect("")))
           case Amend =>
             when(
               mockAmendHandler
-                .onSubmit(any[DeclarationId], any[String], any[Amendment])(any[HeaderCarrier], any[Request[_]])
+                .onSubmitTps(any[DeclarationId], any[Amendment])(any[HeaderCarrier], any[Request[_]])
             )
               .thenReturn(Future.successful(Redirect("")))
         }

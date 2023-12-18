@@ -140,7 +140,7 @@ class CheckYourAnswersAmendHandlerSpec
         }
 
         val amendment: Amendment   = completedAmendment(Import)
-        val result: Future[Result] = handler.onSubmit(journey.toDeclaration.declarationId, "123", amendment)
+        val result: Future[Result] = handler.onSubmitTps(journey.toDeclaration.declarationId, amendment)
 
         status(result) mustBe SEE_OTHER
 

@@ -65,15 +65,15 @@ class CheckYourAnswersNewHandler @Inject() (
         persistAndRedirectToPayments(declaration)
     }
 
-  private def persistAndRedirect(declaration: Declaration)(implicit hc: HeaderCarrier) =
+  private def persistAndRedirect(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
     mibConnector.persistDeclaration(declaration).map(_ => Redirect(routes.DeclarationConfirmationController.onPageLoad))
 
-  def onSubmit(declaration: Declaration, pid: String)(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
+  def onSubmitTps(declaration: Declaration)(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
     declaration.declarationType match {
       case Export =>
         persistAndRedirect(declaration)
       case Import =>
-        persistAndRedirectToPayments(declaration, pid)
+        persistAndRedirectToPaymentsTps(declaration)
     }
 
   private def persistAndRedirectToPayments(declaration: Declaration)(implicit hc: HeaderCarrier): Future[Result] =
@@ -87,7 +87,7 @@ class CheckYourAnswersNewHandler @Inject() (
         paymentService.sendPaymentRequest(declarationWithCalculationResponse, None, calculationResponse.results)
     } yield Redirect(redirectUrl)
 
-  private def persistAndRedirectToPayments(declaration: Declaration, pid: String)(implicit
+  private def persistAndRedirectToPaymentsTps(declaration: Declaration)(implicit
     rh: RequestHeader,
     hc: HeaderCarrier
   ): Future[Result] =

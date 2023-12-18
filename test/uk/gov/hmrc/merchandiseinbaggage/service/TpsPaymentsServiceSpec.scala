@@ -26,8 +26,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData with ScalaFutures {
 
-  val paymentService   = app.injector.instanceOf[TpsPaymentsService]
-  private val amendRef = 123
+  val paymentService = app.injector.instanceOf[TpsPaymentsService]
 
   "makes the payment to TPS" in {
     val tpsId = PayApiResponse(JourneyId("123"), URL("url"))
@@ -43,16 +42,16 @@ class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData w
   }
 
   "build a TpsPaymentsRequest from a declaration" in {
+    val amendRef = 123
     val actual   =
       paymentService.buildTpsRequest(Some(amendRef), completedDeclarationJourney.toDeclaration, aCalculationResults)
-    val payments = actual.payments.head
 
     actual mustBe a[TpsPaymentsRequest]
-    payments.amendmentReference mustBe Some(amendRef)
-    payments.mibReference mustBe "xx"
-    payments.customerName mustBe "Terry Test"
-    payments.amount mustBe aCalculationResults.totalTaxDue.inPounds
-    payments.totalVatDue mustBe aCalculationResults.totalVatDue.inPounds
-    payments.totalDutyDue mustBe aCalculationResults.totalDutyDue.inPounds
+    actual.amendmentReference mustBe Some(amendRef)
+    actual.mibReference mustBe "xx"
+    actual.customerName mustBe "Terry Test"
+    actual.amount mustBe aCalculationResults.totalTaxDue.inPounds
+    actual.totalVatDue mustBe aCalculationResults.totalVatDue.inPounds
+    actual.totalDutyDue mustBe aCalculationResults.totalDutyDue.inPounds
   }
 }

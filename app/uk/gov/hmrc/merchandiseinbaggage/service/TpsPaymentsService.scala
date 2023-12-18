@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.TpsPaymentsBackendConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.{TpsPaymentsItem, TpsPaymentsRequest}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsPaymentsRequest
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,18 +54,14 @@ class TpsPaymentsService @Inject() (
     paymentDue: CalculationResults
   ) =
     TpsPaymentsRequest(
-      payments = Seq(
-        TpsPaymentsItem(
-          mibReference = declaration.mibReference.value,
-          customerName = declaration.nameOfPersonCarryingTheGoods.toString,
-          amount = paymentDue.totalTaxDue.inPounds,
-          amendmentReference = amendmentRef,
-          totalVatDue = paymentDue.totalVatDue.inPounds,
-          totalDutyDue = paymentDue.totalDutyDue.inPounds,
-          backUrl = appConfig.tpsNavigation.back,
-          resetUrl = appConfig.tpsNavigation.reset,
-          finishUrl = appConfig.tpsNavigation.finish
-        )
-      )
+      mibReference = declaration.mibReference.value,
+      customerName = declaration.nameOfPersonCarryingTheGoods.toString,
+      amount = paymentDue.totalTaxDue.inPounds,
+      amendmentReference = amendmentRef,
+      totalVatDue = paymentDue.totalVatDue.inPounds,
+      totalDutyDue = paymentDue.totalDutyDue.inPounds,
+      backUrl = appConfig.tpsNavigation.back,
+      resetUrl = appConfig.tpsNavigation.reset,
+      finishUrl = appConfig.tpsNavigation.finish
     )
 }
