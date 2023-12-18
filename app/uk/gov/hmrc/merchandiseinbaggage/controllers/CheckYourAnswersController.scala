@@ -78,7 +78,8 @@ class CheckYourAnswersController @Inject() (
             } else {
               amendHandler.onSubmit(
                 declarationId = request.declarationJourney.declarationId,
-                newAmendment = amendment.copy(lang = messages.lang.code))
+                newAmendment = amendment.copy(lang = messages.lang.code)
+              )
             }
           }
     }

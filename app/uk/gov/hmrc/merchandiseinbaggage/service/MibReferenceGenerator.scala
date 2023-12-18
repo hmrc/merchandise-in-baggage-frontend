@@ -22,7 +22,7 @@ import scala.util.Random
 
 trait MibReferenceGenerator {
 
-  protected val referenceFormat             = """^X([A-Z])MB(\d{10})$"""
+  protected val referenceFormat = """^X([A-Z])MB(\d{10})$"""
 
   def mibReference: MibReference = {
     val digits: List[Int] = (0 to 9).toList
