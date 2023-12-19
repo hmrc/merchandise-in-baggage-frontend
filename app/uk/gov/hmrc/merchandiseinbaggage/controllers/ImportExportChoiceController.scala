@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
@@ -39,11 +39,11 @@ class ImportExportChoiceController @Inject() (
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  val onPageLoad = actionProvider.initJourneyAction { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.initJourneyAction { implicit request =>
     Ok(view(form))
   }
 
-  val onSubmit = actionProvider.initJourneyAction.async { implicit request =>
+  val onSubmit: Action[AnyContent] = actionProvider.initJourneyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(

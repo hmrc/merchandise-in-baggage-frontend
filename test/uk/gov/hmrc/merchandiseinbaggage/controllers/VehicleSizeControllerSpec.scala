@@ -27,7 +27,7 @@ class VehicleSizeControllerSpec extends DeclarationJourneyControllerSpec {
   private val view      = injector.instanceOf[VehicleSizeView]
   private val navigator = injector.instanceOf[Navigator]
 
-  def controller(declarationJourney: DeclarationJourney) =
+  def controller(declarationJourney: DeclarationJourney): VehicleSizeController =
     new VehicleSizeController(
       controllerComponents,
       stubProvider(declarationJourney),

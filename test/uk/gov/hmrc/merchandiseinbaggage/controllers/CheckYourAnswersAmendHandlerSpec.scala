@@ -28,8 +28,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, WithinThreshold}
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
+import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
@@ -131,24 +131,23 @@ class CheckYourAnswersAmendHandlerSpec
             .thenReturn(Future.successful(aCalculationResponse))
           when(
             mockTpsPaymentsService.createTpsPayments(
-              eqTo("123"),
               eqTo(Some(1)),
               any[Declaration],
               any[CalculationResults]
             )(any[HeaderCarrier])
           )
-            .thenReturn(Future.successful(TpsId("someid")))
+            .thenReturn(Future.successful(PayApiResponse(JourneyId("someid"), URL("url"))))
         }
 
         val amendment: Amendment   = completedAmendment(Import)
-        val result: Future[Result] = handler.onSubmit(journey.toDeclaration.declarationId, "123", amendment)
+        val result: Future[Result] = handler.onSubmitTps(journey.toDeclaration.declarationId, amendment)
 
         status(result) mustBe SEE_OTHER
 
         if (importOrExport == Export) {
           redirectLocation(result) mustBe Some("/declare-commercial-goods/declaration-confirmation")
         } else {
-          redirectLocation(result) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
+          redirectLocation(result) mustBe Some("url")
         }
       }
     }

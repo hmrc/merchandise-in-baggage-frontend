@@ -112,7 +112,7 @@ class CheckYourAnswersAmendHandler @Inject() (
         } yield Redirect(redirectUrl)
     }
 
-  def onSubmit(declarationId: DeclarationId, pid: String, newAmendment: Amendment)(implicit
+  def onSubmitTps(declarationId: DeclarationId, newAmendment: Amendment)(implicit
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Result] =
@@ -123,12 +123,12 @@ class CheckYourAnswersAmendHandler @Inject() (
             case Export =>
               persistAndRedirect(newAmendment, originalDeclaration)
             case Import =>
-              persistAndRedirectToPayments(newAmendment, pid, originalDeclaration)
+              persistAndRedirectToPaymentsTps(newAmendment, originalDeclaration)
           }
       }
     }
 
-  private def persistAndRedirectToPayments(amendment: Amendment, pid: String, originalDeclaration: Declaration)(implicit
+  private def persistAndRedirectToPaymentsTps(amendment: Amendment, originalDeclaration: Declaration)(implicit
     request: Request[_],
     hc: HeaderCarrier
   ): Future[Result] =
@@ -146,24 +146,23 @@ class CheckYourAnswersAmendHandler @Inject() (
 
         for {
           _        <- mibService.amendDeclaration(updatedDeclaration)
-          redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, pid, amendmentRef)
+          redirect <- redirectToPaymentsIfNecessary(calculationResponse.results, updatedDeclaration, amendmentRef)
         } yield redirect
     }
 
   def redirectToPaymentsIfNecessary(
     calculations: CalculationResults,
     declaration: Declaration,
-    pid: String,
     amendmentRef: Int
   )(implicit rh: RequestHeader, hc: HeaderCarrier): Future[Result] =
     if (calculations.totalTaxDue.value == 0L) {
       Future.successful(Redirect(routes.DeclarationConfirmationController.onPageLoad))
     } else {
       tpsPaymentsService
-        .createTpsPayments(pid, Some(amendmentRef), declaration, calculations)
-        .map(tpsId =>
-          Redirect(s"${appConfig.tpsFrontendBaseUrl}/tps-payments/make-payment/mib/${tpsId.value}")
-            .addingToSession("TPS_ID" -> tpsId.value)
+        .createTpsPayments(Some(amendmentRef), declaration, calculations)
+        .map(tpsResponse =>
+          Redirect(tpsResponse.nextUrl.value)
+            .addingToSession("TPS_ID" -> tpsResponse.journeyId.value)
         )
     }
 }

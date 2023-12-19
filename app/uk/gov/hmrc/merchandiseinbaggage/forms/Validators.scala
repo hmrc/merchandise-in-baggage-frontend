@@ -25,12 +25,18 @@ trait Validators extends Mappings {
   private val eoriRegex: String = "^GB[0-9]{12}$"
 
   def isValidEori(errorKey: String = "eoriNumber.error.invalid"): Constraint[String] = Constraint { value: String =>
-    if (value matches eoriRegex) Valid
-    else Invalid(errorKey)
+    if (value matches eoriRegex) {
+      Valid
+    } else {
+      Invalid(errorKey)
+    }
   }
 
   val isValidMibRef: Constraint[String] = Constraint { value: String =>
-    if (value matches mibRegex) Valid
-    else Invalid("retrieveDeclaration.mibReference.error.invalid")
+    if (value matches mibRegex) {
+      Valid
+    } else {
+      Invalid("retrieveDeclaration.mibReference.error.invalid")
+    }
   }
 }

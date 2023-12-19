@@ -31,7 +31,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
 import uk.gov.hmrc.merchandiseinbaggage.views.html._
@@ -159,7 +158,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
         redirectLocation(eventualResult) mustBe Some(routes.CannotAccessPageController.onPageLoad.url)
       }
 
-      s"will invoke assisted digital on submit with $TpsId if flag is set for $journeyType" in new DeclarationJourneyControllerSpec {
+      s"will invoke assisted digital on submit with $PayApiResponse if flag is set for $journeyType" in new DeclarationJourneyControllerSpec {
         val sessionId                                      = SessionId()
         val journey: DeclarationJourney                    =
           completedDeclarationJourney.copy(sessionId = sessionId, journeyType = journeyType)
@@ -183,12 +182,12 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
         journeyType match {
           case New   =>
-            when(mockHandler.onSubmit(any[Declaration], any[String])(any[RequestHeader], any[HeaderCarrier]))
+            when(mockHandler.onSubmitTps(any[Declaration])(any[RequestHeader], any[HeaderCarrier]))
               .thenReturn(Future.successful(Redirect("")))
           case Amend =>
             when(
               mockAmendHandler
-                .onSubmit(any[DeclarationId], any[String], any[Amendment])(any[HeaderCarrier], any[Request[_]])
+                .onSubmitTps(any[DeclarationId], any[Amendment])(any[HeaderCarrier], any[Request[_]])
             )
               .thenReturn(Future.successful(Redirect("")))
         }

@@ -56,13 +56,15 @@ class DeclarationConfirmationController @Inject() (
   private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(implicit
     request: DeclarationJourneyRequest[AnyContent]
   ): Future[Result] =
-    if (isAssistedDigital)
+    if (isAssistedDigital) {
       for {
         _   <- clearAnswers()
         res <-
           connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
       } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue))
-    else clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, AmountInPence(0))))
+    } else {
+      clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, AmountInPence(0))))
+    }
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._

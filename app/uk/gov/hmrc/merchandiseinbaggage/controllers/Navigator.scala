@@ -252,8 +252,11 @@ object NavigatorMapping {
     upsert: DeclarationJourney => Future[DeclarationJourney]
   )(implicit ec: ExecutionContext): Future[Call] =
     upsert(updatedDeclarationJourney).map { _ =>
-      if (declarationRequiredAndComplete) CheckYourAnswersController.onPageLoad
-      else redirectIfNotComplete
+      if (declarationRequiredAndComplete) {
+        CheckYourAnswersController.onPageLoad
+      } else {
+        redirectIfNotComplete
+      }
     }
 
   def goodsType(
@@ -338,14 +341,18 @@ object NavigatorMapping {
     }
 
   private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Call] =
-    if (declarationJourney.goodsEntries.entries.size == 1)
+    if (declarationJourney.goodsEntries.entries.size == 1) {
       Future successful GoodsRemovedController.onPageLoad
-    else backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+    } else {
+      backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
+    }
 
   private def backToCheckYourAnswersIfJourneyCompleted(declarationJourney: DeclarationJourney): Future[Call] =
-    if (declarationJourney.declarationRequiredAndComplete)
+    if (declarationJourney.declarationRequiredAndComplete) {
       Future successful CheckYourAnswersController.onPageLoad
-    else Future successful ReviewGoodsController.onPageLoad
+    } else {
+      Future successful ReviewGoodsController.onPageLoad
+    }
 
   def retrieveDeclaration(
     maybeDeclaration: Option[Declaration],

@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments
 
 import play.api.libs.json.{Json, OFormat}
 
-case class TpsNavigation(back: String, reset: String, finish: String, callback: String)
+case class TpsNavigation(back: String, reset: String, finish: String)
 
 object TpsNavigation {
   implicit val format: OFormat[TpsNavigation] = Json.format[TpsNavigation]

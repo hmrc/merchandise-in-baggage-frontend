@@ -38,26 +38,35 @@ case class GoodsEntries(entries: Seq[GoodsEntry]) {
   val declarationGoodsIfComplete: Option[DeclarationGoods] = {
     val goods: Seq[Goods] = entries.flatMap(_.goodsIfComplete)
 
-    if (goods.nonEmpty) Some(DeclarationGoods(goods))
-    else None
+    if (goods.nonEmpty) {
+      Some(DeclarationGoods(goods))
+    } else {
+      None
+    }
   }
 
   def addEmptyIfNecessary(): GoodsEntries =
-    if (entries.lastOption.fold(true)(_.isComplete)) entries.head match {
-      case _: ImportGoodsEntry => GoodsEntries(entries :+ ImportGoodsEntry())
-      case _: ExportGoodsEntry => GoodsEntries(entries :+ ExportGoodsEntry())
+    if (entries.lastOption.fold(true)(_.isComplete)) {
+      entries.head match {
+        case _: ImportGoodsEntry => GoodsEntries(entries :+ ImportGoodsEntry())
+        case _: ExportGoodsEntry => GoodsEntries(entries :+ ExportGoodsEntry())
+      }
+    } else {
+      this
     }
-    else this
 
   def patch(idx: Int, goodsEntry: GoodsEntry): GoodsEntries =
     GoodsEntries(entries.updated(idx - 1, goodsEntry))
 
   def remove(idx: Int): GoodsEntries =
-    if (entries.size == 1) entries.head match {
-      case _: ImportGoodsEntry => GoodsEntries(ImportGoodsEntry())
-      case _: ExportGoodsEntry => GoodsEntries(ExportGoodsEntry())
+    if (entries.size == 1) {
+      entries.head match {
+        case _: ImportGoodsEntry => GoodsEntries(ImportGoodsEntry())
+        case _: ExportGoodsEntry => GoodsEntries(ExportGoodsEntry())
+      }
+    } else {
+      GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
     }
-    else GoodsEntries(entries.zipWithIndex.filter(_._2 != idx - 1).map(_._1))
 }
 
 object GoodsEntries {

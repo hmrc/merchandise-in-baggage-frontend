@@ -36,7 +36,7 @@ class KeepAliveController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendBaseController {
 
-  val onKeepAlive = actionProvider.journeyAction.async { implicit request =>
+  val onKeepAlive: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     repo.upsert(request.declarationJourney).map { _ =>
       NoContent
     }

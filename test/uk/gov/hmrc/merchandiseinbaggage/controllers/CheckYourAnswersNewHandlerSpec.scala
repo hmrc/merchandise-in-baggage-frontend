@@ -30,7 +30,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsId
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -50,14 +49,14 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, "") {
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, baseUrl = "") {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val testMibConnector: MibConnector = new MibConnector(httpClient, "") {
+  private lazy val testMibConnector: MibConnector = new MibConnector(httpClient, base = "") {
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
       Future.successful(DeclarationId("abc"))
   }
@@ -149,13 +148,17 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       givenADeclarationJourneyIsPersistedWithStub(importJourney)
 
       when(
-        mockTpsPaymentsService.createTpsPayments(eqTo("123"), eqTo(None), any[Declaration], any[CalculationResults])(
+        mockTpsPaymentsService.createTpsPayments(eqTo(None), any[Declaration], any[CalculationResults])(
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(TpsId("someid")))
+        .thenReturn(
+          Future.successful(
+            PayApiResponse(JourneyId("someid"), URL("http://localhost:9124/tps-payments/make-payment/mib/someid"))
+          )
+        )
 
-      val result: Future[Result] = newHandler().onSubmit(importJourney.toDeclaration, "123")
+      val result: Future[Result] = newHandler().onSubmitTps(importJourney.toDeclaration)
 
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some("http://localhost:9124/tps-payments/make-payment/mib/someid")
