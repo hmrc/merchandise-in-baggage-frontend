@@ -29,16 +29,16 @@ class TpsPaymentsServiceSpec extends BaseSpecWithApplication with CoreTestData w
   val paymentService = app.injector.instanceOf[TpsPaymentsService]
 
   "makes the payment to TPS" in {
-    val tpsId = PayApiResponse(JourneyId("123"), URL("url"))
+    val payApiResponse = PayApiResponse(JourneyId("123"), URL("url"))
 
-    givenTaxArePaid(tpsId)
+    givenTaxArePaid(payApiResponse)
 
     val actual =
       paymentService
         .createTpsPayments(None, completedDeclarationJourney.toDeclaration, aCalculationResults)
         .futureValue
 
-    actual mustBe tpsId
+    actual mustBe payApiResponse
   }
 
   "build a TpsPaymentsRequest from a declaration" in {
