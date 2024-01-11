@@ -214,7 +214,9 @@ trait CoreTestData {
   val aCalculationResults: CalculationResults        = CalculationResults(Seq(aCalculationResult))
   val aCalculationResponse: CalculationResponse      =
     CalculationResponse(CalculationResults(Seq(aCalculationResult)), WithinThreshold)
-  val aThresholdAllowance                            = ThresholdAllowance(aDeclarationGood, aDeclarationGood, aCalculationResponse, GreatBritain)
+  val aThresholdAllowance: ThresholdAllowance        =
+    ThresholdAllowance(aDeclarationGood, aDeclarationGood, aCalculationResponse, GreatBritain)
+  val thresholdValueInUI: String                     = "£2,500"
 
   val aCalculationResultsWithNoTax: CalculationResults = CalculationResults(Seq(aCalculationResultWithNoTax))
 

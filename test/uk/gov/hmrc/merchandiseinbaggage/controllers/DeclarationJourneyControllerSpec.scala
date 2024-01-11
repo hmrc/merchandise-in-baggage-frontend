@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import akka.stream.Materializer
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._
 import play.api.test.FakeRequest
@@ -31,7 +31,8 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   lazy val controllerComponents: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
   lazy val actionBuilder: DeclarationJourneyActionProvider    = injector.instanceOf[DeclarationJourneyActionProvider]
   implicit lazy val materializer: Materializer                = injector.instanceOf[Materializer]
-  lazy val messageApi: Map[String, String]                    = injector.instanceOf[MessagesApi].messages("en")
+  lazy val messageApi: MessagesApi                            = injector.instanceOf[MessagesApi]
+  implicit lazy val lang: Lang                                = Lang("en")
 
   def buildGet(url: String, sessionId: SessionId): FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(GET, url)

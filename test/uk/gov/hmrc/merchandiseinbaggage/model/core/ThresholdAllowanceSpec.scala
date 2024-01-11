@@ -27,8 +27,8 @@ class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
       aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7179)
     val allowanceTwo =
       aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7180)
-    allowance.allowanceLeft mustBe 1428.21
-    allowanceTwo.allowanceLeft mustBe 1428.20
+    allowance.allowanceLeft mustBe 2428.21
+    allowanceTwo.allowanceLeft mustBe 2428.20
   }
 
   "return threshold allowance left for export" in {
@@ -38,13 +38,13 @@ class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
       .modify(_.allGoods.goods)
       .setTo(Seq(goodOne, goodTwo))
 
-    allowance.allowanceLeft mustBe 1358.25
+    allowance.allowanceLeft mustBe 2358.25
   }
 
   "format correctly" in {
     formatter.format(1428.20) mustBe "1,428.20"
     formatter.format(100000428.200) mustBe "100,000,428.20"
 
-    aThresholdAllowance.toUIString mustBe "£1,499.90"
+    aThresholdAllowance.toUIString mustBe "£2,499.90"
   }
 }

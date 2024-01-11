@@ -342,16 +342,16 @@ object NavigatorMapping {
 
   private def redirectIfGoodRemoved(declarationJourney: DeclarationJourney): Future[Call] =
     if (declarationJourney.goodsEntries.entries.size == 1) {
-      Future successful GoodsRemovedController.onPageLoad
+      Future.successful(GoodsRemovedController.onPageLoad)
     } else {
       backToCheckYourAnswersIfJourneyCompleted(declarationJourney)
     }
 
   private def backToCheckYourAnswersIfJourneyCompleted(declarationJourney: DeclarationJourney): Future[Call] =
     if (declarationJourney.declarationRequiredAndComplete) {
-      Future successful CheckYourAnswersController.onPageLoad
+      Future.successful(CheckYourAnswersController.onPageLoad)
     } else {
-      Future successful ReviewGoodsController.onPageLoad
+      Future.successful(ReviewGoodsController.onPageLoad)
     }
 
   def retrieveDeclaration(

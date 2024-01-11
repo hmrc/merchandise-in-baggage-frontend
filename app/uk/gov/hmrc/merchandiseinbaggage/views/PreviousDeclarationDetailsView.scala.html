@@ -97,11 +97,11 @@
 
     @h2("previousDeclarationDetails.add", Some("govuk-heading-m"), Some("add_h2"))
 
-    <div class="govuk-inset-text">@messages("previousDeclarationDetails.allowance.p1")<span class="govuk-!-font-weight-bold"> @allowance.toUIString </span>@messages("previousDeclarationDetails.allowance.p2")</div>
+    <div class="govuk-inset-text">@messages("previousDeclarationDetails.allowance.p1")<span class="govuk-!-font-weight-bold"> @allowance.toUIString </span>@messages("previousDeclarationDetails.allowance.p2", allowance.destination.threshold.formattedInPounds)</div>
 
 
     @if(journeyDateWithInAllowedRange(declaration)) {
-        @p(Html(messages("previousDeclarationDetails.add_goods")))
+        @p(Html(messages("previousDeclarationDetails.add_goods", allowance.destination.threshold.formattedInPounds)))
         @formHelper(action = PreviousDeclarationDetailsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
             @button("previousDeclarationDetails.add.button.text", name = Some("continue"))
         }

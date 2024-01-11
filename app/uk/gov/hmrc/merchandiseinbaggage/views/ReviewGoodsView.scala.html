@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes._
+@import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.GoodsSummaryList
 
 @this(
@@ -48,7 +49,7 @@ button: components.button
     @allowance.calculationResponse.thresholdCheck match {
         case WithinThreshold => {
             @h2(messages("reviewGoods.h2"), classes = Some("govuk-heading-m"))
-            <div class="govuk-inset-text">@messages("reviewGoods.allowance.declared")<span class="govuk-!-font-weight-bold"> @allowance.toUIString </span>@messages("reviewGoods.allowance.left")</div>
+            <div class="govuk-inset-text">@messages("reviewGoods.allowance.declared")<span class="govuk-!-font-weight-bold"> @allowance.toUIString </span>@messages("reviewGoods.allowance.left", allowance.destination.threshold.formattedInPounds)</div>
 
             @inputYesNo(
                 form = form,
@@ -58,7 +59,7 @@ button: components.button
             )
     }
         case OverThreshold   => {
-            <div class="govuk-inset-text">@messages("reviewGoods.allowance.over")</div>
+            <div class="govuk-inset-text">@messages("reviewGoods.allowance.over", allowance.destination.threshold.formattedInPounds)</div>
         }
     }
 

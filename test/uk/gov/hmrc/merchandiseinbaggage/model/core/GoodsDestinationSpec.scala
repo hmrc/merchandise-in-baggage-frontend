@@ -56,7 +56,7 @@ class GoodsDestinationSpec extends BaseSpec with ScalaCheckPropertyChecks with O
     }
 
     "remove decimals for UI rendering" in {
-      GreatBritain.threshold.formattedInPounds mustBe "£1,500"
+      GreatBritain.threshold.formattedInPounds mustBe "£2,500"
     }
   }
 
