@@ -73,7 +73,7 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
           result must include(messages("purchaseDetails.p.1"))
           result must include(messages("purchaseDetails.p.2"))
           result must include(messages("purchaseDetails.p.a.text"))
-          result must include("http://something")
+          result must include("https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat")
         }
       }
     }
