@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
 
 class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData {
 
@@ -29,7 +29,6 @@ class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTest
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
         givenAJourneyWithSession(declarationType = importOrExport)
-        givenExchangeRateURL("https://something")
 
         givenAPaymentCalculation(aCalculationResult)
 
@@ -61,7 +60,9 @@ class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTest
           findByXPath("""//*[@id="main-content"]/div/div/p[8]""").getText   must startWith(
             messages(s"goodsOverThreshold.p8.1")
           )
-          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getAttribute("href") mustBe "https://something"
+          findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getAttribute(
+            "href"
+          ) mustBe "https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat"
           findByXPath("""//*[@id="main-content"]/div/div/p[8]/a""").getText must startWith(
             messages("goodsOverThreshold.p8.a.text")
           )

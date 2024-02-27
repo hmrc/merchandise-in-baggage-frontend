@@ -19,13 +19,11 @@ package uk.gov.hmrc.merchandiseinbaggage.content
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PurchaseDetailsPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 
 class PurchaseDetailsContentSpec extends PurchaseDetailsPage with CoreTestData with PropertyBaseTables {
 
   forAll(declarationTypesTable) { importOrExport =>
     s"render contents for $importOrExport" in {
-      givenExchangeRateURL("http://something")
 
       givenAJourneyWithSession(declarationType = importOrExport)
       goToPurchaseDetailsPage(1)

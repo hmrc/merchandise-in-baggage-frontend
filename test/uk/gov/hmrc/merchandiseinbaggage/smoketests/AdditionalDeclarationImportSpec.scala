@@ -27,7 +27,6 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
 
   "Additional Declaration Import journey - happy path" should {
     "work as expected" in {
-      givenExchangeRateURL("http://something")
 
       goto(StartImportPage.path)
 

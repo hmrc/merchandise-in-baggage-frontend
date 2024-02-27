@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenExchangeRateURL}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -50,7 +50,6 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        givenExchangeRateURL("https://something")
         givenAPaymentCalculation(aCalculationResult)
 
         val request        = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
@@ -64,7 +63,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
         result must include(messageApi("goodsOverThreshold.p2"))
         result must include(messageApi(s"goodsOverThreshold.p2.$importOrExport.a.text"))
         if (importOrExport == Import) {
-          result must include("https://something")
+          result must include("https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat")
         }
       }
     }

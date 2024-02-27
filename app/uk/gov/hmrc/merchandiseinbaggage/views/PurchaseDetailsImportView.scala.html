@@ -33,7 +33,7 @@ inputSelect: components.inputSelect,
 button: components.button
 )
 
-@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, exchangeUrl:String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>

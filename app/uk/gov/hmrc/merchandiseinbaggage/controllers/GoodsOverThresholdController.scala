@@ -41,29 +41,26 @@ class GoodsOverThresholdController @Inject() (
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     request.declarationJourney.goodsEntries.declarationGoodsIfComplete
       .fold(actionProvider.invalidRequestF(goodsDeclarationIncompleteMessage)) { goods =>
-        mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
-          request.declarationJourney.maybeGoodsDestination
-            .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
-              request.declarationType match {
-                case Import =>
-                  mibService.paymentCalculations(goods.goods, destination).map { calculations =>
-                    import calculations.results._
-                    Ok(
-                      view(
-                        destination,
-                        calculations.results.totalGbpValue,
-                        calculationResults.flatMap(_.conversionRatePeriod).distinct,
-                        exchangeUrl.url,
-                        Import
-                      )
+        request.declarationJourney.maybeGoodsDestination
+          .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { destination =>
+            request.declarationType match {
+              case Import =>
+                mibService.paymentCalculations(goods.goods, destination).map { calculations =>
+                  import calculations.results._
+                  Ok(
+                    view(
+                      destination,
+                      calculations.results.totalGbpValue,
+                      calculationResults.flatMap(_.conversionRatePeriod).distinct,
+                      Import
                     )
-                  }
-                case Export =>
-                  val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal
-                  Future successful Ok(view(destination, amount, Seq.empty, exchangeUrl.url, Export))
-              }
+                  )
+                }
+              case Export =>
+                val amount = goods.goods.map(_.purchaseDetails.numericAmount).sum.fromBigDecimal
+                Future successful Ok(view(destination, amount, Seq.empty, Export))
             }
-        }
+          }
       }
   }
 }

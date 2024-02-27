@@ -51,10 +51,7 @@ class PurchaseDetailsController @Inject() (
       request.declarationJourney.declarationType match {
         case Import =>
           val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
-
-          mibConnector.findExchangeRateURL().map { exchangeUrl =>
-            Ok(importView(preparedForm, idx, category, exchangeUrl.url, backButtonUrl(idx)))
-          }
+          Future successful Ok(importView(preparedForm, idx, category, backButtonUrl(idx)))
         case Export =>
           val preparedForm = request.goodsEntry.maybePurchaseDetails.fold(form)(p => form.fill(p.purchaseDetailsInput))
 
@@ -85,9 +82,7 @@ class PurchaseDetailsController @Inject() (
               .bindFromRequest()
               .fold(
                 formWithErrors =>
-                  mibConnector.findExchangeRateURL().map { exchangeUrl =>
-                    BadRequest(importView(formWithErrors, idx, category, exchangeUrl.url, backButtonUrl(idx)))
-                  },
+                  Future successful BadRequest(importView(formWithErrors, idx, category, backButtonUrl(idx))),
                 purchaseDetailsInput => requestWithIndexAndCallBack(purchaseDetailsInput)
               )
 

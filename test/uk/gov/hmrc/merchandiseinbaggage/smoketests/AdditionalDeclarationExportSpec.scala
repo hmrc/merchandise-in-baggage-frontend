@@ -31,7 +31,6 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
   "Additional Declaration Export journey - happy path" should {
     "work as expected" in {
-      givenExchangeRateURL("http://something")
 
       goto(StartExportPage.path)
 

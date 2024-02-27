@@ -29,7 +29,7 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], dest: GoodsDestination, declarationType: DeclarationType, exchangeUrl:String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], dest: GoodsDestination, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"valueWeightOfGoods.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = ValueWeightOfGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
@@ -44,7 +44,7 @@ button: components.button
 
         <p class="govuk-body">
             @messages("valueWeightOfGoods.rate.1")
-            <a class="govuk-link" href=@exchangeUrl target="_blank">
+            <a class="govuk-link" href="https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" target="_blank">
             @messages("valueWeightOfGoods.rate.2")
             </a>
             @messages("valueWeightOfGoods.rate.3")

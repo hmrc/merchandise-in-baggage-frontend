@@ -144,11 +144,4 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
         get(urlPathEqualTo(s"$checkEoriUrl$eoriNumber"))
           .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString))
       )
-
-  def givenExchangeRateURL(url: String)(implicit server: WireMockServer): StubMapping =
-    server
-      .stubFor(
-        get(urlPathEqualTo(s"$exchangeRateUrl"))
-          .willReturn(ok().withBody(Json.toJson(ExchangeRateURL(url)).toString))
-      )
 }
