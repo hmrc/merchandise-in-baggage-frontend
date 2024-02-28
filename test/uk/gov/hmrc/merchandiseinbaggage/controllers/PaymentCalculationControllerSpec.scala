@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, OverThreshold, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PaymentCalculationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -59,7 +58,6 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
   declarationTypes.foreach { importOrExport =>
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
-        givenExchangeRateURL("http://something")
 
         val journey = DeclarationJourney(
           aSessionId,
@@ -96,7 +94,6 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
       }
 
       s"redirect to /goods-over-threshold for $importOrExport if its over threshold" in {
-        givenExchangeRateURL("http://something")
         val journey =
           DeclarationJourney(
             SessionId("123"),

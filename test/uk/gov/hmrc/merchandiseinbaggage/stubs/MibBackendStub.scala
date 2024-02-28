@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -143,12 +143,5 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
       .stubFor(
         get(urlPathEqualTo(s"$checkEoriUrl$eoriNumber"))
           .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString))
-      )
-
-  def givenExchangeRateURL(url: String)(implicit server: WireMockServer): StubMapping =
-    server
-      .stubFor(
-        get(urlPathEqualTo(s"$exchangeRateUrl"))
-          .willReturn(ok().withBody(Json.toJson(ExchangeRateURL(url)).toString))
       )
 }

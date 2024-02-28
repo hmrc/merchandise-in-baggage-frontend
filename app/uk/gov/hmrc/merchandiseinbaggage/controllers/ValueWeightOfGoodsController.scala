@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,53 +42,48 @@ class ValueWeightOfGoodsController @Inject() (
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.ExciseAndRestrictedGoodsController.onPageLoad)
 
-  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    mibConnector.findExchangeRateURL().map { exchangeUrl =>
-      request.declarationJourney.maybeGoodsDestination
-        .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
-          Ok(
-            view(
-              request.declarationJourney.maybeValueWeightOfGoodsBelowThreshold
-                .fold(form(goodsDestination))(form(goodsDestination).fill),
-              goodsDestination,
-              request.declarationType,
-              exchangeUrl.url,
-              backButtonUrl
-            )
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
+    request.declarationJourney.maybeGoodsDestination
+      .fold(actionProvider.invalidRequest(goodsDestinationUnansweredMessage)) { goodsDestination =>
+        Ok(
+          view(
+            request.declarationJourney.maybeValueWeightOfGoodsBelowThreshold
+              .fold(form(goodsDestination))(form(goodsDestination).fill),
+            goodsDestination,
+            request.declarationType,
+            backButtonUrl
           )
-        }
-    }
+        )
+      }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationJourney = request.declarationJourney
 
-    mibConnector.findExchangeRateURL().flatMap { exchangeUrl =>
-      declarationJourney.maybeGoodsDestination
-        .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
-          form(goodsDestination)
-            .bindFromRequest()
-            .fold(
-              formWithErrors =>
-                Future successful BadRequest(
-                  view(formWithErrors, goodsDestination, request.declarationType, exchangeUrl.url, backButtonUrl)
-                ),
-              belowThreshold => {
-                val updated = declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold))
-                navigator
-                  .nextPage(
-                    ValueWeightOfGoodsRequest(
-                      belowThreshold,
-                      declarationJourney.goodsEntries.entries.size,
-                      updated,
-                      repo.upsert,
-                      updated.declarationRequiredAndComplete
-                    )
+    declarationJourney.maybeGoodsDestination
+      .fold(actionProvider.invalidRequestF(goodsDestinationUnansweredMessage)) { goodsDestination =>
+        form(goodsDestination)
+          .bindFromRequest()
+          .fold(
+            formWithErrors =>
+              Future successful BadRequest(
+                view(formWithErrors, goodsDestination, request.declarationType, backButtonUrl)
+              ),
+            belowThreshold => {
+              val updated = declarationJourney.copy(maybeValueWeightOfGoodsBelowThreshold = Some(belowThreshold))
+              navigator
+                .nextPage(
+                  ValueWeightOfGoodsRequest(
+                    belowThreshold,
+                    declarationJourney.goodsEntries.entries.size,
+                    updated,
+                    repo.upsert,
+                    updated.declarationRequiredAndComplete
                   )
-                  .map(Redirect)
-              }
-            )
-        }
-    }
+                )
+                .map(Redirect)
+            }
+          )
+      }
   }
 }

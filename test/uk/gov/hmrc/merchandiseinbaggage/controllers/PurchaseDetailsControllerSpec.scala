@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenExchangeRateURL
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{PurchaseDetailsExportView, PurchaseDetailsImportView}
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -58,7 +57,6 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        givenExchangeRateURL("http://something")
 
         val request        = buildGet(PurchaseDetailsController.onPageLoad(1).url, aSessionId)
         val eventualResult = controller(journey).onPageLoad(1)(request)
@@ -73,14 +71,13 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
           result must include(messages("purchaseDetails.p.1"))
           result must include(messages("purchaseDetails.p.2"))
           result must include(messages("purchaseDetails.p.a.text"))
-          result must include("http://something")
+          result must include("https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat")
         }
       }
     }
 
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
-        givenExchangeRateURL("http://something")
 
         val request = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("price" -> "20", "currency" -> "EUR")
@@ -96,7 +93,6 @@ class PurchaseDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        givenExchangeRateURL("http://something")
 
         val request        = buildPost(SearchGoodsCountryController.onSubmit(1).url, aSessionId)
           .withFormUrlEncodedBody("abcd" -> "in valid")

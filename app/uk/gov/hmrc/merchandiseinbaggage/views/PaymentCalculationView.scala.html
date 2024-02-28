@@ -1,5 +1,5 @@
 @*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ table: GovukTable,
 button: components.button
 )
 
-@(calculationResults: CalculationResults, next: Call, exchangeUrl: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @title = @{
  if(calculationResults.isNothingToPay)
@@ -81,7 +81,7 @@ button: components.button
 
   <p class="govuk-body">
    @messages("paymentCalculation.p3.1")
-   <a href="@exchangeUrl" class="govuk-link" target="_blank">
+   <a href="https://www.gov.uk/government/collections/exchange-rates-for-customs-and-vat" class="govuk-link" target="_blank">
    @messages("paymentCalculation.p3.a.text")
    </a>
    @messages("paymentCalculation.p3.2")

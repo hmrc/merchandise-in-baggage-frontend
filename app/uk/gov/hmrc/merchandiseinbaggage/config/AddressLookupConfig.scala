@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.config
 import javax.inject.Inject
 import play.api.libs.json.{JsObject, Json}
 
-class AddressLookupConfig @Inject() () {
+class AddressLookupConfig @Inject() {
 
   def config(continueUrl: String): JsObject =
     Json
