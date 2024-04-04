@@ -4,14 +4,13 @@ ThisBuild / scalaVersion := "2.13.13"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalaPactPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin, ScalaPactPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(CodeCoverageSettings.settings)
   .settings(
-    // this scala-xml version scheme is to get around some library dependency conflicts
+    // this scala-xml version scheme is to get around some library dependency conflicts, remove once we get rid of scalapact
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     PlayKeys.playDefaultPort := 8281,
-    Test / fork := false,
     libraryDependencies ++= AppDependencies(),
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.merchandiseinbaggage.config.AppConfig",

@@ -28,9 +28,8 @@
 
 @layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export)) {
 
- @helper.form(action = CheckYourAnswersController.onSubmit) {
+ @formHelper(action = CheckYourAnswersController.onSubmit) {
 
-  @helper.CSRF.formField
   @if(form.hasErrors) {
     @errorSummary(form.errors)
   }

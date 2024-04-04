@@ -3,7 +3,7 @@ resolvers += Resolver.url("HMRC-open-artefacts-ivy2", url("https://open.artefact
   Resolver.ivyStylePatterns
 )
 
-// this scala-xml version scheme is to get around some library dependency conflicts
+// this scala-xml version scheme is to get around some library dependency conflicts, remove once we get rid of scalapact
 ThisBuild / libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 
 addSbtPlugin("uk.gov.hmrc"        % "sbt-auto-build"           % "3.21.0")

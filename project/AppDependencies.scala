@@ -1,4 +1,4 @@
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
@@ -19,10 +19,8 @@ object AppDependencies {
 
   val test: Seq[ModuleID] = (Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapVersion,
-    "org.scalatest"     %% "scalatest"               % "3.2.18",
     "org.scalatestplus" %% "scalacheck-1-17"         % "3.2.18.0",
-    "org.mockito"       %% "mockito-scala-scalatest" % "1.17.31",
-    "org.wiremock"       % "wiremock-standalone"     % "3.5.2"
+    "org.mockito"       %% "mockito-scala-scalatest" % "1.17.31"
   ) ++ pact).map(_ % Test)
 
   private lazy val pact   = Seq(

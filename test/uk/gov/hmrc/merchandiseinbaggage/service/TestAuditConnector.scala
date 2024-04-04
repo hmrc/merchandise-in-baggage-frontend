@@ -35,7 +35,7 @@ abstract class TestAuditConnector(appName: String) extends AuditConnector {
   override def auditChannel: AuditChannel = new AuditChannel {
     override def auditingConfig: AuditingConfig = _auditingConfig
 
-    override def materializer: Materializer = Materializer(ActorSystem.create())
+    override def materializer: Materializer = Materializer(ActorSystem())
 
     override def lifecycle: ApplicationLifecycle = new DefaultApplicationLifecycle()
 
