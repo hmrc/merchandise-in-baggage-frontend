@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import akka.actor.ActorSystem
-import akka.stream.Materializer
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.audit.HandlerResult
@@ -35,7 +35,7 @@ abstract class TestAuditConnector(appName: String) extends AuditConnector {
   override def auditChannel: AuditChannel = new AuditChannel {
     override def auditingConfig: AuditingConfig = _auditingConfig
 
-    override def materializer: Materializer = Materializer(ActorSystem())
+    override def materializer: Materializer = Materializer(ActorSystem.create())
 
     override def lifecycle: ApplicationLifecycle = new DefaultApplicationLifecycle()
 

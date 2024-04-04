@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
-import akka.actor.{Actor, ActorLogging, Props}
+import org.apache.pekko.actor.{Actor, ActorLogging, Props}
 import uk.gov.hmrc.merchandiseinbaggage.scheduler.SchedulingActor.ScheduledMessage
 import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
 

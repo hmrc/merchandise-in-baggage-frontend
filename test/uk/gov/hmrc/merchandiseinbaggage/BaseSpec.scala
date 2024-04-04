@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import org.mongodb.scala.model.Filters
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers

@@ -1,29 +1,28 @@
-import sbt.*
+import sbt._
 
 object AppDependencies {
 
   private val pactVersion      = "4.4.0"
-  private val bootstrapVersion = "7.23.0"
+  private val bootstrapVersion = "8.5.0"
 
   val compile: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"                %% "bootstrap-frontend-play-28" % bootstrapVersion,
-    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-28" % "8.5.0",
-    "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-28"         % "1.6.0",
-    "com.github.pureconfig"      %% "pureconfig"                 % "0.17.4",
-    "com.beachape"               %% "enumeratum-play"            % "1.7.0",
+    "uk.gov.hmrc"                %% "bootstrap-frontend-play-30" % bootstrapVersion,
+    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "8.5.0",
+    "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-30"         % "1.8.0",
+    "com.github.pureconfig"      %% "pureconfig"                 % "0.17.6",
+    "com.beachape"               %% "enumeratum-play"            % "1.8.0",
     "org.webjars.npm"             % "accessible-autocomplete"    % "2.0.4",
-    "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.6",
+    "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.7",
     "org.typelevel"              %% "cats-core"                  % "2.10.0",
-    "com.enragedginger"          %% "akka-quartz-scheduler"      % "1.9.3-akka-2.6.x"
+    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.0-pekko-1.0.x"
   )
 
   val test: Seq[ModuleID] = (Seq(
-    "uk.gov.hmrc"         %% "bootstrap-test-play-28"  % bootstrapVersion,
-    "com.vladsch.flexmark" % "flexmark-all"            % "0.64.8",
-    "org.scalatest"       %% "scalatest"               % "3.2.17",
-    "org.scalatestplus"   %% "scalacheck-1-17"         % "3.2.17.0",
-    "org.mockito"         %% "mockito-scala-scalatest" % "1.17.30",
-    "org.wiremock"         % "wiremock-standalone"     % "3.3.1"
+    "uk.gov.hmrc"       %% "bootstrap-test-play-30"  % bootstrapVersion,
+    "org.scalatest"     %% "scalatest"               % "3.2.18",
+    "org.scalatestplus" %% "scalacheck-1-17"         % "3.2.18.0",
+    "org.mockito"       %% "mockito-scala-scalatest" % "1.17.31",
+    "org.wiremock"       % "wiremock-standalone"     % "3.5.2"
   ) ++ pact).map(_ % Test)
 
   private lazy val pact   = Seq(

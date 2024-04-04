@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
-import akka.actor.{ActorRef, ActorSystem}
-import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension
+import org.apache.pekko.actor.{ActorRef, ActorSystem}
+import org.apache.pekko.extension.quartz.QuartzSchedulerExtension
 import org.quartz.CronExpression
 import play.api.{Configuration, Logging}
 import uk.gov.hmrc.merchandiseinbaggage.scheduler.SchedulingActor.ScheduledMessage
