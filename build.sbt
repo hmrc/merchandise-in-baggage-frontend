@@ -1,30 +1,23 @@
 val appName = "merchandise-in-baggage-frontend"
 
+ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / majorVersion := 0
+
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin, ScalaPactPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin, ScalaPactPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
+  .settings(CodeCoverageSettings.settings)
   .settings(
-    majorVersion := 0,
-    scalaVersion := "2.13.12",
+    // this scala-xml version scheme is to get around some library dependency conflicts, remove once we get rid of scalapact
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     PlayKeys.playDefaultPort := 8281,
-    Test / fork := false,
     libraryDependencies ++= AppDependencies(),
-    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
-    libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always),
-    // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
-    dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1",
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.merchandiseinbaggage.config.AppConfig",
       "uk.gov.hmrc.govukfrontend.views.html.components._",
       "uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils._"
     ),
     scalacOptions ++= Seq("-Wconf:src=routes/.*:s", "-Wconf:cat=unused-imports&src=html/.*:s")
-  )
-  .settings(
-    coverageExcludedFiles := "<empty>;Reverse.*;.*BuildInfo.*;.*javascript.*;.*Routes.*;.*testonly.*;",
-    coverageMinimumStmtTotal := 90,
-    coverageFailOnMinimum := true,
-    coverageHighlighting := true
   )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt A11y/scalafmt")

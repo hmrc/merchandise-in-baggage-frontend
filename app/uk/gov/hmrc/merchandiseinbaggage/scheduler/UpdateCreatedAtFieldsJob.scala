@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
-import akka.actor.ActorSystem
+import org.apache.pekko.actor.ActorSystem
 import com.google.inject.Inject
 import play.api.Configuration
 import uk.gov.hmrc.merchandiseinbaggage.scheduler.SchedulingActor.UpdateDocumentsClass

@@ -18,16 +18,18 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.mvc.EssentialAction
+import play.api.mvc.{EssentialAction, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
+import scala.concurrent.Future
+
 class DeclarationJourneyActionProviderSpec extends BaseSpec {
 
   "need to be stride authenticated if internal FE flag is set" in new DeclarationJourneyControllerSpec {
-    override def fakeApplication(): Application =
+    override def fakeApplication(): Application          =
       new GuiceApplicationBuilder()
         .configure(
           Map(
@@ -36,7 +38,7 @@ class DeclarationJourneyActionProviderSpec extends BaseSpec {
           )
         )
         .build()
-    val actionProvider                          = injector.instanceOf[DeclarationJourneyActionProvider]
+    val actionProvider: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 
     givenTheUserIsAuthenticatedAndAuthorised()
 
@@ -44,18 +46,18 @@ class DeclarationJourneyActionProviderSpec extends BaseSpec {
       play.api.mvc.Results.Ok("authenticated")
     }
 
-    val result = call(action, buildGet("/", aSessionId))
+    val result: Future[Result] = call(action, buildGet("/", aSessionId))
     status(result) mustBe SEE_OTHER
   }
 
   "need not to be stride authenticated if internal FE flag is not set" in new DeclarationJourneyControllerSpec {
-    val actionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
+    val actionProvider: DeclarationJourneyActionProvider = injector.instanceOf[DeclarationJourneyActionProvider]
 
     val ess: EssentialAction = actionProvider.journeyAction { _ =>
       play.api.mvc.Results.Ok("authenticated")
     }
 
-    val result = call(ess, buildGet("/", aSessionId))
+    val result: Future[Result] = call(ess, buildGet("/", aSessionId))
     status(result) mustBe SEE_OTHER
   }
 }

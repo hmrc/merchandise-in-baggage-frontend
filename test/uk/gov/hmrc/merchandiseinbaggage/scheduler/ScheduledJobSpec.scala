@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.scheduler
 
-import akka.actor.ActorSystem
-import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.extension.quartz.QuartzSchedulerExtension
 import org.quartz.CronExpression
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike

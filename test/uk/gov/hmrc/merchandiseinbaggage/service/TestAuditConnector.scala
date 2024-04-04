@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import akka.actor.ActorSystem
-import akka.stream.Materializer
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import play.api.inject.{ApplicationLifecycle, DefaultApplicationLifecycle}
 import play.api.libs.json.JsValue
 import uk.gov.hmrc.audit.HandlerResult
