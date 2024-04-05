@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.CSRFTokenHelper._

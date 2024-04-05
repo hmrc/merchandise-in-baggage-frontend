@@ -22,7 +22,6 @@ import play.api.libs.json.Json
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, Declaration, NotRequired, Paid, TotalCalculationResult, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.CountryEnriched
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 object ViewUtils {
 
