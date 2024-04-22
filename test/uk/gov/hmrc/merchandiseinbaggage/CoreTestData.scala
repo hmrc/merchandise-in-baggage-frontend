@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage
 
-import com.softwaremill.quicklens._
 import play.api.Application
 import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -160,7 +159,7 @@ trait CoreTestData {
 
   val doverJourneyEntry: JourneyDetailsEntry    = JourneyDetailsEntry("DVR", journeyDate)
   val heathrowJourneyEntry: JourneyDetailsEntry = JourneyDetailsEntry("LHR", journeyDate)
-  val anAddress                                 =
+  val anAddress: Address                        =
     Address(Seq("1 Agent Drive", "Agent Town"), Some("AG1 5NT"), AddressLookupCountry("GB", Some("United Kingdom")))
 
   val sparseCompleteDeclarationJourney: DeclarationJourney =
@@ -189,24 +188,20 @@ trait CoreTestData {
     CalculationResult(aImportGoods, AmountInPence(10L), AmountInPence(5), AmountInPence(7), Some(aConversionRatePeriod))
 
   val aCalculationResultOverThousand: CalculationResult = aCalculationResult
-    .modify(_.goods.producedInEu)
-    .setTo(YesNoDontKnow.Yes)
-    .modify(_.duty.value)
-    .setTo(140000)
-    .modify(_.vat.value)
-    .setTo(140000)
-    .modify(_.gbpAmount.value)
-    .setTo(140000)
+    .copy(
+      goods = aCalculationResult.goods.copy(producedInEu = YesNoDontKnow.Yes),
+      duty = aCalculationResult.duty.copy(value = 140000),
+      vat = aCalculationResult.vat.copy(value = 140000),
+      gbpAmount = aCalculationResult.gbpAmount.copy(value = 140000)
+    )
 
   val aCalculationResultWithNothingToPay: CalculationResult = aCalculationResult
-    .modify(_.goods.producedInEu)
-    .setTo(YesNoDontKnow.Yes)
-    .modify(_.duty.value)
-    .setTo(0)
-    .modify(_.vat.value)
-    .setTo(0)
-    .modify(_.gbpAmount.value)
-    .setTo(0)
+    .copy(
+      goods = aCalculationResult.goods.copy(producedInEu = YesNoDontKnow.Yes),
+      duty = aCalculationResult.duty.copy(value = 0),
+      vat = aCalculationResult.vat.copy(value = 0),
+      gbpAmount = aCalculationResult.gbpAmount.copy(value = 0)
+    )
 
   val aCalculationResultWithNoTax: CalculationResult =
     CalculationResult(aImportGoods, AmountInPence(100), AmountInPence(0), AmountInPence(0), Some(aConversionRatePeriod))
@@ -226,7 +221,7 @@ trait CoreTestData {
 
   val aCheckResponse: CheckResponse = CheckResponse(aEoriNumber, valid = true, Some(aCompanyDetails))
 
-  val aAmendment = Amendment(
+  val aAmendment: Amendment = Amendment(
     1,
     LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS),
     DeclarationGoods(aGoods.copy(category = "more cheese") :: Nil),
@@ -243,12 +238,10 @@ trait CoreTestData {
   )
 
   val aAmendmentPaid = aAmendment
-    .modify(_.paymentStatus)
-    .setTo(Some(Paid))
+    .copy(paymentStatus = Some(Paid))
 
   val aAmendmentNotRequired = aAmendment
-    .modify(_.paymentStatus)
-    .setTo(Some(NotRequired))
+    .copy(paymentStatus = Some(NotRequired))
 
   def aSuccessCheckResponse(eoriNumber: String = aEoriNumber): String =
     s"""{

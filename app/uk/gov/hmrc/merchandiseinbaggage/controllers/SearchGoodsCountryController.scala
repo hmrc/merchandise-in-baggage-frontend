@@ -26,7 +26,6 @@ import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.SearchGoodsCountryView
-import com.softwaremill.quicklens._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -70,7 +69,10 @@ class SearchGoodsCountryController @Inject() (
                   .nextPage(
                     SearchGoodsCountryRequest(
                       request.declarationJourney,
-                      request.goodsEntry.modify(_.when[ExportGoodsEntry].maybeDestination).setTo(Some(country)),
+                      request.goodsEntry match {
+                        case entry: ExportGoodsEntry => entry.copy(maybeDestination = Some(country))
+                        case _                       => request.goodsEntry
+                      },
                       idx,
                       repo.upsert
                     )

@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.view
 
-import com.softwaremill.quicklens._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{NotRequired, Paid}
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{Amendment, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.proofOfOriginNeeded
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
@@ -26,101 +25,129 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
 
   "proofOfOriginNeeded" should {
     "true if Declaration > £1000 paid and no Amendments" in {
-      val decl = declaration
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsOverLimit))
+      val decl = declaration.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsOverLimit)
+      )
 
       proofOfOriginNeeded(decl) mustBe true
     }
 
     "false if Declaration < £1000 paid and no Amendments" in {
-      val decl = declaration
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
+      val decl = declaration.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+      )
 
       proofOfOriginNeeded(decl) mustBe false
     }
 
     "true if Declaration and Amendments > £1000" in {
-      val decl = declarationWithAmendment
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(0).paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.amendments.at(0).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsOverLimit))
+      val firstAmendmentModified = declarationWithAmendment.amendments.head.copy(
+        maybeTotalCalculationResult = Some(calculationResultsOverLimit),
+        paymentStatus = Some(Paid)
+      )
+
+      val decl = declarationWithAmendment.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit),
+        amendments = firstAmendmentModified +: declarationWithAmendment.amendments.tail
+      )
 
       proofOfOriginNeeded(decl) mustBe true
     }
 
     "false if Declaration paid and Amendments > £1000 but UNPAID" in {
-      val decl = declarationWithAmendment
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(0).paymentStatus)
-        .setTo(None)
-        .modify(_.amendments.at(0).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
+      val firstAmendmentModified = declarationWithAmendment.amendments.head.copy(
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit),
+        paymentStatus = None
+      )
+
+      val decl = declarationWithAmendment.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit),
+        amendments = firstAmendmentModified +: declarationWithAmendment.amendments.tail
+      )
 
       proofOfOriginNeeded(decl) mustBe false
     }
 
     "true if Declaration paid and 3 Amendments last > £1000" in {
-      val decl = declarationWith3Amendment
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(0).paymentStatus)
-        .setTo(None)
-        .modify(_.amendments.at(0).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(1).paymentStatus)
-        .setTo(None)
-        .modify(_.amendments.at(1).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(2).paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.amendments.at(2).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsOverLimit))
+      val amendmentsModified: Seq[Amendment] = declarationWith3Amendment.amendments
+        .updated(
+          0,
+          declarationWith3Amendment.amendments.head.copy(
+            paymentStatus = None,
+            maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+          )
+        )
+        .updated(
+          1,
+          declarationWith3Amendment
+            .amendments(1)
+            .copy(
+              paymentStatus = None,
+              maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+            )
+        )
+        .updated(
+          2,
+          declarationWith3Amendment
+            .amendments(2)
+            .copy(
+              paymentStatus = Some(Paid),
+              maybeTotalCalculationResult = Some(calculationResultsOverLimit)
+            )
+        )
+
+      val decl = declarationWith3Amendment.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit),
+        amendments = amendmentsModified
+      )
 
       proofOfOriginNeeded(decl) mustBe true
     }
 
     "false if Declaration paid and 3 Amendments last No payment" in {
-      val decl = declarationWith3Amendment
-        .modify(_.paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(0).paymentStatus)
-        .setTo(None)
-        .modify(_.amendments.at(0).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(1).paymentStatus)
-        .setTo(Some(Paid))
-        .modify(_.amendments.at(1).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
-        .modify(_.amendments.at(2).paymentStatus)
-        .setTo(Some(NotRequired))
-        .modify(_.amendments.at(2).maybeTotalCalculationResult)
-        .setTo(Some(calculationResultsUnderLimit))
+      val amendmentsModified: Seq[Amendment] = declarationWith3Amendment.amendments
+        .updated(
+          0,
+          declarationWith3Amendment.amendments.head.copy(
+            paymentStatus = None,
+            maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+          )
+        )
+        .updated(
+          1,
+          declarationWith3Amendment
+            .amendments(1)
+            .copy(
+              paymentStatus = Some(Paid),
+              maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+            )
+        )
+        .updated(
+          2,
+          declarationWith3Amendment
+            .amendments(2)
+            .copy(
+              paymentStatus = Some(NotRequired),
+              maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
+            )
+        )
+
+      val decl = declarationWith3Amendment.copy(
+        paymentStatus = Some(Paid),
+        maybeTotalCalculationResult = Some(calculationResultsUnderLimit),
+        amendments = amendmentsModified
+      )
 
       proofOfOriginNeeded(decl) mustBe true
     }
 
     "false if Declaration is Export" in {
-      val decl = declaration
-        .modify(_.declarationType)
-        .setTo(Export)
+      val decl = declaration.copy(declarationType = Export)
 
       proofOfOriginNeeded(decl) mustBe false
     }

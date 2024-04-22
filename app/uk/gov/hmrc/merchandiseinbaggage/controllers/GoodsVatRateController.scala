@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import com.softwaremill.quicklens._
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -67,7 +66,10 @@ class GoodsVatRateController @Inject() (
               .nextPage(
                 GoodsVatRateRequest(
                   request.declarationJourney,
-                  request.goodsEntry.modify(_.when[ImportGoodsEntry].maybeGoodsVatRate).setTo(Some(goodsVatRate)),
+                  request.goodsEntry match {
+                    case entry: ImportGoodsEntry => entry.copy(maybeGoodsVatRate = Some(goodsVatRate))
+                    case _                       => request.goodsEntry
+                  },
                   idx,
                   repo.upsert
                 )

@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import com.softwaremill.quicklens._
 import org.mockito.ArgumentMatchersSugar.{any, eqTo}
 import org.mockito.MockitoSugar.{mock, reset, when}
 import org.mockito.invocation.InvocationOnMock
@@ -101,7 +100,8 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Opti
   "check threshold allowance including existing declaration for amends" in {
     val entries: GoodsEntries = completedGoodsEntries(Import)
     val declarationId         = aDeclarationId
-    val existingDeclaration   = declaration.modify(_.amendments.each.paymentStatus).setTo(Some(Paid))
+    val existingDeclaration   =
+      declaration.copy(amendments = declaration.amendments.map(_.copy(paymentStatus = Some(Paid))))
 
     val calculationResponse: CalculationResponse =
       CalculationResponse(CalculationResults(Seq(stubbedResult)), WithinThreshold)
@@ -125,12 +125,12 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Opti
 
   s"add only goods in $Paid or $NotRequired status" in {
     val declarationId   = aDeclarationId
-    val unknown         = completedAmendment(Import).modify(_.paymentStatus).setTo(None)
+    val unknown         = completedAmendment(Import).copy(paymentStatus = None)
     val expectedGoods   = Seq(aImportGoods)
-    val plusUnsetStatus = declaration
-      .copy(declarationId = declarationId)
-      .modify(_.amendments)
-      .using(_ ++ Seq(unknown))
+    val plusUnsetStatus = declaration.copy(
+      declarationId = declarationId,
+      amendments = declaration.amendments ++ Seq(unknown)
+    )
 
     when(mockConnector.findDeclaration(any[DeclarationId])(any[HeaderCarrier]))
       .thenReturn(Future.successful(Some(plusUnsetStatus)))
@@ -142,7 +142,7 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Opti
 
   "send a request for calculation including declared goods plus amendments goods" in {
     val amendments: Seq[Amendment]     = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
-    val foundDeclaration: Declaration  = declaration.modify(_.amendments).setTo(amendments)
+    val foundDeclaration: Declaration  = declaration.copy(amendments = amendments)
     val expectedTotalGoods: Seq[Goods] =
       foundDeclaration.declarationGoods.goods ++ aAmendmentPaid.goods.goods ++ aAmendmentNotRequired.goods.goods
 
@@ -164,10 +164,10 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Opti
   "send a request for calculation including declared goods plus amendments goods for export" in {
     val amendments: Seq[Amendment]     = aAmendment :: aAmendmentPaid :: aAmendmentNotRequired :: Nil
     val foundDeclaration: Declaration  = declaration
-      .modify(_.declarationType)
-      .setTo(Export)
-      .modify(_.amendments)
-      .setTo(amendments)
+      .copy(
+        declarationType = Export,
+        amendments = amendments
+      )
     val expectedTotalGoods: Seq[Goods] = foundDeclaration.declarationGoods.goods ++ amendments.flatMap(_.goods.goods)
 
     when(mockConnector.calculatePayments(any[Seq[CalculationRequest]])(any[HeaderCarrier]))
