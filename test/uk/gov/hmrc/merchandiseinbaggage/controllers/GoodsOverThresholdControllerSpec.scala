@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -33,6 +33,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
   private val view              = app.injector.instanceOf[GoodsOverThresholdView]
   private val calculatorService = app.injector.instanceOf[MibService]
   private val mibConnector      = app.injector.instanceOf[MibConnector]
+  private val stub              = app.injector.instanceOf[MibBackendStub]
 
   def controller(declarationJourney: DeclarationJourney): GoodsOverThresholdController =
     new GoodsOverThresholdController(
@@ -50,7 +51,7 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        givenAPaymentCalculation(aCalculationResult)
+        stub.givenAPaymentCalculation(aCalculationResult)
 
         val request        = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)

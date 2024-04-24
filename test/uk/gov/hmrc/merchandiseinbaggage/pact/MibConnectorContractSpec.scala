@@ -21,7 +21,7 @@ import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
 import org.json4s.DefaultFormats
 import play.api.libs.json.Json
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -33,13 +33,14 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import java.io.File
 import java.time.LocalDate
 
-class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration {
+class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData {
 
   implicit val formats: DefaultFormats.type = DefaultFormats
 
   val CONSUMER: String           = "merchandise-in-baggage-frontend"
   val PROVIDER: String           = "merchandise-in-baggage"
   val mibConnector: MibConnector = injector.instanceOf[MibConnector]
+  val config: AppConfig          = injector.instanceOf[AppConfig]
 
   val findByDeclaration: Declaration = declaration.copy(mibReference = mibReference, eori = eori)
   val today: LocalDate               = LocalDate.now
@@ -54,7 +55,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided("persistDeclarationTest")
         .uponReceiving(
           POST,
-          s"$declarationsUrl",
+          s"${config.mibDeclarationsUrl}",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declaration).toString
@@ -67,7 +68,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided("amendDeclarationTest")
         .uponReceiving(
           PUT,
-          s"$declarationsUrl",
+          s"${config.mibDeclarationsUrl}",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declarationWithAmendment).toString
@@ -78,7 +79,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
       interaction
         .description("find a declaration")
         .provided(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
-        .uponReceiving(GET, s"$declarationsUrl/56789")
+        .uponReceiving(GET, s"${config.mibDeclarationsUrl}/56789")
         .willRespondWith(200, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
     )
     .addInteraction(
@@ -87,7 +88,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided(s"id789")
         .uponReceiving(
           POST,
-          s"$amendsPlusExistingCalculationsUrl",
+          s"${config.mibAmendsPlusExistingCalculationsUrl}",
           None,
           Map("Content-Type" -> "application/json"),
           Json
@@ -128,7 +129,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided(s"calculatePaymentsTest")
         .uponReceiving(
           POST,
-          s"$calculationsUrl",
+          s"${config.mibCalculationsUrl}",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString
@@ -153,14 +154,14 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
       interaction
         .description("check EoriNumber")
         .provided(s"checkEoriNumberTest")
-        .uponReceiving(GET, s"${checkEoriUrl}GB123")
+        .uponReceiving(GET, s"${config.mibCheckEoriUrl}GB123")
         .willRespondWith(200, Json.toJson(CheckResponse("GB123", true, None)).toString)
     )
     .addInteraction(
       interaction
         .description("findBy mib ref and eori")
         .provided(s"findByTestXXX${Json.toJson(findByDeclaration).toString}")
-        .uponReceiving(GET, s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}")
+        .uponReceiving(GET, s"${config.mibDeclarationsUrl}?mibReference=${mibReference.value}&eori=${eori.value}")
         .willRespondWith(200, Json.toJson(findByDeclaration).toString)
     )
 

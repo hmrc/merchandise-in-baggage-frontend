@@ -21,7 +21,6 @@ import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -31,21 +30,19 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersAmendHandlerSpec
-    extends DeclarationJourneyControllerSpec
-    with MibConfiguration
-    with PropertyBaseTables {
+class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
   private val importView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector: MibConnector                  = injector.instanceOf[MibConnector]
+  private val mibStub: MibBackendStub                     = injector.instanceOf[MibBackendStub]
   private val mockTpsPaymentsService: TpsPaymentsService  = mock[TpsPaymentsService]
   private val paymentService: PaymentService              = mock[PaymentService]
   private val mockMibService: MibService                  = mock[MibService]
@@ -86,9 +83,9 @@ class CheckYourAnswersAmendHandlerSpec
             journeyType = Amend
           )
 
-        givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
+        mibStub.givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
         givenADeclarationJourneyIsPersisted(journey)
-        givenPersistedDeclarationIsFound(
+        mibStub.givenPersistedDeclarationIsFound(
           declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)),
           id
         )
@@ -159,9 +156,12 @@ class CheckYourAnswersAmendHandlerSpec
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
-    givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export, declarationId = stubbedId), stubbedId)
+    mibStub.givenPersistedDeclarationIsFound(
+      declaration.copy(declarationType = Export, declarationId = stubbedId),
+      stubbedId
+    )
     givenADeclarationJourneyIsPersisted(exportJourney)
-    givenDeclarationIsAmendedInBackend
+    mibStub.givenDeclarationIsAmendedInBackend
 
     val newAmendment = completedAmendment(Export)
 

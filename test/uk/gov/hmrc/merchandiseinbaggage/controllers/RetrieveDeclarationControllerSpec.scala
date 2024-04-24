@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenFindByDeclarationReturnStatus
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,6 +37,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   val view: RetrieveDeclarationView = injector.instanceOf[RetrieveDeclarationView]
   val connector: MibConnector       = injector.instanceOf[MibConnector]
+  private val stub                  = injector.instanceOf[MibBackendStub]
   val mockNavigator: Navigator      = mock[Navigator]
 
   def controller(declarationJourney: DeclarationJourney): RetrieveDeclarationController =
@@ -77,7 +78,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   "onSubmit" should {
     "redirect by delegating to Navigator" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, NOT_FOUND)
+      stub.givenFindByDeclarationReturnStatus(mibReference, eori, NOT_FOUND)
       val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 
@@ -91,7 +92,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
     }
 
     "redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, INTERNAL_SERVER_ERROR)
+      stub.givenFindByDeclarationReturnStatus(mibReference, eori, INTERNAL_SERVER_ERROR)
       val request                = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
         .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
 

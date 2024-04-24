@@ -25,11 +25,13 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.Yes
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, ThresholdCheck, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 
 import scala.jdk.CollectionConverters._
 
 class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with CoreTestData {
+
+  private val mibStub = app.injector.instanceOf[MibBackendStub]
 
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
     setUp(aCalculationResultOverThousand, WithinThreshold) { bulletPoints =>
@@ -83,8 +85,8 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
     journey: DeclarationJourney = completedAmendedJourney(Import)
       .copy(declarationId = aDeclarationId, maybeGoodsDestination = Some(GreatBritain))
   )(fn: List[WebElement] => Any): Any = fn {
-    givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
-    givenAPaymentCalculation(calculationResult)
+    mibStub.givenAnAmendPaymentCalculations(Seq(calculationResult), thresholdCheck)
+    mibStub.givenAPaymentCalculation(calculationResult)
     givenAJourneyWithSession(Amend, declarationJourney = journey)
     goToCYAPage(Amend)
 
@@ -93,5 +95,4 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
       .asScala
       .toList
   }
-
 }

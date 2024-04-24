@@ -21,16 +21,18 @@ import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyOnFoot
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.PreviousDeclarationDetailsPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 
 import java.time.LocalDate
 
 class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPage with CoreTestData {
 
+  private val mibStub = app.injector.instanceOf[MibBackendStub]
+
   "it should show all paid goods" in {
     val journey = givenAJourneyWithSession(Amend)
-    givenAPaymentCalculation(aCalculationResult)
-    givenPersistedDeclarationIsFound(declarationWithPaidAmendment, journey.declarationId)
+    mibStub.givenAPaymentCalculation(aCalculationResult)
+    mibStub.givenPersistedDeclarationIsFound(declarationWithPaidAmendment, journey.declarationId)
     goToPreviousDeclarationDetailsPage
 
     webDriver.findElements(By.xpath("//*[text()[contains(.,'Type of goods')]]")).size() mustBe 3
@@ -38,8 +40,8 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
 
   "it should not show unpaid goods" in {
     val journey = givenAJourneyWithSession(Amend)
-    givenAPaymentCalculation(aCalculationResult)
-    givenPersistedDeclarationIsFound(declarationWithAmendment, journey.declarationId)
+    mibStub.givenAPaymentCalculation(aCalculationResult)
+    mibStub.givenPersistedDeclarationIsFound(declarationWithAmendment, journey.declarationId)
     goToPreviousDeclarationDetailsPage
 
     webDriver.findElements(By.xpath("//*[text()[contains(.,'Type of goods')]]")).size() mustBe 2
@@ -47,8 +49,8 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
 
   "it should not show the 'Add more goods' button if the travel date was out side of allowed range" in {
     val journey = givenAJourneyWithSession(Amend)
-    givenAPaymentCalculation(aCalculationResult)
-    givenPersistedDeclarationIsFound(
+    mibStub.givenAPaymentCalculation(aCalculationResult)
+    mibStub.givenPersistedDeclarationIsFound(
       declarationWithAmendment.copy(journeyDetails = JourneyOnFoot(journeyPort, LocalDate.now().minusDays(35))),
       journey.declarationId
     )
@@ -59,8 +61,8 @@ class PreviousDeclarationDetailsContentSpec extends PreviousDeclarationDetailsPa
 
   "it should show allowance left" in {
     val journey = givenAJourneyWithSession(Amend)
-    givenAPaymentCalculation(aCalculationResult)
-    givenPersistedDeclarationIsFound(
+    mibStub.givenAPaymentCalculation(aCalculationResult)
+    mibStub.givenPersistedDeclarationIsFound(
       declarationWithAmendment.copy(journeyDetails = JourneyOnFoot(journeyPort, LocalDate.now())),
       journey.declarationId
     )

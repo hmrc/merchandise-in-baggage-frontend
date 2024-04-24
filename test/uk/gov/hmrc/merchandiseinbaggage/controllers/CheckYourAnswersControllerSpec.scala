@@ -23,7 +23,6 @@ import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -32,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -40,7 +39,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val httpClient: HttpClient = injector.instanceOf[HttpClient]
 
@@ -48,6 +47,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val exportView: CheckYourAnswersExportView           = injector.instanceOf[CheckYourAnswersExportView]
   private val amendImportView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val amendExportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
+  private val stub                                             = injector.instanceOf[MibBackendStub]
 
   private val mibConnector: MibConnector     = injector.instanceOf[MibConnector]
   private val auditConnector: AuditConnector = injector.instanceOf[AuditConnector]
@@ -125,7 +125,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
 
       givenADeclarationJourneyIsPersisted(journey)
-      givenPersistedDeclarationIsFound(
+      stub.givenPersistedDeclarationIsFound(
         declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)),
         journey.declarationId
       )
@@ -178,7 +178,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
 
         givenTheUserIsAuthenticatedAndAuthorised()
         givenADeclarationJourneyIsPersisted(journey)
-        givenDeclarationIsPersistedInBackend
+        stub.givenDeclarationIsPersistedInBackend
 
         journeyType match {
           case New   =>
@@ -206,7 +206,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
 
       givenADeclarationJourneyIsPersisted(journey)
-      givenDeclarationIsPersistedInBackend
+      stub.givenDeclarationIsPersistedInBackend
 
       when(mockMibService.paymentCalculations(any[Seq[ImportGoods]], any[GoodsDestination])(any[HeaderCarrier]))
         .thenReturn(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))

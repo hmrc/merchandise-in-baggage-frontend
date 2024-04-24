@@ -16,32 +16,30 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import com.google.inject.Inject
 import org.mockito.ArgumentMatchersSugar.any
 import org.mockito.MockitoSugar.{mock, when}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenPersistedDeclarationIsFound
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html.PreviousDeclarationDetailsView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class PreviousDeclarationDetailsControllerSpec
-    extends DeclarationJourneyControllerSpec
-    with CoreTestData
-    with MibConfiguration {
+class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
   val mockNavigator: Navigator   = mock[Navigator]
   val mockMibService: MibService = mock[MibService]
 
   val view: PreviousDeclarationDetailsView = app.injector.instanceOf[PreviousDeclarationDetailsView]
+  private val stub                         = app.injector.instanceOf[MibBackendStub]
   val mibConnector: MibConnector           = injector.instanceOf[MibConnector]
 
   val controller: PreviousDeclarationDetailsController =
@@ -75,7 +73,7 @@ class PreviousDeclarationDetailsControllerSpec
           declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult))
       }
 
-      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
+      stub.givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
       val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
@@ -95,7 +93,10 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenADeclarationJourneyIsPersisted(importJourney)
 
-      givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
+      stub.givenPersistedDeclarationIsFound(
+        importJourney.declarationIfRequiredAndComplete.get,
+        aDeclarationId
+      )
 
       val request        =
         buildGet(PreviousDeclarationDetailsController.onPageLoad.url, SessionId()).withSession("declarationId" -> "987")
@@ -129,7 +130,7 @@ class PreviousDeclarationDetailsControllerSpec
             )
       }
 
-      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
+      stub.givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
       val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)
@@ -165,7 +166,7 @@ class PreviousDeclarationDetailsControllerSpec
             )
       }
 
-      givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
+      stub.givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
       val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
       val eventualResult = controller.onPageLoad()(request)

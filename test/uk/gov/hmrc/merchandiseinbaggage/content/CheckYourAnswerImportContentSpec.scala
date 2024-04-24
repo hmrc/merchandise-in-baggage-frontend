@@ -22,11 +22,13 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 
 import scala.jdk.CollectionConverters._
 
 class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTestData {
+
+  private val mibStub = app.injector.instanceOf[MibBackendStub]
 
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
     setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) {
@@ -66,7 +68,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
   private def setUp(calculationResult: CalculationResult, journey: DeclarationJourney = completedDeclarationJourney)(
     fn: List[WebElement] => Any
   ): Any = fn {
-    givenAPaymentCalculation(calculationResult)
+    mibStub.givenAPaymentCalculation(calculationResult)
     givenAJourneyWithSession(declarationJourney = journey)
     goToCYAPage()
 

@@ -21,16 +21,18 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 
 class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData {
+
+  private val mibStub = app.injector.instanceOf[MibBackendStub]
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
         givenAJourneyWithSession(declarationType = importOrExport)
 
-        givenAPaymentCalculation(aCalculationResult)
+        mibStub.givenAPaymentCalculation(aCalculationResult)
 
         goToGoodsOverThresholdPage()
 

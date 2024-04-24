@@ -18,11 +18,10 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
@@ -30,12 +29,12 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
 
-  import mibConf._
   private val view       = app.injector.instanceOf[DeclarationConfirmationView]
   private val client     = app.injector.instanceOf[HttpClient]
-  private val connector  = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
+  private val stub       = app.injector.instanceOf[MibBackendStub]
+  private val connector  = new MibConnector(appConfig, client, s"http://localhost:${WireMockSupport.port}")
   private val controller =
     new DeclarationConfirmationController(
       controllerComponents,
@@ -56,7 +55,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenADeclarationJourneyIsPersisted(exportJourney)
 
-    givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+    stub.givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe OK
@@ -85,7 +84,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
-    givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
+    stub.givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe OK
@@ -112,7 +111,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
 
     givenADeclarationJourneyIsPersisted(importJourney)
 
-    givenPersistedDeclarationIsFound(declarationWithPaidAmendment, id)
+    stub.givenPersistedDeclarationIsFound(declarationWithPaidAmendment, id)
 
     val eventualResult = controller.onPageLoad()(request)
     status(eventualResult) mustBe SEE_OTHER
@@ -120,7 +119,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
-    val connector = new MibConnector(client, "") {
+    val connector = new MibConnector(appConfig, client, "") {
       override def findDeclaration(declarationId: DeclarationId)(implicit
         hc: HeaderCarrier
       ): Future[Option[Declaration]] =
