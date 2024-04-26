@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import com.softwaremill.quicklens._
 import play.api.mvc.Call
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
@@ -422,10 +421,11 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
         }
 
         s"navigate to ${CheckYourAnswersController.onPageLoad} if over for $newOrAmend & $importOrExport Yes and entries > 1" in new Navigator {
-          val twoSizeEntries: GoodsEntries =
+          val goodsEntries: GoodsEntries   =
             GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
-              .modify(_.entries)
-              .using(e => e.+:(e.head))
+          val twoSizeEntries: GoodsEntries =
+            goodsEntries
+              .copy(entries = goodsEntries.entries :+ goodsEntries.entries.head)
 
           val journey: DeclarationJourney =
             completedDeclarationJourney.copy(
@@ -452,10 +452,11 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           }
         }
         s"navigate to ${CheckYourAnswersController.onPageLoad} if over for $newOrAmend & $importOrExport No and completed" in new Navigator {
-          val twoSizeEntries: GoodsEntries =
+          val goodsEntries: GoodsEntries   =
             GoodsEntries(if (importOrExport == Import) completedImportGoods else completedExportGoods)
-              .modify(_.entries)
-              .using(e => e.+:(e.head))
+          val twoSizeEntries: GoodsEntries =
+            goodsEntries
+              .copy(entries = goodsEntries.entries :+ goodsEntries.entries.head)
 
           val journey: DeclarationJourney =
             completedDeclarationJourney.copy(
@@ -489,7 +490,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result: Future[Call]        = nextPage(
             RetrieveDeclarationRequest(
-              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(Some(Paid))),
+              Some(journey.toDeclaration.copy(paymentStatus = Some(Paid))),
               journey,
               _ => Future.successful(journey)
             )
@@ -516,7 +517,7 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result: Future[Call]        = nextPage(
             RetrieveDeclarationRequest(
-              Some(journey.toDeclaration.modify(_.paymentStatus).setTo(None)),
+              Some(journey.toDeclaration.copy(paymentStatus = None)),
               journey,
               _ => Future.successful(journey)
             )

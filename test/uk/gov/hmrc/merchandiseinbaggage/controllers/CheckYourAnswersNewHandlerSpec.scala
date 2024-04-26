@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import com.softwaremill.quicklens._
 import org.mockito.ArgumentMatchersSugar.{any, eqTo}
 import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.{Request, Result}
@@ -107,9 +106,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        val overThresholdGoods = aCalculationResponse
-          .modify(_.thresholdCheck)
-          .setTo(OverThreshold)
+        val overThresholdGoods = aCalculationResponse.copy(thresholdCheck = OverThreshold)
 
         implicit val request: Request[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 

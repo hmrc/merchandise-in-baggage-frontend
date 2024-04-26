@@ -25,7 +25,6 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{ExportGoodsEntry, ImportGood
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOriginView
-import com.softwaremill.quicklens._
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -65,7 +64,10 @@ class GoodsOriginController @Inject() (
               .nextPage(
                 GoodsOriginRequest(
                   request.declarationJourney,
-                  request.goodsEntry.modify(_.when[ImportGoodsEntry].maybeProducedInEu).setTo(Some(producedInEu)),
+                  request.goodsEntry match {
+                    case entry: ImportGoodsEntry => entry.copy(maybeProducedInEu = Some(producedInEu))
+                    case _                       => request.goodsEntry
+                  },
                   idx,
                   repo.upsert
                 )

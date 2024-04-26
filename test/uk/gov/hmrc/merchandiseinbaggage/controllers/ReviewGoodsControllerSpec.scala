@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.OptionT
-import com.softwaremill.quicklens._
 import org.mockito.ArgumentMatchersSugar.any
 import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.Result
@@ -63,7 +62,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
         val request   = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
         val allowance =
           if (importOrExport == Export) {
-            aThresholdAllowance.modify(_.currentGoods).setTo(entries.declarationGoodsIfComplete.get)
+            aThresholdAllowance.copy(currentGoods = entries.declarationGoodsIfComplete.get)
           } else {
             aThresholdAllowance
           }

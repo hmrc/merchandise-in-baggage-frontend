@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import com.softwaremill.quicklens._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, YesNoDontKnow}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
@@ -40,7 +39,7 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
     val calculationResultUSA: CalculationResult =
       CalculationResult(
-        aGoods.modify(_.producedInEu).setTo(YesNoDontKnow.No),
+        aGoods.copy(producedInEu = YesNoDontKnow.No),
         AmountInPence(20L),
         AmountInPence(10),
         AmountInPence(30),
@@ -49,10 +48,11 @@ class CalculationResultsSpec extends BaseSpec with CoreTestData {
 
     val calculations = CalculationResults(Seq(calculationResultEU, calculationResultUSA))
 
+    val firstResult = calculations.calculationResults.head.copy(gbpAmount = AmountInPence(100000))
+
     calculations.proofOfOriginNeeded mustBe true
     calculations
-      .modify(_.calculationResults.index(0).gbpAmount.value)
-      .setTo(100000)
+      .copy(calculationResults = firstResult +: calculations.calculationResults.tail)
       .proofOfOriginNeeded mustBe false
   }
 }

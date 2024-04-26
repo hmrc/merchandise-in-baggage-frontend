@@ -16,27 +16,41 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import com.softwaremill.quicklens._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, DeclarationGoods}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 class ThresholdAllowanceSpec extends BaseSpec with CoreTestData {
 
   "return threshold allowance left for import" in {
-    val allowance    =
-      aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7179)
+    val allowanceGbpAmountOne =
+      aThresholdAllowance.calculationResponse.results.calculationResults.map(_.copy(gbpAmount = AmountInPence(7179)))
+    val allowanceGbpAmountTwo =
+      aThresholdAllowance.calculationResponse.results.calculationResults.map(_.copy(gbpAmount = AmountInPence(7180)))
+
+    val allowanceOne =
+      aThresholdAllowance.copy(
+        calculationResponse = aThresholdAllowance.calculationResponse.copy(
+          results = CalculationResults(allowanceGbpAmountOne)
+        )
+      )
+
     val allowanceTwo =
-      aThresholdAllowance.modify(_.calculationResponse.results.calculationResults.each.gbpAmount.value).setTo(7180)
-    allowance.allowanceLeft mustBe 2428.21
+      aThresholdAllowance.copy(
+        calculationResponse = aThresholdAllowance.calculationResponse.copy(
+          results = CalculationResults(allowanceGbpAmountTwo)
+        )
+      )
+
+    allowanceOne.allowanceLeft mustBe 2428.21
     allowanceTwo.allowanceLeft mustBe 2428.20
   }
 
   "return threshold allowance left for export" in {
-    val goodOne   = aExportGoods.modify(_.purchaseDetails.amount).setTo("71.75")
-    val goodTwo   = aExportGoods.modify(_.purchaseDetails.amount).setTo("70.00")
-    val allowance = aThresholdAllowance
-      .modify(_.allGoods.goods)
-      .setTo(Seq(goodOne, goodTwo))
+    val goodOne   = aExportGoods.copy(purchaseDetails = aExportGoods.purchaseDetails.copy(amount = "71.75"))
+    val goodTwo   = aExportGoods.copy(purchaseDetails = aExportGoods.purchaseDetails.copy(amount = "70.00"))
+    val allowance = aThresholdAllowance.copy(allGoods = DeclarationGoods(Seq(goodOne, goodTwo)))
 
     allowance.allowanceLeft mustBe 2358.25
   }

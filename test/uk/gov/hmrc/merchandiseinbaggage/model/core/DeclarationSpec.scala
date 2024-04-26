@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import com.softwaremill.quicklens._
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
@@ -134,7 +133,7 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
 
   "DeclarationJourney" should {
     "serialise and de-serialise" in {
-      val journey = completedDeclarationJourney.modify(_.createdAt).using(_.withNano(0))
+      val journey = completedDeclarationJourney.copy(createdAt = completedDeclarationJourney.createdAt.withNano(0))
       parse(toJson(journey).toString()).validate[DeclarationJourney].get mustBe journey
     }
 
@@ -452,16 +451,15 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
     )
 
     val latestAmendment =
-      aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusMinutes(10))
+      aAmendment.copy(dateOfAmendment = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusMinutes(10))
 
     declarationWithGoods.latestGoods mustBe declarationWithGoods.declarationGoods.goods
     declarationWithGoods
-      .modify(_.amendments)
-      .setTo(
+      .copy(amendments =
         Seq(
-          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
-          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusDays(1)),
-          aAmendment.modify(_.dateOfAmendment).setTo(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).plusMinutes(1)),
+          aAmendment.copy(dateOfAmendment = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)),
+          aAmendment.copy(dateOfAmendment = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).minusDays(1)),
+          aAmendment.copy(dateOfAmendment = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS).plusMinutes(1)),
           latestAmendment
         )
       )
