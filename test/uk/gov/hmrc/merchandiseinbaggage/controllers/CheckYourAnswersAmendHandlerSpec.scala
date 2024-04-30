@@ -30,7 +30,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersAmendExportView, CheckYourAnswersAmendImportView}
 
 import java.time.LocalDateTime
@@ -42,7 +42,6 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
   private val importView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector: MibConnector                  = injector.instanceOf[MibConnector]
-  private val mibStub: MibBackendStub                     = injector.instanceOf[MibBackendStub]
   private val mockTpsPaymentsService: TpsPaymentsService  = mock[TpsPaymentsService]
   private val paymentService: PaymentService              = mock[PaymentService]
   private val mockMibService: MibService                  = mock[MibService]
@@ -83,9 +82,9 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
             journeyType = Amend
           )
 
-        mibStub.givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
+        givenAnAmendPaymentCalculations(Seq(aCalculationResult), WithinThreshold)
         givenADeclarationJourneyIsPersisted(journey)
-        mibStub.givenPersistedDeclarationIsFound(
+        givenPersistedDeclarationIsFound(
           declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)),
           id
         )
@@ -156,12 +155,12 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
-    mibStub.givenPersistedDeclarationIsFound(
+    givenPersistedDeclarationIsFound(
       declaration.copy(declarationType = Export, declarationId = stubbedId),
       stubbedId
     )
     givenADeclarationJourneyIsPersisted(exportJourney)
-    mibStub.givenDeclarationIsAmendedInBackend
+    givenDeclarationIsAmendedInBackend
 
     val newAmendment = completedAmendment(Export)
 

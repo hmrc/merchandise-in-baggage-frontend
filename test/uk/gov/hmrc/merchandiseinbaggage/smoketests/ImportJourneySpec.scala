@@ -20,11 +20,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Name}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenAPaymentCalculation, givenEoriIsChecked}
 
 class ImportJourneySpec extends BaseUiSpec {
-
-  private val stub = injector.instanceOf[MibBackendStub]
 
   "Import journey - happy path" should {
     "work as expected" in {
@@ -45,17 +43,17 @@ class ImportJourneySpec extends BaseUiSpec {
 
       submitPage(GoodsOriginPage, Yes)
 
-      stub.givenAPaymentCalculation(aCalculationResult)
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(GoodsVatRatePage, "Five")
 
-      stub.givenAPaymentCalculation(aCalculationResult)
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(ReviewGoodsPage, No)
 
       submitPage(PaymentCalculationPage, "")
 
       submitPage(CustomsAgentPage, No)
 
-      stub.givenEoriIsChecked("GB123467800000")
+      givenEoriIsChecked("GB123467800000")
       submitPage(EoriNumberPage, "GB123467800000")
 
       submitPage(TravellerDetailsPage, Name("firstName", "LastName"))

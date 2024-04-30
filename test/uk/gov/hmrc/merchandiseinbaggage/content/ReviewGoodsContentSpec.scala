@@ -23,15 +23,13 @@ import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.ReviewGoodsPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with PropertyBaseTables {
 
-  private val mibStub = app.injector.instanceOf[MibBackendStub]
-
   "render contents" in {
     givenAJourneyWithSession()
-    mibStub.givenAPaymentCalculation(aCalculationResult)
+    givenAPaymentCalculation(aCalculationResult)
     goToReviewGoodsPagePage(New)
 
     elementText(findByTagName("h2")) must include(messages("reviewGoods.h2"))
@@ -52,14 +50,14 @@ class ReviewGoodsContentSpec extends ReviewGoodsPage with CoreTestData with Prop
 
   "render different title&header for amending an existing declaration" in {
     givenAJourneyWithSession(Amend)
-    mibStub.givenAPaymentCalculation(aCalculationResult, WithinThreshold)
-    mibStub.givenPersistedDeclarationIsFound()
+    givenAPaymentCalculation(aCalculationResult, WithinThreshold)
+    givenPersistedDeclarationIsFound()
     goToReviewGoodsPagePage(Amend)
   }
 
   "render contents when over threshold" in {
     givenAJourneyWithSession()
-    mibStub.givenAPaymentCalculation(aCalculationResultOverThousand, OverThreshold)
+    givenAPaymentCalculation(aCalculationResultOverThousand, OverThreshold)
     goToReviewGoodsPagePage(New)
 
     elementText(findByTagName("h2")) must not include messages("reviewGoods.h2")

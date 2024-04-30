@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
+import play.api.http.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
@@ -30,14 +31,13 @@ import java.time.temporal.ChronoUnit
 class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
 
   private val client             = app.injector.instanceOf[MibConnector]
-  private val stub               = app.injector.instanceOf[MibBackendStub]
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val declarationWithId  = declaration.copy(declarationId = stub.stubbedDeclarationId)
+  private val declarationWithId  = declaration.copy(declarationId = stubbedDeclarationId)
 
   "send a declaration to backend to be persisted" in {
-    stub.givenDeclarationIsPersistedInBackend(declarationWithId)
+    givenDeclarationIsPersistedInBackend(declarationWithId)
 
-    client.persistDeclaration(declarationWithId).futureValue mustBe stub.stubbedDeclarationId
+    client.persistDeclaration(declarationWithId).futureValue mustBe stubbedDeclarationId
   }
 
   "send a calculation request to backend for payment" in {
@@ -45,7 +45,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
     val stubbedResult      =
       List(CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None))
 
-    stub.givenAPaymentCalculations(calculationRequest, stubbedResult)
+    givenAPaymentCalculations(calculationRequest, stubbedResult)
 
     client.calculatePayments(calculationRequest).futureValue mustBe CalculationResponse(
       CalculationResults(stubbedResult),
@@ -59,7 +59,7 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
     val stubbedResults =
       CalculationResult(aGoods, AmountInPence(7835), AmountInPence(0), AmountInPence(1567), None) :: Nil
 
-    stub.givenAnAmendPaymentCalculationsRequest(amendRequest, stubbedResults)
+    givenAnAmendPaymentCalculationsRequest(amendRequest, stubbedResults)
 
     client.calculatePaymentsAmendPlusExisting(amendRequest).futureValue mustBe CalculationResponse(
       CalculationResults(stubbedResults),
@@ -68,30 +68,30 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
   }
 
   "find a persisted declaration from backend by declarationId" in {
-    stub.givenPersistedDeclarationIsFound(declarationWithId, stub.stubbedDeclarationId)
+    givenPersistedDeclarationIsFound(declarationWithId, stubbedDeclarationId)
 
-    client.findDeclaration(stub.stubbedDeclarationId).futureValue mustBe Some(declarationWithId)
+    client.findDeclaration(stubbedDeclarationId).futureValue mustBe Some(declarationWithId)
   }
 
   "check eori number" in {
-    stub.givenEoriIsChecked(aEoriNumber)
+    givenEoriIsChecked(aEoriNumber)
 
     client.checkEoriNumber(aEoriNumber).futureValue mustBe aCheckResponse
   }
 
   "findBy query" should {
     "return declarationId as expected" in {
-      stub.givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
+      givenFindByDeclarationReturnSuccess(mibReference, eori, declaration)
       client.findBy(mibReference, eori).value.futureValue mustBe Right(Some(declaration))
     }
 
     "handle 404 from BE" in {
-      stub.givenFindByDeclarationReturnStatus(mibReference, eori, 404)
+      givenFindByDeclarationReturnStatus(mibReference, eori, Status.NOT_FOUND)
       client.findBy(mibReference, eori).value.futureValue mustBe Right(None)
     }
 
     "handle unexpected error from BE" in {
-      stub.givenFindByDeclarationReturnStatus(mibReference, eori, 500)
+      givenFindByDeclarationReturnStatus(mibReference, eori, Status.INTERNAL_SERVER_ERROR)
       client.findBy(mibReference, eori).value.futureValue.isLeft mustBe true
     }
   }

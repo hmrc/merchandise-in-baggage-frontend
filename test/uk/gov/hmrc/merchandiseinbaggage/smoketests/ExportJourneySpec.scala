@@ -21,11 +21,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Name}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class ExportJourneySpec extends BaseUiSpec {
-
-  private val stub = injector.instanceOf[MibBackendStub]
 
   "Export journey" should {
     "work as expected" in {
@@ -44,19 +42,19 @@ class ExportJourneySpec extends BaseUiSpec {
 
       submitPage(PurchaseDetailsExportPage, "100.50")
 
-      stub.givenAPaymentCalculation(aCalculationResult)
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(SearchGoodsCountryPage, "FR")
 
       submitPage(ReviewGoodsPage, Yes)
 
       addMoreGoods()
 
-      stub.givenAPaymentCalculation(aCalculationResult, WithinThreshold)
+      givenAPaymentCalculation(aCalculationResult, WithinThreshold)
       submitPage(ReviewGoodsPage, No)
 
       submitPage(CustomsAgentPage, No)
 
-      stub.givenEoriIsChecked("GB123467800000")
+      givenEoriIsChecked("GB123467800000")
       submitPage(EoriNumberPage, "GB123467800000")
 
       submitPage(TravellerDetailsPage, Name("firstName", "LastName"))
@@ -71,8 +69,8 @@ class ExportJourneySpec extends BaseUiSpec {
 
       submitPage(VehicleRegistrationNumberPage, "abc 123")
 
-      stub.givenDeclarationIsPersistedInBackend
-      stub.givenPersistedDeclarationIsFound()
+      givenDeclarationIsPersistedInBackend
+      givenPersistedDeclarationIsFound()
       submitPage(CheckYourAnswersPage, Export)
 
       webDriver.getCurrentUrl mustBe fullUrl(DeclarationConfirmationPage.path)

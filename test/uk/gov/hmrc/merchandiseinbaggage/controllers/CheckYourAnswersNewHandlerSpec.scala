@@ -47,14 +47,14 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, baseUrl = "") {
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(appConfig, httpClient) {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val testMibConnector: MibConnector = new MibConnector(appConfig, httpClient, base = "") {
+  private lazy val testMibConnector: MibConnector = new MibConnector(appConfig, httpClient) {
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
       Future.successful(DeclarationId("abc"))
   }
@@ -190,6 +190,5 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
-
   }
 }

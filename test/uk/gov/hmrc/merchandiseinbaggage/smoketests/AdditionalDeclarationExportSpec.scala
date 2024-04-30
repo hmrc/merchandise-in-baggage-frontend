@@ -22,14 +22,12 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, Paid, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
 class AdditionalDeclarationExportSpec extends BaseUiSpec {
-
-  private val stub = injector.instanceOf[MibBackendStub]
 
   "Additional Declaration Export journey - happy path" should {
     "work as expected" in {
@@ -40,7 +38,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
 
       val paidDeclaration = declaration.copy(paymentStatus = Some(Paid))
 
-      stub.givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
+      givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
       val sessionId                         = SessionId()
       val created                           = LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS)
@@ -55,16 +53,16 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
         )
 
       givenADeclarationJourneyIsPersisted(exportJourney)
-      stub.givenDeclarationIsAmendedInBackend
-      stub.givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
-      stub.givenAPaymentCalculation(aCalculationResult)
+      givenDeclarationIsAmendedInBackend
+      givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
+      givenAPaymentCalculation(aCalculationResult)
 
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
       webDriver.getPageSource must include("wine")
       webDriver.getPageSource must include("99.99, Euro (EUR)")
 
-      stub.givenAPaymentCalculation(aCalculationResult)
+      givenAPaymentCalculation(aCalculationResult)
       submitPage(PreviousDeclarationDetailsPage, "continue")
 
       // controlled or restricted goods
@@ -83,7 +81,7 @@ class AdditionalDeclarationExportSpec extends BaseUiSpec {
       webDriver.getPageSource must include("France")
       webDriver.getPageSource must include("£100.50")
 
-      stub.givenAnAmendPaymentCalculations(Seq.empty, WithinThreshold)
+      givenAnAmendPaymentCalculations(Seq.empty, WithinThreshold)
       submitPage(ReviewGoodsPage, "No")
 
       webDriver.getPageSource must include("sock")

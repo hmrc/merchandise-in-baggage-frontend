@@ -22,18 +22,16 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, NotRequired}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmationPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.LocalDateTimeOps
 
 import scala.jdk.CollectionConverters._
 
 class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage with CoreTestData {
 
-  private val mibStub = app.injector.instanceOf[MibBackendStub]
-
   "it should show the confirmation content as expected for exports" in {
     val journey = givenAJourneyWithSession()
-    mibStub.givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export), journey.declarationId)
+    givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export), journey.declarationId)
     goToConfirmationPage
 
     findById("serviceLabel").getText mustBe "Declaration"
@@ -75,7 +73,7 @@ class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage wit
         AmountInPence(7),
         Some(aConversionRatePeriod)
       )
-    mibStub.givenPersistedDeclarationIsFound(
+    givenPersistedDeclarationIsFound(
       declaration.copy(
         paymentStatus = Some(NotRequired),
         maybeTotalCalculationResult =

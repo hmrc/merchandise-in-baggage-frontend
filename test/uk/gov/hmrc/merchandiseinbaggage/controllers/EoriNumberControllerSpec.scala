@@ -32,7 +32,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
   val view: EoriNumberView             = injector.instanceOf[EoriNumberView]
   val client: HttpClient               = injector.instanceOf[HttpClient]
   val mockNavigator: Navigator         = mock[Navigator]
-  val connector: MibConnector          = new MibConnector(appConfig, client, "some url") {
+  val connector: MibConnector          = new MibConnector(appConfig, client) {
     override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
       Future.successful(CheckResponse("123", valid = false, None))
   }
@@ -61,7 +61,7 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
   "return an error if API return 404" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
-    val connector = new MibConnector(appConfig, client, "some url") {
+    val connector = new MibConnector(appConfig, client) {
       override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
         Future.failed(new Exception("API returned 404"))
     }

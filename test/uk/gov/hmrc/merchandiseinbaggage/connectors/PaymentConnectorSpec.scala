@@ -20,25 +20,22 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import play.api.http.Status
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HttpClient
-import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
-import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PaymentConnectorSpec extends BaseSpecWithApplication with CoreTestData {
 
-  class TestPaymentConnector
-      extends PaymentConnector(injector.instanceOf[HttpClient], injector.instanceOf[ServicesConfig].baseUrl("payment"))
+  class TestPaymentConnector extends PaymentConnector(appConfig, injector.instanceOf[HttpClient])
 
   "send a payment request to payment service adding a generated session id to the header" in new TestPaymentConnector {
     val stubbedResponse = s"""{"journeyId":"5f3bc55","nextUrl":"http://localhost:9056/pay/initiate-journey"}"""
 
     wireMockServer
       .stubFor(
-        post(urlPathEqualTo(payUrl))
+        post(urlPathEqualTo("/pay-api/mib-frontend/mib/journey/start"))
           .withRequestBody(equalToJson(toJson(payApiRequest).toString, true, false))
           .willReturn(okJson(stubbedResponse).withStatus(Status.CREATED))
       )

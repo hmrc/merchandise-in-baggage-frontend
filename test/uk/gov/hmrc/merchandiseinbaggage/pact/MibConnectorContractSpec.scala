@@ -21,7 +21,7 @@ import com.itv.scalapact.circe13._
 import com.itv.scalapact.model.{ScalaPactDescription, ScalaPactOptions}
 import org.json4s.DefaultFormats
 import play.api.libs.json.Json
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import play.api.http.Status
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
@@ -40,7 +40,6 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
   val CONSUMER: String           = "merchandise-in-baggage-frontend"
   val PROVIDER: String           = "merchandise-in-baggage"
   val mibConnector: MibConnector = injector.instanceOf[MibConnector]
-  val config: AppConfig          = injector.instanceOf[AppConfig]
 
   val findByDeclaration: Declaration = declaration.copy(mibReference = mibReference, eori = eori)
   val today: LocalDate               = LocalDate.now
@@ -55,12 +54,12 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided("persistDeclarationTest")
         .uponReceiving(
           POST,
-          s"${config.mibDeclarationsUrl}",
+          "/declare-commercial-goods/declarations",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declaration).toString
         )
-        .willRespondWith(201, s""""\\"${declaration.declarationId.value}\\""""")
+        .willRespondWith(Status.CREATED, s""""\\"${declaration.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
@@ -68,19 +67,19 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided("amendDeclarationTest")
         .uponReceiving(
           PUT,
-          s"${config.mibDeclarationsUrl}",
+          "/declare-commercial-goods/declarations",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(declarationWithAmendment).toString
         )
-        .willRespondWith(200, s""""\\"${declarationWithAmendment.declarationId.value}\\""""")
+        .willRespondWith(Status.OK, s""""\\"${declarationWithAmendment.declarationId.value}\\""""")
     )
     .addInteraction(
       interaction
         .description("find a declaration")
         .provided(s"id1234XXX${Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString}")
-        .uponReceiving(GET, s"${config.mibDeclarationsUrl}/56789")
-        .willRespondWith(200, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
+        .uponReceiving(GET, "/declare-commercial-goods/declarations/56789")
+        .willRespondWith(Status.OK, Json.toJson(declaration.copy(declarationId = DeclarationId("56789"))).toString)
     )
     .addInteraction(
       interaction
@@ -88,7 +87,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided(s"id789")
         .uponReceiving(
           POST,
-          s"${config.mibAmendsPlusExistingCalculationsUrl}",
+          "/declare-commercial-goods/amend-calculations",
           None,
           Map("Content-Type" -> "application/json"),
           Json
@@ -102,7 +101,7 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
             .toString
         )
         .willRespondWith(
-          200,
+          Status.OK,
           Json
             .toJson(
               CalculationResponse(
@@ -129,13 +128,13 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
         .provided(s"calculatePaymentsTest")
         .uponReceiving(
           POST,
-          s"${config.mibCalculationsUrl}",
+          "/declare-commercial-goods/calculations",
           None,
           Map("Content-Type" -> "application/json"),
           Json.toJson(List(aGoods).map(_.calculationRequest(GreatBritain))).toString
         )
         .willRespondWith(
-          200,
+          Status.OK,
           Json
             .toJson(
               CalculationResponse(
@@ -154,18 +153,21 @@ class MibConnectorContractSpec extends BaseSpecWithApplication with CoreTestData
       interaction
         .description("check EoriNumber")
         .provided(s"checkEoriNumberTest")
-        .uponReceiving(GET, s"${config.mibCheckEoriUrl}GB123")
-        .willRespondWith(200, Json.toJson(CheckResponse("GB123", true, None)).toString)
+        .uponReceiving(GET, "/declare-commercial-goods/validate/eori/GB123")
+        .willRespondWith(Status.OK, Json.toJson(CheckResponse("GB123", valid = true, None)).toString)
     )
     .addInteraction(
       interaction
         .description("findBy mib ref and eori")
         .provided(s"findByTestXXX${Json.toJson(findByDeclaration).toString}")
-        .uponReceiving(GET, s"${config.mibDeclarationsUrl}?mibReference=${mibReference.value}&eori=${eori.value}")
-        .willRespondWith(200, Json.toJson(findByDeclaration).toString)
+        .uponReceiving(
+          GET,
+          s"/declare-commercial-goods/declarations?mibReference=${mibReference.value}&eori=${eori.value}"
+        )
+        .willRespondWith(Status.OK, Json.toJson(findByDeclaration).toString)
     )
 
-  implicit val options: ScalaPactOptions = ScalaPactOptions(true, "./pact")
+  implicit val options: ScalaPactOptions = ScalaPactOptions(writePactFiles = true, "./pact")
 
   private val pactDir = new File("./pact")
   override def beforeAll(): Unit = {

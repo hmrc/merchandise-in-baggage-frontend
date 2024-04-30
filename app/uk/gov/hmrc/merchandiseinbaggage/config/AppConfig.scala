@@ -20,11 +20,13 @@ import com.google.inject.Inject
 import com.typesafe.config.ConfigFactory
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsNavigation
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject() (val config: Configuration, val env: Environment)() extends IsAssistedDigitalConfiguration {
+class AppConfig @Inject() (val config: Configuration, val env: Environment, servicesConfig: ServicesConfig)()
+    extends IsAssistedDigitalConfiguration {
 
   private val serviceIdentifier = "mib"
 
@@ -55,6 +57,13 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment)() ex
   lazy val mibCalculationsUrl: String                   = s"$mibBaseUrl/calculations"
   lazy val mibAmendsPlusExistingCalculationsUrl: String = s"$mibBaseUrl/amend-calculations"
   lazy val mibCheckEoriUrl: String                      = s"$mibBaseUrl/validate/eori/"
+
+  lazy val paymentUrl: String               = servicesConfig.baseUrl("payment")
+  lazy val tpsPaymentsBackendUrl: String    = servicesConfig.baseUrl("tps-payments-backend")
+  lazy val merchandiseInBaggageUrl: String  = servicesConfig.baseUrl("merchandise-in-baggage")
+  lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
+  lazy val addressLookupCallbackUrl: String =
+    config.get[String]("microservice.services.address-lookup-frontend.callback")
 }
 
 trait IsAssistedDigitalConfiguration {

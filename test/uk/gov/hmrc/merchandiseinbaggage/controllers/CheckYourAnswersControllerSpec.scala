@@ -31,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -47,7 +47,6 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   private val exportView: CheckYourAnswersExportView           = injector.instanceOf[CheckYourAnswersExportView]
   private val amendImportView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val amendExportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
-  private val stub                                             = injector.instanceOf[MibBackendStub]
 
   private val mibConnector: MibConnector     = injector.instanceOf[MibConnector]
   private val auditConnector: AuditConnector = injector.instanceOf[AuditConnector]
@@ -55,7 +54,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   private val mockMibService: MibService         = mock[MibService]
   private val mockTpsService: TpsPaymentsService = mock[TpsPaymentsService]
 
-  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, "") {
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(appConfig, httpClient) {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
@@ -125,7 +124,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = Amend)
 
       givenADeclarationJourneyIsPersisted(journey)
-      stub.givenPersistedDeclarationIsFound(
+      givenPersistedDeclarationIsFound(
         declaration.copy(maybeTotalCalculationResult = Some(aTotalCalculationResult)),
         journey.declarationId
       )
@@ -178,7 +177,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
         givenTheUserIsAuthenticatedAndAuthorised()
         givenADeclarationJourneyIsPersisted(journey)
-        stub.givenDeclarationIsPersistedInBackend
+        givenDeclarationIsPersistedInBackend
 
         journeyType match {
           case New   =>
@@ -206,7 +205,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
       val journey: DeclarationJourney = completedDeclarationJourney.copy(sessionId = sessionId, journeyType = New)
 
       givenADeclarationJourneyIsPersisted(journey)
-      stub.givenDeclarationIsPersistedInBackend
+      givenDeclarationIsPersistedInBackend
 
       when(mockMibService.paymentCalculations(any[Seq[ImportGoods]], any[GoodsDestination])(any[HeaderCarrier]))
         .thenReturn(Future.successful(CalculationResponse(aCalculationResults, WithinThreshold)))

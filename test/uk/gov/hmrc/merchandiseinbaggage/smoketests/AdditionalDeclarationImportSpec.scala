@@ -21,11 +21,9 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{PurchaseDetailsInput, RetrieveDeclaration}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class AdditionalDeclarationImportSpec extends BaseUiSpec {
-
-  private val stub = injector.instanceOf[MibBackendStub]
 
   "Additional Declaration Import journey - happy path" should {
     "work as expected" in {
@@ -41,12 +39,12 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
         mibReference = mibReference
       )
 
-      stub.givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
+      givenFindByDeclarationReturnSuccess(mibReference, eori, paidDeclaration)
 
-      stub.givenPersistedDeclarationIsFound(paidDeclaration, paidDeclaration.declarationId)
+      givenPersistedDeclarationIsFound(paidDeclaration, paidDeclaration.declarationId)
 
-      stub.givenAPaymentCalculation(aCalculationResult)
-      stub.givenEoriIsChecked(eori.toString)
+      givenAPaymentCalculation(aCalculationResult)
+      givenEoriIsChecked(eori.toString)
 
       submitPage(RetrieveDeclarationPage, RetrieveDeclaration(mibReference, eori))
 
@@ -73,7 +71,7 @@ class AdditionalDeclarationImportSpec extends BaseUiSpec {
       webDriver.getPageSource must include("Yes")
       webDriver.getPageSource must include("100.50, Euro (EUR)")
 
-      stub.givenAnAmendPaymentCalculations(aCalculationResults.calculationResults, WithinThreshold)
+      givenAnAmendPaymentCalculations(aCalculationResults.calculationResults, WithinThreshold)
       submitPage(ReviewGoodsPage, "No")
 
       submitPage(PaymentCalculationPage, "")
