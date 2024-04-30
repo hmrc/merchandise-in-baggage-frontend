@@ -20,8 +20,9 @@ import play.api.i18n.Messages
 import play.api.libs.json.{Json, OFormat}
 
 case class PurchaseDetails(amount: String, currency: Currency) {
+  private val formattedAmount                        = BigDecimal(amount)
   def formatted(implicit messages: Messages): String =
-    if (currency.code == "GBP") s"£$amount" else s"$amount, ${messages(currency.displayName)}"
+    if (currency.code == "GBP") s"£$formattedAmount" else s"$formattedAmount, ${messages(currency.displayName)}"
 }
 
 object PurchaseDetails {
