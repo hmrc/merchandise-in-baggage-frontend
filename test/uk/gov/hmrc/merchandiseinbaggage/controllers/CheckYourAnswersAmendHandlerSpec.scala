@@ -21,7 +21,6 @@ import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -38,10 +37,7 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class CheckYourAnswersAmendHandlerSpec
-    extends DeclarationJourneyControllerSpec
-    with MibConfiguration
-    with PropertyBaseTables {
+class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec with PropertyBaseTables {
 
   private val importView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
@@ -159,7 +155,10 @@ class CheckYourAnswersAmendHandlerSpec
     val exportJourney: DeclarationJourney = completedDeclarationJourney
       .copy(sessionId = sessionId, declarationType = Export, createdAt = created, declarationId = stubbedId)
 
-    givenPersistedDeclarationIsFound(declaration.copy(declarationType = Export, declarationId = stubbedId), stubbedId)
+    givenPersistedDeclarationIsFound(
+      declaration.copy(declarationType = Export, declarationId = stubbedId),
+      stubbedId
+    )
     givenADeclarationJourneyIsPersisted(exportJourney)
     givenDeclarationIsAmendedInBackend
 

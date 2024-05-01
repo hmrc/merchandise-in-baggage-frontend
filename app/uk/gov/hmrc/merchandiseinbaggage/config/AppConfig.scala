@@ -17,59 +17,56 @@
 package uk.gov.hmrc.merchandiseinbaggage.config
 
 import com.google.inject.Inject
+import com.typesafe.config.ConfigFactory
 import play.api.{Configuration, Environment}
-import pureconfig.ConfigSource
-import pureconfig.generic.auto._
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfigSource.configSource
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsNavigation
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject() (val config: Configuration, val env: Environment)()
-    extends MibConfiguration
-    with IsAssistedDigitalConfiguration {
+class AppConfig @Inject() (val config: Configuration, val env: Environment, servicesConfig: ServicesConfig)()
+    extends IsAssistedDigitalConfiguration {
 
   private val serviceIdentifier = "mib"
 
-  private val contactHost: String = configSource("contact-frontend.host").loadOrThrow[String]
-  val contactUrl                  = s"$contactHost/contact/contact-hmrc-unauthenticated?service=$serviceIdentifier"
-
   lazy val strideRoles: Seq[String] = config.get[Seq[String]]("stride.roles")
-  lazy val timeout: Int             = configSource("timeout.timeout").loadOrThrow[Int]
-  lazy val countdown: Int           = configSource("timeout.countdown").loadOrThrow[Int]
+  lazy val timeout: Int             = config.get[Int]("timeout.timeout")
+  lazy val countdown: Int           = config.get[Int]("timeout.countdown")
 
-  lazy val paymentsReturnUrl: String = configSource("payments.returnUrl").loadOrThrow[String]
-  lazy val paymentsBackUrl: String   = configSource("payments.backUrl").loadOrThrow[String]
+  lazy val paymentsReturnUrl: String = config.get[String]("payments.returnUrl")
+  lazy val paymentsBackUrl: String   = config.get[String]("payments.backUrl")
 
-  lazy val tpsNavigation: TpsNavigation = configSource("tps-navigation").loadOrThrow[TpsNavigation]
+  lazy val tpsNavigation: TpsNavigation = TpsNavigation(
+    back = config.get[String]("tps-navigation.back"),
+    reset = config.get[String]("tps-navigation.reset"),
+    finish = config.get[String]("tps-navigation.finish")
+  )
 
   lazy val mongoTTL: Int = config.get[Int]("mongodb.timeToLiveInSeconds")
 
   val feedbackUrl: String = {
-    val url = configSource("microservice.services.feedback-frontend.url").loadOrThrow[String]
+    val url = config.get[String]("microservice.services.feedback-frontend.url")
     s"$url/$serviceIdentifier"
   }
 
-  lazy val languageTranslationEnabled: Boolean = configSource("features.welsh-translation").loadOrThrow[Boolean]
+  lazy val languageTranslationEnabled: Boolean = config.get[Boolean]("features.welsh-translation")
 
+  private lazy val mibBaseUrl: String                   = "/declare-commercial-goods"
+  lazy val mibDeclarationsUrl: String                   = s"$mibBaseUrl/declarations"
+  lazy val mibCalculationsUrl: String                   = s"$mibBaseUrl/calculations"
+  lazy val mibAmendsPlusExistingCalculationsUrl: String = s"$mibBaseUrl/amend-calculations"
+  lazy val mibCheckEoriUrl: String                      = s"$mibBaseUrl/validate/eori/"
+
+  lazy val paymentUrl: String               = servicesConfig.baseUrl("payment")
+  lazy val tpsPaymentsBackendUrl: String    = servicesConfig.baseUrl("tps-payments-backend")
+  lazy val merchandiseInBaggageUrl: String  = servicesConfig.baseUrl("merchandise-in-baggage")
+  lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
+  lazy val addressLookupCallbackUrl: String =
+    config.get[String]("microservice.services.address-lookup-frontend.callback")
 }
-
-object AppConfigSource {
-  val configSource: String => ConfigSource = ConfigSource.default.at
-}
-
-trait MibConfiguration {
-  lazy val mibConf: MIBConf                          = configSource("microservice.services.merchandise-in-baggage").loadOrThrow[MIBConf]
-  lazy val baseUrl: String                           = "/declare-commercial-goods"
-  lazy val declarationsUrl: String                   = s"$baseUrl/declarations"
-  lazy val calculationsUrl: String                   = s"$baseUrl/calculations"
-  lazy val amendsPlusExistingCalculationsUrl: String = s"$baseUrl/amend-calculations"
-  lazy val checkEoriUrl: String                      = s"$baseUrl/validate/eori/"
-}
-
-final case class MIBConf(protocol: String, host: String, port: Int)
 
 trait IsAssistedDigitalConfiguration {
-  lazy val isAssistedDigital: Boolean = configSource("assistedDigital").loadOrThrow[Boolean]
+  // to avoid re writing the codebase, need to improve in the future to allow injection
+  lazy val isAssistedDigital: Boolean = ConfigFactory.load().getBoolean("assistedDigital")
 }

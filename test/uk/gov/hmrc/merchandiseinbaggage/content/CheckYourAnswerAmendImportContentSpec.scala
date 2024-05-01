@@ -34,7 +34,7 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
   "render proof of origin needed if good EU origin goods amount is > 1000" in {
     setUp(aCalculationResultOverThousand, WithinThreshold) { bulletPoints =>
       bulletPoints.size mustBe 4
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1")}"
+      elementText(bulletPoints.head) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
       elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
       elementText(bulletPoints(3)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
@@ -55,7 +55,7 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
         )
     ) { bulletPoints =>
       bulletPoints.size mustBe 3
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.agent.acknowledgement.1")}"
+      elementText(bulletPoints.head) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.agent.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.1")}"
       elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.agent.acknowledgement.2")}"
     }
@@ -64,7 +64,7 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
   "do not render proof of origin needed if good EU origin goods amount is < 1000" in {
     setUp(aCalculationResult) { bulletPoints =>
       bulletPoints.size mustBe 3
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1")}"
+      elementText(bulletPoints.head) mustBe s"${messages("checkYourAnswers.amend.sendDeclaration.trader.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
       elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
@@ -93,5 +93,4 @@ class CheckYourAnswerAmendImportContentSpec extends CheckYourAnswersPage with Co
       .asScala
       .toList
   }
-
 }

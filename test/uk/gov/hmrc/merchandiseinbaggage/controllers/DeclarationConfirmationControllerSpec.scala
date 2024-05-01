@@ -18,24 +18,21 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.WireMockSupport
 
 import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
 
-  import mibConf._
-  private val view       = app.injector.instanceOf[DeclarationConfirmationView]
-  private val client     = app.injector.instanceOf[HttpClient]
-  private val connector  = new MibConnector(client, s"$protocol://$host:${WireMockSupport.port}")
+  private val view       = injector.instanceOf[DeclarationConfirmationView]
+  private val client     = injector.instanceOf[HttpClient]
+  private val connector  = new MibConnector(appConfig, client)
   private val controller =
     new DeclarationConfirmationController(
       controllerComponents,
@@ -120,7 +117,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
   }
 
   "on page load return an invalid request if journey is invalidated by resetting" in {
-    val connector = new MibConnector(client, "") {
+    val connector = new MibConnector(appConfig, client) {
       override def findDeclaration(declarationId: DeclarationId)(implicit
         hc: HeaderCarrier
       ): Future[Option[Declaration]] =

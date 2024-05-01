@@ -23,7 +23,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.GoodsOverThresholdView
 
 import scala.concurrent.ExecutionContext.Implicits.global

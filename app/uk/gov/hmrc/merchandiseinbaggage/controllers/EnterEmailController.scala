@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.forms.EnterEmailForm._
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -36,15 +36,14 @@ class EnterEmailController @Inject() (
   viewOptional: EnterOptionalEmailView,
   navigator: Navigator
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
-    extends DeclarationJourneyUpdateController
-    with IsAssistedDigitalConfiguration {
+    extends DeclarationJourneyUpdateController {
 
   private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
     backToCheckYourAnswersIfCompleteElse(routes.TravellerDetailsController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] =
     actionProvider.journeyAction { implicit request =>
-      if (isAssistedDigital) {
+      if (appConfig.isAssistedDigital) {
         val preparedForm = optionalForm.fill(request.declarationJourney.maybeEmailAddress)
         Ok(viewOptional(preparedForm, request.declarationType, backButtonUrl))
       } else {
@@ -54,7 +53,7 @@ class EnterEmailController @Inject() (
     }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    if (isAssistedDigital) {
+    if (appConfig.isAssistedDigital) {
       optionalForm
         .bindFromRequest()
         .fold(

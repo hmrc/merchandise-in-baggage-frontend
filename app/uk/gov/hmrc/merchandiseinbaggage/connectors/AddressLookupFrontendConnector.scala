@@ -16,30 +16,29 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 import play.api.http.HeaderNames.LOCATION
 import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig
+import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig._
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class AddressLookupFrontendConnector @Inject() (
-  http: HttpClient,
-  @Named("addressLookupFrontendBaseUrl") baseUrl: String,
-  @Named("addressLookupCallback") callback: String,
-  addressLookupConfig: AddressLookupConfig
-) {
+class AddressLookupFrontendConnector @Inject() (appConfig: AppConfig, http: HttpClient) {
+
+  private val baseUrl  = appConfig.addressLookupFrontendUrl
+  private val callback = appConfig.addressLookupCallbackUrl
 
   private lazy val initJourneyUrl           = s"$baseUrl/api/v2/init"
   private def confirmJourneyUrl(id: String) = s"$baseUrl/api/confirmed?id=$id"
 
   def initJourney(call: Call)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-    val addressConfig = Json.toJson(addressLookupConfig.config(s"$callback${call.url}"))
+    val addressConfig = Json.toJson(configAddressLookup(s"$callback${call.url}"))
 
     http.POST[JsValue, HttpResponse](initJourneyUrl, addressConfig) map { response =>
       response.header(LOCATION).getOrElse {
@@ -50,5 +49,4 @@ class AddressLookupFrontendConnector @Inject() (
 
   def getAddress(id: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Address] =
     http.GET[JsObject](confirmJourneyUrl(id)) map (json => (json \ "address").as[Address])
-
 }

@@ -21,18 +21,16 @@ import play.api.http.Status
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits.readRaw
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{PayApiRequest, PayApiResponse}
 
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-case class PayApiException(message: String) extends RuntimeException(message)
-
 @Singleton
-class PaymentConnector @Inject() (httpClient: HttpClient, @Named("paymentBaseUrl") baseUrl: String) extends Logging {
+class PaymentConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient) extends Logging {
 
-  private val url = s"$baseUrl$payUrl"
+  private val url = s"${appConfig.paymentUrl}/pay-api/mib-frontend/mib/journey/start"
 
   def sendPaymentRequest(
     requestBody: PayApiRequest
@@ -43,15 +41,10 @@ class PaymentConnector @Inject() (httpClient: HttpClient, @Named("paymentBaseUrl
       response.status match {
         case Status.CREATED => response.json.as[PayApiResponse]
         case other: Int     =>
-          throw PayApiException(
+          throw new RuntimeException(
             s"unexpected status from pay-api for reference:${requestBody.mibReference.value}, status:$other"
           )
       }
     }
   }
-}
-
-object PaymentApiUrls {
-  val payUrl                 = "/pay-api/mib-frontend/mib/journey/start"
-  val payInitiatedJourneyUrl = "/pay/initiate-journey"
 }

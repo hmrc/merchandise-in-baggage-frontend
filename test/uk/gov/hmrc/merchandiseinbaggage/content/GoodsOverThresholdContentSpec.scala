@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.GoodsOverThresholdPage._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData {
 

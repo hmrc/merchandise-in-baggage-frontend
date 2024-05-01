@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenFindByDeclarationReturnStatus
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.RetrieveDeclarationView
 
 import scala.concurrent.ExecutionContext.Implicits.global

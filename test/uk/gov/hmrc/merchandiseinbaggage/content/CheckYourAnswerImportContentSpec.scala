@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResult
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.CheckYourAnswersPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.givenAPaymentCalculation
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 import scala.jdk.CollectionConverters._
 
@@ -32,7 +32,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
     setUp(aCalculationResultOverThousand, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) {
       bulletPoints =>
         bulletPoints.size mustBe 3
-        elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
+        elementText(bulletPoints.head) mustBe s"${messages("checkYourAnswers.sendDeclaration.acknowledgement.trader.EU.over.thousand")}"
         elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
         elementText(bulletPoints(2)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
         elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
@@ -51,7 +51,7 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
   "do not render proof of origin needed if good EU origin goods amount is < 1000" in {
     setUp(aCalculationResult, completedDeclarationJourney.copy(maybeIsACustomsAgent = Some(No))) { bulletPoints =>
       bulletPoints.size mustBe 2
-      elementText(bulletPoints(0)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
+      elementText(bulletPoints.head) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.1")}"
       elementText(bulletPoints(1)) mustBe s"${messages("checkYourAnswers.sendDeclaration.Import.trader.acknowledgement.2")}"
       elementText(findByTagName("button")) mustBe s"${messages("checkYourAnswers.payButton")}"
     }
@@ -75,5 +75,4 @@ class CheckYourAnswerImportContentSpec extends CheckYourAnswersPage with CoreTes
       .asScala
       .toList
   }
-
 }
