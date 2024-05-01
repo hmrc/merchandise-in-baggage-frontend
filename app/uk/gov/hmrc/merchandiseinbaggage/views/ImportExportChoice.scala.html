@@ -16,10 +16,9 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core._
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-@import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 
 @this(
     layout: Layout,
@@ -29,9 +28,9 @@
     button: components.button
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages, appConf: AppConfig)
+@(form: Form[_])(implicit request: AuthRequest[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
+@layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = ImportExportChoiceController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, ImportExportChoices.values.headOption.map(_.entryName))

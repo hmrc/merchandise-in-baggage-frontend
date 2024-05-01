@@ -25,8 +25,8 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject() (val config: Configuration, val env: Environment, servicesConfig: ServicesConfig)()
-    extends IsAssistedDigitalConfiguration {
+class AppConfig @Inject() (val config: Configuration, val env: Environment)()
+    extends MibConfiguration {
 
   private val serviceIdentifier = "mib"
 
@@ -64,9 +64,4 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment, serv
   lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
   lazy val addressLookupCallbackUrl: String =
     config.get[String]("microservice.services.address-lookup-frontend.callback")
-}
-
-trait IsAssistedDigitalConfiguration {
-  // to avoid re writing the codebase, need to improve in the future to allow injection
-  lazy val isAssistedDigital: Boolean = ConfigFactory.load().getBoolean("assistedDigital")
 }

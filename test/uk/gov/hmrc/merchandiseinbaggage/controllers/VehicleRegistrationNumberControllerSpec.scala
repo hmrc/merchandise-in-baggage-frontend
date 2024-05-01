@@ -37,12 +37,13 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     )
 
   declarationTypes.foreach { importOrExport =>
-    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
+    val journey: DeclarationJourney =
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request        = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.VehicleRegistrationNumberController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad()(request)
 
         status(eventualResult) mustBe OK
@@ -55,8 +56,13 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
 
-        val request        = buildPost(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "KM04 123")
+        val request =
+          buildPost(
+            routes.VehicleRegistrationNumberController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value" -> "KM04 123")
+          )
 
         val eventualResult = controller(journey).onSubmit()(request)
 
@@ -66,8 +72,13 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
 
       s"return 400 with required form error for $importOrExport" in {
 
-        val request        = buildGet(routes.VehicleRegistrationNumberController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value123" -> "")
+        val request =
+          buildPost(
+            routes.VehicleRegistrationNumberController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value123" -> "")
+          )
 
         val eventualResult = controller(journey).onSubmit()(request)
         val result         = contentAsString(eventualResult)

@@ -50,7 +50,7 @@ class ImportExportChoiceController @Inject() (
         formWithErrors => Future successful BadRequest(view(formWithErrors)),
         choice =>
           navigator
-            .nextPage(ImportExportChoiceRequest(choice, SessionId(request.session(SessionKeys.sessionId)), repo.upsert))
+            .nextPage(ImportExportChoiceRequest(choice, SessionId(request.session(SessionKeys.sessionId)), repo.upsert, request.isAssistedDigital))
             .map { call =>
               choice match {
                 case AddToExisting => Redirect(call).addingToSession("journeyType" -> "amend")

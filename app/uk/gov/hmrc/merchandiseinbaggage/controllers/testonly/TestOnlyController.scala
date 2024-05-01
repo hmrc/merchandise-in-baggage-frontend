@@ -96,6 +96,7 @@ object TestOnlyController {
     DeclarationJourney(
       sessionId = sessionId,
       declarationType = DeclarationType.Import,
+      isAssistedDigital = false,
       maybeExciseOrRestrictedGoods = Some(No),
       maybeGoodsDestination = Some(GreatBritain),
       maybeValueWeightOfGoodsBelowThreshold = Some(Yes),

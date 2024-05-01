@@ -19,14 +19,15 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], amendment: Amendment, isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], amendment: Amendment, isAgent: YesNo)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export)) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export), isAssistedDigital = request.isAssistedDigital) {
 
  @formHelper(action = CheckYourAnswersController.onSubmit) {
 
@@ -48,7 +49,7 @@
 
  <h2 class="govuk-heading-m">@messages(s"checkYourAnswers.${agentOrTrader}.sendDeclaration")</h2>
 
- @if(appConfig.isAssistedDigital) {
+ @if(request.isAssistedDigital) {
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement.AD")</p>
  } else {
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>

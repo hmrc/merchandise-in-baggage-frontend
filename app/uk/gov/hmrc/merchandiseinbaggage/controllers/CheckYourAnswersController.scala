@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyController.incompleteMessage
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
@@ -36,8 +35,7 @@ class CheckYourAnswersController @Inject() (
   amendHandler: CheckYourAnswersAmendHandler,
   override val repo: DeclarationJourneyRepository
 )(implicit ec: ExecutionContext)
-    extends IsAssistedDigitalConfiguration
-    with DeclarationJourneyUpdateController {
+    extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
@@ -61,7 +59,7 @@ class CheckYourAnswersController @Inject() (
       case New   =>
         request.declarationJourney.declarationIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { declaration =>
-            if (isAssistedDigital) {
+            if (request.isAssistedDigital) {
               newHandler.onSubmitTps(declaration.copy(lang = messages.lang.code))
             } else {
               newHandler.onSubmit(declaration.copy(lang = messages.lang.code))
@@ -70,7 +68,7 @@ class CheckYourAnswersController @Inject() (
       case Amend =>
         request.declarationJourney.amendmentIfRequiredAndComplete
           .fold(actionProvider.invalidRequestF(incompleteMessage)) { amendment =>
-            if (isAssistedDigital) {
+            if (request.isAssistedDigital) {
               amendHandler.onSubmitTps(
                 declarationId = request.declarationJourney.declarationId,
                 newAmendment = amendment.copy(lang = messages.lang.code)

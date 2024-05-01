@@ -18,7 +18,9 @@ package uk.gov.hmrc.merchandiseinbaggage
 
 import play.api.Application
 import play.api.i18n.Messages
+import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.{GreatBritain, NorthernIreland}
@@ -58,9 +60,9 @@ trait CoreTestData {
   val eori           = Eori("GB123456780000")
   val aDeclarationId = DeclarationId(UUID.randomUUID().toString)
 
-  val startedImportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import)
+  val startedImportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false)
 
-  val startedExportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Export)
+  val startedExportJourney: DeclarationJourney = DeclarationJourney(aSessionId, Export, isAssistedDigital = false)
 
   val startedExportFromGreatBritain: DeclarationJourney =
     startedExportJourney.copy(maybeGoodsDestination = Some(GreatBritain))
@@ -167,10 +169,10 @@ trait CoreTestData {
       .copy(maybeIsACustomsAgent = Some(No), maybeJourneyDetailsEntry = Some(JourneyDetailsEntry("LHR", journeyDate)))
 
   val startedAmendImportJourney: DeclarationJourney =
-    DeclarationJourney(aSessionId, Import).copy(journeyType = Amend)
+    DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(journeyType = Amend)
 
   val startedAmendExportJourney: DeclarationJourney =
-    DeclarationJourney(aSessionId, Export).copy(journeyType = Amend)
+    DeclarationJourney(aSessionId, Export, isAssistedDigital = false).copy(journeyType = Amend)
 
   val amendImportJourneyWithGoodsEntries: DeclarationJourney =
     startedAmendImportJourney.copy(goodsEntries = GoodsEntries(completedImportGoods))
@@ -313,15 +315,17 @@ trait CoreTestData {
       } else declaration
     }
 
+    val declarationJourneyRequest =
+      new DeclarationJourneyRequest(journey, AuthRequest(fakeRequest, None, isAssistedDigital = false))
+
     val declarationConfirmationView = new DeclarationConfirmationView(layout, null, link)
     val result                      =
       declarationConfirmationView.apply(
         persistedDeclaration.get,
         journeyType,
-        isAssistedDigital = false,
         AmountInPence(0)
       )(
-        fakeRequest,
+        declarationJourneyRequest,
         message,
         appConfig
       )

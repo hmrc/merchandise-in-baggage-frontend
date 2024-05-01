@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.ConversionRatePeriod
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
     layout: Layout,
@@ -29,9 +30,9 @@
     p: components.p
 )
 
-@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1(messages(s"goodsOverThreshold.${dest.toString}.heading", dest.threshold.formattedInPounds))
 
     <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.${declarationType}.p1", dest.threshold.formattedInPounds)</p>
@@ -52,7 +53,7 @@
     </p>
 
     <p class="govuk-body">
-        @if(appConfig.isAssistedDigital) {
+        @if(request.isAssistedDigital) {
         <a class="govuk-link" href="@ImportExportChoiceController.onPageLoad.url">
             @messages("goodsOverThreshold.p5")
         </a>

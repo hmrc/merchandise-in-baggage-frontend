@@ -20,9 +20,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
-@import uk.gov.hmrc.merchandiseinbaggage.viewmodels.GoodsSummaryList
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -35,9 +34,9 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], allowance: ThresholdAllowance, backButtonUrl: Call, declarationType: DeclarationType, journeyType: JourneyType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], allowance: ThresholdAllowance, backButtonUrl: Call, declarationType: DeclarationType, journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"reviewGoods.$journeyType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, s"reviewGoods.$journeyType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = ReviewGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
     @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))

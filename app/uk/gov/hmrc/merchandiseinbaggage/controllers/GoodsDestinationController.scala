@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.forms.GoodsDestinationForm.form
@@ -37,8 +37,8 @@ class GoodsDestinationController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private val backLink =
-    if (appConfig.isAssistedDigital) ImportExportChoiceController.onPageLoad else NewOrExistingController.onPageLoad
+  private def backLink(isAssistedDigital: Boolean): Call =
+    if (isAssistedDigital) ImportExportChoiceController.onPageLoad else NewOrExistingController.onPageLoad
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(
@@ -46,7 +46,7 @@ class GoodsDestinationController @Inject() (
         request.declarationJourney.maybeGoodsDestination
           .fold(form(request.declarationType))(form(request.declarationType).fill),
         request.declarationJourney.declarationType,
-        backLink
+        backLink(request.isAssistedDigital)
       )
     )
   }
@@ -56,7 +56,7 @@ class GoodsDestinationController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink))),
+          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink(request.isAssistedDigital)))),
         value => {
           val updated = request.declarationJourney.copy(maybeGoodsDestination = Some(value))
           navigator

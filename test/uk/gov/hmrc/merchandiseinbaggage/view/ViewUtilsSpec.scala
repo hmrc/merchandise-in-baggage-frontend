@@ -30,7 +30,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         maybeTotalCalculationResult = Some(calculationResultsOverLimit)
       )
 
-      proofOfOriginNeeded(decl) mustBe true
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe true
     }
 
     "false if Declaration < £1000 paid and no Amendments" in {
@@ -39,7 +39,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         maybeTotalCalculationResult = Some(calculationResultsUnderLimit)
       )
 
-      proofOfOriginNeeded(decl) mustBe false
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe false
     }
 
     "true if Declaration and Amendments > £1000" in {
@@ -54,7 +54,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         amendments = firstAmendmentModified +: declarationWithAmendment.amendments.tail
       )
 
-      proofOfOriginNeeded(decl) mustBe true
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe true
     }
 
     "false if Declaration paid and Amendments > £1000 but UNPAID" in {
@@ -69,7 +69,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         amendments = firstAmendmentModified +: declarationWithAmendment.amendments.tail
       )
 
-      proofOfOriginNeeded(decl) mustBe false
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe false
     }
 
     "true if Declaration paid and 3 Amendments last > £1000" in {
@@ -106,7 +106,7 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         amendments = amendmentsModified
       )
 
-      proofOfOriginNeeded(decl) mustBe true
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe true
     }
 
     "false if Declaration paid and 3 Amendments last No payment" in {
@@ -143,13 +143,13 @@ class ViewUtilsSpec extends BaseSpec with CoreTestData {
         amendments = amendmentsModified
       )
 
-      proofOfOriginNeeded(decl) mustBe true
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe true
     }
 
     "false if Declaration is Export" in {
       val decl = declaration.copy(declarationType = Export)
 
-      proofOfOriginNeeded(decl) mustBe false
+      proofOfOriginNeeded(decl, isAssistedDigital = false) mustBe false
     }
   }
 }

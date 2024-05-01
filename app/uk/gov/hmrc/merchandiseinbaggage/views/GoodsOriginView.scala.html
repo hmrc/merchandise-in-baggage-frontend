@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNoDontKnow
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
 
 @this(
 layout: Layout,
@@ -30,13 +31,13 @@ button: components.button,
 details: components.details
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
 @inset = @{
   HtmlContent(s"""${messages("goodsOrigin.inset")} <span class="govuk-!-font-weight-bold">$goodsCategory</span>""")
 }
 
-@layout(pageTitle = Some(title(form, "goodsOrigin.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
+@layout(pageTitle = Some(title(form, "goodsOrigin.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = GoodsOriginController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, YesNoDontKnow.values.headOption.map(_.entryName))

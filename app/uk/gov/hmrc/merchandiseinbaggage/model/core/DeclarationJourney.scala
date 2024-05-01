@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import play.api.libs.json._
-import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -78,6 +77,7 @@ object GoodsEntries {
 case class DeclarationJourney(
   sessionId: SessionId,
   declarationType: DeclarationType,
+  isAssistedDigital: Boolean,
   journeyType: JourneyType = New,
   createdAt: LocalDateTime = LocalDateTime
     .now(ZoneOffset.UTC)
@@ -98,8 +98,7 @@ case class DeclarationJourney(
   maybeRegistrationNumber: Option[String] = None,
   maybeRetrieveDeclaration: Option[RetrieveDeclaration] = None,
   declarationId: DeclarationId = DeclarationId(UUID.randomUUID().toString)
-) extends MibReferenceGenerator
-    with IsAssistedDigitalConfiguration {
+) extends MibReferenceGenerator {
 
   val maybeCustomsAgent: Option[CustomsAgent] =
     for {
@@ -120,6 +119,8 @@ case class DeclarationJourney(
         case _                                                            => None
       }
   }
+
+  val source: Option[String] = if(isAssistedDigital) Some("AssistedDigital") else Some("Digital")
 
   val declarationIfRequiredAndComplete: Option[Declaration] = journeyType match {
     case Amend => None
@@ -150,7 +151,8 @@ case class DeclarationJourney(
         eori,
         journeyDetails,
         LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-        mibReference
+        mibReference,
+        source = source
       )
   }
 
@@ -160,7 +162,7 @@ case class DeclarationJourney(
     case New   => None
     case Amend =>
       goodsEntries.declarationGoodsIfComplete.map(goods =>
-        Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), goods)
+        Amendment(1, LocalDateTime.now.truncatedTo(ChronoUnit.MILLIS), goods, source = source)
       )
   }
 
@@ -213,10 +215,11 @@ object DeclarationJourney {
   implicit val dateFormat: Format[LocalDateTime]   = Format(localDateTimeRead, localDateTimeWrites)
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
-  def apply(sessionId: SessionId, declarationType: DeclarationType, journeyType: JourneyType): DeclarationJourney =
+  def apply(sessionId: SessionId, declarationType: DeclarationType, isAssistedDigital: Boolean, journeyType: JourneyType): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
       declarationType = declarationType,
+      isAssistedDigital = isAssistedDigital,
       journeyType = journeyType,
       goodsEntries = goodsEntries(declarationType)
     )
@@ -227,20 +230,13 @@ object DeclarationJourney {
       case Export => GoodsEntries(ExportGoodsEntry())
     }
 
-  def apply(sessionId: SessionId, declarationType: DeclarationType): DeclarationJourney = declarationType match {
-    case Import =>
+  def apply(sessionId: SessionId, declarationType: DeclarationType, isAssistedDigital: Boolean): DeclarationJourney =
       DeclarationJourney(
         sessionId = sessionId,
         declarationType = declarationType,
-        goodsEntries = GoodsEntries(ImportGoodsEntry())
+        isAssistedDigital = isAssistedDigital,
+        goodsEntries = goodsEntries(declarationType)
       )
-    case Export =>
-      DeclarationJourney(
-        sessionId = sessionId,
-        declarationType = declarationType,
-        goodsEntries = GoodsEntries(ExportGoodsEntry())
-      )
-  }
 
   val id = "sessionId"
 

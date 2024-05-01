@@ -18,23 +18,22 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 @import uk.gov.hmrc.merchandiseinbaggage.forms.CheckYourAnswersForm.taxDue
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.AmountInPence
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], declaration: Declaration, calculationResults: CalculationResults, isAgent: YesNo)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], declaration: Declaration, calculationResults: CalculationResults, isAgent: YesNo)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
 @change = @{messages("checkYourAnswers.change")}
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType)) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType), isAssistedDigital = request.isAssistedDigital) {
 
  @formHelper(action = CheckYourAnswersController.onSubmit) {
 
@@ -184,7 +183,7 @@
 
  <h2 class="govuk-heading-m">@messages(s"checkYourAnswers.${agentOrTrader}.sendDeclaration")</h2>
 
- @if(appConfig.isAssistedDigital) {
+ @if(request.isAssistedDigital) {
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement.AD")</p>
  } else {
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.acknowledgement")</p>

@@ -32,7 +32,7 @@ class GoodsRemovedController @Inject() (
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val startAgainUrl =
-      if (appConfig.isAssistedDigital) {
+      if (request.isAssistedDigital) {
         routes.ImportExportChoiceController.onPageLoad.url
       } else {
         backUrl(request)

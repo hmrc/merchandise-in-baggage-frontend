@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -28,14 +29,14 @@ button: components.button,
 text: components.inputText,
 h1: components.h1)
 
-@(form: Form[Option[Email]], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Option[Email]], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @notMatching = @{
 if(form.errors.find(_.message == "enterEmail.error.notMatching").isDefined) Some("confirmation")
 else None
 }
 
-@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
 @formHelper(action = EnterEmailController.onSubmit, Symbol("novalidate") -> "novalidate") {
 @errorSummary(form.errors, notMatching)
 @h1(messages("enterEmail.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))
@@ -47,7 +48,7 @@ form = form,
 id = "email",
 name = "email",
 inputType = "email",
-label = if(appConfig.isAssistedDigital) { "enterEmail.email.optional" } else { "enterEmail.email" },
+label = if(request.isAssistedDigital) { "enterEmail.email.optional" } else { "enterEmail.email" },
 isPageHeading = false,
 attributes = Map("autocomplete" -> "email", "aria-describedby" -> "email-hint"),
 classes = Some("govuk-input--width-20")

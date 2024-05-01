@@ -59,7 +59,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe OK
 
     import exportJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType)
+    val resetJourney = DeclarationJourney(sessionId, declarationType, isAssistedDigital = false)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
     declarationJourneyRepository
@@ -88,7 +88,7 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     status(eventualResult) mustBe OK
 
     import importJourney._
-    val resetJourney = DeclarationJourney(sessionId, declarationType)
+    val resetJourney = DeclarationJourney(sessionId, declarationType, isAssistedDigital = false)
 
     declarationJourneyRepository.findBySessionId(sessionId).futureValue.get.sessionId mustBe resetJourney.sessionId
     declarationJourneyRepository
