@@ -32,7 +32,7 @@ trait StartController extends DeclarationJourneyController {
   val processRequest: Action[AnyContent] = Action.async { implicit request =>
     val sessionId = SessionId(request.session(SessionKeys.sessionId))
 
-    repo.upsert(DeclarationJourney(sessionId, declarationType)).map { _ =>
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = false)).map { _ =>
       Redirect(routes.NewOrExistingController.onPageLoad)
     }
   }

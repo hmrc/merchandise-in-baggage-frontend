@@ -41,7 +41,7 @@ case class Declaration(
   amendments: Seq[Amendment]
 )
 
-object Declaration extends JourneySourceFinder {
+object Declaration {
   implicit val format: OFormat[Declaration] = Json.format[Declaration]
 
   def apply(
@@ -59,7 +59,7 @@ object Declaration extends JourneySourceFinder {
     mibReference: MibReference,
     maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
     paymentStatus: Option[PaymentStatus] = None,
-    source: Option[String] = findSource,
+    source: Option[String] = None,
     amendments: Seq[Amendment] = Seq.empty
   ): Declaration =
     Declaration(

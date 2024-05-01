@@ -34,7 +34,7 @@
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
-@layout(pageTitle = Some(messages("sessionExpired.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false) {
+@layout(pageTitle = Some(messages("sessionExpired.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = false) {
 
     @h1(messages("sessionExpired.heading"))
 

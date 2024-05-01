@@ -22,6 +22,7 @@
 @import play.api.libs.json.Json
 @import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
 
 @this(
 layout: Layout,
@@ -33,7 +34,7 @@ inputSelect: components.inputSelect,
 button: components.button
 )
 
-@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
     <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
@@ -54,7 +55,8 @@ button: components.button
     pageTitle = Some(title(form, "purchaseDetails.title")),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
-    maybeDeclarationType = Some(Import)
+    maybeDeclarationType = Some(Import),
+    isAssistedDigital = request.isAssistedDigital
 ) {
     @formHelper(action = PurchaseDetailsController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 

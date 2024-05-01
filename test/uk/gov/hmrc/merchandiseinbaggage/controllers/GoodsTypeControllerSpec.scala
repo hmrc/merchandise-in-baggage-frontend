@@ -46,11 +46,14 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     journeyTypes.foreach { journeyType =>
-      val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport).copy(journeyType = journeyType)
+      val journey: DeclarationJourney =
+        DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
+          .copy(journeyType = journeyType)
+
       "onPageLoad" should {
         s"return 200 with radio buttons for $importOrExport for journeyType $journeyType" in {
 
-          val request        = buildGet(GoodsTypeController.onPageLoad(1).url, aSessionId)
+          val request        = buildGet(GoodsTypeController.onPageLoad(1).url, aSessionId, journey)
           val eventualResult = controller(journey).onPageLoad(1)(request)
           val result         = contentAsString(eventualResult)
 
@@ -63,8 +66,14 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
 
       "onSubmit" should {
         s"redirect to next page after successful form submit for $importOrExport for journeyType $journeyType" in {
-          val request    = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
-            .withFormUrlEncodedBody("category" -> "clothes")
+          val request =
+            buildPost(
+              GoodsTypeController.onSubmit(1).url,
+              aSessionId,
+              journey,
+              formData = Seq("category" -> "clothes")
+            )
+
           val page: Call = if (importOrExport == Import) {
             GoodsVatRateController.onPageLoad(1)
           } else {
@@ -84,8 +93,13 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
         }
 
         s"return 400 with any form errors for $importOrExport for journeyType $journeyType" in {
-          val request        = buildPost(GoodsTypeController.onSubmit(1).url, aSessionId)
-            .withFormUrlEncodedBody("xyz" -> "clothes", "abc" -> "1")
+          val request =
+            buildPost(
+              GoodsTypeController.onSubmit(1).url,
+              aSessionId,
+              journey,
+              formData = Seq("xyz" -> "clothes", "abc" -> "1")
+            )
 
           val eventualResult = controller(journey).onSubmit(1)(request)
           val result         = contentAsString(eventualResult)

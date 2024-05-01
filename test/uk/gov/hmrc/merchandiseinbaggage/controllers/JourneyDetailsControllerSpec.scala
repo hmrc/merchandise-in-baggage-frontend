@@ -46,11 +46,11 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport).copy(maybeIsACustomsAgent = Some(YesNo.No))
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false).copy(maybeIsACustomsAgent = Some(YesNo.No))
 
     "onPageLoad" should {
       s"return 200 with correct content for $importOrExport" in {
-        val request        = buildGet(JourneyDetailsController.onPageLoad.url, aSessionId)
+        val request        = buildGet(JourneyDetailsController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
@@ -66,12 +66,17 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
     "onSubmit" should {
       s"redirect to next page after successful form submit for $importOrExport" in {
         val today   = LocalDate.now()
-        val request = buildPost(JourneyDetailsController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody(
-            "port"               -> "ABZ",
-            "dateOfTravel.day"   -> today.getDayOfMonth.toString,
-            "dateOfTravel.month" -> today.getMonthValue.toString,
-            "dateOfTravel.year"  -> today.getYear.toString
+        val request =
+          buildPost(
+            JourneyDetailsController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq(
+              "port"               -> "ABZ",
+              "dateOfTravel.day"   -> today.getDayOfMonth.toString,
+              "dateOfTravel.month" -> today.getMonthValue.toString,
+              "dateOfTravel.year"  -> today.getYear.toString
+            )
           )
 
         when(mockNavigator.nextPage(any[JourneyDetailsRequest])(any[ExecutionContext]))
@@ -84,8 +89,13 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       s"return 400 with any form errors for $importOrExport" in {
-        val request        = buildPost(JourneyDetailsController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("port111" -> "ABZ")
+        val request =
+          buildPost(
+            JourneyDetailsController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("port111" -> "ABZ")
+          )
 
         val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
         val result         = contentAsString(eventualResult)

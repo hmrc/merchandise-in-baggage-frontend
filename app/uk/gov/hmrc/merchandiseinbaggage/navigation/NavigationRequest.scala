@@ -129,7 +129,8 @@ final case class VehicleSizeRequest(
 final case class ImportExportChoiceRequest(
   choice: ImportExportChoice,
   sessionId: SessionId,
-  upsert: DeclarationJourney => Future[DeclarationJourney]
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  isAssistedDigital: Boolean
 ) extends NavigationRequest
 
 final case class NewOrExistingRequest(
@@ -147,7 +148,8 @@ final case class AgentDetailsRequest(
 final case class PreviousDeclarationDetailsRequest(
   journey: DeclarationJourney,
   originalDeclaration: Declaration,
-  upsert: DeclarationJourney => Future[DeclarationJourney]
+  upsert: DeclarationJourney => Future[DeclarationJourney],
+  isAssistedDigital: Boolean
 ) extends NavigationRequest
 
 final case class GoodsTypeRequest(

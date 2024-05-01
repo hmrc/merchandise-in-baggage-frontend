@@ -62,11 +62,12 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
         val journey = DeclarationJourney(
           aSessionId,
           importOrExport,
+          isAssistedDigital = false,
           maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
           goodsEntries = completedGoodsEntries(importOrExport)
         )
 
-        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result         = contentAsString(eventualResult)
 
@@ -98,11 +99,12 @@ class PaymentCalculationControllerSpec extends DeclarationJourneyControllerSpec 
           DeclarationJourney(
             SessionId("123"),
             importOrExport,
+            isAssistedDigital = false,
             maybeGoodsDestination = Some(GoodsDestinations.GreatBritain),
             goodsEntries = overThresholdGoods(importOrExport)
           )
 
-        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(PaymentCalculationController.onPageLoad.url, aSessionId, journey)
         val eventualResult =
           controller(givenADeclarationJourneyIsPersisted(journey), OverThreshold).onPageLoad()(request)
 

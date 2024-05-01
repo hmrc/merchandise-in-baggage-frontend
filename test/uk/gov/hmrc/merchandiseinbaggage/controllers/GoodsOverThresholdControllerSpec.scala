@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
@@ -32,27 +31,25 @@ class GoodsOverThresholdControllerSpec extends DeclarationJourneyControllerSpec 
 
   private val view              = app.injector.instanceOf[GoodsOverThresholdView]
   private val calculatorService = app.injector.instanceOf[MibService]
-  private val mibConnector      = app.injector.instanceOf[MibConnector]
 
   def controller(declarationJourney: DeclarationJourney): GoodsOverThresholdController =
     new GoodsOverThresholdController(
       controllerComponents,
       stubProvider(declarationJourney),
       calculatorService,
-      mibConnector,
       view
     )
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport)
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
         .copy(maybeGoodsDestination = Some(GreatBritain), goodsEntries = completedGoodsEntries(importOrExport))
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
         givenAPaymentCalculation(aCalculationResult)
 
-        val request        = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId)
+        val request        = buildGet(routes.GoodsOverThresholdController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result         = contentAsString(eventualResult)
 

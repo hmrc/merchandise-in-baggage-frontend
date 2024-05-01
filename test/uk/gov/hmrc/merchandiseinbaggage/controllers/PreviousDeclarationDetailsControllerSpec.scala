@@ -77,7 +77,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId, importJourney)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe OK
 
@@ -97,8 +97,14 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(importJourney.declarationIfRequiredAndComplete.get, aDeclarationId)
 
-      val request        =
-        buildGet(PreviousDeclarationDetailsController.onPageLoad.url, SessionId()).withSession("declarationId" -> "987")
+      val request =
+        buildGet(
+          PreviousDeclarationDetailsController.onPageLoad.url,
+          SessionId(),
+          importJourney,
+          sessionData = Seq("declarationId" -> "987")
+        )
+
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe SEE_OTHER
 
@@ -131,7 +137,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId, importJourney)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe OK
 
@@ -167,7 +173,7 @@ class PreviousDeclarationDetailsControllerSpec
 
       givenPersistedDeclarationIsFound(persistedDeclaration.get, aDeclarationId)
 
-      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(PreviousDeclarationDetailsController.onPageLoad.url, aSessionId, exportJourney)
       val eventualResult = controller.onPageLoad()(request)
       status(eventualResult) mustBe OK
 

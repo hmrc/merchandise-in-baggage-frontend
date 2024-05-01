@@ -48,7 +48,7 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onPageLoad" should {
     "return 200 with radio buttons" in {
-      val request        = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId)
+      val request        = buildGet(GoodsOriginController.onPageLoad(1).url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result         = contentAsString(eventualResult)
 
@@ -60,8 +60,13 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to /purchase-details/1 after successful form submit with Yes by delegating to Navigator" in {
-      val request = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "Yes")
+      val request =
+        buildPost(
+          GoodsOriginController.onSubmit(1).url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "Yes")
+        )
 
       when(mockNavigator.nextPage(any[GoodsOriginRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(PurchaseDetailsController.onPageLoad(1)))
@@ -74,8 +79,13 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
   }
 
   s"return 400 with any form errors" in {
-    val request        = buildPost(GoodsOriginController.onSubmit(1).url, aSessionId)
-      .withFormUrlEncodedBody("value" -> "in valid")
+    val request =
+      buildPost(
+        GoodsOriginController.onSubmit(1).url,
+        aSessionId,
+        journey,
+        formData = Seq("value" -> "in valid")
+      )
 
     val eventualResult = controller(journey).onSubmit(1)(request)
     val result         = contentAsString(eventualResult)

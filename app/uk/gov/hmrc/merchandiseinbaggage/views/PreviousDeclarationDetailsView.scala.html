@@ -18,13 +18,13 @@
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.ThresholdAllowance._
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.AmountInPenceEnriched
 @import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
         layout: Layout,
@@ -38,9 +38,9 @@
         summaryList: GovukSummaryList
 )
 
-@(declaration: Declaration, allowance: ThresholdAllowance)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration, allowance: ThresholdAllowance)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = Some(declaration.declarationType)) {
+@layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = Some(declaration.declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1(("previousDeclarationDetails.heading"))
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))

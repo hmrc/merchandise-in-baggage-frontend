@@ -17,7 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
     layout: Layout,
@@ -29,9 +29,9 @@
     p: components.p
 )
 
-@(form: Form[_], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"retrieveDeclaration.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, s"retrieveDeclaration.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = RetrieveDeclarationController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors)

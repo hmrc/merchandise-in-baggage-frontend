@@ -32,6 +32,7 @@
   scriptsBlock: Option[Html] = None,
   maybeBackButtonUrl: Option[play.api.mvc.Call],
   maybeDeclarationType: Option[DeclarationType],
+  isAssistedDigital: Boolean,
   timeOut: Boolean = true
 )(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
@@ -67,14 +68,15 @@
     @scriptsBlock
 }
 
-@if(appConfig.isAssistedDigital) {
+@if(isAssistedDigital) {
     @govukLayout(
         pageTitle = pageTitle,
         headBlock = Some(head(Some(defaultHead))),
         scriptsBlock = Some(defaultScripts),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl,
-        declarationType = None
+        declarationType = None,
+        isAssistedDigital = isAssistedDigital
     )(contentBlock)
 } else {
     @govukLayout(
@@ -83,5 +85,6 @@
         scriptsBlock = Some(defaultScripts),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl,
-        declarationType = maybeDeclarationType)(contentBlock)
+        declarationType = maybeDeclarationType,
+        isAssistedDigital = isAssistedDigital)(contentBlock)
 }

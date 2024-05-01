@@ -40,8 +40,13 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
   "delegate to navigator for navigation in" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
 
-    val postReq = buildPost(RemoveGoodsController.onPageLoad(1).url, completedDeclarationJourney.sessionId)
-      .withFormUrlEncodedBody("value" -> "Yes")
+    val postReq =
+      buildPost(
+        RemoveGoodsController.onPageLoad(1).url,
+        completedDeclarationJourney.sessionId,
+        completedDeclarationJourney,
+        formData = Seq("value" -> "Yes")
+      )
 
     when(mockNavigator.nextPage(any[RemoveGoodsRequest])(any[ExecutionContext]))
       .thenReturn(Future.successful(CheckYourAnswersController.onPageLoad))

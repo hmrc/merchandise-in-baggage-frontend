@@ -27,8 +27,7 @@ import javax.inject.Singleton
 
 @Singleton
 class AppConfig @Inject() (val config: Configuration, val env: Environment)()
-    extends MibConfiguration
-    with IsAssistedDigitalConfiguration {
+    extends MibConfiguration {
 
   private val serviceIdentifier = "mib"
 
@@ -69,7 +68,3 @@ trait MibConfiguration {
 }
 
 final case class MIBConf(protocol: String, host: String, port: Int)
-
-trait IsAssistedDigitalConfiguration {
-  lazy val isAssistedDigital: Boolean = configSource("assistedDigital").loadOrThrow[Boolean]
-}

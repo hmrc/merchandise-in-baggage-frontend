@@ -43,7 +43,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
         mockNavigator
       )
 
-  private val journey: DeclarationJourney = DeclarationJourney(aSessionId, DeclarationType.Import)
+  private val journey: DeclarationJourney = DeclarationJourney(aSessionId, DeclarationType.Import, isAssistedDigital = false)
 
   //TODO move content test in UI
   "onPageLoad" should {
@@ -62,8 +62,13 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     "delegate to Navigator" in {
-      val request = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "Yes")
+      val request =
+        buildPost(
+          CustomsAgentController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "Yes")
+        )
 
       when(mockNavigator.nextPage(any[CustomsAgentRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(AgentDetailsController.onPageLoad))
@@ -75,8 +80,13 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "return 400 with any form errors" in {
-      val request        = buildGet(CustomsAgentController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "in valid")
+      val request =
+        buildPost(
+          CustomsAgentController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "in valid")
+        )
 
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)

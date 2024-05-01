@@ -46,12 +46,16 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       mockNavigator
     )
 
-  "return an error if API EROI validation fails" in {
+  "return an error if API EORI validation fails" in {
     givenADeclarationJourneyIsPersisted(completedDeclarationJourney)
 
     val result = controller.onSubmit()(
-      buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody(("eori", "GB123467800022"))
+      buildPost(
+        routes.EoriNumberController.onSubmit.url,
+        aSessionId,
+        completedDeclarationJourney,
+        formData = Seq("eori" -> "GB123467800022")
+      )
     )
 
     status(result) mustBe BAD_REQUEST
@@ -77,8 +81,12 @@ class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
       )
 
     val result: Future[Result] = controller.onSubmit()(
-      buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody(("eori", "GB123467800000"))
+      buildPost(
+        routes.EoriNumberController.onSubmit.url,
+        aSessionId,
+        completedDeclarationJourney,
+        formData = Seq("eori" -> "GB123467800000")
+      )
     )
 
     status(result) mustBe BAD_REQUEST

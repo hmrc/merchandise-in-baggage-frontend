@@ -50,7 +50,7 @@ class CheckYourAnswersAmendHandler @Inject() (
 
   def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(implicit
     hc: HeaderCarrier,
-    request: Request[_],
+    request: DeclarationJourneyRequest[_],
     messages: Messages
   ): Future[Result] =
     (for {

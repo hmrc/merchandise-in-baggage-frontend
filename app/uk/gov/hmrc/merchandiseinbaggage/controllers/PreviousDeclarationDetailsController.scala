@@ -60,7 +60,7 @@ class PreviousDeclarationDetailsController @Inject() (
             .invalidRequestF(s"declaration not found for id:${request.declarationJourney.declarationId.value}")
         ) { originalDeclaration =>
           navigator
-            .nextPage(PreviousDeclarationDetailsRequest(request.declarationJourney, originalDeclaration, repo.upsert))
+            .nextPage(PreviousDeclarationDetailsRequest(request.declarationJourney, originalDeclaration, repo.upsert, request.isAssistedDigital))
             .map(Redirect)
         }
     }

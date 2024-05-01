@@ -31,7 +31,7 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
     forAll(journeyTypesTable) { journeyType =>
       s"instantiate a declaration journey for $declarationType $journeyType" in {
         val sessionId = aSessionId
-        val actual    = DeclarationJourney(sessionId, declarationType, journeyType)
+        val actual    = DeclarationJourney(sessionId, declarationType, isAssistedDigital = false, journeyType)
         actual.sessionId mustBe sessionId
         actual.declarationType mustBe declarationType
         actual.journeyType mustBe journeyType

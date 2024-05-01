@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -25,9 +26,9 @@ p: components.p,
 link: components.link
 )
 
-@(declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"cannotUseServiceIreland.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(titleNoForm(s"cannotUseServiceIreland.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1("cannotUseServiceIreland.heading")
 
     <p class="govuk-body">

@@ -43,11 +43,11 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
     )
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
-    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
+    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request        = buildGet(NewOrExistingController.onPageLoad.url, aSessionId)
+        val request        = buildGet(NewOrExistingController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
@@ -60,8 +60,13 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect to /goods-destination after successful form submit with New for $importOrExport" in {
-        val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "New")
+        val request =
+          buildPost(
+            NewOrExistingController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value" -> "New")
+          )
 
         when(mockNavigator.nextPage(any[NewOrExistingRequest])(any[ExecutionContext]))
           .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
@@ -74,8 +79,13 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
       }
 
       s"redirect to /retrieve-declaration after successful form submit with 'Add goods to an existing declaration' for $importOrExport" in {
-        val request = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "Amend")
+        val request =
+          buildPost(
+            NewOrExistingController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value" -> "Amend")
+          )
 
         when(mockNavigator.nextPage(any[NewOrExistingRequest])(any[ExecutionContext]))
           .thenReturn(Future.successful(RetrieveDeclarationController.onPageLoad))
@@ -89,8 +99,13 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request        = buildPost(NewOrExistingController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "in valid")
+      val request =
+        buildPost(
+          NewOrExistingController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "in valid")
+        )
 
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)

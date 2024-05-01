@@ -45,7 +45,7 @@ object ViewUtils {
   lazy val exportCountries: List[Country] =
     CountryService.getAllCountries.filterNot(_.code == "GB")
 
-  def proofOfOriginNeeded(declaration: Declaration): Boolean = {
+  def proofOfOriginNeeded(declaration: Declaration, isAssistedDigital: Boolean): Boolean = {
     def calcAmount(maybeTotalCalculationResult: Option[TotalCalculationResult]): Long =
       maybeTotalCalculationResult.fold(0L) {
         _.calculationResults.calculationResults
