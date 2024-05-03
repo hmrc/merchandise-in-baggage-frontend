@@ -23,7 +23,6 @@ import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -32,7 +31,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationRespon
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.{JourneyId, PayApiRequest, PayApiResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, URL}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.{givenDeclarationIsPersistedInBackend, givenPersistedDeclarationIsFound}
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 import uk.gov.hmrc.merchandiseinbaggage.views.html._
 import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -40,7 +39,7 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val httpClient: HttpClient = injector.instanceOf[HttpClient]
 
@@ -55,7 +54,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec wi
   private val mockMibService: MibService         = mock[MibService]
   private val mockTpsService: TpsPaymentsService = mock[TpsPaymentsService]
 
-  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, "") {
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(appConfig, httpClient) {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =

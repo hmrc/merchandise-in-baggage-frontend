@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
+import play.api.http.Status
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with MibConfiguration {
+class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
 
   private val client             = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -86,12 +86,12 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData with Mi
     }
 
     "handle 404 from BE" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, 404)
+      givenFindByDeclarationReturnStatus(mibReference, eori, Status.NOT_FOUND)
       client.findBy(mibReference, eori).value.futureValue mustBe Right(None)
     }
 
     "handle unexpected error from BE" in {
-      givenFindByDeclarationReturnStatus(mibReference, eori, 500)
+      givenFindByDeclarationReturnStatus(mibReference, eori, Status.INTERNAL_SERVER_ERROR)
       client.findBy(mibReference, eori).value.futureValue.isLeft mustBe true
     }
   }

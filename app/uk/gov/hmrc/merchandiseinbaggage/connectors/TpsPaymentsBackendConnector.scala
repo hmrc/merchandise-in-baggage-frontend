@@ -19,16 +19,17 @@ package uk.gov.hmrc.merchandiseinbaggage.connectors
 import play.api.http.Status
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsPaymentsRequest
 
-import javax.inject.{Inject, Named, Singleton}
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
-case class TpsPaymentsException(message: String) extends RuntimeException(message)
-
 @Singleton
-class TpsPaymentsBackendConnector @Inject() (httpClient: HttpClient, @Named("tpsBackendBaseUrl") baseUrl: String) {
+class TpsPaymentsBackendConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient) {
+
+  private val baseUrl = appConfig.tpsPaymentsBackendUrl
 
   def tpsPayments(
     requestBody: TpsPaymentsRequest
@@ -39,7 +40,7 @@ class TpsPaymentsBackendConnector @Inject() (httpClient: HttpClient, @Named("tps
         response.status match {
           case Status.CREATED => response.json.as[PayApiResponse]
           case other: Int     =>
-            throw TpsPaymentsException(
+            throw new RuntimeException(
               s"unexpected status from tps-payments-backend for reference: ${requestBody.mibReference}, status: $other"
             )
         }

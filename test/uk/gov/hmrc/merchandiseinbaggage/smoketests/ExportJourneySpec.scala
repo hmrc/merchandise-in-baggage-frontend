@@ -22,6 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Email, Name}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
 import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+
 class ExportJourneySpec extends BaseUiSpec {
 
   "Export journey" should {

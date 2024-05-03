@@ -56,7 +56,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   lazy val defaultBuilder: DefaultActionBuilder             = injector.instanceOf[DefaultActionBuilder]
   implicit lazy val appConfig: AppConfig                    = injector.instanceOf[AppConfig]
-  def messagesApi: MessagesApi                              = app.injector.instanceOf[MessagesApi]
+  def messagesApi: MessagesApi                              = injector.instanceOf[MessagesApi]
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
   implicit val messages: Messages                           = messagesApi.preferred(fakeRequest)
@@ -101,7 +101,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
         Future.successful(declarationJourney)
     }
 
-  lazy val stubStride: StrideAuthAction = app.injector.instanceOf[StrideAuthAction]
+  lazy val stubStride: StrideAuthAction = injector.instanceOf[StrideAuthAction]
 
   lazy val stubProvider: DeclarationJourney => DeclarationJourneyActionProvider = declarationJourney =>
     new DeclarationJourneyActionProvider(defaultBuilder, stubRepo(declarationJourney), stubStride)

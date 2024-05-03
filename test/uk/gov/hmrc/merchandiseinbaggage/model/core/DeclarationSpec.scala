@@ -39,27 +39,29 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
   private val vehicleRegistrationNumber       = "reg"
 
   "PurchaseDetails toString" should {
-    "include the price string as entered" in {
+    "format the price string entered" in {
       val currency = Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))
 
       PurchaseDetails("1", currency).formatted mustBe "1, Euro (EUR)"
-      PurchaseDetails("1.", currency).formatted mustBe "1., Euro (EUR)"
+      PurchaseDetails("1.", currency).formatted mustBe "1, Euro (EUR)"
       PurchaseDetails("1.0", currency).formatted mustBe "1.0, Euro (EUR)"
       PurchaseDetails("1.00", currency).formatted mustBe "1.00, Euro (EUR)"
       PurchaseDetails("1.000", currency).formatted mustBe "1.000, Euro (EUR)"
+      PurchaseDetails("00001.000", currency).formatted mustBe "1.000, Euro (EUR)"
+      PurchaseDetails("00044001.000", currency).formatted mustBe "44001.000, Euro (EUR)"
 
-      PurchaseDetails("01", currency).formatted mustBe "01, Euro (EUR)"
-      PurchaseDetails("01.", currency).formatted mustBe "01., Euro (EUR)"
-      PurchaseDetails("01.0", currency).formatted mustBe "01.0, Euro (EUR)"
-      PurchaseDetails("01.00", currency).formatted mustBe "01.00, Euro (EUR)"
-      PurchaseDetails("01.000", currency).formatted mustBe "01.000, Euro (EUR)"
+      PurchaseDetails("01", currency).formatted mustBe "1, Euro (EUR)"
+      PurchaseDetails("01.", currency).formatted mustBe "1, Euro (EUR)"
+      PurchaseDetails("01.0", currency).formatted mustBe "1.0, Euro (EUR)"
+      PurchaseDetails("01.00", currency).formatted mustBe "1.00, Euro (EUR)"
+      PurchaseDetails("01.000", currency).formatted mustBe "1.000, Euro (EUR)"
 
       PurchaseDetails("0.1", currency).formatted mustBe "0.1, Euro (EUR)"
       PurchaseDetails("0.10", currency).formatted mustBe "0.10, Euro (EUR)"
       PurchaseDetails("0.100", currency).formatted mustBe "0.100, Euro (EUR)"
 
-      PurchaseDetails(".01", currency).formatted mustBe ".01, Euro (EUR)"
-      PurchaseDetails(".001", currency).formatted mustBe ".001, Euro (EUR)"
+      PurchaseDetails(".01", currency).formatted mustBe "0.01, Euro (EUR)"
+      PurchaseDetails(".001", currency).formatted mustBe "0.001, Euro (EUR)"
     }
   }
 

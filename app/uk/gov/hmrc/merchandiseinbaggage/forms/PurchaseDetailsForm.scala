@@ -45,6 +45,8 @@ object PurchaseDetailsForm extends Mappings {
       mapping(
         "price"    -> text("purchaseDetails.price.error.required").verifying(isAValidPurchasePrice),
         "currency" -> text("purchaseDetails.currency.error.required")
-      )(PurchaseDetailsInput.apply)(PurchaseDetailsInput.unapply)
+      )((price, currency) => PurchaseDetailsInput.apply(price = BigDecimal(price).toString(), currency = currency))(
+        PurchaseDetailsInput.unapply
+      )
     )
 }

@@ -19,8 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.stubs
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.Status
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentApiUrls._
 
 object PayApiStub extends CoreTestData {
 
@@ -29,13 +29,13 @@ object PayApiStub extends CoreTestData {
   def givenTaxArePaid(server: WireMockServer): StubMapping = {
     server
       .stubFor(
-        post(urlPathEqualTo(payUrl))
-          .willReturn(okJson(stubbedResponse).withStatus(201))
+        post(urlPathEqualTo("/pay-api/mib-frontend/mib/journey/start"))
+          .willReturn(okJson(stubbedResponse).withStatus(Status.CREATED))
       )
     server
       .stubFor(
-        get(urlPathEqualTo(payInitiatedJourneyUrl))
-          .willReturn(aResponse().withStatus(200))
+        get(urlPathEqualTo("/pay/initiate-journey"))
+          .willReturn(aResponse().withStatus(Status.OK))
       )
   }
 

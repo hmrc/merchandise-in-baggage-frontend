@@ -20,37 +20,37 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
 import play.api.libs.json.Json
+import play.api.http.Status
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
 
-object MibBackendStub extends MibConfiguration with CoreTestData {
+object MibBackendStub extends CoreTestData {
 
-  val stubbedDeclarationId = DeclarationId("test-mib-be-id")
+  val stubbedDeclarationId: DeclarationId = DeclarationId("test-mib-be-id")
 
   def givenDeclarationIsPersistedInBackend(declaration: Declaration)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$declarationsUrl"))
+        post(urlPathEqualTo("/declare-commercial-goods/declarations"))
           .withRequestBody(equalToJson(toJson(declaration).toString, true, false))
-          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(declaration.declarationId).toString))
+          .willReturn(aResponse().withStatus(Status.CREATED).withBody(Json.toJson(declaration.declarationId).toString))
       )
 
   def givenDeclarationIsPersistedInBackend(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$declarationsUrl"))
-          .willReturn(aResponse().withStatus(201).withBody(Json.toJson(stubbedDeclarationId).toString))
+        post(urlPathEqualTo("/declare-commercial-goods/declarations"))
+          .willReturn(aResponse().withStatus(Status.CREATED).withBody(Json.toJson(stubbedDeclarationId).toString))
       )
 
   def givenDeclarationIsAmendedInBackend(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        put(urlPathEqualTo(s"$declarationsUrl"))
-          .willReturn(aResponse().withStatus(200).withBody(Json.toJson(stubbedDeclarationId).toString))
+        put(urlPathEqualTo("/declare-commercial-goods/declarations"))
+          .willReturn(aResponse().withStatus(Status.OK).withBody(Json.toJson(stubbedDeclarationId).toString))
       )
 
   def givenPersistedDeclarationIsFound(declaration: Declaration, declarationId: DeclarationId = stubbedDeclarationId)(
@@ -59,7 +59,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
     val declarationWithId = declaration.copy(declarationId = declarationId)
     server
       .stubFor(
-        get(urlPathEqualTo(s"$declarationsUrl/${declarationWithId.declarationId.value}"))
+        get(urlPathEqualTo(s"/declare-commercial-goods/declarations/${declarationWithId.declarationId.value}"))
           .willReturn(okJson(Json.toJson(declarationWithId).toString))
       )
   }
@@ -67,7 +67,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   def givenPersistedDeclarationIsFound()(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        get(urlMatching(s"$declarationsUrl/(.*)"))
+        get(urlMatching(s"/declare-commercial-goods/declarations/(.*)"))
           .willReturn(
             okJson(
               Json.toJson(declaration.copy(declarationId = stubbedDeclarationId, declarationType = Export)).toString
@@ -80,7 +80,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   ): StubMapping =
     server
       .stubFor(
-        get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
+        get(urlEqualTo(s"/declare-commercial-goods/declarations?mibReference=${mibReference.value}&eori=${eori.value}"))
           .willReturn(okJson(Json.toJson(declaration).toString()))
       )
 
@@ -89,7 +89,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   ): StubMapping =
     server
       .stubFor(
-        get(urlEqualTo(s"$declarationsUrl?mibReference=${mibReference.value}&eori=${eori.value}"))
+        get(urlEqualTo(s"/declare-commercial-goods/declarations?mibReference=${mibReference.value}&eori=${eori.value}"))
           .willReturn(status(aStatus))
       )
 
@@ -100,7 +100,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$calculationsUrl"))
+        post(urlPathEqualTo("/declare-commercial-goods/calculations"))
           .withRequestBody(equalToJson(toJson(requests).toString, true, false))
           .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
       )
@@ -112,7 +112,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$amendsPlusExistingCalculationsUrl"))
+        post(urlPathEqualTo("/declare-commercial-goods/amend-calculations"))
           .withRequestBody(equalToJson(toJson(request).toString, true, false))
           .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
       )
@@ -123,7 +123,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   )(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$amendsPlusExistingCalculationsUrl"))
+        post(urlPathEqualTo("/declare-commercial-goods/amend-calculations"))
           .willReturn(okJson(Json.toJson(CalculationResponse(CalculationResults(results), thresholdCheck)).toString))
       )
 
@@ -132,7 +132,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   ): StubMapping =
     server
       .stubFor(
-        post(urlPathEqualTo(s"$calculationsUrl"))
+        post(urlPathEqualTo("/declare-commercial-goods/calculations"))
           .willReturn(
             okJson(Json.toJson(CalculationResponse(CalculationResults(List(result)), thresholdCheck)).toString)
           )
@@ -141,7 +141,7 @@ object MibBackendStub extends MibConfiguration with CoreTestData {
   def givenEoriIsChecked(eoriNumber: String)(implicit server: WireMockServer): StubMapping =
     server
       .stubFor(
-        get(urlPathEqualTo(s"$checkEoriUrl$eoriNumber"))
+        get(urlPathEqualTo(s"/declare-commercial-goods/validate/eori/$eoriNumber"))
           .willReturn(ok().withBody(Json.toJson(aCheckResponse).toString))
       )
 }

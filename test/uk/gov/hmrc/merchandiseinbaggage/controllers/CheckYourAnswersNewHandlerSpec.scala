@@ -21,7 +21,6 @@ import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
-import uk.gov.hmrc.merchandiseinbaggage.config.MibConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
@@ -37,7 +36,7 @@ import java.time.LocalDateTime
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
-class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec with MibConfiguration {
+class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
   private lazy val httpClient: HttpClient                     = injector.instanceOf[HttpClient]
   private lazy val importView: CheckYourAnswersImportView     = injector.instanceOf[CheckYourAnswersImportView]
@@ -48,14 +47,14 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(httpClient, baseUrl = "") {
+  private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(appConfig, httpClient) {
     override def sendPaymentRequest(
       requestBody: PayApiRequest
     )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
       Future.successful(payapi.PayApiResponse(JourneyId("5f3b"), URL("http://host")))
   }
 
-  private lazy val testMibConnector: MibConnector = new MibConnector(httpClient, base = "") {
+  private lazy val testMibConnector: MibConnector = new MibConnector(appConfig, httpClient) {
     override def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
       Future.successful(DeclarationId("abc"))
   }
@@ -191,6 +190,5 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec wi
       status(result) mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(DeclarationConfirmationController.onPageLoad.url)
     }
-
   }
 }
