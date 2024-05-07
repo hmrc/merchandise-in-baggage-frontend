@@ -21,10 +21,7 @@ This will start all the required services to complete a journey
 
 ## How to run tests
 
-`./run_all_tests` will run all the tests, including unit, UI and consumer contract tests. The consumer tests will generate
-contract files stored in the project root directory folder `pact`
-The generated contracts test will then being used from the Backend contract verifier by running the script:
-`checkincheck.sh`. However, currently contracts test only runs for local build.
+`./run_all_tests` will run all the tests, including unit, UI and consumer contract tests.
 
 ## UI Tests Repo
 
