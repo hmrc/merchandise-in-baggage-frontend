@@ -116,7 +116,6 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case reviewGoodsView: ReviewGoodsView                                 => render(reviewGoodsView)
     case searchGoodsCountryView: SearchGoodsCountryView                   => render(searchGoodsCountryView)
     case serviceTimeoutView: ServiceTimeoutView                           => render(serviceTimeoutView)
-//    case sessionExpiredView: SessionExpiredView                           => render(sessionExpiredView)
     case testOnlyDeclarationJourneyPage: TestOnlyDeclarationJourneyPage   => render(testOnlyDeclarationJourneyPage)
     case travellerDetailsPage: TravellerDetailsPage                       => render(travellerDetailsPage)
     case valueWeightOfGoodsView: ValueWeightOfGoodsView                   => render(valueWeightOfGoodsView)
