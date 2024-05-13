@@ -33,8 +33,8 @@
  } else {
   @p(Html(messages("invalidRequest.li2")))
   <ul class="govuk-list govuk-list--bullet">
-   <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("invalidRequest.Import.restart"), true)</li>
-   <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("invalidRequest.Export.restart"), true)</li>
+   <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("invalidRequest.Import.restart"), attrTarget = true)</li>
+   <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("invalidRequest.Export.restart"), attrTarget = true)</li>
   </ul>
  }
 }

@@ -16,25 +16,31 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
+import play.api.i18n.Messages
+
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{ProgressDeletedView, ServiceTimeoutView}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class KeepAliveController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   actionProvider: DeclarationJourneyActionProvider,
+  strideAction: StrideAuthAction,
   repo: DeclarationJourneyRepository,
   progressDeletedView: ProgressDeletedView,
   serviceTimeoutView: ServiceTimeoutView
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendBaseController {
+
+  implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val onKeepAlive: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     repo.upsert(request.declarationJourney).map { _ =>
@@ -42,14 +48,16 @@ class KeepAliveController @Inject() (
     }
   }
 
-  val onProgressDelete: Action[AnyContent] = Action { implicit request =>
+  // strideAction is only used to determine isAssistedDigital flag for the view
+  val onProgressDelete: Action[AnyContent] = strideAction.async { implicit request =>
     removeSession(request)(Ok(progressDeletedView()))
   }
 
-  val onServiceTimeout: Action[AnyContent] = Action { implicit request =>
+  // strideAction is only used to determine isAssistedDigital flag for the view
+  val onServiceTimeout: Action[AnyContent] = strideAction.async { implicit request =>
     removeSession(request)(Ok(serviceTimeoutView()))
   }
 
-  private def removeSession(implicit request: Request[_]): Result => Result = result =>
-    result.removingFromSession(SessionKeys.sessionId)
+  private def removeSession(implicit request: Request[_]): Result => Future[Result] = result =>
+    Future.successful(result.removingFromSession(SessionKeys.sessionId))
 }

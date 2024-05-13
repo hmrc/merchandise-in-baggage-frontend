@@ -16,10 +16,7 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
-@import uk.gov.hmrc.merchandiseinbaggage.model.api._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
-@import play.api.libs.json.Json
+@import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 
 @this(
 layout: Layout,
@@ -30,11 +27,10 @@ link: components.link,
 button: components.button
 )
 
+@()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-
-@layout(pageTitle = Some(messages("timeOut.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = false) {
+@layout(pageTitle = Some(messages("timeOut.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = request.isAssistedDigital) {
 
 @h1(messages("timeOut.heading"))
 <br>
@@ -43,7 +39,7 @@ button: components.button
 @p(Html(messages("timeOut.restart.p")), Some("expiredRestartId"))
 
 <ul class="govuk-list govuk-list--bullet">
-    <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("timeOut.Import.restart"), true)</li>
-    <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("timeOut.Export.restart"), true)</li>
+    <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("timeOut.Import.restart"), attrTarget = true)</li>
+    <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("timeOut.Export.restart"), attrTarget = true)</li>
 </ul>
 }
