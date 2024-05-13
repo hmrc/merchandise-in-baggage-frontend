@@ -43,7 +43,8 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
         mockNavigator
       )
 
-  private val journey: DeclarationJourney = DeclarationJourney(aSessionId, DeclarationType.Import, isAssistedDigital = false)
+  private val journey: DeclarationJourney =
+    DeclarationJourney(aSessionId, DeclarationType.Import, isAssistedDigital = false)
 
   //TODO move content test in UI
   "onPageLoad" should {

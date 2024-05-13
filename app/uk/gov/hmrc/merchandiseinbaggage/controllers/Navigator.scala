@@ -35,39 +35,39 @@ class Navigator {
   import NavigatorMapping._
 
   def nextPage(request: NavigationRequest)(implicit ec: ExecutionContext): Future[Call] = request match {
-    case ImportExportChoiceRequest(choice, sessionId, upsert, isAssistedDigital) =>
+    case ImportExportChoiceRequest(choice, sessionId, upsert, isAssistedDigital)            =>
       importExportChoice(choice, sessionId, upsert, isAssistedDigital)
-    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert)    =>
+    case ReviewGoodsRequest(value, journey, overThresholdCheck, upsert)                     =>
       reviewGoods(value, journey, overThresholdCheck, upsert)
-    case PurchaseDetailsRequest(input, idx, journey, entries, upsert)      =>
+    case PurchaseDetailsRequest(input, idx, journey, entries, upsert)                       =>
       purchaseDetails(input, idx, entries, journey, upsert)
-    case RemoveGoodsRequest(idx, journey, value, upsert)                   => removeGoodOrRedirect(idx, journey, value, upsert)
-    case RetrieveDeclarationRequest(declaration, journey, upsert)          => retrieveDeclaration(declaration, journey, upsert)
-    case VehicleRegistrationNumberRequest(journey, regNumber, upsert)      =>
+    case RemoveGoodsRequest(idx, journey, value, upsert)                                    => removeGoodOrRedirect(idx, journey, value, upsert)
+    case RetrieveDeclarationRequest(declaration, journey, upsert)                           => retrieveDeclaration(declaration, journey, upsert)
+    case VehicleRegistrationNumberRequest(journey, regNumber, upsert)                       =>
       vehicleRegistrationNumber(journey, regNumber, upsert)
-    case CustomsAgentRequest(value, journey, upsert, complete)             => customsAgent(value, journey, upsert, complete)
-    case EnterEmailRequest(journey, upsert, complete)                      => enterEmail(journey, upsert, complete)
-    case EoriNumberRequest(journey, upsert, complete)                      => enterEori(journey, upsert, complete)
-    case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete) =>
+    case CustomsAgentRequest(value, journey, upsert, complete)                              => customsAgent(value, journey, upsert, complete)
+    case EnterEmailRequest(journey, upsert, complete)                                       => enterEmail(journey, upsert, complete)
+    case EoriNumberRequest(journey, upsert, complete)                                       => enterEori(journey, upsert, complete)
+    case ExciseAndRestrictedGoodsRequest(value, journey, upsert, complete)                  =>
       exciseAndRestrictedGoods(value, journey, upsert, complete)
-    case GoodsDestinationRequest(value, journey, upsert, complete)         => goodsDestination(value, journey, upsert, complete)
-    case GoodsInVehicleRequest(value, journey, upsert, complete)           =>
+    case GoodsDestinationRequest(value, journey, upsert, complete)                          => goodsDestination(value, journey, upsert, complete)
+    case GoodsInVehicleRequest(value, journey, upsert, complete)                            =>
       goodsInVehicleController(value, journey, upsert, complete)
-    case JourneyDetailsRequest(journey, upsert, complete)                  => journeyDetails(journey, upsert, complete)
-    case TravellerDetailsRequest(journey, upsert, complete)                => travellerDetails(journey, upsert, complete)
-    case ValueWeightOfGoodsRequest(value, idx, journey, upsert, complete)  =>
+    case JourneyDetailsRequest(journey, upsert, complete)                                   => journeyDetails(journey, upsert, complete)
+    case TravellerDetailsRequest(journey, upsert, complete)                                 => travellerDetails(journey, upsert, complete)
+    case ValueWeightOfGoodsRequest(value, idx, journey, upsert, complete)                   =>
       valueWeightOfGoods(value, idx, journey, upsert, complete)
-    case VehicleSizeRequest(value, journey, upsert, complete)              => vehicleSizeController(value, journey, upsert, complete)
-    case NewOrExistingRequest(journey, upsert, complete)                   => newOrExisting(journey, upsert, complete)
-    case AgentDetailsRequest(agentName, journey, upsert)                   => agentDetails(agentName, journey, upsert)
+    case VehicleSizeRequest(value, journey, upsert, complete)                               => vehicleSizeController(value, journey, upsert, complete)
+    case NewOrExistingRequest(journey, upsert, complete)                                    => newOrExisting(journey, upsert, complete)
+    case AgentDetailsRequest(agentName, journey, upsert)                                    => agentDetails(agentName, journey, upsert)
     case PreviousDeclarationDetailsRequest(journey, declaration, upsert, isAssistedDigital) =>
       previousDeclarationDetails(journey, declaration, upsert, isAssistedDigital)
-    case GoodsTypeRequest(journey, entries, idx, category, upsert)         => goodsType(journey, entries, idx, category, upsert)
-    case GoodsOriginRequest(journey, entries, idx, upsert)                 =>
+    case GoodsTypeRequest(journey, entries, idx, category, upsert)                          => goodsType(journey, entries, idx, category, upsert)
+    case GoodsOriginRequest(journey, entries, idx, upsert)                                  =>
       persistAndRedirectIndexed(journey, entries, idx, GoodsVatRateController.onPageLoad(idx), upsert)
-    case GoodsVatRateRequest(journey, entries, idx, upsert)                =>
+    case GoodsVatRateRequest(journey, entries, idx, upsert)                                 =>
       persistAndRedirectIndexed(journey, entries, idx, ReviewGoodsController.onPageLoad, upsert)
-    case SearchGoodsCountryRequest(journey, entries, idx, upsert)          =>
+    case SearchGoodsCountryRequest(journey, entries, idx, upsert)                           =>
       persistAndRedirectIndexed(journey, entries, idx, ReviewGoodsController.onPageLoad, upsert)
   }
 }
@@ -317,7 +317,13 @@ object NavigatorMapping {
       .getCurrencyByCode(purchaseDetailsInput.currency)
       .fold(Future(CannotAccessPageController.onPageLoad)) { currency =>
         val updatedGoodsEntry: GoodsEntry = updateGoodsEntry(purchaseDetailsInput.price, currency, goodsEntry)
-        persistAndRedirectIndexed(declarationJourney, updatedGoodsEntry, idx, GoodsOriginController.onPageLoad(idx), upsert)
+        persistAndRedirectIndexed(
+          declarationJourney,
+          updatedGoodsEntry,
+          idx,
+          GoodsOriginController.onPageLoad(idx),
+          upsert
+        )
       }
 
   private def updateGoodsEntry(amount: String, currency: Currency, goodsEntry: GoodsEntry): GoodsEntry =

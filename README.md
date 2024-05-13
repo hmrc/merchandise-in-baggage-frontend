@@ -6,7 +6,7 @@ Business travellers carrying commercial goods for both import or export.
 
 ## How to start the service locally
 
-`sbt run` This will only start the service as standalone but unable to interact with any other services including Backend and DataBase
+`sbt run` This will only start the service as standalone but unable to interact with any other services including Backend and Database
 
 To load all related services:
 
@@ -59,6 +59,17 @@ To run the tests locally, simply run:
 ```bash
 sbt clean A11y/test
 ```
+
+## How to enable 'Admin Mode'
+
+This service is built to accept traffic from the `admin.tax.service.gov.uk` domain as well for assisted digital journeys.
+The service can detect where the traffic has come from by inspecting the `x-forwarded-host` header, this is done in
+`auth/StrideAuthAction.scala` - this will change some content on some of the pages and also alters the payment journey.
+
+When testing locally, you can enable a filter which will add a header to each request to simulate it coming from the admin domain.
+
+This can be done by updating the `adminJourneyFilter.enabled` flag in application.conf to be `true` or alternatively passing it in as
+a system property e.g. `sbt run -DadminJourneyFilter.enabled=true`
 
 ## License
 

@@ -1,1 +1,1 @@
-sbt run -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes -DassistedDigital=false
+sbt run -Dplay.http.router=testOnlyDoNotUseInAppConf.Routes -DadminJourneyFilter.enabled=false

@@ -44,7 +44,12 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false, goodsEntries = completedGoodsEntries(importOrExport))
+      DeclarationJourney(
+        aSessionId,
+        importOrExport,
+        isAssistedDigital = false,
+        goodsEntries = completedGoodsEntries(importOrExport)
+      )
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {

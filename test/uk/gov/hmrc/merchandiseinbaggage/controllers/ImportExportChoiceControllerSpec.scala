@@ -34,7 +34,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   val view: ImportExportChoice                 = injector.instanceOf[ImportExportChoice]
   val mockNavigator: Navigator                 = mock[Navigator]
-  val journey: DeclarationJourney = startedImportJourney.copy(isAssistedDigital = true)
+  val journey: DeclarationJourney              = startedImportJourney.copy(isAssistedDigital = true)
   val controller: ImportExportChoiceController =
     new ImportExportChoiceController(
       controllerComponents,

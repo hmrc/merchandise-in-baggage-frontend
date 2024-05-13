@@ -36,11 +36,11 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   implicit lazy val lang: Lang                                = Lang("en")
 
   def buildGet(
-    url        : String,
-    sessionId  : SessionId,
-    journey    : DeclarationJourney    = startedImportJourney,
+    url: String,
+    sessionId: SessionId,
+    journey: DeclarationJourney = startedImportJourney,
     sessionData: Seq[(String, String)] = Seq.empty,
-    headers    : Seq[(String, String)] = Seq.empty
+    headers: Seq[(String, String)] = Seq.empty
   ): DeclarationJourneyRequest[AnyContentAsEmpty.type] = {
     val baseRequest = FakeRequest(GET, url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
@@ -50,7 +50,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
     val request =
-      if(journey.isAssistedDigital) {
+      if (journey.isAssistedDigital) {
         baseRequest
           .withHeaders("x-forwarded-host" -> "admin.tax.service.gov.uk")
           .withSession(SessionKeys.authToken -> SessionKeys.authToken)
@@ -65,11 +65,11 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   }
 
   def buildPost(
-    url      : String,
+    url: String,
     sessionId: SessionId,
-    journey  : DeclarationJourney = startedImportJourney,
-    headers  : Seq[(String, String)] = Seq.empty,
-    formData : Seq[(String, String)] = Seq.empty,
+    journey: DeclarationJourney = startedImportJourney,
+    headers: Seq[(String, String)] = Seq.empty,
+    formData: Seq[(String, String)] = Seq.empty
   ): DeclarationJourneyRequest[AnyContentAsEmpty.type] = {
     val baseRequest = FakeRequest(POST, url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
@@ -79,7 +79,7 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
     val request =
-      if(journey.isAssistedDigital) {
+      if (journey.isAssistedDigital) {
         baseRequest
           .withHeaders("x-forwarded-host" -> "admin.tax.service.gov.uk")
           .withSession(SessionKeys.authToken -> SessionKeys.authToken)

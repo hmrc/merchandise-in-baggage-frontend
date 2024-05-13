@@ -20,7 +20,7 @@ import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
 case class AuthRequest[A](
-  request          : Request[A],
-  credentials      : Option[Credentials],
+  request: Request[A],
+  credentials: Option[Credentials],
   isAssistedDigital: Boolean
 ) extends WrappedRequest[A](request)

@@ -46,7 +46,8 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false).copy(maybeIsACustomsAgent = Some(YesNo.No))
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
+        .copy(maybeIsACustomsAgent = Some(YesNo.No))
 
     "onPageLoad" should {
       s"return 200 with correct content for $importOrExport" in {

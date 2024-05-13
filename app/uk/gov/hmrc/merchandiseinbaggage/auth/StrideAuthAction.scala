@@ -66,10 +66,11 @@ class StrideAuthAction @Inject() (
     // flag set to false
 
     val isFromAdminDomain: Boolean =
-      request.headers.get("x-forwarded-host")
+      request.headers
+        .get("x-forwarded-host")
         .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
 
-    if(!isFromAdminDomain) {
+    if (!isFromAdminDomain) {
       block(AuthRequest(request, credentials = None, isAssistedDigital = false))
     } else {
       authorised(AuthProviders(PrivilegedApplication))

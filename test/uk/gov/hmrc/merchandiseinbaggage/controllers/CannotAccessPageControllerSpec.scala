@@ -27,7 +27,8 @@ class CannotAccessPageControllerSpec extends DeclarationJourneyControllerSpec wi
 
   private val view = app.injector.instanceOf[CannotAccessPageView]
 
-  def controller: CannotAccessPageController = new CannotAccessPageController(controllerComponents, stubProvider(startedImportJourney), view)
+  def controller: CannotAccessPageController =
+    new CannotAccessPageController(controllerComponents, stubProvider(startedImportJourney), view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     "onPageLoad" should {

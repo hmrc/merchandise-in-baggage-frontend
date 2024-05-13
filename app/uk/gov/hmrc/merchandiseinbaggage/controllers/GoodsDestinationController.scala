@@ -56,7 +56,11 @@ class GoodsDestinationController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, request.declarationJourney.declarationType, backLink(request.isAssistedDigital)))),
+          Future.successful(
+            BadRequest(
+              view(formWithErrors, request.declarationJourney.declarationType, backLink(request.isAssistedDigital))
+            )
+          ),
         value => {
           val updated = request.declarationJourney.copy(maybeGoodsDestination = Some(value))
           navigator

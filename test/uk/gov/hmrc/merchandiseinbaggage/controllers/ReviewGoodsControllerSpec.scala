@@ -190,7 +190,12 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
 
     s"redirect to next page after successful form submit with No for $importOrExport" in {
       val journey: DeclarationJourney =
-        DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false, goodsEntries = completedGoodsEntries(importOrExport))
+        DeclarationJourney(
+          aSessionId,
+          importOrExport,
+          isAssistedDigital = false,
+          goodsEntries = completedGoodsEntries(importOrExport)
+        )
           .copy(journeyType = Amend)
 
       when(
