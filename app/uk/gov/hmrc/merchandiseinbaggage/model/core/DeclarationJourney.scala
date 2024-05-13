@@ -120,7 +120,7 @@ case class DeclarationJourney(
       }
   }
 
-  val source: Option[String] = if(isAssistedDigital) Some("AssistedDigital") else Some("Digital")
+  val source: Option[String] = if (isAssistedDigital) Some("AssistedDigital") else Some("Digital")
 
   val declarationIfRequiredAndComplete: Option[Declaration] = journeyType match {
     case Amend => None
@@ -215,7 +215,12 @@ object DeclarationJourney {
   implicit val dateFormat: Format[LocalDateTime]   = Format(localDateTimeRead, localDateTimeWrites)
   implicit val format: OFormat[DeclarationJourney] = Json.format[DeclarationJourney]
 
-  def apply(sessionId: SessionId, declarationType: DeclarationType, isAssistedDigital: Boolean, journeyType: JourneyType): DeclarationJourney =
+  def apply(
+    sessionId: SessionId,
+    declarationType: DeclarationType,
+    isAssistedDigital: Boolean,
+    journeyType: JourneyType
+  ): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
       declarationType = declarationType,
@@ -231,12 +236,12 @@ object DeclarationJourney {
     }
 
   def apply(sessionId: SessionId, declarationType: DeclarationType, isAssistedDigital: Boolean): DeclarationJourney =
-      DeclarationJourney(
-        sessionId = sessionId,
-        declarationType = declarationType,
-        isAssistedDigital = isAssistedDigital,
-        goodsEntries = goodsEntries(declarationType)
-      )
+    DeclarationJourney(
+      sessionId = sessionId,
+      declarationType = declarationType,
+      isAssistedDigital = isAssistedDigital,
+      goodsEntries = goodsEntries(declarationType)
+    )
 
   val id = "sessionId"
 

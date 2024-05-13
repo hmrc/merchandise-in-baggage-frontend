@@ -42,7 +42,8 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false).copy(maybeGoodsDestination = Some(GreatBritain))
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
+        .copy(maybeGoodsDestination = Some(GreatBritain))
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 

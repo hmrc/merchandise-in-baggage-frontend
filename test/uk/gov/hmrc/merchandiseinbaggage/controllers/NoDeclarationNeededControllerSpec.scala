@@ -33,7 +33,8 @@ class NoDeclarationNeededControllerSpec extends DeclarationJourneyControllerSpec
     s"return 200 with correct content" in {
 
       val journey: DeclarationJourney =
-        DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(maybeGoodsDestination = Some(GreatBritain))
+        DeclarationJourney(aSessionId, Import, isAssistedDigital = false)
+          .copy(maybeGoodsDestination = Some(GreatBritain))
 
       val request        = buildGet(routes.NoDeclarationNeededController.onPageLoad.url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad()(request)

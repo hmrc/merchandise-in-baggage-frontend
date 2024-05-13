@@ -148,7 +148,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
     journeyTypes.foreach { journeyType =>
       s"redirect to /cannot-access-service for in-completed journeys for $journeyType" in {
         val sessionId                   = SessionId()
-        val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(journeyType = journeyType)
+        val journey: DeclarationJourney =
+          DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(journeyType = journeyType)
 
         val request        = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId, journey)
         val eventualResult = controller(declarationJourney = journey).onSubmit()(request)

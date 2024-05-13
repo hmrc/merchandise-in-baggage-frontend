@@ -88,7 +88,8 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        implicit val request: DeclarationJourneyRequest[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
+        implicit val request: DeclarationJourneyRequest[_] =
+          buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val result = newHandler().onPageLoad(declaration, YesNo.Yes)
 
@@ -107,7 +108,8 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
         val overThresholdGoods = aCalculationResponse.copy(thresholdCheck = OverThreshold)
 
-        implicit val request: DeclarationJourneyRequest[_] = buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
+        implicit val request: DeclarationJourneyRequest[_] =
+          buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val result = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
 

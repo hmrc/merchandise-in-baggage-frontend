@@ -39,7 +39,8 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         view
       )
 
-  val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(maybeIsACustomsAgent = Some(YesNo.No))
+  val journey: DeclarationJourney =
+    DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(maybeIsACustomsAgent = Some(YesNo.No))
   "onPageLoad" should {
     s"return 200 with correct content for" in {
 

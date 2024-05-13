@@ -23,11 +23,11 @@ import play.api.mvc.{Filter, RequestHeader, Result}
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class AdminJourneyFilter @Inject()(
+class AdminJourneyFilter @Inject() (
   override val mat: Materializer,
-  config          : Configuration
+  config: Configuration
 ) extends Filter
-     with Logging {
+    with Logging {
 
   private val enabled: Boolean = config.get[Boolean]("adminJourneyFilter.enabled")
 

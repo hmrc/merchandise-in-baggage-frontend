@@ -24,9 +24,9 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject()(
-  val config    : Configuration,
-  val env       : Environment,
+class AppConfig @Inject() (
+  val config: Configuration,
+  val env: Environment,
   servicesConfig: ServicesConfig
 ) {
 

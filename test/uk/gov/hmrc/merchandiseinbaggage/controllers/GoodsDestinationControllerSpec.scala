@@ -71,7 +71,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
             GoodsDestinationController.onSubmit.url,
             aSessionId,
             journey,
-            formData =  Seq("value" -> "GreatBritain")
+            formData = Seq("value" -> "GreatBritain")
           )
 
         when(mockNavigator.nextPage(any[GoodsDestinationRequest])(any[ExecutionContext]))

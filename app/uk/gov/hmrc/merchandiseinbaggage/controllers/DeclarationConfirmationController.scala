@@ -45,10 +45,10 @@ class DeclarationConfirmationController @Inject() (
     connector.findDeclaration(declarationId).flatMap {
       case Some(declaration) if canShowConfirmation(declaration, journeyType, request.isAssistedDigital) =>
         cleanAnswersAndConfirm(journeyType, declaration)
-      case Some(_)                                                            =>
+      case Some(_)                                                                                       =>
         clearAnswers()
           .map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
-      case _                                                                  => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
+      case _                                                                                             => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
     }
   }
 
@@ -67,24 +67,33 @@ class DeclarationConfirmationController @Inject() (
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map { _ =>
-      Redirect(routes.GoodsDestinationController.onPageLoad)
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+      _ =>
+        Redirect(routes.GoodsDestinationController.onPageLoad)
     }
   }
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map { _ =>
-      Redirect(routes.RetrieveDeclarationController.onPageLoad)
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+      _ =>
+        Redirect(routes.RetrieveDeclarationController.onPageLoad)
     }
   }
 
   private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[DeclarationJourney] = {
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital).copy(declarationId = declarationId))
+    repo.upsert(
+      DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)
+        .copy(declarationId = declarationId)
+    )
   }
 
-  private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType, isAssistedDigital: Boolean): Boolean =
+  private def canShowConfirmation(
+    declaration: Declaration,
+    journeyType: JourneyType,
+    isAssistedDigital: Boolean
+  ): Boolean =
     (declaration.declarationType, journeyType, isAssistedDigital) match {
       case (Export, _, _)        => true
       case (Import, New, true)   =>

@@ -32,7 +32,8 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
   val deletedView        = app.injector.instanceOf[ProgressDeletedView]
   val serviceTimeoutView = app.injector.instanceOf[ServiceTimeoutView]
   val strideAction       = app.injector.instanceOf[StrideAuthAction]
-  val controller         = new KeepAliveController(controllerComponents, actionBuilder, strideAction, repo, deletedView, serviceTimeoutView)
+  val controller         =
+    new KeepAliveController(controllerComponents, actionBuilder, strideAction, repo, deletedView, serviceTimeoutView)
 
   "return NoContent with no changes to declaration journey" in {
     val id      = SessionId("unchanged")
