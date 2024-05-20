@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.connectors
-
 import play.api.http.Status
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
@@ -28,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
+class MibConnectorISpec extends BaseSpecWithApplication with CoreTestData {
 
   private val client             = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
@@ -94,5 +93,11 @@ class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
       givenFindByDeclarationReturnStatus(mibReference, eori, Status.INTERNAL_SERVER_ERROR)
       client.findBy(mibReference, eori).value.futureValue.isLeft mustBe true
     }
+  }
+
+  "amend a declaration" in {
+    givenDeclarationIsAmendedInBackend
+
+    client.amendDeclaration(declarationWithAmendment).futureValue mustBe stubbedDeclarationId
   }
 }
