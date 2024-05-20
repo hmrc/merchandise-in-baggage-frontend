@@ -21,7 +21,7 @@ This will start all the required services to complete a journey
 
 ## How to run tests
 
-`./run_all_tests` will run all the tests, including unit, UI and consumer contract tests.
+`./run_all_tests` will run all the tests, including unit, UI and integration tests.
 
 ## UI Tests Repo
 

@@ -27,7 +27,7 @@ import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 
-class MibConnectorSpec extends BaseSpecWithApplication with CoreTestData {
+class MibConnectorISpec extends BaseSpecWithApplication with CoreTestData {
 
   private val client             = app.injector.instanceOf[MibConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
