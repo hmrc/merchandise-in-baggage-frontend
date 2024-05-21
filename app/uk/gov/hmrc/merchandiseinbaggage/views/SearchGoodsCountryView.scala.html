@@ -50,8 +50,7 @@ button: components.button
     pageTitle = Some(title(form, s"searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
-    maybeDeclarationType = Some(Import),
-    isAssistedDigital = request.isAssistedDigital
+    maybeDeclarationType = Some(Import)
 ) {
     @formHelper(action = SearchGoodsCountryController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 

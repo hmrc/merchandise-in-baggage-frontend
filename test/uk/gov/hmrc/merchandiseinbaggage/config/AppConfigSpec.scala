@@ -31,7 +31,9 @@ class AppConfigSpec extends BaseSpecWithApplication {
     .build()
 
   "AppConfig" should {
+
     "return the correct values" in {
+
       appConfig.strideRoles mustBe Seq("tps_payment_taker_call_handler", "digital_mib_call_handler")
       appConfig.timeout mustBe 900
       appConfig.countdown mustBe 120
@@ -61,8 +63,6 @@ class AppConfigSpec extends BaseSpecWithApplication {
       appConfig.merchandiseInBaggageUrl mustBe "http://localhost:8280"
       appConfig.addressLookupFrontendUrl mustBe "http://localhost:9028"
       appConfig.addressLookupCallbackUrl mustBe "http://localhost:8281"
-
-      appConfig.isAssistedDigital mustBe false
     }
 
     "throw an exception when the config value is not found" in {

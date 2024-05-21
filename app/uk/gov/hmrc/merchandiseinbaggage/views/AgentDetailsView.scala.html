@@ -29,7 +29,7 @@ text: components.inputText)
 
 @(form: Form[_], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "agentDetails.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "agentDetails.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 
   @formHelper(action = AgentDetailsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 

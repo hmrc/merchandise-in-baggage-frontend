@@ -21,16 +21,16 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
-layout: Layout,
-formHelper: FormWithCSRF,
-errorSummary: components.errorSummary,
-inputRadio: components.inputRadio,
-button: components.button
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    errorSummary: components.errorSummary,
+    inputRadio: components.inputRadio,
+    button: components.button
 )
 
 @(form: Form[_], declarationType: DeclarationType, backLink: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"goodsDestination.$declarationType.title")), maybeBackButtonUrl = Some(backLink), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, s"goodsDestination.$declarationType.title")), maybeBackButtonUrl = Some(backLink), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = GoodsDestinationController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, GoodsDestinations.values.headOption.map(_.entryName))

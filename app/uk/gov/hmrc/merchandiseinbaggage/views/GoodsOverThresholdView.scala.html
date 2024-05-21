@@ -32,7 +32,7 @@
 
 @(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @h1(messages(s"goodsOverThreshold.${dest.toString}.heading", dest.threshold.formattedInPounds))
 
     <p class="govuk-body-l">@messages(s"goodsOverThreshold.${dest.toString}.${declarationType}.p1", dest.threshold.formattedInPounds)</p>

@@ -37,7 +37,7 @@ details: components.details
   HtmlContent(s"""${messages("goodsOrigin.inset")} <span class="govuk-!-font-weight-bold">$goodsCategory</span>""")
 }
 
-@layout(pageTitle = Some(title(form, "goodsOrigin.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "goodsOrigin.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
     @formHelper(action = GoodsOriginController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, YesNoDontKnow.values.headOption.map(_.entryName))

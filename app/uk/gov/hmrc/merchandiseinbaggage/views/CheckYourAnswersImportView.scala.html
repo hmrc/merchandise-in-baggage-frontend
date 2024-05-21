@@ -33,7 +33,7 @@
 
 @change = @{messages("checkYourAnswers.change")}
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType)) {
 
  @formHelper(action = CheckYourAnswersController.onSubmit) {
 

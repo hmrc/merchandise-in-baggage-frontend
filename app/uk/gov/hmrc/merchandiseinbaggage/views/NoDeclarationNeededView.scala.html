@@ -26,7 +26,7 @@ p: components.p
 
 @(declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("noDeclarationNeeded.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm("noDeclarationNeeded.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
     @h1("noDeclarationNeeded.heading")
 
     @p(Html(messages("noDeclarationNeeded.p")))

@@ -37,8 +37,7 @@ button: components.button
 @layout(
     pageTitle = Some(title(form, "purchaseDetails.title", titleMessageArgs = Seq(goodsCategory))),
     maybeBackButtonUrl = Some(backButtonUrl),
-    maybeDeclarationType = Some(Export),
-    isAssistedDigital = request.isAssistedDigital
+    maybeDeclarationType = Some(Export)
 ) {
     @formHelper(action = PurchaseDetailsController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 

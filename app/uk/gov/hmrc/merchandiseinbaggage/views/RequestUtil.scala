@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,15 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.Layout
+package uk.gov.hmrc.merchandiseinbaggage.views
 
-@this(layout: Layout)
+import com.google.inject.Inject
+import play.api.mvc.Request
 
-@(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-@layout(pageTitle = Some(pageTitle), maybeBackButtonUrl = None, maybeDeclarationType = None) {
-    <h1 class="govuk-heading-xl">@{Text(heading).asHtml}</h1>
-    <p class="govuk-body">@{Text(message).asHtml}</p>
+object RequestUtil {
+
+  def isAssistedDigital()(implicit request: Request[_]): Boolean =
+    request.headers
+      .get("x-forwarded-host")
+      .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
 }

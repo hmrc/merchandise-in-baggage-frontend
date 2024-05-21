@@ -30,7 +30,7 @@
 
 @(form: Form[_])(implicit request: AuthRequest[_], messages: Messages, appConf: AppConfig)
 
-@layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
     @formHelper(action = ImportExportChoiceController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, ImportExportChoices.values.headOption.map(_.entryName))

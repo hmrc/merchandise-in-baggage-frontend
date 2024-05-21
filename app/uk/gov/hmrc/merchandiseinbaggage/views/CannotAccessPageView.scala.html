@@ -23,7 +23,7 @@
 
 @()(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
   <h1 class="govuk-heading-xl">@messages("invalidRequest.title")</h1>
 
  @p(Html(messages("invalidRequest.li1")))

@@ -36,7 +36,7 @@ button: components.button
 
 @(form: Form[_], allowance: ThresholdAllowance, backButtonUrl: Call, declarationType: DeclarationType, journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, s"reviewGoods.$journeyType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, s"reviewGoods.$journeyType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = ReviewGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
     @errorSummary(form.errors, YesNo.values.headOption.map(_.entryName))

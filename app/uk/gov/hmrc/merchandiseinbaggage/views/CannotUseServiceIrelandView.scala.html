@@ -28,7 +28,7 @@ link: components.link
 
 @(declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(s"cannotUseServiceIreland.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm(s"cannotUseServiceIreland.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @h1("cannotUseServiceIreland.heading")
 
     <p class="govuk-body">

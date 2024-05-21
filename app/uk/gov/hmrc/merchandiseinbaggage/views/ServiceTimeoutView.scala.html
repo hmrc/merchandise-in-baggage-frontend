@@ -30,7 +30,7 @@ button: components.button
 @()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
 
 
-@layout(pageTitle = Some(messages("timeOut.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(messages("timeOut.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false) {
 
 @h1(messages("timeOut.heading"))
 <br>

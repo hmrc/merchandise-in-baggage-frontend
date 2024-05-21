@@ -26,87 +26,97 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
 @import uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
+@import uk.gov.hmrc.merchandiseinbaggage.views.RequestUtil._
 
-@this(layout: Layout, formHelper: FormWithCSRF, link: link)
+@this(
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    link: link
+)
 
 @(declaration: Declaration, journeyType: JourneyType, totalTaxDue: AmountInPence)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @printLink = {
- <script @{CSPNonce.attr}>
-  document.getElementById("printLink").classList.remove("govuk-!-display-none");
-  document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print");
-  document.getElementById("printLink").setAttribute("aria-hidden", "false");
-  document.getElementById("printDeclarationId").addEventListener("click", event => {
-    event.preventDefault();
-    window.print();
-   });
- </script>
+<script @{CSPNonce.attr}>
+    document.getElementById("printLink").classList.remove("govuk-!-display-none");
+    document.getElementById("printLink").classList.add("govuk-body", "govuk-!-display-none-print");
+    document.getElementById("printLink").setAttribute("aria-hidden", "false");
+    document.getElementById("printDeclarationId").addEventListener("click", event => {
+      event.preventDefault();
+      window.print();
+     });
+</script>
 }
 
-@layout(pageTitle = Some(titleNoForm("declarationConfirmation.title")), scriptsBlock = Some(printLink), maybeBackButtonUrl = None, maybeDeclarationType = Some(declaration.declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(
+    pageTitle = Some(titleNoForm("declarationConfirmation.title")),
+    scriptsBlock = Some(printLink),
+    maybeBackButtonUrl = None,
+    maybeDeclarationType = Some(declaration.declarationType)
+) {
 
- <div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
-  <h1 id="panelTitleId" class="govuk-panel__title">@messages("declarationConfirmation.banner.title")</h1>
-  <div id="mibReferenceId" class="govuk-panel__body">@messages("declarationConfirmation.yourReferenceNumber.label")<br><strong>@declaration.mibReference.value</strong></div>
- </div>
+<div id="confirmationPanelId" class="govuk-panel govuk-panel--confirmation">
+    <h1 id="panelTitleId" class="govuk-panel__title">@messages("declarationConfirmation.banner.title")</h1>
+    <div id="mibReferenceId" class="govuk-panel__body">@messages("declarationConfirmation.yourReferenceNumber.label")<br><strong>@declaration.mibReference.value</strong></div>
+</div>
 
- <p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
+<p id="declarationEmailId" class="govuk-body">@messages("declarationConfirmation.email", declaration.email.map(_.email).getOrElse(""))</p>
 
 <dl class="govuk-summary-list govuk-!-margin-bottom-7">
- <div class="govuk-summary-list__row">
-  <dt id="serviceLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.declaration.label")</dt>
-  <dd id="service" class="govuk-summary-list__value">@messages("declarationConfirmation.declaration.text")</dd>
- </div>
- <div class="govuk-summary-list__row">
-  <dt id="dateOfDeclarationLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.date.label")</dt>
-  <dd id="dateOfDeclaration" class="govuk-summary-list__value" style="text-transform: capitalize">@latestDateFormatted(declaration)</dd>
- </div>
- <div class="govuk-summary-list__row">
-  <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
-  @if(declaration.declarationType == Import && request.isAssistedDigital && totalTaxDue.value > 0) {
-   <dd id="amountAD" class="govuk-summary-list__value">@{totalTaxDue.formattedInPounds}</dd>
-  } else { <dd id="amount" class="govuk-summary-list__value">@messages("declarationConfirmation.nothingtopay.label")</dd> }
- </div>
+    <div class="govuk-summary-list__row">
+        <dt id="serviceLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.declaration.label")</dt>
+        <dd id="service" class="govuk-summary-list__value">@messages("declarationConfirmation.declaration.text")</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt id="dateOfDeclarationLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.date.label")</dt>
+        <dd id="dateOfDeclaration" class="govuk-summary-list__value" style="text-transform: capitalize">@latestDateFormatted(declaration)</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt id="amountLabel" class="govuk-summary-list__key">@messages("declarationConfirmation.amount.label")</dt>
+        @if(declaration.declarationType == Import && isAssistedDigital && totalTaxDue.value > 0) {
+        <dd id="amountAD" class="govuk-summary-list__value">@{totalTaxDue.formattedInPounds}</dd>
+        } else { <dd id="amount" class="govuk-summary-list__value">@messages("declarationConfirmation.nothingtopay.label")</dd> }
+    </div>
 </dl>
 
- <p id="printLink" class="govuk-!-display-none" aria-hidden="true">
-   <a id="printDeclarationId" class="govuk-link" href="#">@messages("declarationConfirmation.printOrSave.label")</a>
- </p>
+<p id="printLink" class="govuk-!-display-none" aria-hidden="true">
+    <a id="printDeclarationId" class="govuk-link" href="#">@messages("declarationConfirmation.printOrSave.label")</a>
+</p>
 
- <h2 id="whatToDoNextId" class="govuk-heading-m">@messages("declarationConfirmation.h2.1")</h2>
- <p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
- <ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
-  @if(declaration.declarationType == Import) {
-   <li>@messages("declarationConfirmation.ul.1") <strong>@messages("declarationConfirmation.ul.1.strong")</strong> @messages("declarationConfirmation.ul.1.1")</li>
-  } else {
-   @Html("")
-  }
-   <li>@messages(s"declarationConfirmation.ul.2")</li>
-   <li>@messages(s"declarationConfirmation.ul.3")</li>
-
-  @if(ViewUtils.proofOfOriginNeeded(declaration, request.isAssistedDigital)) {
-  <li>@messages("declarationConfirmation.ul.4")</li>
-  }
-
- </ul>
-
-  @if(declaration.declarationType == Import) {
-    <h2 id="bringingEUGoodsId" class="govuk-heading-m">@messages("declarationConfirmation.bringing.eu.goods.label")</h2>
-    <p class="govuk-body">@messages("declarationConfirmation.bringing.eu.goods.p1")</p>
-  }else {
+<h2 id="whatToDoNextId" class="govuk-heading-m">@messages("declarationConfirmation.h2.1")</h2>
+<p class="govuk-body">@messages("declarationConfirmation.ul.p")</p>
+<ul id="whatToDoNextUlId" class="govuk-list govuk-list--bullet">
+    @if(declaration.declarationType == Import) {
+    <li>@messages("declarationConfirmation.ul.1") <strong>@messages("declarationConfirmation.ul.1.strong")</strong> @messages("declarationConfirmation.ul.1.1")</li>
+    } else {
     @Html("")
-  }
-  <p class="govuk-body govuk-!-display-none-print">
-   <a id="makeAnotherDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.makeAnotherDeclaration.url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
-  </p>
+    }
+    <li>@messages(s"declarationConfirmation.ul.2")</li>
+    <li>@messages(s"declarationConfirmation.ul.3")</li>
 
-  <p class="govuk-body govuk-!-display-none-print">
-   <a id="changeDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.addGoodsToAnExistingDeclaration.url">@messages("declarationConfirmation.changeDeclaration.label")</a>
-  </p>
+    @if(ViewUtils.proofOfOriginNeeded(declaration, isAssistedDigital)) {
+    <li>@messages("declarationConfirmation.ul.4")</li>
+    }
 
- <p class="govuk-body govuk-!-display-none-print">
-  @link(FeedbackSurveyController.startSurvey().url, "declarationConfirmation.feedbackSurvey", attrTarget = true, Some("feedbackSurvey"))
-  @messages("declarationConfirmation.feedbackSurvey.info")
- </p>
+</ul>
+
+@if(declaration.declarationType == Import) {
+<h2 id="bringingEUGoodsId" class="govuk-heading-m">@messages("declarationConfirmation.bringing.eu.goods.label")</h2>
+<p class="govuk-body">@messages("declarationConfirmation.bringing.eu.goods.p1")</p>
+}else {
+@Html("")
+}
+<p class="govuk-body govuk-!-display-none-print">
+    <a id="makeAnotherDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.makeAnotherDeclaration.url">@messages("declarationConfirmation.makeAnotherDeclaration")</a>
+</p>
+
+<p class="govuk-body govuk-!-display-none-print">
+    <a id="changeDeclarationId" class='govuk-link' href="@DeclarationConfirmationController.addGoodsToAnExistingDeclaration.url">@messages("declarationConfirmation.changeDeclaration.label")</a>
+</p>
+
+<p class="govuk-body govuk-!-display-none-print">
+    @link(FeedbackSurveyController.startSurvey().url, "declarationConfirmation.feedbackSurvey", attrTarget = true, Some("feedbackSurvey"))
+    @messages("declarationConfirmation.feedbackSurvey.info")
+</p>
 
 }

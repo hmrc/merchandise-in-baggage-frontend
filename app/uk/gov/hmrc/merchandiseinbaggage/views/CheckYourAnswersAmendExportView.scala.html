@@ -27,7 +27,7 @@
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
-@layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "checkYourAnswers.amend.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(Export)) {
 
  @formHelper(action = CheckYourAnswersController.onSubmit) {
 

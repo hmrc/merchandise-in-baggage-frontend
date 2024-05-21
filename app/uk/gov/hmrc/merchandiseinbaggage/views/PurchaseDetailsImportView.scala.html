@@ -55,8 +55,7 @@ button: components.button
     pageTitle = Some(title(form, "purchaseDetails.title")),
     scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
-    maybeDeclarationType = Some(Import),
-    isAssistedDigital = request.isAssistedDigital
+    maybeDeclarationType = Some(Import)
 ) {
     @formHelper(action = PurchaseDetailsController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 

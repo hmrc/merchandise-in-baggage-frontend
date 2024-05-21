@@ -34,7 +34,7 @@ button: components.button
 
 @(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
     @formHelper(action = GoodsVatRateController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, GoodsVatRates.values.headOption.map(_.entryName))

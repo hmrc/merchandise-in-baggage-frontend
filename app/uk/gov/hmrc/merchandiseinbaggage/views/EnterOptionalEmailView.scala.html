@@ -36,7 +36,7 @@ if(form.errors.find(_.message == "enterEmail.error.notMatching").isDefined) Some
 else None
 }
 
-@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(title(form, "enterEmail.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
 @formHelper(action = EnterEmailController.onSubmit, Symbol("novalidate") -> "novalidate") {
 @errorSummary(form.errors, notMatching)
 @h1(messages("enterEmail.heading"), classes = Some("govuk-fieldset__legend govuk-fieldset__legend--xl"))

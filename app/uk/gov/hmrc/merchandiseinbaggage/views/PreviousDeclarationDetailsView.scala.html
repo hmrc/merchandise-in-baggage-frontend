@@ -40,7 +40,7 @@
 
 @(declaration: Declaration, allowance: ThresholdAllowance)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = Some(declaration.declarationType), isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm(messages("previousDeclarationDetails.title"))), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = Some(declaration.declarationType)) {
     @h1(("previousDeclarationDetails.heading"))
 
     @h2(("previousDeclarationDetails.details"), Some("govuk-heading-m"))
