@@ -31,3 +31,4 @@ tmp
 bin
 pact
 /.bsp
+project/.bloop/
