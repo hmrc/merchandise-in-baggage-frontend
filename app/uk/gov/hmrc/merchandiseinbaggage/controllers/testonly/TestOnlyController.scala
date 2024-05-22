@@ -16,47 +16,58 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers.testonly
 
+import play.api.Logging
 import play.api.data.Form
-import play.api.libs.json.{JsError, JsSuccess, Json}
 import play.api.libs.json.Json.{prettyPrint, toJson}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.libs.json.{JsError, JsSuccess, Json}
+import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggage._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyActionProvider
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormProvider
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Currency, PurchaseDetails, _}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ImportGoodsEntry}
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.TestOnlyDeclarationJourneyPage
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
+
 import java.time.LocalDate.now
-
 import javax.inject.Inject
-import play.api.Logging
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class TestOnlyController @Inject() (
   mcc: MessagesControllerComponents,
   repository: DeclarationJourneyRepository,
   formProvider: DeclarationJourneyFormProvider,
+  actionProvider: DeclarationJourneyActionProvider,
   page: TestOnlyDeclarationJourneyPage
 )(implicit val ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc)
     with Logging {
   private val form = formProvider()
 
+  def isFromAdminDomain()(implicit request: Request[_]): Boolean =
+    request.headers
+      .get("x-forwarded-host")
+      .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
+
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
-    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId()))))))
+    Ok(
+      page(
+        form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId(), isFromAdminDomain())))),
+        isFromAdminDomain()
+      )
+    )
   }
 
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>
-    def onError(form: Form[String]): Future[Result] = Future successful BadRequest(page(form))
+    def onError(form: Form[String]): Future[Result] = Future successful BadRequest(page(form, isFromAdminDomain()))
 
     form
       .bindFromRequest()
@@ -92,10 +103,11 @@ object TestOnlyController {
       Some(PurchaseDetails("99.99", Currency("EUR", "title.euro_eur", Some("EUR"), List("Europe", "European"))))
     )
 
-  def sampleDeclarationJourney(sessionId: SessionId): DeclarationJourney =
+  def sampleDeclarationJourney(sessionId: SessionId, isAssistedDigital: Boolean): DeclarationJourney =
     DeclarationJourney(
       sessionId = sessionId,
       declarationType = DeclarationType.Import,
+      isAssistedDigital = isAssistedDigital,
       maybeExciseOrRestrictedGoods = Some(No),
       maybeGoodsDestination = Some(GreatBritain),
       maybeValueWeightOfGoodsBelowThreshold = Some(Yes),

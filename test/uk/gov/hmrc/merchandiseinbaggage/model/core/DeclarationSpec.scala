@@ -209,7 +209,8 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
                 completedDeclarationJourney.maybeRegistrationNumber.get
               ),
               now,
-              reference
+              reference,
+              source = Some("Digital")
             )
           )
       }
@@ -403,31 +404,6 @@ class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
     "amending an export and not all questions have been answered" in {
       startedAmendExportJourney.amendmentRequiredAndComplete mustBe false
     }
-  }
-
-  "source is AssistedDigital if internal" in {
-    val stub = new JourneySourceFinder {
-      override def findSource: Option[String] = Some("AssistedDigital")
-    }
-    Declaration(
-      aDeclarationId,
-      aSessionId,
-      Import,
-      GreatBritain,
-      aDeclarationGood,
-      Name("xx", "yy"),
-      None,
-      None,
-      Eori("GB123"),
-      JourneyInSmallVehicle(
-        journeyPort,
-        JourneyDetailsEntry("BH", LocalDate.now).dateOfTravel,
-        "Lx123"
-      ),
-      LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS),
-      MibReference("xx"),
-      source = stub.findSource
-    ).source mustBe Some("AssistedDigital")
   }
 
   "return the latest added goods" in {

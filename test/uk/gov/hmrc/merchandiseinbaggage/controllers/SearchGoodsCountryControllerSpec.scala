@@ -43,12 +43,13 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     DeclarationJourney(
       SessionId("123"),
       Export,
+      isAssistedDigital = false,
       goodsEntries = GoodsEntries(Seq(completedExportGoods.copy(maybePurchaseDetails = None)))
     )
 
   "onPageLoad" should {
     s"return 200 with correct content Export" in {
-      val request        = buildGet(routes.SearchGoodsCountryController.onPageLoad(1).url, aSessionId)
+      val request        = buildGet(routes.SearchGoodsCountryController.onPageLoad(1).url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result         = contentAsString(eventualResult)
 
@@ -62,8 +63,13 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
 
   "onSubmit" should {
     s"redirect to next page after successful form submit for Export" in {
-      val request        = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
-        .withFormUrlEncodedBody("country" -> "AF")
+      val request =
+        buildPost(
+          routes.SearchGoodsCountryController.onSubmit(1).url,
+          aSessionId,
+          journey,
+          formData = Seq("country" -> "AF")
+        )
 
       val eventualResult = controller(journey).onSubmit(1)(request)
 
@@ -72,8 +78,13 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
     }
 
     s"return 400 with any form errors for Export" in {
-      val request        = buildPost(routes.SearchGoodsCountryController.onSubmit(1).url, aSessionId)
-        .withFormUrlEncodedBody("country" -> "in valid")
+      val request =
+        buildPost(
+          routes.SearchGoodsCountryController.onSubmit(1).url,
+          aSessionId,
+          journey,
+          formData = Seq("country" -> "in valid")
+        )
 
       val eventualResult = controller(journey).onSubmit(1)(request)
       val result         = contentAsString(eventualResult)

@@ -19,11 +19,10 @@ package uk.gov.hmrc.merchandiseinbaggage.forms
 import play.api.data.{Form, Forms}
 import play.api.data.Forms.{mapping, optional}
 import play.api.data.validation.{Constraint, Invalid, Valid}
-import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
-object EnterEmailForm extends Mappings with IsAssistedDigitalConfiguration {
+object EnterEmailForm extends Mappings {
 
   private val emailRegex =
     """^[a-zA-Z0-9\.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$""".r

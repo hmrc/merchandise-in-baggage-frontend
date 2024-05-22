@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.config
 
 import com.google.inject.Inject
-import com.typesafe.config.ConfigFactory
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsNavigation
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -25,8 +24,11 @@ import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject() (val config: Configuration, val env: Environment, servicesConfig: ServicesConfig)()
-    extends IsAssistedDigitalConfiguration {
+class AppConfig @Inject() (
+  val config: Configuration,
+  val env: Environment,
+  servicesConfig: ServicesConfig
+) {
 
   private val serviceIdentifier = "mib"
 
@@ -62,11 +64,11 @@ class AppConfig @Inject() (val config: Configuration, val env: Environment, serv
   lazy val tpsPaymentsBackendUrl: String    = servicesConfig.baseUrl("tps-payments-backend")
   lazy val merchandiseInBaggageUrl: String  = servicesConfig.baseUrl("merchandise-in-baggage")
   lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
-  lazy val addressLookupCallbackUrl: String =
-    config.get[String]("microservice.services.address-lookup-frontend.callback")
-}
 
-trait IsAssistedDigitalConfiguration {
-  // to avoid re writing the codebase, need to improve in the future to allow injection
-  lazy val isAssistedDigital: Boolean = ConfigFactory.load().getBoolean("assistedDigital")
+  def addressLookupCallbackUrl(isAssistedDigital: Boolean): String =
+    if (isAssistedDigital) {
+      config.get[String]("microservice.services.address-lookup-frontend.adminCallback")
+    } else {
+      config.get[String]("microservice.services.address-lookup-frontend.callback")
+    }
 }

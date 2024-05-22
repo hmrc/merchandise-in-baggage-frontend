@@ -21,7 +21,6 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.auth.{AuthRequest, StrideAuthAction}
-import uk.gov.hmrc.merchandiseinbaggage.config.IsAssistedDigitalConfiguration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.utils.DeclarationJourneyLogger
@@ -32,23 +31,15 @@ class DeclarationJourneyActionProvider @Inject() (
   defaultActionBuilder: DefaultActionBuilder,
   repo: DeclarationJourneyRepository,
   strideAuthAction: StrideAuthAction
-)(implicit ec: ExecutionContext)
-    extends IsAssistedDigitalConfiguration {
+)(implicit ec: ExecutionContext) {
 
   val initJourneyAction: ActionBuilder[AuthRequest, AnyContent] = defaultActionBuilder andThen strideAuthAction
 
-  private val internalJourneyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
+  val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
     defaultActionBuilder andThen strideAuthAction andThen journeyActionRefiner
 
-  val journeyAction: ActionBuilder[DeclarationJourneyRequest, AnyContent] =
-    if (isAssistedDigital) {
-      internalJourneyAction
-    } else {
-      defaultActionBuilder andThen journeyActionRefiner
-    }
-
   def goodsAction(idx: Int): ActionBuilder[DeclarationGoodsRequest, AnyContent] =
-    defaultActionBuilder andThen journeyActionRefiner andThen goodsActionRefiner(idx)
+    journeyAction andThen goodsActionRefiner(idx)
 
   def invalidRequest(warnMessage: String)(implicit request: RequestHeader): Result = {
     DeclarationJourneyLogger.info(s"$warnMessage so redirecting to ${routes.CannotAccessPageController.onPageLoad}")(
@@ -60,16 +51,16 @@ class DeclarationJourneyActionProvider @Inject() (
   def invalidRequestF(warningMessage: String)(implicit request: RequestHeader): Future[Result] =
     Future.successful(invalidRequest(warningMessage))
 
-  private def journeyActionRefiner: ActionRefiner[Request, DeclarationJourneyRequest] =
-    new ActionRefiner[Request, DeclarationJourneyRequest] {
+  private def journeyActionRefiner: ActionRefiner[AuthRequest, DeclarationJourneyRequest] =
+    new ActionRefiner[AuthRequest, DeclarationJourneyRequest] {
 
-      override protected def refine[A](request: Request[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] =
+      override protected def refine[A](request: AuthRequest[A]): Future[Either[Result, DeclarationJourneyRequest[A]]] =
         request.session.get(SessionKeys.sessionId) match {
           case None            => Future successful Left(invalidRequest("Session Id not found")(request))
           case Some(sessionId) =>
             repo.findBySessionId(SessionId(sessionId)).map {
               case Some(declarationJourney) =>
-                Right(new DeclarationJourneyRequest(declarationJourney, AuthRequest(request, None)))
+                Right(new DeclarationJourneyRequest(declarationJourney, request))
               case _                        =>
                 Left(invalidRequest(s"Persisted declaration journey not found for session: $sessionId")(request))
             }

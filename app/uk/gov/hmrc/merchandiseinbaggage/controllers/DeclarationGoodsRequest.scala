@@ -27,4 +27,6 @@ final class DeclarationGoodsRequest[A](
 
   val declarationJourney: DeclarationJourney = declarationJourneyRequest.declarationJourney
   val declarationType: DeclarationType       = declarationJourney.declarationType
+
+  def isAssistedDigital: Boolean = declarationJourneyRequest.isAssistedDigital
 }

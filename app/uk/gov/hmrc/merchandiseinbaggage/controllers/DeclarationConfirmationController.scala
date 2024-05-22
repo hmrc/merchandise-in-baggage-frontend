@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
-import uk.gov.hmrc.merchandiseinbaggage.config.{AppConfig, IsAssistedDigitalConfiguration}
+import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -37,55 +37,63 @@ class DeclarationConfirmationController @Inject() (
   connector: MibConnector,
   val repo: DeclarationJourneyRepository
 )(implicit ec: ExecutionContext, appConf: AppConfig)
-    extends IsAssistedDigitalConfiguration
-    with DeclarationJourneyController {
+    extends DeclarationJourneyController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     val declarationId = request.declarationJourney.declarationId
     val journeyType   = request.declarationJourney.journeyType
     connector.findDeclaration(declarationId).flatMap {
-      case Some(declaration) if canShowConfirmation(declaration, journeyType) =>
+      case Some(declaration) if canShowConfirmation(declaration, journeyType, request.isAssistedDigital) =>
         cleanAnswersAndConfirm(journeyType, declaration)
-      case Some(_)                                                            =>
+      case Some(_)                                                                                       =>
         clearAnswers()
           .map(_ => actionProvider.invalidRequest("declaration is found in the db, but can't show confirmation"))
-      case _                                                                  => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
+      case _                                                                                             => actionProvider.invalidRequestF(s"declaration not found for id:${declarationId.value}")
     }
   }
 
   private def cleanAnswersAndConfirm(journeyType: JourneyType, declaration: Declaration)(implicit
     request: DeclarationJourneyRequest[AnyContent]
   ): Future[Result] =
-    if (isAssistedDigital) {
+    if (request.isAssistedDigital) {
       for {
         _   <- clearAnswers()
         res <-
           connector.calculatePayments(declaration.latestGoods.map(_.calculationRequest(declaration.goodsDestination)))
-      } yield Ok(view(declaration, journeyType, isAssistedDigital, res.results.totalTaxDue))
+      } yield Ok(view(declaration, journeyType, res.results.totalTaxDue))
     } else {
-      clearAnswers().map(_ => Ok(view(declaration, journeyType, isAssistedDigital, AmountInPence(0))))
+      clearAnswers().map(_ => Ok(view(declaration, journeyType, AmountInPence(0))))
     }
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
-      Redirect(routes.GoodsDestinationController.onPageLoad)
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+      _ =>
+        Redirect(routes.GoodsDestinationController.onPageLoad)
     }
   }
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType)) map { _ =>
-      Redirect(routes.RetrieveDeclarationController.onPageLoad)
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+      _ =>
+        Redirect(routes.RetrieveDeclarationController.onPageLoad)
     }
   }
 
   private def clearAnswers()(implicit request: DeclarationJourneyRequest[AnyContent]): Future[DeclarationJourney] = {
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType).copy(declarationId = declarationId))
+    repo.upsert(
+      DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)
+        .copy(declarationId = declarationId)
+    )
   }
 
-  private def canShowConfirmation(declaration: Declaration, journeyType: JourneyType): Boolean =
+  private def canShowConfirmation(
+    declaration: Declaration,
+    journeyType: JourneyType,
+    isAssistedDigital: Boolean
+  ): Boolean =
     (declaration.declarationType, journeyType, isAssistedDigital) match {
       case (Export, _, _)        => true
       case (Import, New, true)   =>

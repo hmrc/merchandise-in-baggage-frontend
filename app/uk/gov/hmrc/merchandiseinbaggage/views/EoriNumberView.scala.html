@@ -17,8 +17,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api._
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -28,13 +28,13 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], isAgent: YesNo, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], isAgent: YesNo, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 
 @hintText = @{if(isAgent == Yes) "eoriNumber.agent.hint" else "eoriNumber.trader.hint"}
 
-@layout(pageTitle = Some(title(form, s"eoriNumber.$agentOrTrader.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, s"eoriNumber.$agentOrTrader.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = EoriNumberController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors)

@@ -39,11 +39,12 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         view
       )
 
-  val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import).copy(maybeIsACustomsAgent = Some(YesNo.No))
+  val journey: DeclarationJourney =
+    DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(maybeIsACustomsAgent = Some(YesNo.No))
   "onPageLoad" should {
     s"return 200 with correct content for" in {
 
-      val request        = buildGet(routes.TravellerDetailsController.onPageLoad.url, aSessionId)
+      val request        = buildGet(routes.TravellerDetailsController.onPageLoad.url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad(request)
       val result         = contentAsString(eventualResult)
 
@@ -58,8 +59,13 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     s"redirect to next page after successful form submit" in {
-      val request        = buildPost(routes.TravellerDetailsController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("firstName" -> "Foo", "lastName" -> "Bar")
+      val request =
+        buildPost(
+          routes.TravellerDetailsController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("firstName" -> "Foo", "lastName" -> "Bar")
+        )
 
       val eventualResult = controller(journey).onSubmit(request)
       status(eventualResult) mustBe SEE_OTHER
@@ -67,8 +73,13 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     s"return 400 with required form errors" in {
-      val request        = buildPost(routes.EoriNumberController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("firstName" -> "", "lastName" -> "")
+      val request =
+        buildPost(
+          routes.EoriNumberController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("firstName" -> "", "lastName" -> "")
+        )
 
       val eventualResult = controller(givenADeclarationJourneyIsPersisted(journey)).onSubmit(request)
       val result         = contentAsString(eventualResult)

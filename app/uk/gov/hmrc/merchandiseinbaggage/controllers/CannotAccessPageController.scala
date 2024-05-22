@@ -20,18 +20,18 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotAccessPageView
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class CannotAccessPageController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
+  actionProvider: DeclarationJourneyActionProvider,
   view: CannotAccessPageView
 )(implicit val ec: ExecutionContext, appConfig: AppConfig)
-    extends FrontendBaseController {
+    extends DeclarationJourneyController {
 
-  def onPageLoad(): Action[AnyContent] = Action { implicit request =>
+  val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     Ok(view())
   }
 }

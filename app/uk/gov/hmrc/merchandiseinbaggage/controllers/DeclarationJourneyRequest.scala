@@ -25,4 +25,5 @@ final class DeclarationJourneyRequest[A](val declarationJourney: DeclarationJour
     extends WrappedRequest[A](request) {
 
   def declarationType: DeclarationType = declarationJourney.declarationType
+  def isAssistedDigital: Boolean       = request.isAssistedDigital
 }

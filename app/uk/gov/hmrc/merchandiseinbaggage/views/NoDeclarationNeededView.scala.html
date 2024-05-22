@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -23,9 +24,9 @@ h1: components.h1,
 p: components.p
 )
 
-@(declarationType: DeclarationType)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("noDeclarationNeeded.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(titleNoForm("noDeclarationNeeded.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1("noDeclarationNeeded.heading")
 
     @p(Html(messages("noDeclarationNeeded.p")))

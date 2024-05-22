@@ -17,16 +17,18 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
+import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 import uk.gov.hmrc.merchandiseinbaggage.views.html.CannotAccessPageView
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class CannotAccessPageControllerSpec extends DeclarationJourneyControllerSpec {
+class CannotAccessPageControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
   private val view = app.injector.instanceOf[CannotAccessPageView]
 
-  def controller: CannotAccessPageController = new CannotAccessPageController(controllerComponents, view)
+  def controller: CannotAccessPageController =
+    new CannotAccessPageController(controllerComponents, stubProvider(startedImportJourney), view)
 
   declarationTypes.foreach { importOrExport: DeclarationType =>
     "onPageLoad" should {

@@ -59,23 +59,38 @@ class StrideAuthAction @Inject() (
       toStrideLogin(uri)
     }
 
-    authorised(AuthProviders(PrivilegedApplication))
-      .retrieve(credentials and allEnrolments) { case creds ~ enrolments =>
-        if (hasRequiredRoles(enrolments)) {
-          block(AuthRequest(request, creds))
-        } else {
-          Future successful Unauthorized("Insufficient Roles")
+    // This service handles traffic from the public internet as well as the stride domain.
+    // Traffic from the stride domain can be identified by the x-forwarded-host header.
+    // In the case that it's not from the stride domain, we don't need stride auth, instead
+    // we invoke the block with an AuthRequest with no credentials and the isAssistedDigital
+    // flag set to false
+
+    val isFromAdminDomain: Boolean =
+      request.headers
+        .get("x-forwarded-host")
+        .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
+
+    if (!isFromAdminDomain) {
+      block(AuthRequest(request, credentials = None, isAssistedDigital = false))
+    } else {
+      authorised(AuthProviders(PrivilegedApplication))
+        .retrieve(credentials and allEnrolments) { case creds ~ enrolments =>
+          if (hasRequiredRoles(enrolments)) {
+            block(AuthRequest(request, creds, isAssistedDigital = true))
+          } else {
+            Future successful Unauthorized("Insufficient Roles")
+          }
         }
-      }
-      .recover {
-        case e: NoActiveSession        =>
-          redirectToStrideLogin(e.getMessage)
-        case e: InternalError          =>
-          redirectToStrideLogin(e.getMessage)
-        case e: AuthorisationException =>
-          logger.warn(s"User is forbidden because of ${e.reason}, $e")
-          Forbidden
-      }
+        .recover {
+          case e: NoActiveSession        =>
+            redirectToStrideLogin(e.getMessage)
+          case e: InternalError          =>
+            redirectToStrideLogin(e.getMessage)
+          case e: AuthorisationException =>
+            logger.warn(s"User is forbidden because of ${e.reason}, $e")
+            Forbidden
+        }
+    }
   }
 
   private def hasRequiredRoles(enrolments: Enrolments): Boolean = {

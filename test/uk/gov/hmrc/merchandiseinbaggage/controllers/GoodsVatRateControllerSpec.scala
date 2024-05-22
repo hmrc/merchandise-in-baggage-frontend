@@ -45,12 +45,13 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
   private val journey: DeclarationJourney = DeclarationJourney(
     aSessionId,
     DeclarationType.Import,
+    isAssistedDigital = false,
     goodsEntries = GoodsEntries(Seq(ImportGoodsEntry(maybeCategory = Some("clothes"))))
   )
 
   "onPageLoad" should {
     "return 200 with radio buttons" in {
-      val request        = buildPost(GoodsVatRateController.onPageLoad(1).url, aSessionId)
+      val request        = buildPost(GoodsVatRateController.onPageLoad(1).url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad(1)(request)
       val result         = contentAsString(eventualResult)
 
@@ -66,8 +67,13 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
 
   "onSubmit" should {
     "redirect to next page after successful form submit" in {
-      val request = buildPost(GoodsVatRateController.onSubmit(1).url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "Zero")
+      val request =
+        buildPost(
+          GoodsVatRateController.onSubmit(1).url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "Zero")
+        )
 
       when(mockNavigator.nextPage(any[GoodsVatRateRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(SearchGoodsCountryController.onPageLoad(1)))
@@ -79,8 +85,13 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
     }
 
     "return 400 with any form errors" in {
-      val request        = buildGet(GoodsVatRateController.onSubmit(1).url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "in valid")
+      val request =
+        buildPost(
+          GoodsVatRateController.onSubmit(1).url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "in valid")
+        )
 
       val eventualResult = controller(journey).onSubmit(1)(request)
       val result         = contentAsString(eventualResult)

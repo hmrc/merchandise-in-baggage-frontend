@@ -43,7 +43,7 @@ class EnterEmailController @Inject() (
 
   val onPageLoad: Action[AnyContent] =
     actionProvider.journeyAction { implicit request =>
-      if (appConfig.isAssistedDigital) {
+      if (request.isAssistedDigital) {
         val preparedForm = optionalForm.fill(request.declarationJourney.maybeEmailAddress)
         Ok(viewOptional(preparedForm, request.declarationType, backButtonUrl))
       } else {
@@ -53,7 +53,7 @@ class EnterEmailController @Inject() (
     }
 
   val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
-    if (appConfig.isAssistedDigital) {
+    if (request.isAssistedDigital) {
       optionalForm
         .bindFromRequest()
         .fold(

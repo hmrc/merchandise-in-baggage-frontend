@@ -38,14 +38,15 @@
 )
 
 @(
-        pageTitle: Option[String] = None,
-        headBlock: Option[Html] = None,
-        headerBlock: Option[Html] = None,
-        beforeContentBlock: Option[Html] = None,
-        bodyEndBlock: Option[Html] = None,
-        scriptsBlock: Option[Html] = None,
-        maybeBackButtonUrl: Option[play.api.mvc.Call],
-        declarationType: Option[DeclarationType]
+  pageTitle: Option[String] = None,
+  headBlock: Option[Html] = None,
+  headerBlock: Option[Html] = None,
+  beforeContentBlock: Option[Html] = None,
+  bodyEndBlock: Option[Html] = None,
+  scriptsBlock: Option[Html] = None,
+  maybeBackButtonUrl: Option[play.api.mvc.Call],
+  declarationType: Option[DeclarationType],
+  isAssistedDigital: Boolean
 )(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
 
 @headDefault = {
@@ -55,7 +56,7 @@
 
 
 @headerDefault = {
-    @if(appConfig.isAssistedDigital) {
+    @if(isAssistedDigital) {
         @siteHeader()
     } else {
         @headerBlock.getOrElse {
@@ -86,7 +87,7 @@
     }
 }
 
-@if(!appConfig.isAssistedDigital && appConfig.languageTranslationEnabled) {
+@if(!isAssistedDigital && appConfig.languageTranslationEnabled) {
     @languageSelection()
 }
 

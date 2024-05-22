@@ -49,15 +49,15 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
       view
     )
 
-  val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import)
+  val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false)
 
   //TODO create UI test for content
   forAll(declarationTypesTable) { importOrExport: DeclarationType =>
-    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport)
+    val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
 
-        val request        = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId)
+        val request        = buildGet(RetrieveDeclarationController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad(request)
         val result         = contentAsString(eventualResult)
 
@@ -78,8 +78,13 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
   "onSubmit" should {
     "redirect by delegating to Navigator" in {
       givenFindByDeclarationReturnStatus(mibReference, eori, NOT_FOUND)
-      val request = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
+      val request =
+        buildPost(
+          RetrieveDeclarationController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("mibReference" -> mibReference.value, "eori" -> eori.value)
+        )
 
       when(mockNavigator.nextPage(any[NavigationRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(DeclarationNotFoundController.onPageLoad))
@@ -92,8 +97,13 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
     "redirect to /internal-server-error after successful form submit but some unexpected error is thrown from the BE" in {
       givenFindByDeclarationReturnStatus(mibReference, eori, INTERNAL_SERVER_ERROR)
-      val request                = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> mibReference.value, "eori" -> eori.value)
+      val request =
+        buildPost(
+          RetrieveDeclarationController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("mibReference" -> mibReference.value, "eori" -> eori.value)
+        )
 
       val result: Future[Result] = controller(journey).onSubmit(request)
 
@@ -102,8 +112,14 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
     }
 
     "return 400 for invalid form data" in {
-      val request        = buildPost(RetrieveDeclarationController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
+      val request =
+        buildPost(
+          RetrieveDeclarationController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("mibReference" -> "XAMB0000010", "eori" -> "GB12345")
+        )
+
       val eventualResult = controller(journey).onSubmit(request)
       val result         = contentAsString(eventualResult)
 

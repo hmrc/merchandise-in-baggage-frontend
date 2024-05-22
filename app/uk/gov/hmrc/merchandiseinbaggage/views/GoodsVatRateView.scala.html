@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
 
 @this(
 layout: Layout,
@@ -31,9 +32,9 @@ inputRadio: components.inputRadio,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType)) {
+@layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = GoodsVatRateController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
 
         @errorSummary(form.errors, GoodsVatRates.values.headOption.map(_.entryName))

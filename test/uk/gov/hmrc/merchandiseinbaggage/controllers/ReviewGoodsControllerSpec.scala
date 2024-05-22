@@ -55,11 +55,11 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
   forAll(declarationTypesTable) { importOrExport =>
     val entries                     = completedGoodsEntries(importOrExport)
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, goodsEntries = entries)
+      DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false, goodsEntries = entries)
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
-        val request   = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
+        val request   = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId, journey)
         val allowance =
           if (importOrExport == Export) {
             aThresholdAllowance.copy(currentGoods = entries.declarationGoodsIfComplete.get)
@@ -90,7 +90,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       }
 
       s"redirect to CannotAccessPageController when no ThresholdAllowance is received from mibService for $importOrExport" in {
-        val request = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId)
+        val request = buildGet(ReviewGoodsController.onPageLoad.url, aSessionId, journey)
 
         when(
           mockMibService.thresholdAllowance(
@@ -112,8 +112,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
 
     "onSubmit" should {
       s"redirect to next page after successful form submit with Yes for $importOrExport by delegating to Navigator" in {
-        val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "Yes")
+        val request =
+          buildPost(
+            ReviewGoodsController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value" -> "Yes")
+          )
 
         when(
           mockMibService.thresholdAllowance(
@@ -136,8 +141,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
     }
 
     s"return 400 with any form errors for $importOrExport" in {
-      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "in valid")
+      val request =
+        buildPost(
+          ReviewGoodsController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "in valid")
+        )
 
       when(
         mockMibService.thresholdAllowance(
@@ -180,7 +190,12 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
 
     s"redirect to next page after successful form submit with No for $importOrExport" in {
       val journey: DeclarationJourney =
-        DeclarationJourney(aSessionId, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
+        DeclarationJourney(
+          aSessionId,
+          importOrExport,
+          isAssistedDigital = false,
+          goodsEntries = completedGoodsEntries(importOrExport)
+        )
           .copy(journeyType = Amend)
 
       when(
@@ -196,8 +211,13 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       when(mockMibService.amendPlusOriginalCalculations(any[DeclarationJourney])(any[HeaderCarrier]))
         .thenReturn(OptionT.pure[Future](CalculationResponse(CalculationResults(Seq.empty), WithinThreshold)))
 
-      val request                = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "No")
+      val request =
+        buildPost(
+          ReviewGoodsController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "No")
+        )
 
       val expectedRedirect       =
         if (importOrExport == Export) {
@@ -235,7 +255,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       when(mockNavigator.nextPage(any[ReviewGoodsRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(GoodsOverThresholdController.onPageLoad))
 
-      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId)
+      val request = buildPost(ReviewGoodsController.onSubmit.url, aSessionId, journey)
 
       val result: Future[Result] = controller(journey).onSubmit()(request)
 

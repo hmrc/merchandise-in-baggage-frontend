@@ -60,9 +60,9 @@ class AppConfigSpec extends BaseSpecWithApplication {
       appConfig.tpsPaymentsBackendUrl mustBe "http://localhost:9125"
       appConfig.merchandiseInBaggageUrl mustBe "http://localhost:8280"
       appConfig.addressLookupFrontendUrl mustBe "http://localhost:9028"
-      appConfig.addressLookupCallbackUrl mustBe "http://localhost:8281"
+      appConfig.addressLookupCallbackUrl(isAssistedDigital = false) mustBe "http://localhost:8281"
+      appConfig.addressLookupCallbackUrl(isAssistedDigital = true) mustBe "http://localhost:8281"
 
-      appConfig.isAssistedDigital mustBe false
     }
 
     "throw an exception when the config value is not found" in {

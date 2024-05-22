@@ -300,7 +300,14 @@ class NavigatorSpec extends DeclarationJourneyControllerSpec with PropertyBaseTa
           val journey: DeclarationJourney =
             completedDeclarationJourney.copy(declarationType = importOrExport, journeyType = newOrAmend)
           val result: Future[Call]        =
-            nextPage(PreviousDeclarationDetailsRequest(journey, journey.toDeclaration, _ => Future(journey)))
+            nextPage(
+              PreviousDeclarationDetailsRequest(
+                journey,
+                journey.toDeclaration,
+                _ => Future(journey),
+                isAssistedDigital = journey.isAssistedDigital
+              )
+            )
 
           result.futureValue mustBe ExciseAndRestrictedGoodsController.onPageLoad
         }

@@ -35,7 +35,7 @@ class EnterAgentAddressController @Inject() (
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     addressLookupFrontendConnector
-      .initJourney(routes.EnterAgentAddressController.returnFromAddressLookup())
+      .initJourney(routes.EnterAgentAddressController.returnFromAddressLookup(), request.isAssistedDigital)
       .map(Redirect(_))
   }
 

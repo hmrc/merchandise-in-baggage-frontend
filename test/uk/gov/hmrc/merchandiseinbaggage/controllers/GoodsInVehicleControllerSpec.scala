@@ -44,12 +44,17 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
 
   declarationTypes.foreach { importOrExport =>
     val journey: DeclarationJourney =
-      DeclarationJourney(aSessionId, importOrExport, goodsEntries = completedGoodsEntries(importOrExport))
+      DeclarationJourney(
+        aSessionId,
+        importOrExport,
+        isAssistedDigital = false,
+        goodsEntries = completedGoodsEntries(importOrExport)
+      )
 
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
 
-        val request        = buildGet(GoodsInVehicleController.onPageLoad.url, aSessionId)
+        val request        = buildGet(GoodsInVehicleController.onPageLoad.url, aSessionId, journey)
         val eventualResult = controller(journey).onPageLoad()(request)
         val result         = contentAsString(eventualResult)
 
@@ -61,8 +66,13 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
 
     "onSubmit" should {
       s"redirect by delegating to navigator for $importOrExport" in {
-        val request = buildPost(GoodsInVehicleController.onSubmit.url, aSessionId)
-          .withFormUrlEncodedBody("value" -> "Yes")
+        val request =
+          buildPost(
+            GoodsInVehicleController.onSubmit.url,
+            aSessionId,
+            journey,
+            formData = Seq("value" -> "Yes")
+          )
 
         when(mockNavigator.nextPage(any[GoodsInVehicleRequest])(any[ExecutionContext]))
           .thenReturn(Future.successful(VehicleSizeController.onPageLoad))
@@ -76,8 +86,13 @@ class GoodsInVehicleControllerSpec extends DeclarationJourneyControllerSpec {
 
     s"return 400 with any form errors for $importOrExport" in {
 
-      val request        = buildGet(GoodsInVehicleController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "in valid")
+      val request =
+        buildPost(
+          GoodsInVehicleController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "in valid")
+        )
 
       val eventualResult = controller(journey).onSubmit()(request)
       val result         = contentAsString(eventualResult)

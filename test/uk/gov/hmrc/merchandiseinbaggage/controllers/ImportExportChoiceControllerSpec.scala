@@ -21,6 +21,7 @@ import org.mockito.MockitoSugar.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport}
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
@@ -33,12 +34,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
 
   val view: ImportExportChoice                 = injector.instanceOf[ImportExportChoice]
   val mockNavigator: Navigator                 = mock[Navigator]
+  val journey: DeclarationJourney              = startedImportJourney.copy(isAssistedDigital = true)
   val controller: ImportExportChoiceController =
     new ImportExportChoiceController(
       controllerComponents,
       view,
       actionBuilder,
-      stubRepo(startedImportJourney),
+      stubRepo(journey),
       mockNavigator
     )
 
@@ -46,7 +48,7 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     "return 200 with radio button" in {
       givenTheUserIsAuthenticatedAndAuthorised()
 
-      val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId)
+      val request = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId, journey)
 
       val eventualResult = controller.onPageLoad(request)
       val result         = contentAsString(eventualResult)
@@ -64,8 +66,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     "redirect with navigator adding 'new' to header" in {
       givenTheUserIsAuthenticatedAndAuthorised()
 
-      val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> MakeExport.toString)
+      val request =
+        buildPost(
+          ImportExportChoiceController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> MakeExport.toString)
+        )
 
       when(mockNavigator.nextPage(any[ImportExportChoiceRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
@@ -80,8 +87,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     "redirect with navigator adding 'amend' to header" in {
       givenTheUserIsAuthenticatedAndAuthorised()
 
-      val request = buildGet(routes.ImportExportChoiceController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> AddToExisting.toString)
+      val request =
+        buildPost(
+          routes.ImportExportChoiceController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> AddToExisting.toString)
+        )
 
       when(mockNavigator.nextPage(any[ImportExportChoiceRequest])(any[ExecutionContext]))
         .thenReturn(Future.successful(GoodsDestinationController.onPageLoad))
@@ -96,8 +108,13 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
     "return 400 with required form error" in {
       givenTheUserIsAuthenticatedAndAuthorised()
 
-      val request = buildGet(ImportExportChoiceController.onSubmit.url, aSessionId)
-        .withFormUrlEncodedBody("value" -> "")
+      val request =
+        buildPost(
+          ImportExportChoiceController.onSubmit.url,
+          aSessionId,
+          journey,
+          formData = Seq("value" -> "")
+        )
 
       givenTheUserIsAuthenticatedAndAuthorised()
 

@@ -148,15 +148,15 @@ class ScheduledJobSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
         |""".stripMargin
   }
 
-  "scheduler called if enabled and valid cron config" in new Setup("*/10_0_0-23_?_*_*_*", true) {
+  "scheduler called if enabled and valid cron config" in new Setup("*/10_0_0-23_?_*_*_*", enabled = true) {
     job.schedule shouldBe true
   }
 
-  "scheduler NOT called if not enabled and cron config invalid" in new Setup("testInvalidCronString", false) {
+  "scheduler NOT called if not enabled and cron config invalid" in new Setup("testInvalidCronString", enabled = false) {
     job.schedule shouldBe false
   }
 
-  "scheduler NOT called if enabled and cron config invalid" in new Setup("testInvalidCronString", true) {
+  "scheduler NOT called if enabled and cron config invalid" in new Setup("testInvalidCronString", enabled = true) {
     job.schedule shouldBe false
   }
 }

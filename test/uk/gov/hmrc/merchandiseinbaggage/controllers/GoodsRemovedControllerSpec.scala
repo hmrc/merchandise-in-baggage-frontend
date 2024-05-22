@@ -30,12 +30,12 @@ class GoodsRemovedControllerSpec extends DeclarationJourneyControllerSpec {
     new GoodsRemovedController(controllerComponents, stubProvider(declarationJourney), view)
 
   val journey: DeclarationJourney =
-    DeclarationJourney(aSessionId, Import).copy(maybeGoodsDestination = Some(GreatBritain))
+    DeclarationJourney(aSessionId, Import, isAssistedDigital = false).copy(maybeGoodsDestination = Some(GreatBritain))
 
   "onPageLoad" should {
     s"return 200 with expected content" in {
 
-      val request        = buildGet(routes.GoodsRemovedController.onPageLoad.url, aSessionId)
+      val request        = buildGet(routes.GoodsRemovedController.onPageLoad.url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result         = contentAsString(eventualResult)
 

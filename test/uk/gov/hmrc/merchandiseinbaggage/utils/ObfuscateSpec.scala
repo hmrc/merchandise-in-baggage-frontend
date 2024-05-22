@@ -55,6 +55,7 @@ class ObfuscateSpec extends BaseSpec with CoreTestData {
       DeclarationJourney(
         aSessionId,
         Import,
+        isAssistedDigital = false,
         New,
         createdAt,
         maybeExciseOrRestrictedGoods,

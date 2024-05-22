@@ -18,6 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{ProgressDeletedView, ServiceTimeoutView}
@@ -30,7 +31,9 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
   val repo               = app.injector.instanceOf[DeclarationJourneyRepository]
   val deletedView        = app.injector.instanceOf[ProgressDeletedView]
   val serviceTimeoutView = app.injector.instanceOf[ServiceTimeoutView]
-  val controller         = new KeepAliveController(controllerComponents, actionBuilder, repo, deletedView, serviceTimeoutView)
+  val strideAction       = app.injector.instanceOf[StrideAuthAction]
+  val controller         =
+    new KeepAliveController(controllerComponents, actionBuilder, strideAction, repo, deletedView, serviceTimeoutView)
 
   "return NoContent with no changes to declaration journey" in {
     val id      = SessionId("unchanged")

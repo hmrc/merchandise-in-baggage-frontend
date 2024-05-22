@@ -17,23 +17,24 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(layout: Layout, link: components.link, p: components.p)
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None) {
+@layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
   <h1 class="govuk-heading-xl">@messages("invalidRequest.title")</h1>
 
  @p(Html(messages("invalidRequest.li1")))
 
- @if(appConfig.isAssistedDigital) {
+ @if(request.isAssistedDigital) {
   <p class="govuk-body"><a class="govuk-link" href="@ImportExportChoiceController.onPageLoad.url">@messages("invalidRequest.ad")</a></p>
  } else {
   @p(Html(messages("invalidRequest.li2")))
   <ul class="govuk-list govuk-list--bullet">
-   <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("invalidRequest.Import.restart"), true)</li>
-   <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("invalidRequest.Export.restart"), true)</li>
+   <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("invalidRequest.Import.restart"), attrTarget = true)</li>
+   <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("invalidRequest.Export.restart"), attrTarget = true)</li>
   </ul>
  }
 }

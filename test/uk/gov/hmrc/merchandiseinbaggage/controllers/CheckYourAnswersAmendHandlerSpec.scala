@@ -89,7 +89,8 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
           id
         )
 
-        implicit val request: Request[_] = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+        implicit val request: DeclarationJourneyRequest[_] =
+          buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val amendment = completedAmendment(importOrExport)
 

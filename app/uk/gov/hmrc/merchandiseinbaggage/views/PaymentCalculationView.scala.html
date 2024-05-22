@@ -16,9 +16,9 @@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
-@import uk.gov.hmrc.merchandiseinbaggage.model.api.ConversionRatePeriod
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
 @this(
 layout: Layout,
@@ -29,7 +29,7 @@ table: GovukTable,
 button: components.button
 )
 
-@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
 @title = @{
  if(calculationResults.isNothingToPay)
@@ -45,7 +45,7 @@ button: components.button
 
 @rates = @{ calculationResults.calculationResults.flatMap(_.conversionRatePeriod).distinct }
 
-@layout(pageTitle = Some(title), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import)) {
+@layout(pageTitle = Some(title), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(Import), isAssistedDigital = request.isAssistedDigital) {
  @h1(heading)
 
  @p(Html(s"""${messages("paymentCalculation.greenchannel.p1")} <span class="govuk-!-font-weight-bold">${messages("paymentCalculation.greenchannel.p2")}</span> ${messages("paymentCalculation.greenchannel.p3")}"""))

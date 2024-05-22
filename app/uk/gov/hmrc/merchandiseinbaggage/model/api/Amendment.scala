@@ -31,7 +31,7 @@ case class Amendment(
   emailsSent: Boolean
 )
 
-object Amendment extends JourneySourceFinder {
+object Amendment {
   implicit val format: OFormat[Amendment] = Json.format[Amendment]
 
   def apply(
@@ -40,7 +40,7 @@ object Amendment extends JourneySourceFinder {
     goods: DeclarationGoods,
     maybeTotalCalculationResult: Option[TotalCalculationResult] = None,
     paymentStatus: Option[PaymentStatus] = None,
-    source: Option[String] = findSource,
+    source: Option[String] = None,
     emailsSent: Boolean = false
   ): Amendment =
     Amendment(reference, dateOfAmendment, goods, maybeTotalCalculationResult, paymentStatus, source, "en", emailsSent)
