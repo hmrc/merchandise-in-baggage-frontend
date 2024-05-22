@@ -117,7 +117,7 @@ trait CoreTestData {
         )
     }
 
-  val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(aSessionId)
+  val completedDeclarationJourney: DeclarationJourney = TestOnlyController.sampleDeclarationJourney(aSessionId, false)
 
   val declaration: Declaration = completedDeclarationJourney.declarationIfRequiredAndComplete.get
 

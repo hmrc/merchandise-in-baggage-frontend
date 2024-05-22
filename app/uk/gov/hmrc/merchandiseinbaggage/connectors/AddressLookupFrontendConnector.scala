@@ -31,13 +31,16 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class AddressLookupFrontendConnector @Inject() (appConfig: AppConfig, http: HttpClient) {
 
-  private val baseUrl  = appConfig.addressLookupFrontendUrl
+  private val baseUrl = appConfig.addressLookupFrontendUrl
 
   private lazy val initJourneyUrl           = s"$baseUrl/api/v2/init"
   private def confirmJourneyUrl(id: String) = s"$baseUrl/api/confirmed?id=$id"
 
-  def initJourney(call: Call, isAssistedDigital: Boolean)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[String] = {
-    val callback = appConfig.addressLookupCallbackUrl(isAssistedDigital)
+  def initJourney(call: Call, isAssistedDigital: Boolean)(implicit
+    hc: HeaderCarrier,
+    ec: ExecutionContext
+  ): Future[String] = {
+    val callback      = appConfig.addressLookupCallbackUrl(isAssistedDigital)
     val addressConfig = Json.toJson(configAddressLookup(s"$callback${call.url}"))
 
     http.POST[JsValue, HttpResponse](initJourneyUrl, addressConfig) map { response =>

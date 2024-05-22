@@ -41,15 +41,14 @@ import java.time.LocalDate.now
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TestOnlyController @Inject()(
-                                    mcc: MessagesControllerComponents,
-                                    repository: DeclarationJourneyRepository,
-                                    formProvider: DeclarationJourneyFormProvider,
-                                    actionProvider: DeclarationJourneyActionProvider,
-                                    page: TestOnlyDeclarationJourneyPage
-
-                                  )(implicit val ec: ExecutionContext, appConfig: AppConfig)
-  extends FrontendController(mcc)
+class TestOnlyController @Inject() (
+  mcc: MessagesControllerComponents,
+  repository: DeclarationJourneyRepository,
+  formProvider: DeclarationJourneyFormProvider,
+  actionProvider: DeclarationJourneyActionProvider,
+  page: TestOnlyDeclarationJourneyPage
+)(implicit val ec: ExecutionContext, appConfig: AppConfig)
+    extends FrontendController(mcc)
     with Logging {
   private val form = formProvider()
 
@@ -58,11 +57,13 @@ class TestOnlyController @Inject()(
       .get("x-forwarded-host")
       .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
 
-
   val displayDeclarationJourneyPage: Action[AnyContent] = Action { implicit request =>
-
-
-    Ok(page(form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId(), isFromAdminDomain())))), isFromAdminDomain()))
+    Ok(
+      page(
+        form.fill(prettyPrint(toJson(sampleDeclarationJourney(SessionId(), isFromAdminDomain())))),
+        isFromAdminDomain()
+      )
+    )
   }
 
   val submitDeclarationJourneyPage: Action[AnyContent] = Action.async { implicit request =>
@@ -74,7 +75,7 @@ class TestOnlyController @Inject()(
         formWithErrors => onError(formWithErrors),
         json =>
           Json.parse(json).validate[DeclarationJourney] match {
-            case JsError(errors) =>
+            case JsError(errors)                  =>
               logger.error(s"Provided Json was invalid: $errors")
               onError(form)
             case JsSuccess(declarationJourney, _) =>
