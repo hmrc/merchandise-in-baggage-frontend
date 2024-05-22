@@ -31,7 +31,7 @@ class AddressLookupFrontendConnectorSpec extends BaseSpecWithApplication with Ev
   "init a journey" in {
     givenInitJourney(wireMockServer)
 
-    val response: String = connector.initJourney(Call("GET", "/address-lookup-return")).futureValue
+    val response: String = connector.initJourney(Call("GET", "/address-lookup-return"), isAssistedDigital = false).futureValue
 
     response mustBe "/blah"
 

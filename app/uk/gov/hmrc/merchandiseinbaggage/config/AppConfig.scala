@@ -64,6 +64,11 @@ class AppConfig @Inject() (
   lazy val tpsPaymentsBackendUrl: String    = servicesConfig.baseUrl("tps-payments-backend")
   lazy val merchandiseInBaggageUrl: String  = servicesConfig.baseUrl("merchandise-in-baggage")
   lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
-  lazy val addressLookupCallbackUrl: String =
-    config.get[String]("microservice.services.address-lookup-frontend.callback")
+
+  def addressLookupCallbackUrl(isAssistedDigital: Boolean): String =
+    if (isAssistedDigital) {
+      config.get[String]("microservice.services.address-lookup-frontend.adminCallback")
+    } else {
+      config.get[String]("microservice.services.address-lookup-frontend.callback")
+    }
 }
