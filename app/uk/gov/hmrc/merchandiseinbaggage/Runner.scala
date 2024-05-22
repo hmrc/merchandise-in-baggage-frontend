@@ -14,3 +14,15 @@
  * limitations under the License.
  */
 
+package uk.gov.hmrc.merchandiseinbaggage
+
+object Runner extends App {
+
+  import java.text.NumberFormat.getCurrencyInstance
+  import java.util.Locale.UK
+
+  def inPounds(value: Long): BigDecimal = (BigDecimal(value) / 100).setScale(2)
+
+  getCurrencyInstance(UK).format(inPounds(100.999.toLong)).split("\\.00")(0)
+
+}
