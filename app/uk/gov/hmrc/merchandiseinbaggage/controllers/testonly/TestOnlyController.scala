@@ -24,7 +24,6 @@ import play.api.mvc._
 import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.merchandiseinbaggage._
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyActionProvider
 import uk.gov.hmrc.merchandiseinbaggage.controllers.testonly.TestOnlyController.sampleDeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.forms.testonly.DeclarationJourneyFormProvider
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -45,7 +44,6 @@ class TestOnlyController @Inject() (
   mcc: MessagesControllerComponents,
   repository: DeclarationJourneyRepository,
   formProvider: DeclarationJourneyFormProvider,
-  actionProvider: DeclarationJourneyActionProvider,
   page: TestOnlyDeclarationJourneyPage
 )(implicit val ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendController(mcc)
