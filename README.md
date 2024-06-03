@@ -1,63 +1,84 @@
 # merchandise-in-baggage-frontend
 
-## Who uses the repo/service
+This service is for business travellers carrying commercial goods for both import or export.
+It has two modes; Public Facing and Assisted Digital i.e. Admin which requires stride login.
 
-Business travellers carrying commercial goods for both import or export.
+## Starting services
 
-## How to start the service locally
+To start the required services via [service manager](https://github.com/hmrc/sm2), run the command:
 
-`sbt run` This will only start the service as standalone but unable to interact with any other services including Backend and Database
-
-To load all related services:
-
-```bash
-sm2 --start MERCHANDISE_IN_BAGGAGE_ALL
+```shell
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dmicroservice.services.merchandise-in-baggage.port=8280"]}'
 ```
 
-This will start all the required services to complete a journey
+To start the journey in public facing mode, browse the urls below for import and export journeys respectively:
 
-`local url` http://localhost:8281/declare-commercial-goods/start-import
-`local url` http://localhost:8281/declare-commercial-goods/start-export
+* `Import local url`: http://localhost:8281/declare-commercial-goods/start-import
+* `Export local url`: http://localhost:8281/declare-commercial-goods/start-export
 
-## How to run tests
+To start the journey in admin mode, browse the url:
 
-`./run_all_tests` will run all the tests, including unit, UI and integration tests.
+* `Import or Export Choice local url`: http://localhost:8281/declare-commercial-goods/import-export-choice
 
-## UI Tests Repo
+The stride roles for the admin mode are `tps_payment_taker_call_handler,digital_mib_call_handler`.
 
-See the companion Repository https://github.com/hmrc/merchandise-in-baggage-ui-tests for UI tests using this repo.
+## Running Tests
 
-1: To run all mods services and stop the frontend.
+To run unit tests, integration tests, a11y tests, scalastyle, scalafmt, coverage and check dependencies, execute the script:
 
 ```bash
-sm2 --start MERCHANDISE_IN_BAGGAGE_ALL -wait 30 && sm2 --stop MERCHANDISE_IN_BAGGAGE_FRONTEND
+./run_all_tests.sh
 ```
 
-2: Start this service locally with the correct flags.
+### Running UI Tests
+
+To run the UI tests against a branch with changes made in this repo, follow the steps below:
+
+* Start all required services and stop this service by running the commands:
+
+```shell
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dmicroservice.services.merchandise-in-baggage.port=8280"]}'
+sm2 --stop MERCHANDISE_IN_BAGGAGE_FRONTEND
+```
+
+* Start this service locally with the correct flags by executing the script:
 
 ```bash
 ./run-locally.sh
 ```
 
-3: Run the UI tests
+* Run the UI tests which can be found [here](https://github.com/hmrc/merchandise-in-baggage-ui-tests).
 
 OR
 
-Perform: `sm2 --start MERCHANDISE_IN_BAGGAGE_ALL` to run all mods services, and then separately run the UI tests.
-(won't test the branch)
+To run the UI tests without any changes made in this repo, follow the steps below:
 
-## Accessibility Tests
+* Start all required services via [service manager](https://github.com/hmrc/sm2) by running the command:
 
-### Prerequisites
-Have node installed on your machine
+```shell
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dmicroservice.services.merchandise-in-baggage.port=8280"]}'
+```
 
-### Execute tests
+* Start this service locally with the correct flags by executing the script:
+
+```bash
+./run-locally.sh
+```
+
+* Run the UI tests which can be found [here](https://github.com/hmrc/merchandise-in-baggage-ui-tests).
+
+### Running Accessibility Tests
+
+#### Prerequisites
+Have node installed on your machine.
+
+#### Execute tests
 To run the tests locally, simply run:
 ```bash
 sbt clean A11y/test
 ```
 
-## How to enable 'Admin Mode'
+## Enabling 'Admin Mode'
 
 This service is built to accept traffic from the `admin.tax.service.gov.uk` domain as well for assisted digital journeys.
 The service can detect where the traffic has come from by inspecting the `x-forwarded-host` header, this is done in
@@ -65,8 +86,8 @@ The service can detect where the traffic has come from by inspecting the `x-forw
 
 When testing locally, you can enable a filter which will add a header to each request to simulate it coming from the admin domain.
 
-This can be done by updating the `adminJourneyFilter.enabled` flag in application.conf to be `true` or alternatively passing it in as
-a system property e.g. `sbt run -DadminJourneyFilter.enabled=true`
+This can be done by updating the `adminJourneyFilter.enabled` flag in `application.conf` or `./run-locally.sh` to be `true`
+or alternatively passing it in as a system property e.g. `sbt run -DadminJourneyFilter.enabled=true`.
 
 ## License
 

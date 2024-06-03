@@ -17,30 +17,41 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import org.scalatest.OptionValues
-import play.api.i18n.MessagesApi
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers._
+import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class LanguageSwitchControllerSpec extends DeclarationJourneyControllerSpec with OptionValues {
 
-  val controller = new LanguageSwitchController(appConfig, injector.instanceOf[MessagesApi], controllerComponents)
+  private val authConnector                      = injector.instanceOf[AuthConnector]
+  private val mcc: MessagesControllerComponents  = injector.instanceOf[MessagesControllerComponents]
+  private val strideAuthAction: StrideAuthAction = new StrideAuthAction(authConnector, appConfig, mcc)
 
-  "switchToLanguage" should {
-    "should switch to English" in {
+  private val controller: LanguageSwitchController =
+    new LanguageSwitchController(controllerComponents, strideAuthAction)
 
-      val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("en").url, aSessionId)
-      val eventualResult = controller.switchToLanguage("en")(request)
+  "LanguageSwitchController" when {
+    "switchToLanguage" should {
+      "switch to English" in {
 
-      status(eventualResult) mustBe SEE_OTHER
-      cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "en"
-    }
+        val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("en").url, aSessionId)
+        val eventualResult = controller.switchToLanguage("en")(request)
 
-    "should switch to Welsh" in {
+        status(eventualResult) mustBe SEE_OTHER
+        cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "en"
+      }
 
-      val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("cy").url, aSessionId)
-      val eventualResult = controller.switchToLanguage("cy")(request)
+      "switch to Welsh" in {
 
-      status(eventualResult) mustBe SEE_OTHER
-      cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "cy"
+        val request        = buildGet(routes.LanguageSwitchController.switchToLanguage("cy").url, aSessionId)
+        val eventualResult = controller.switchToLanguage("cy")(request)
+
+        status(eventualResult) mustBe SEE_OTHER
+        cookies(eventualResult).get("PLAY_LANG").value.value mustEqual "cy"
+      }
     }
   }
 }
