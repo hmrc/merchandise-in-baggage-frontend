@@ -31,7 +31,6 @@
         languageSelection: components.languageSelection,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
-        appConfig: AppConfig,
         hmrcStandardFooter: HmrcStandardFooter,
         govukSkipLink: GovukSkipLink,
         siteHeader: components.siteHeader,
@@ -47,7 +46,7 @@
   maybeBackButtonUrl: Option[play.api.mvc.Call],
   declarationType: Option[DeclarationType],
   isAssistedDigital: Boolean
-)(contentBlock: Html)(implicit messages: Messages, appConfig: AppConfig, request: Request[_])
+)(contentBlock: Html)(implicit messages: Messages, request: Request[_])
 
 @headDefault = {
 @headBlock
@@ -87,7 +86,7 @@
     }
 }
 
-@if(!isAssistedDigital && appConfig.languageTranslationEnabled) {
+@if(!isAssistedDigital) {
     @languageSelection()
 }
 

@@ -52,8 +52,6 @@ class AppConfig @Inject() (
     s"$url/$serviceIdentifier"
   }
 
-  lazy val languageTranslationEnabled: Boolean = config.get[Boolean]("features.welsh-translation")
-
   private lazy val mibBaseUrl: String                   = "/declare-commercial-goods"
   lazy val mibDeclarationsUrl: String                   = s"$mibBaseUrl/declarations"
   lazy val mibCalculationsUrl: String                   = s"$mibBaseUrl/calculations"

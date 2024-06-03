@@ -17,29 +17,25 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.google.inject.Inject
-import play.api.i18n.{I18nSupport, Lang, MessagesApi}
+import play.api.i18n.{I18nSupport, Lang}
 import play.api.mvc._
-import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+import uk.gov.hmrc.merchandiseinbaggage.auth.StrideAuthAction
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import scala.concurrent.Future
+
 class LanguageSwitchController @Inject() (
-  appConfig: AppConfig,
-  override implicit val messagesApi: MessagesApi,
-  val controllerComponents: MessagesControllerComponents
+  val controllerComponents: MessagesControllerComponents,
+  strideAction: StrideAuthAction
 ) extends FrontendBaseController
     with I18nSupport {
 
   private def fallbackURL: String = routes.GoodsDestinationController.onPageLoad.url
 
-  def switchToLanguage(language: String): Action[AnyContent] = Action { implicit request =>
-    val languageToUse =
-      if (appConfig.languageTranslationEnabled) {
-        Lang(language)
-      } else {
-        Lang("en")
-      }
+  def switchToLanguage(language: String): Action[AnyContent] = strideAction.async { implicit request =>
+    val languageToUse = Lang(language)
 
     val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
-    Redirect(redirectURL).withLang(languageToUse)
+    Future.successful(Redirect(redirectURL).withLang(languageToUse))
   }
 }
