@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -37,7 +37,7 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   val view: RetrieveDeclarationView = injector.instanceOf[RetrieveDeclarationView]
   val connector: MibConnector       = injector.instanceOf[MibConnector]
-  val mockNavigator: Navigator      = mock[Navigator]
+  val mockNavigator: Navigator      = mock(classOf[Navigator])
 
   def controller(declarationJourney: DeclarationJourney): RetrieveDeclarationController =
     new RetrieveDeclarationController(

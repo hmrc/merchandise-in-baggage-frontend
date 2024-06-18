@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import org.mockito.MockitoSugar.mock
+import org.mockito.Mockito.mock
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures {
 
   private val failed: Failure           = Failure("failed")
-  private val aMessagesApi: MessagesApi = mock[MessagesApi]
+  private val aMessagesApi: MessagesApi = mock(classOf[MessagesApi])
 
   private implicit val aHeaderCarrier: HeaderCarrier = HeaderCarrier()
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import org.bson.types.ObjectId
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.{BeforeAndAfterEach, RecoverMethods}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{mock, reset, times, verify, when}
 import play.api.mvc.ControllerComponents
 import play.api.test.Helpers.stubControllerComponents
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
@@ -31,11 +31,11 @@ import scala.concurrent.Await.result
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Future}
 
-class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with RecoverMethods with MockitoSugar {
+class DocumentUpdateServiceSpec extends BaseSpec with BeforeAndAfterEach with RecoverMethods {
 
-  val mockDeclarationJourneyMongo: DeclarationJourneyRepository = mock[DeclarationJourneyRepository]
-  val mockLockKeeper: LockRepositoryProvider                    = mock[LockRepositoryProvider]
-  val mockServicesConfig: ServicesConfig                        = mock[ServicesConfig]
+  val mockDeclarationJourneyMongo: DeclarationJourneyRepository = mock(classOf[DeclarationJourneyRepository])
+  val mockLockKeeper: LockRepositoryProvider                    = mock(classOf[LockRepositoryProvider])
+  val mockServicesConfig: ServicesConfig                        = mock(classOf[ServicesConfig])
 
   val mockCc: ControllerComponents  = stubControllerComponents()
   implicit val ec: ExecutionContext = mockCc.executionContext

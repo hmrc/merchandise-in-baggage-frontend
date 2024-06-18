@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.{any, eqTo}
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -42,9 +42,9 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
   private val importView: CheckYourAnswersAmendImportView = injector.instanceOf[CheckYourAnswersAmendImportView]
   private val exportView: CheckYourAnswersAmendExportView = injector.instanceOf[CheckYourAnswersAmendExportView]
   private val mibConnector: MibConnector                  = injector.instanceOf[MibConnector]
-  private val mockTpsPaymentsService: TpsPaymentsService  = mock[TpsPaymentsService]
-  private val paymentService: PaymentService              = mock[PaymentService]
-  private val mockMibService: MibService                  = mock[MibService]
+  private val mockTpsPaymentsService: TpsPaymentsService  = mock(classOf[TpsPaymentsService])
+  private val paymentService: PaymentService              = mock(classOf[PaymentService])
+  private val mockMibService: MibService                  = mock(classOf[MibService])
 
   private val sessionId: SessionId = SessionId()
 
