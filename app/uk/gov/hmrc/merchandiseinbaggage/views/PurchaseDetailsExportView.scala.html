@@ -17,19 +17,15 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.core.PurchaseDetailsInput
-@import uk.gov.hmrc.hmrcfrontend.views.html.components.HmrcCurrencyInput
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
-@import uk.gov.hmrc.hmrcfrontend.views.Aliases.CurrencyInput
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
 
 @this(
-layout: Layout,
-formHelper: FormWithCSRF,
-h1: components.h1,
-errorSummary: components.errorSummary,
-text: components.inputText,
-currencyInput: HmrcCurrencyInput,
-button: components.button
+  govukInput: GovukInput,
+  layout: Layout,
+  formHelper: FormWithCSRF,
+  errorSummary: components.errorSummary,
+  button: components.button
 )
 
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
@@ -50,11 +46,15 @@ button: components.button
 
         <div class="govuk-inset-text">@messages("purchaseDetails.type.of.goods")<strong> @goodsCategory</strong></div>
 
-        @currencyInput(
-            CurrencyInput(
-                id = "price", name = "price",
+        @govukInput(
+            Input(
+                id = "price",
+                name = "price",
                 classes = "govuk-input--width-10",
-                value = form("price").value
+                value = form("price").value,
+                prefix = Some(PrefixOrSuffix(
+                    content = Text("£")
+                ))
             )
         )
 
