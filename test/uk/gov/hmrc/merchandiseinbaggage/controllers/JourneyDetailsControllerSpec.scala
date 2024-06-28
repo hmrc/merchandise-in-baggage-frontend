@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view: JourneyDetailsPage                                   = app.injector.instanceOf[JourneyDetailsPage]
-  private val mockNavigator: Navigator                                   = mock[Navigator]
+  private val mockNavigator: Navigator                                   = mock(classOf[Navigator])
   private val controller: DeclarationJourney => JourneyDetailsController =
     declarationJourney =>
       new JourneyDetailsController(

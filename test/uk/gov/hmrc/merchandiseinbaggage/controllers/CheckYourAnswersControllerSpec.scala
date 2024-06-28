@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.data.OptionT
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.test.Helpers._
@@ -51,8 +51,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
   private val mibConnector: MibConnector     = injector.instanceOf[MibConnector]
   private val auditConnector: AuditConnector = injector.instanceOf[AuditConnector]
 
-  private val mockMibService: MibService         = mock[MibService]
-  private val mockTpsService: TpsPaymentsService = mock[TpsPaymentsService]
+  private val mockMibService: MibService         = mock(classOf[MibService])
+  private val mockTpsService: TpsPaymentsService = mock(classOf[TpsPaymentsService])
 
   private lazy val testPaymentConnector: PaymentConnector = new PaymentConnector(appConfig, httpClient) {
     override def sendPaymentRequest(
@@ -162,8 +162,8 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
         val sessionId                                      = SessionId()
         val journey: DeclarationJourney                    =
           completedDeclarationJourney.copy(sessionId = sessionId, journeyType = journeyType, isAssistedDigital = true)
-        val mockHandler: CheckYourAnswersNewHandler        = mock[CheckYourAnswersNewHandler]
-        val mockAmendHandler: CheckYourAnswersAmendHandler = mock[CheckYourAnswersAmendHandler]
+        val mockHandler: CheckYourAnswersNewHandler        = mock(classOf[CheckYourAnswersNewHandler])
+        val mockAmendHandler: CheckYourAnswersAmendHandler = mock(classOf[CheckYourAnswersAmendHandler])
 
         def controller(declarationJourney: DeclarationJourney): CheckYourAnswersController =
           new CheckYourAnswersController(

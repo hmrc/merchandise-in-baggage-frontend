@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.{any, eqTo}
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
@@ -43,7 +43,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
   private lazy val exportView: CheckYourAnswersExportView     = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val mibConnector: MibConnector                 = injector.instanceOf[MibConnector]
   private val auditConnector: AuditConnector                  = injector.instanceOf[AuditConnector]
-  private lazy val mockTpsPaymentsService: TpsPaymentsService = mock[TpsPaymentsService]
+  private lazy val mockTpsPaymentsService: TpsPaymentsService = mock(classOf[TpsPaymentsService])
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
