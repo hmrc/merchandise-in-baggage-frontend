@@ -17,7 +17,7 @@ object AppDependencies {
 
   private val test: Seq[ModuleID]   = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30" % bootstrapVersion,
-    "org.scalatestplus" %% "scalacheck-1-18"        % "3.2.18.0"
+    "org.scalatestplus" %% "scalacheck-1-18"        % "3.2.19.0"
   ).map(_ % Test)
 
   // only add additional dependencies here - it test inherit test dependencies above already
