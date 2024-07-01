@@ -22,7 +22,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
 
-@this(layout: Layout, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
+@this(layout: Layout, govukWarningText: GovukWarningText, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
 @(form: Form[_], declaration: Declaration, isAgent: YesNo)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
@@ -186,13 +186,10 @@
 
   <p class="govuk-body">@messages("checkYourAnswers.sendDeclaration.confirm")</p>
 
- <div class="govuk-warning-text">
-  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-  <strong class="govuk-warning-text__text">
-   <span class="govuk-warning-text__assistive">@messages("checkYourAnswers.sendDeclaration.warning")</span>
-   @messages(s"checkYourAnswers.sendDeclaration.warning.Export.${agentOrTrader}.message")
-  </strong>
- </div>
+@govukWarningText(WarningText(
+iconFallbackText = Some(messages("checkYourAnswers.sendDeclaration.warning")),
+content = Text(messages(s"checkYourAnswers.sendDeclaration.warning.Export.${agentOrTrader}.message"))
+))
 
   @button(messages("checkYourAnswers.makeDeclarationButton"), name = Some("makeDeclarationButton"))
  }

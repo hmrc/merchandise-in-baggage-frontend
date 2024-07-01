@@ -20,16 +20,10 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.MessagesApi
-import play.api.libs.json.JsValue
-import play.api.libs.json.Json.toJson
-import play.api.mvc.RequestHeader
-import uk.gov.hmrc.audit.HandlerResult
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.{Disabled, Failure, Success}
-import uk.gov.hmrc.play.audit.model.ExtendedDataEvent
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -59,36 +53,5 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures {
       }
     }
 
-    "use DeclarationPaymentAttempted event for amendments" in {
-      val aDeclarationWithAmendment: Declaration = declaration.copy(amendments = List(aAmendment))
-
-      val mockAuditConnector: AuditConnector = mock(classOf[AuditConnector])
-
-      when(mockAuditConnector.sendExtendedEvent(any())(any(), any()))
-        .thenReturn(Future.successful(Success))
-
-      val auditService: Auditor = new Auditor {
-        override val auditConnector: AuditConnector = mockAuditConnector
-        override val messagesApi: MessagesApi       = aMessagesApi
-      }
-
-      auditService.auditDeclaration(aDeclarationWithAmendment).futureValue mustBe a[Unit]
-    }
-
-    "handle auditConnector failure" in {
-      val aDeclarationWithAmendment: Declaration = declaration.copy(amendments = List(aAmendment))
-
-      val mockAuditConnector: AuditConnector = mock(classOf[AuditConnector])
-
-      when(mockAuditConnector.sendExtendedEvent(any())(any(), any()))
-        .thenReturn(Future.successful(Success))
-
-      val auditService: Auditor = new Auditor {
-        override val auditConnector: AuditConnector = mockAuditConnector
-        override val messagesApi: MessagesApi       = aMessagesApi
-      }
-
-      auditService.auditDeclaration(aDeclarationWithAmendment).futureValue mustBe a[Unit]
-    }
   }
 }

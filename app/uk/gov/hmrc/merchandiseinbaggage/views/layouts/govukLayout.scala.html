@@ -30,7 +30,6 @@
         govukBackLink: GovukBackLink,
         languageSelection: components.languageSelection,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-        hmrcTrackingConsentSnippet: HmrcTrackingConsentSnippet,
         hmrcStandardFooter: HmrcStandardFooter,
         govukSkipLink: GovukSkipLink,
         siteHeader: components.siteHeader,
@@ -47,12 +46,6 @@
   declarationType: Option[DeclarationType],
   isAssistedDigital: Boolean
 )(contentBlock: Html)(implicit messages: Messages, request: Request[_])
-
-@headDefault = {
-@headBlock
-@hmrcTrackingConsentSnippet()
-}
-
 
 @headerDefault = {
     @if(isAssistedDigital) {
@@ -119,7 +112,7 @@
 @govukTemplate(
     htmlLang = Some(messages.lang.code),
     pageTitle = pageTitle,
-    headBlock = Some(headDefault),
+    headBlock = headBlock,
     headerBlock = headerDefault,
     beforeContentBlock = Some(beforeContentDefault),
     footerBlock = hmrcStandardFooter(),

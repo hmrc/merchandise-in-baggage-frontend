@@ -12,12 +12,12 @@ object AppDependencies {
     "org.webjars.npm"             % "accessible-autocomplete"    % "2.0.4",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.7",
     "org.typelevel"              %% "cats-core"                  % "2.12.0",
-    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.0-pekko-1.0.x"
+    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.1-pekko-1.0.x"
   )
 
   private val test: Seq[ModuleID]   = Seq(
     "uk.gov.hmrc"       %% "bootstrap-test-play-30" % bootstrapVersion,
-    "org.scalatestplus" %% "scalacheck-1-17"        % "3.2.18.0"
+    "org.scalatestplus" %% "scalacheck-1-18"        % "3.2.18.0"
   ).map(_ % Test)
 
   // only add additional dependencies here - it test inherit test dependencies above already
