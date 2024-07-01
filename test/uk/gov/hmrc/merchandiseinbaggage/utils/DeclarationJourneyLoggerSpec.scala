@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.utils
 
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.request.RequestTarget
 import play.api.mvc.{Cookies, Headers, RequestHeader}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
@@ -26,9 +26,9 @@ class DeclarationJourneyLoggerSpec extends BaseSpec {
   "DeclarationJourneyLogger" should {
     "be able to warn" in {
 
-      implicit val mockRequest: RequestHeader = mock[RequestHeader]
+      implicit val mockRequest: RequestHeader = mock(classOf[RequestHeader])
 
-      val mockTarget = mock[RequestTarget]
+      val mockTarget = mock(classOf[RequestTarget])
 
       when(mockTarget.path).thenReturn("PATH")
 

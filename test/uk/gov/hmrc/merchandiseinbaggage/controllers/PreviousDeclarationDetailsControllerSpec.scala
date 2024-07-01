@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
@@ -34,8 +34,8 @@ import scala.concurrent.Future
 
 class PreviousDeclarationDetailsControllerSpec extends DeclarationJourneyControllerSpec with CoreTestData {
 
-  val mockNavigator: Navigator   = mock[Navigator]
-  val mockMibService: MibService = mock[MibService]
+  val mockNavigator: Navigator   = mock(classOf[Navigator])
+  val mockMibService: MibService = mock(classOf[MibService])
 
   val view: PreviousDeclarationDetailsView = app.injector.instanceOf[PreviousDeclarationDetailsView]
   val mibConnector: MibConnector           = injector.instanceOf[MibConnector]

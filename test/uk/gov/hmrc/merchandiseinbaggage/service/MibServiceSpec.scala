@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import org.mockito.ArgumentMatchersSugar.{any, eqTo}
-import org.mockito.MockitoSugar.{mock, reset, when}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.Mockito.{mock, reset, when}
 import org.mockito.invocation.InvocationOnMock
 import org.scalatest.{BeforeAndAfterEach, OptionValues}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with OptionValues with BeforeAndAfterEach {
 
   private implicit val hc: HeaderCarrier  = HeaderCarrier()
-  private val mockConnector: MibConnector = mock[MibConnector]
+  private val mockConnector: MibConnector = mock(classOf[MibConnector])
   private val service: MibService         = new MibService(mockConnector)
 
   private val (gbpAmount, duty, vat)           = (7835, 0, 1567)

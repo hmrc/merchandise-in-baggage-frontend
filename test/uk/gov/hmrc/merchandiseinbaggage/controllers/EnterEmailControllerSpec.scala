@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
@@ -33,7 +33,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view: EnterEmailView            = app.injector.instanceOf[EnterEmailView]
   private val viewOpt: EnterOptionalEmailView = app.injector.instanceOf[EnterOptionalEmailView]
-  val mockNavigator: Navigator                = mock[Navigator]
+  val mockNavigator: Navigator                = mock(classOf[Navigator])
 
   def controller(declarationJourney: DeclarationJourney): EnterEmailController =
     new EnterEmailController(

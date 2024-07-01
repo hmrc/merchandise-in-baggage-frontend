@@ -25,14 +25,14 @@ import play.api.Configuration
 import play.api.inject.ApplicationLifecycle
 import uk.gov.hmrc.merchandiseinbaggage.scheduler.SchedulingActor.UpdateDocumentsClass
 import uk.gov.hmrc.merchandiseinbaggage.service.DocumentUpdateService
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{mock, reset}
 
-class ScheduledJobSpec extends AnyWordSpecLike with Matchers with MockitoSugar {
+class ScheduledJobSpec extends AnyWordSpecLike with Matchers {
   val jobNameTest                                            = "testJobName"
-  val mockActorSystem: ActorSystem                           = mock[ActorSystem]
-  val mockService: DocumentUpdateService                     = mock[DocumentUpdateService]
-  val mockApplicationLifecycle: ApplicationLifecycle         = mock[ApplicationLifecycle]
-  val mockQuartzSchedulerExtension: QuartzSchedulerExtension = mock[QuartzSchedulerExtension]
+  val mockActorSystem: ActorSystem                           = mock(classOf[ActorSystem])
+  val mockService: DocumentUpdateService                     = mock(classOf[DocumentUpdateService])
+  val mockApplicationLifecycle: ApplicationLifecycle         = mock(classOf[ApplicationLifecycle])
+  val mockQuartzSchedulerExtension: QuartzSchedulerExtension = mock(classOf[QuartzSchedulerExtension])
 
   class Setup(cronString: String, enabled: Boolean = false) {
     val testConfig: Configuration = Configuration(

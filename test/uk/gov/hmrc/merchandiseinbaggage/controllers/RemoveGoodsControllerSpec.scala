@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
-import org.mockito.ArgumentMatchersSugar.any
-import org.mockito.MockitoSugar.{mock, when}
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
@@ -33,7 +33,7 @@ class RemoveGoodsControllerSpec extends DeclarationJourneyControllerSpec with Co
 
   val repo: DeclarationJourneyRepository = app.injector.instanceOf[DeclarationJourneyRepository]
   val view: RemoveGoodsView              = app.injector.instanceOf[RemoveGoodsView]
-  val mockNavigator: Navigator           = mock[Navigator]
+  val mockNavigator: Navigator           = mock(classOf[Navigator])
   val controller: RemoveGoodsController  =
     new RemoveGoodsController(controllerComponents, actionBuilder, repo, mockNavigator, view)
 
