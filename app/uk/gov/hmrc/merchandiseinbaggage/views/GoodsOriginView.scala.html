@@ -23,6 +23,7 @@
 
 @this(
 layout: Layout,
+govukWarningText: GovukWarningText,
 formHelper: FormWithCSRF,
 errorSummary: components.errorSummary,
 h1: components.h1,
@@ -51,13 +52,10 @@ details: components.details
             items = YesNoDontKnow.options(form)
         )
 
-        <div class="govuk-warning-text">
-            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-            <strong class="govuk-warning-text__text">
-                <span class="govuk-warning-text__assistive">@messages("goodsOrigin.warning.warning")</span>
-                @messages("goodsOrigin.warning")
-            </strong>
-        </div>
+        @govukWarningText(WarningText(
+            iconFallbackText = Some(messages("goodsOrigin.warning.warning")),
+            content = Text(messages("goodsOrigin.warning"))
+        ))
 
         @details(
              summaryText = Messages("goodsOrigin.proof.summary")

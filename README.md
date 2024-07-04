@@ -53,16 +53,18 @@ OR
 
 To run the UI tests without any changes made in this repo, follow the steps below:
 
-* Start all required services via [service manager](https://github.com/hmrc/sm2) by running the command:
+* Start all required services and this frontend with the correct flags via [service manager](https://github.com/hmrc/sm2) by running the appropriate command:
+
+Pubic Facing mode:
 
 ```shell
 sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dmicroservice.services.merchandise-in-baggage.port=8280"]}'
 ```
 
-* Start this service locally with the correct flags by executing the script:
+Admin mode:
 
-```bash
-./run-locally.sh
+```shell
+sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dmicroservice.services.merchandise-in-baggage.port=8280"],"MERCHANDISE_IN_BAGGAGE_FRONTEND":["-DadminJourneyFilter.enabled=true"]}'
 ```
 
 * Run the UI tests which can be found [here](https://github.com/hmrc/merchandise-in-baggage-ui-tests).
@@ -86,7 +88,7 @@ The service can detect where the traffic has come from by inspecting the `x-forw
 
 When testing locally, you can enable a filter which will add a header to each request to simulate it coming from the admin domain.
 
-This can be done by updating the `adminJourneyFilter.enabled` flag in `application.conf` or `./run-locally.sh` to be `true`
+This can be done by updating the `adminJourneyFilter.enabled` flag in `application.conf` or `run-locally.sh` to be `true`
 or alternatively passing it in as a system property e.g. `sbt run -DadminJourneyFilter.enabled=true`.
 
 ## License
