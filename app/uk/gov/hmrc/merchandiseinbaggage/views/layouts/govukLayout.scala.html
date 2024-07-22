@@ -45,7 +45,7 @@
   maybeBackButtonUrl: Option[play.api.mvc.Call],
   declarationType: Option[DeclarationType],
   isAssistedDigital: Boolean
-)(contentBlock: Html)(implicit messages: Messages, request: Request[_])
+)(contentBlock: Html)(implicit messages: Messages, request: RequestHeader)
 
 @headerDefault = {
     @if(isAssistedDigital) {

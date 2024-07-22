@@ -17,50 +17,67 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import cats.data.EitherT
-
-import javax.inject.{Inject, Singleton}
 import play.api.Logging
 import play.api.http.Status
-import uk.gov.hmrc.http.HttpReads.Implicits.{readFromJson, readRaw}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationAmendRequest, CalculationRequest, CalculationResponse}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, DeclarationId, Eori, MibReference}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient)(implicit
+class MibConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(implicit
   ec: ExecutionContext
 ) extends Logging {
 
-  private val baseUrl = appConfig.merchandiseInBaggageUrl
+  private val baseUrl                                           = appConfig.merchandiseInBaggageUrl
+  private val declarationsUrl                                   = s"$baseUrl${appConfig.mibDeclarationsUrl}"
+  private def oneDeclarationUrl(declarationId: DeclarationId)   =
+    s"$baseUrl${appConfig.mibDeclarationsUrl}/${declarationId.value}"
+  private val calculationsUrl                                   = s"$baseUrl${appConfig.mibCalculationsUrl}"
+  private val amendCalculationsUrl                              = s"$baseUrl${appConfig.mibAmendsPlusExistingCalculationsUrl}"
+  private def findByUrl(mibReference: MibReference, eori: Eori) =
+    s"$baseUrl${appConfig.mibDeclarationsUrl}?mibReference=${mibReference.value}&eori=${eori.value}"
+  private def eoriUrl(eori: String)                             = s"$baseUrl${appConfig.mibCheckEoriUrl}$eori"
 
   def persistDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
-    httpClient.POST[Declaration, DeclarationId](s"$baseUrl${appConfig.mibDeclarationsUrl}", declaration)
+    httpClient
+      .post(url"$declarationsUrl")
+      .withBody(Json.toJson(declaration))
+      .execute[DeclarationId]
 
   def amendDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier): Future[DeclarationId] =
-    httpClient.PUT[Declaration, DeclarationId](s"$baseUrl${appConfig.mibDeclarationsUrl}", declaration)
+    httpClient
+      .put(url"$declarationsUrl")
+      .withBody(Json.toJson(declaration))
+      .execute[DeclarationId]
 
   def findDeclaration(declarationId: DeclarationId)(implicit hc: HeaderCarrier): Future[Option[Declaration]] =
-    httpClient.GET[HttpResponse](s"$baseUrl${appConfig.mibDeclarationsUrl}/${declarationId.value}").map { response =>
-      response.status match {
-        case Status.OK => response.json.asOpt[Declaration]
-        case other     =>
-          logger.warn(s"unexpected status for findDeclaration, status:$other")
-          None
+    httpClient
+      .get(url"${oneDeclarationUrl(declarationId)}")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case Status.OK => response.json.asOpt[Declaration]
+          case other     =>
+            logger.warn(s"unexpected status for findDeclaration, status:$other")
+            None
+        }
       }
-    }
 
   def findBy(mibReference: MibReference, eori: Eori)(implicit
     hc: HeaderCarrier
   ): EitherT[Future, String, Option[Declaration]] =
     EitherT(
       httpClient
-        .GET[HttpResponse](
-          s"$baseUrl${appConfig.mibDeclarationsUrl}?mibReference=${mibReference.value}&eori=${eori.value}"
-        )
+        .get(url"${findByUrl(mibReference, eori)}")
+        .execute[HttpResponse]
         .map { response =>
           response.status match {
             case Status.OK        => Right(response.json.asOpt[Declaration])
@@ -78,20 +95,21 @@ class MibConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient)(impl
     hc: HeaderCarrier
   ): Future[CalculationResponse] =
     httpClient
-      .POST[Seq[CalculationRequest], CalculationResponse](
-        s"$baseUrl${appConfig.mibCalculationsUrl}",
-        calculationRequests
-      )
+      .post(url"$calculationsUrl")
+      .withBody(Json.toJson(calculationRequests))
+      .execute[CalculationResponse]
 
   def calculatePaymentsAmendPlusExisting(
     amendRequest: CalculationAmendRequest
   )(implicit hc: HeaderCarrier): Future[CalculationResponse] =
     httpClient
-      .POST[CalculationAmendRequest, CalculationResponse](
-        s"$baseUrl${appConfig.mibAmendsPlusExistingCalculationsUrl}",
-        amendRequest
-      )
+      .post(url"$amendCalculationsUrl")
+      .withBody(Json.toJson(amendRequest))
+      .execute[CalculationResponse]
 
   def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =
-    httpClient.GET[CheckResponse](s"$baseUrl${appConfig.mibCheckEoriUrl}$eori")
+    httpClient
+      .get(url"${eoriUrl(eori)}")
+      .execute[CheckResponse]
+
 }

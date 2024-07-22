@@ -17,8 +17,10 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import play.api.http.Status
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsPaymentsRequest
@@ -27,15 +29,18 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TpsPaymentsBackendConnector @Inject() (appConfig: AppConfig, httpClient: HttpClient) {
+class TpsPaymentsBackendConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2) {
 
   private val baseUrl = appConfig.tpsPaymentsBackendUrl
+  private val fullUrl = s"$baseUrl/tps-payments-backend/start-tps-journey/mib"
 
   def tpsPayments(
     requestBody: TpsPaymentsRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] =
     httpClient
-      .POST[TpsPaymentsRequest, HttpResponse](s"$baseUrl/tps-payments-backend/start-tps-journey/mib", requestBody)
+      .post(url"$fullUrl")
+      .withBody(Json.toJson(requestBody))
+      .execute[HttpResponse]
       .map { response =>
         response.status match {
           case Status.CREATED => response.json.as[PayApiResponse]

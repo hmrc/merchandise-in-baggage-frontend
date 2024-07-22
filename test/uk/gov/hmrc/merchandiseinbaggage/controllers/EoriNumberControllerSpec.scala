@@ -19,7 +19,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import org.mockito.Mockito.mock
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 import uk.gov.hmrc.merchandiseinbaggage.views.html.EoriNumberView
@@ -30,7 +31,7 @@ import scala.concurrent.Future
 class EoriNumberControllerSpec extends DeclarationJourneyControllerSpec {
 
   val view: EoriNumberView             = injector.instanceOf[EoriNumberView]
-  val client: HttpClient               = injector.instanceOf[HttpClient]
+  val client: HttpClientV2             = injector.instanceOf[HttpClientV2]
   val mockNavigator: Navigator         = mock(classOf[Navigator])
   val connector: MibConnector          = new MibConnector(appConfig, client) {
     override def checkEoriNumber(eori: String)(implicit hc: HeaderCarrier): Future[CheckResponse] =

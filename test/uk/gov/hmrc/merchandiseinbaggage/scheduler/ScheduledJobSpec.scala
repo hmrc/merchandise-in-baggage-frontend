@@ -41,7 +41,9 @@ class ScheduledJobSpec extends AnyWordSpecLike with Matchers {
       s"schedules.$jobNameTest.description" -> "testDescription"
     )
 
-    reset(mockQuartzSchedulerExtension, mockService, mockActorSystem)
+    reset(mockQuartzSchedulerExtension)
+    reset(mockService)
+    reset(mockActorSystem)
 
     val job: ScheduledJob = new ScheduledJob {
       override lazy val scheduledMessage: SchedulingActor.ScheduledMessage[_] = UpdateDocumentsClass(mockService)
