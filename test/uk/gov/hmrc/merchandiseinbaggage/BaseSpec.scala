@@ -77,8 +77,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
           "microservice.services.payment.port"                 -> WireMockSupport.port,
           "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port,
           "microservice.services.auth.port"                    -> WireMockSupport.port,
-          "microservice.services.tps-payments-backend.port"    -> WireMockSupport.port,
-          "microservice.services.auditing.port"                -> WireMockSupport.port
+          "microservice.services.tps-payments-backend.port"    -> WireMockSupport.port
         )
       )
       .build()

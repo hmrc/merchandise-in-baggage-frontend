@@ -22,7 +22,8 @@ import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Results._
 import play.api.mvc.{Request, RequestHeader, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -41,7 +42,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
 
-  private val httpClient: HttpClient = injector.instanceOf[HttpClient]
+  private val httpClient: HttpClientV2 = injector.instanceOf[HttpClientV2]
 
   private val importView: CheckYourAnswersImportView           = injector.instanceOf[CheckYourAnswersImportView]
   private val exportView: CheckYourAnswersExportView           = injector.instanceOf[CheckYourAnswersExportView]

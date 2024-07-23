@@ -36,7 +36,7 @@
   maybeDeclarationType: Option[DeclarationType],
   isAssistedDigital: Boolean,
   timeOut: Boolean = true
-)(contentBlock: Html)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(contentBlock: Html)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @defaultHead = {
     @headBlock

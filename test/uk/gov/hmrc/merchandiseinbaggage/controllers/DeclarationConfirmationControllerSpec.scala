@@ -17,7 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
@@ -31,7 +32,7 @@ import scala.concurrent.Future
 class DeclarationConfirmationControllerSpec extends DeclarationJourneyControllerSpec {
 
   private val view       = injector.instanceOf[DeclarationConfirmationView]
-  private val client     = injector.instanceOf[HttpClient]
+  private val client     = injector.instanceOf[HttpClientV2]
   private val connector  = new MibConnector(appConfig, client)
   private val controller =
     new DeclarationConfirmationController(

@@ -19,9 +19,9 @@ package uk.gov.hmrc.merchandiseinbaggage.views
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{Country, Declaration, NotRequired, Paid, TotalCalculationResult, YesNoDontKnow}
+import uk.gov.hmrc.merchandiseinbaggage.model.api._
 import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
@@ -66,7 +66,7 @@ object ViewUtils {
     }
   }
 
-  def isFromAdminDomain()(implicit request: Request[_]): Boolean =
+  def isFromAdminDomain()(implicit request: RequestHeader): Boolean =
     request.headers
       .get("x-forwarded-host")
       .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))

@@ -20,7 +20,8 @@ import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.{MibConnector, PaymentConnector}
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
-  private lazy val httpClient: HttpClient                     = injector.instanceOf[HttpClient]
+  private lazy val httpClient: HttpClientV2                   = injector.instanceOf[HttpClientV2]
   private lazy val importView: CheckYourAnswersImportView     = injector.instanceOf[CheckYourAnswersImportView]
   private lazy val exportView: CheckYourAnswersExportView     = injector.instanceOf[CheckYourAnswersExportView]
   private lazy val mibConnector: MibConnector                 = injector.instanceOf[MibConnector]

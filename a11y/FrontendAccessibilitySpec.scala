@@ -17,6 +17,7 @@
 import org.scalacheck.Arbitrary
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -50,6 +51,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     goodsEntry = completedImportGoods
   )
 
+  implicit val arbRequestHeader: Arbitrary[RequestHeader]                            = fixed(fakeRequest)
   implicit val arbHtml: Arbitrary[Html]                                              = fixed(Html(""))
   implicit val arbForm: Arbitrary[Form[_]]                                           = fixed(booleanForm)
   implicit val arbString: Arbitrary[String]                                          = fixed("http://something")
