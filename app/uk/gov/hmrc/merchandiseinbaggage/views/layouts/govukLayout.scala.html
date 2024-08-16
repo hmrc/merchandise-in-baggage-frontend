@@ -28,7 +28,7 @@
         govukHeader: GovukHeader,
         govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
-        languageSelection: components.languageSelection,
+        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcStandardFooter: HmrcStandardFooter,
         govukSkipLink: GovukSkipLink,
@@ -64,6 +64,10 @@
 
 @beforeContentDefault = {
 
+@if(!isAssistedDigital) {
+    @hmrcLanguageSelectHelper()
+}
+
 @{
     maybeBackButtonUrl.fold(Html("")) { call =>
         if(call.url == "#") {
@@ -78,11 +82,6 @@
         }
     }
 }
-
-@if(!isAssistedDigital) {
-    @languageSelection()
-}
-
 }
 
 @bodyEndDefault = {
