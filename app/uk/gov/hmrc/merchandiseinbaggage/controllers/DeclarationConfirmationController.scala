@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, RequestHeader, Result}
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
@@ -67,9 +67,18 @@ class DeclarationConfirmationController @Inject() (
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
-      _ =>
-        Redirect(routes.GoodsDestinationController.onPageLoad)
+    val isFromAdminDomain: Boolean = request.headers
+      .get("x-forwarded-host")
+      .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
+    if (isFromAdminDomain)
+      Future {
+        Redirect(routes.ImportExportChoiceController.onPageLoad)
+      }
+    else {
+      repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+        _ =>
+          Redirect(routes.GoodsDestinationController.onPageLoad)
+      }
     }
   }
 
