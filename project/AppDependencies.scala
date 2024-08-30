@@ -2,11 +2,11 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapVersion = "9.3.0"
+  private val bootstrapVersion = "9.4.0"
 
   private val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                %% "bootstrap-frontend-play-30" % bootstrapVersion,
-    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "10.9.0",
+    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "10.11.0",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-30"         % "2.2.0",
     "com.beachape"               %% "enumeratum-play"            % "1.8.1",
     "org.webjars.npm"             % "accessible-autocomplete"    % "2.0.4",

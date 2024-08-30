@@ -25,6 +25,7 @@
 @this(
     govukLayout: layouts.govukLayout,
     hmrcHead: HmrcHead,
+    hmrcInternalHead: HmrcInternalHead,
     hmrcScripts: HmrcScripts,
     hmrcTimeoutDialog: HmrcTimeoutDialog
 )
@@ -74,7 +75,7 @@
 @if(isAssistedDigital) {
     @govukLayout(
         pageTitle = pageTitle,
-        headBlock = Some(hmrcHead(headBlock = Some(defaultHead))),
+        headBlock = Some(hmrcInternalHead(headBlock = Some(defaultHead))),
         scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(defaultScripts))),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl,
