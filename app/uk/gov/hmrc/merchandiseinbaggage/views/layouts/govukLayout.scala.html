@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
-@import uk.gov.hmrc.merchandiseinbaggage.views.html.components
+@import uk.gov.hmrc.hmrcfrontend.views.html.components._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
@@ -26,13 +26,13 @@
 @this(
         govukTemplate: GovukTemplate,
         govukHeader: GovukHeader,
+        hmrcInternalHeader: HmrcInternalHeader,
         govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
         hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcStandardFooter: HmrcStandardFooter,
-        govukSkipLink: GovukSkipLink,
-        siteHeader: components.siteHeader,
+        govukSkipLink: GovukSkipLink
 )
 
 @(
@@ -49,7 +49,11 @@
 
 @headerDefault = {
     @if(isAssistedDigital) {
-        @siteHeader()
+        @hmrcInternalHeader(InternalHeader(
+            homepageUrl = routes.ImportExportChoiceController.onPageLoad.url,
+            serviceName = Some(messages("service.name")),
+            serviceUrl = routes.ImportExportChoiceController.onPageLoad.url
+        ))
     } else {
         @headerBlock.getOrElse {
         @govukHeader(Header(
