@@ -67,20 +67,15 @@ class DeclarationConfirmationController @Inject() (
 
   val makeAnotherDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
-    val isFromAdminDomain: Boolean = request.headers
-      .get("x-forwarded-host")
-      .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))
-    if (isFromAdminDomain)
-      Future {
-        Redirect(routes.ImportExportChoiceController.onPageLoad)
-      }
-    else {
-      repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
-        _ =>
+    repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
+      _ =>
+        if (request.isAssistedDigital) {
+          Redirect(routes.ImportExportChoiceController.onPageLoad)
+        } else {
           Redirect(routes.GoodsDestinationController.onPageLoad)
-      }
+        }
     }
-  }
+  } 
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
