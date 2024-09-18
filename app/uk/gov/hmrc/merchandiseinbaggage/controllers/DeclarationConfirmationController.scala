@@ -69,9 +69,13 @@ class DeclarationConfirmationController @Inject() (
     import request.declarationJourney._
     repo.upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital = request.isAssistedDigital)) map {
       _ =>
-        Redirect(routes.GoodsDestinationController.onPageLoad)
+        if (request.isAssistedDigital) {
+          Redirect(routes.ImportExportChoiceController.onPageLoad)
+        } else {
+          Redirect(routes.GoodsDestinationController.onPageLoad)
+        }
     }
-  }
+  } 
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._
