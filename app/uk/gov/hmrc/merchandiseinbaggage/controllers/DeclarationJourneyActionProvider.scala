@@ -42,7 +42,9 @@ class DeclarationJourneyActionProvider @Inject() (
     journeyAction andThen goodsActionRefiner(idx)
 
   def invalidRequest(warnMessage: String)(implicit request: RequestHeader): Result = {
-    DeclarationJourneyLogger.info(s"$warnMessage so redirecting to ${routes.CannotAccessPageController.onPageLoad}")(
+    DeclarationJourneyLogger.info(
+      s"[DeclarationJourneyActionProvider][invalidRequest] $warnMessage so redirecting to ${routes.CannotAccessPageController.onPageLoad}"
+    )(
       request
     )
     Redirect(routes.CannotAccessPageController.onPageLoad)

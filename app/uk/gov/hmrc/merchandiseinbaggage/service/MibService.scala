@@ -18,8 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 
 import cats.data.OptionT
 import cats.instances.future._
-import javax.inject.{Inject, Singleton}
-import play.api.Logger
+import play.api.Logging
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
@@ -29,11 +28,11 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEnt
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.merchandiseinbaggage.viewmodels.DeclarationView._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class MibService @Inject() (mibConnector: MibConnector)(implicit ec: ExecutionContext) {
-  private val logger = Logger("MibService")
+class MibService @Inject() (mibConnector: MibConnector)(implicit ec: ExecutionContext) extends Logging {
 
   def paymentCalculations(goods: Seq[Goods], destination: GoodsDestination)(implicit
     hc: HeaderCarrier
@@ -105,7 +104,7 @@ class MibService @Inject() (mibConnector: MibConnector)(implicit ec: ExecutionCo
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>
-      logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]")
+      logger.info(s"[MibService][withLogging] Payment calculation for good [${result.goods}] gave result [$result]")
     )
     response
   }

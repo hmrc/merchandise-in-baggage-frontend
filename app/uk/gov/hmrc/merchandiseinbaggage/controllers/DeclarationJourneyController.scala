@@ -78,7 +78,7 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
       case Some(c) => f(c)
       case None    =>
         DeclarationJourneyLogger.warn(
-          s"Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad}"
+          s"[IndexedDeclarationJourneyController][withGoodsCategory] Goods category not found so redirecting to ${routes.CannotAccessPageController.onPageLoad}"
         )
         Future successful Redirect(routes.CannotAccessPageController.onPageLoad)
     }

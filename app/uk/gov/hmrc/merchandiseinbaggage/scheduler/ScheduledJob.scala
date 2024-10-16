@@ -53,13 +53,15 @@ trait ScheduledJob extends Logging {
       case (true, true)  =>
         scheduler.createSchedule(jobName, description, expression, None, TimeZone.getTimeZone(ZoneId.of(timezone)))
         scheduler.schedule(jobName, schedulingActorRef, scheduledMessage)
-        logger.info(s"Scheduler for $jobName has been started")
+        logger.info(s"[ScheduledJob][schedule] Scheduler for $jobName has been started")
         true
       case (true, false) =>
-        logger.info(s"Scheduler for $jobName is disabled as there is no quartz expression or expression is not valid")
+        logger.info(
+          s"[ScheduledJob][schedule] Scheduler for $jobName is disabled as there is no quartz expression or expression is not valid"
+        )
         false
       case (false, _)    =>
-        logger.info(s"Scheduler for $jobName is disabled by configuration")
+        logger.info(s"[ScheduledJob][schedule] Scheduler for $jobName is disabled by configuration")
         false
     }
   }

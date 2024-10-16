@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.auth
 
-import org.slf4j.LoggerFactory.getLogger
 import play.api.mvc.Results.{Forbidden, Unauthorized}
 import play.api.mvc._
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve._
@@ -38,7 +37,8 @@ class StrideAuthAction @Inject() (
 )(implicit ec: ExecutionContext)
     extends ActionBuilder[AuthRequest, AnyContent]
     with AuthorisedFunctions
-    with AuthRedirects {
+    with AuthRedirects
+    with Logging {
 
   override def parser: BodyParser[AnyContent] = mcc.parsers.defaultBodyParser
 
@@ -48,13 +48,11 @@ class StrideAuthAction @Inject() (
 
   override protected def executionContext: ExecutionContext = ec
 
-  private val logger = getLogger(getClass)
-
   override def invokeBlock[A](request: Request[A], block: AuthRequest[A] => Future[Result]): Future[Result] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def redirectToStrideLogin(message: String) = {
-      logger.warn(s"user is not authenticated - redirecting user to login: $message")
+      logger.warn(s"[StrideAuthAction][invokeBlock] user is not authenticated - redirecting user to login: $message")
       val uri = if (request.host.contains("localhost")) s"http://${request.host}${request.uri}" else s"${request.uri}"
       toStrideLogin(uri)
     }
@@ -87,7 +85,7 @@ class StrideAuthAction @Inject() (
           case e: InternalError          =>
             redirectToStrideLogin(e.getMessage)
           case e: AuthorisationException =>
-            logger.warn(s"User is forbidden because of ${e.reason}, $e")
+            logger.warn(s"[StrideAuthAction][invokeBlock] User is forbidden because of ${e.reason}, $e")
             Forbidden
         }
     }

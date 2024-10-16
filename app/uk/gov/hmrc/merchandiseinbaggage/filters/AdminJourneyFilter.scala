@@ -37,7 +37,9 @@ class AdminJourneyFilter @Inject() (
         val headers = rh.headers.add("x-forwarded-host" -> "admin.tax.service.gov.uk")
         rh.withHeaders(headers)
       }
-      logger.info("Request modified to add header 'x-forwarded-host: admin.tax.service.gov.uk' for testing purposes.")
+      logger.info(
+        "[AdminJourneyFilter][apply] Request modified to add header 'x-forwarded-host: admin.tax.service.gov.uk' for testing purposes."
+      )
       f(rhWithAdminHeader)
     } else {
       f(rh)

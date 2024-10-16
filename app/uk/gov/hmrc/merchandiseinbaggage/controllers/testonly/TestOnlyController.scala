@@ -74,7 +74,7 @@ class TestOnlyController @Inject() (
         json =>
           Json.parse(json).validate[DeclarationJourney] match {
             case JsError(errors)                  =>
-              logger.error(s"Provided Json was invalid: $errors")
+              logger.error(s"[TestOnlyController][submitDeclarationJourneyPage] Provided Json was invalid: $errors")
               onError(form)
             case JsSuccess(declarationJourney, _) =>
               repository.upsert(declarationJourney).map { _ =>

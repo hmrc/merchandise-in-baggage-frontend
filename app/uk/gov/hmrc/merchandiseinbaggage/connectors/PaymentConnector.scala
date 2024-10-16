@@ -36,7 +36,7 @@ class PaymentConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2
   def sendPaymentRequest(
     requestBody: PayApiRequest
   )(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[PayApiResponse] = {
-    logger.warn(s"payments requestBody: ${Json.toJson(requestBody)}")
+    logger.warn(s"[PaymentConnector][sendPaymentRequest] payments requestBody: ${Json.toJson(requestBody)}")
 
     httpClient.post(url).withBody(Json.toJson(requestBody)).execute[HttpResponse].map { response =>
       response.status match {
