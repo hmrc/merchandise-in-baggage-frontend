@@ -75,7 +75,7 @@ class DeclarationConfirmationController @Inject() (
           Redirect(routes.GoodsDestinationController.onPageLoad)
         }
     }
-  } 
+  }
 
   val addGoodsToAnExistingDeclaration: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     import request.declarationJourney._

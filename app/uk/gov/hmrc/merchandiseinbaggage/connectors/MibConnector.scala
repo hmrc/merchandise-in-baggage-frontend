@@ -66,7 +66,7 @@ class MibConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(im
         response.status match {
           case Status.OK => response.json.asOpt[Declaration]
           case other     =>
-            logger.warn(s"unexpected status for findDeclaration, status:$other")
+            logger.warn(s"[MibConnector][findDeclaration] unexpected status for findDeclaration, status:$other")
             None
         }
       }
@@ -84,7 +84,7 @@ class MibConnector @Inject() (appConfig: AppConfig, httpClient: HttpClientV2)(im
             case Status.NOT_FOUND => Right(None)
             case other            =>
               logger.warn(
-                s"unexpected status for findBy for mibReference:${mibReference.value}, and eori:${eori.value}, status:$other"
+                s"[MibConnector][findBy] unexpected status for findBy for mibReference:${mibReference.value}, and eori:${eori.value}, status:$other"
               )
               Left(s"unexpected status for findBy, status:$other")
           }
