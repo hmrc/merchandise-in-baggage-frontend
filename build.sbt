@@ -1,6 +1,6 @@
 import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.15"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
