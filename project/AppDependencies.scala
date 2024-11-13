@@ -12,7 +12,7 @@ object AppDependencies {
     "org.webjars.npm"             % "accessible-autocomplete"    % "3.0.0",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.9",
     "org.typelevel"              %% "cats-core"                  % "2.12.0",
-    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.3.0-pekko-1.1.x"
+    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.2-pekko-1.0.x"
   )
 
   private val test: Seq[ModuleID] = Seq(

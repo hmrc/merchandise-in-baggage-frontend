@@ -24,7 +24,7 @@ The stride roles for the admin mode are `tps_payment_taker_call_handler,digital_
 
 ## Running Tests
 
-To run unit tests, integration tests, a11y tests, scalafmt, coverage and check dependencies, execute the script:
+To run unit tests, integration tests, scalafmt, coverage and check dependencies, execute the script:
 
 ```bash
 ./run_all_tests.sh
