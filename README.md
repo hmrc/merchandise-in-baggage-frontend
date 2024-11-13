@@ -69,17 +69,6 @@ sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dm
 
 * Run the UI tests which can be found [here](https://github.com/hmrc/merchandise-in-baggage-ui-tests).
 
-### Running Accessibility Tests
-
-#### Prerequisites
-Have node installed on your machine.
-
-#### Execute tests
-To run the tests locally, simply run:
-```bash
-sbt clean A11y/test
-```
-
 ## Enabling 'Admin Mode'
 
 This service is built to accept traffic from the `admin.tax.service.gov.uk` domain as well for assisted digital journeys.
