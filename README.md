@@ -24,7 +24,7 @@ The stride roles for the admin mode are `tps_payment_taker_call_handler,digital_
 
 ## Running Tests
 
-To run unit tests, integration tests, a11y tests, scalafmt, coverage and check dependencies, execute the script:
+To run unit tests, integration tests, scalafmt, coverage and check dependencies, execute the script:
 
 ```bash
 ./run_all_tests.sh
@@ -68,17 +68,6 @@ sm2 --start MERCHANDISE_IN_BAGGAGE_ALL --appendArgs '{"PAYMENTS_PROCESSOR":["-Dm
 ```
 
 * Run the UI tests which can be found [here](https://github.com/hmrc/merchandise-in-baggage-ui-tests).
-
-### Running Accessibility Tests
-
-#### Prerequisites
-Have node installed on your machine.
-
-#### Execute tests
-To run the tests locally, simply run:
-```bash
-sbt clean A11y/test
-```
 
 ## Enabling 'Admin Mode'
 
