@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
 
 class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTestData {
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
         givenAJourneyWithSession(declarationType = importOrExport)
@@ -36,7 +36,10 @@ class GoodsOverThresholdContentSpec extends GoodsOverThresholdPage with CoreTest
 
         pageTitle must startWith(title)
 
-        elementText(findByTagName("h1")) mustBe messages("goodsOverThreshold.GreatBritain.heading", thresholdValueInUI)
+        elementText(findByTagName("h1")) mustBe messages(
+          "goodsOverThreshold.GreatBritain.heading",
+          thresholdValueInUI
+        )
 
         findByXPath("""//*[@id="main-content"]/div/div/p[1]""").getText mustBe messages(
           s"goodsOverThreshold.GreatBritain.$importOrExport.p1",

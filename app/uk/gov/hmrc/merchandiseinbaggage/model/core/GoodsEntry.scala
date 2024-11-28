@@ -17,8 +17,8 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import play.api.libs.json.JsonConfiguration.Aux
-import play.api.libs.json._
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import play.api.libs.json.*
+import uk.gov.hmrc.merchandiseinbaggage.model.api.*
 
 sealed trait GoodsEntry {
   val maybeCategory: Option[String]
@@ -81,7 +81,7 @@ object GoodsEntry {
     case eg: ExportGoodsEntry => ExportGoodsEntry.format.writes(eg)
   }
 
-  //TODO: Check catch all case
+  // TODO: Check catch all case
   implicit val reads: Reads[GoodsEntry] = Reads[GoodsEntry] {
     case json: JsObject if json.keys.contains("maybeProducedInEu") =>
       JsSuccess(json.as[ImportGoodsEntry])

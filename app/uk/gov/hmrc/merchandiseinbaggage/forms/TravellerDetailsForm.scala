@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.forms
 
 import play.api.data.Form
-import play.api.data.Forms._
+import play.api.data.Forms.*
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
@@ -28,7 +28,7 @@ object TravellerDetailsForm extends Mappings {
 
   private val regex: String = "[A-Za-z '-]*"
 
-  private def isValidName(invalidMessageKey: String): Constraint[String] = Constraint { value: String =>
+  private def isValidName(invalidMessageKey: String): Constraint[String] = Constraint { (value: String) =>
     if (value.trim matches regex) {
       Valid
     } else {
@@ -44,6 +44,6 @@ object TravellerDetailsForm extends Mappings {
       lastName  ->
         text("travellerDetails.lastName.error.required")
           .verifying(isValidName("travellerDetails.lastName.error.invalid"))
-    )(Name.apply)(Name.unapply)
+    )(Name.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 }

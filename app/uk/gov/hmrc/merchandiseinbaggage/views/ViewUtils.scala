@@ -36,7 +36,7 @@ object ViewUtils {
     messages: Messages
   ): String =
     s"${messages(title, titleMessageArgs: _*)} - ${section
-      .fold("")(messages(_) + " - ")}${messages("service.name")} - ${messages("site.govuk")}"
+        .fold("")(messages(_) + " - ")}${messages("service.name")} - ${messages("site.govuk")}"
 
   private def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
@@ -60,7 +60,7 @@ object ViewUtils {
       (calcAmount(declaration.maybeTotalCalculationResult) + declaration.amendments
         .filter(amendment => List(Some(Paid), Some(NotRequired)).contains(amendment.paymentStatus))
         .map(x => calcAmount(x.maybeTotalCalculationResult))
-        .sum) > 100000L //amount in pence so 100000L == £1000
+        .sum) > 100000L // amount in pence so 100000L == £1000
     } else {
       false
     }

@@ -24,7 +24,7 @@ import uk.gov.hmrc.merchandiseinbaggage.service.{DefaultDocumentUpdateService, D
 
 class ModuleBindings extends Module {
 
-  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[_]] = Seq(
+  override def bindings(environment: Environment, configuration: Configuration): Seq[Binding[?]] = Seq(
     bind[LockRepositoryProvider].to[DefaultLockRepositoryProvider],
     bind[DocumentUpdateService].to[DefaultDocumentUpdateService],
     bind[UpdateCreatedAtFieldsJob].to[UpdateCreatedAtFieldsJobImpl].eagerly()

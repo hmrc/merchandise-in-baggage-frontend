@@ -47,7 +47,7 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false)
 
-  //TODO move content test in UI
+  // TODO move content test in UI
   "onPageLoad" should {
     "return 200 with correct content" in {
 

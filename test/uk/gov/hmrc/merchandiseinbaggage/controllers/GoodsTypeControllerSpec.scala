@@ -44,7 +44,7 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
       mockNavigator
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     journeyTypes.foreach { journeyType =>
       val journey: DeclarationJourney =
         DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
@@ -80,7 +80,8 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
             SearchGoodsCountryController.onPageLoad(1)
           }
 
-          when(mockNavigator.nextPage(any[GoodsTypeRequest])(any[ExecutionContext])).thenReturn(Future.successful(page))
+          when(mockNavigator.nextPage(any[GoodsTypeRequest])(any[ExecutionContext]))
+            .thenReturn(Future.successful(page))
 
           val result: Future[Result] = controller(journey).onSubmit(1)(request)
 

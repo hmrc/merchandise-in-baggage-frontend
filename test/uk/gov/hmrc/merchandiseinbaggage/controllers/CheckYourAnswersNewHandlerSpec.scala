@@ -78,7 +78,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
       exportView
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
         val sessionId                   = SessionId()

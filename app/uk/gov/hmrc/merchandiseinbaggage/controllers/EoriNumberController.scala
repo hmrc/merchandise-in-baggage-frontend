@@ -73,7 +73,7 @@ class EoriNumberController @Inject() (
 
   private def checkEori(eori: String, isAgent: YesNo, declarationType: DeclarationType)(implicit
     request: DeclarationJourneyRequest[AnyContent]
-  ): Future[Result]                                                          =
+  ): Future[Result] =
     (for {
       validated <- mibConnector.checkEoriNumber(eori)
       result    <- validateEoriAndRedirect(eori, isAgent, declarationType, validated)

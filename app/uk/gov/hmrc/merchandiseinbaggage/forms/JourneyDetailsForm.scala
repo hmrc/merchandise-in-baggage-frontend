@@ -38,7 +38,7 @@ object JourneyDetailsForm extends Mappings {
 
   private val dateValidation: (LocalDate, DeclarationType) => Constraint[LocalDate] =
     (declarationDate, declarationType) =>
-      Constraint { value: LocalDate =>
+      Constraint { (value: LocalDate) =>
         (
           isPastAnd2020(value, declarationDate),
           afterFiveDays(value, declarationDate),
@@ -56,7 +56,7 @@ object JourneyDetailsForm extends Mappings {
       port         -> text(s"$portErrorKey.$declarationType.required")
         .verifying(s"$portErrorKey.$declarationType.invalid", code => PortService.isValidPortCode(code)),
       dateOfTravel -> localDate.verifying(dateValidation(today, declarationType))
-    )(JourneyDetailsEntry.apply)(JourneyDetailsEntry.unapply)
+    )(JourneyDetailsEntry.apply)(o => Some(Tuple.fromProductTyped(o)))
   )
 
   private def afterFiveDays(value: LocalDate, today: LocalDate): Boolean = value.isAfter(today.plusDays(daysToAdd))

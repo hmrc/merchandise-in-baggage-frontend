@@ -48,7 +48,7 @@ trait ScheduledJob extends Logging {
 
   private[scheduler] lazy val isValid = expression.nonEmpty && CronExpression.isValidExpression(expression)
 
-  lazy val schedule: Boolean = {
+  lazy val schedule: Boolean =
     (enabled, isValid) match {
       case (true, true)  =>
         scheduler.createSchedule(jobName, description, expression, None, TimeZone.getTimeZone(ZoneId.of(timezone)))
@@ -64,5 +64,4 @@ trait ScheduledJob extends Logging {
         logger.info(s"[ScheduledJob][schedule] Scheduler for $jobName is disabled by configuration")
         false
     }
-  }
 }

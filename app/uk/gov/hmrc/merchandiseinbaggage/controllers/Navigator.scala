@@ -416,7 +416,7 @@ object NavigatorMapping {
     val (declarationType, journeyType) = choice match {
       case MakeImport    => (Import, New)
       case MakeExport    => (Export, New)
-      case AddToExisting => (Import, Amend) //defaults to Import, will be set correctly in the next page
+      case AddToExisting => (Import, Amend) // defaults to Import, will be set correctly in the next page
     }
 
     upsert(DeclarationJourney(sessionId, declarationType, isAssistedDigital, journeyType))

@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
-import uk.gov.hmrc.merchandiseinbaggage.forms.ImportExportChoiceForm._
+import uk.gov.hmrc.merchandiseinbaggage.forms.ImportExportChoiceForm.*
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.AddToExisting
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository

@@ -86,7 +86,7 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
     injector.instanceOf[DeclarationJourneyRepository]
 
   def deleteAll(): Unit =
-    declarationJourneyRepository.collection.deleteMany(Filters.empty()).toFuture().map(_ => ()).futureValue
+    declarationJourneyRepository.collection.deleteMany(Filters.empty()).head().map(_ => ()).futureValue
 
   override def beforeEach(): Unit = deleteAll()
 

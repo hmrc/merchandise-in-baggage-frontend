@@ -67,7 +67,7 @@ class MibServiceSpec extends BaseSpecWithApplication with CoreTestData with Opti
     service.paymentCalculations(Seq(aGoods), GreatBritain).futureValue mustBe expected
   }
 
-  "check if over threshold for amend journey" in { //not right
+  "check if over threshold for amend journey" in { // not right
     val amended: DeclarationJourney = completedImportJourneyWithGoodsOverThreshold
       .copy(journeyType = Amend)
 

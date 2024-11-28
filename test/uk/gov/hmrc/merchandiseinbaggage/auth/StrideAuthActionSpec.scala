@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.auth
 
-import play.api.http.Status.SEE_OTHER
 import play.api.mvc.MessagesControllerComponents
 import play.api.mvc.Results.Ok
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
@@ -29,8 +28,8 @@ import scala.concurrent.Future
 
 class StrideAuthActionSpec extends BaseSpecWithApplication {
 
-  val authConnector = injector.instanceOf[AuthConnector]
-  val mcc           = injector.instanceOf[MessagesControllerComponents]
+  val authConnector: AuthConnector      = injector.instanceOf[AuthConnector]
+  val mcc: MessagesControllerComponents = injector.instanceOf[MessagesControllerComponents]
 
   val action = new StrideAuthAction(authConnector, appConfig, mcc)
 
@@ -40,7 +39,7 @@ class StrideAuthActionSpec extends BaseSpecWithApplication {
 
       action.invokeBlock(
         request,
-        { authRequest: AuthRequest[_] =>
+        { (authRequest: AuthRequest[_]) =>
           authRequest.isAssistedDigital mustBe false
           Future.successful(Ok("200"))
         }
@@ -52,9 +51,7 @@ class StrideAuthActionSpec extends BaseSpecWithApplication {
 
       val result = action.invokeBlock(
         request,
-        { _: AuthRequest[_] =>
-          Future.successful(Ok("200"))
-        }
+        (_: AuthRequest[_]) => Future.successful(Ok("200"))
       )
 
       status(result) mustBe SEE_OTHER

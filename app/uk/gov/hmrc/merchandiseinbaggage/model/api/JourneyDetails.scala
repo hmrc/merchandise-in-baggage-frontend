@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api
 
 import java.time.LocalDate
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 
 sealed trait JourneyDetails {

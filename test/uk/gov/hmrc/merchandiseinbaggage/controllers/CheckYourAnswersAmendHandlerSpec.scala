@@ -68,7 +68,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
       exportView
     )
 
-  forAll(declarationTypesTable) { importOrExport: DeclarationType =>
+  forAll(declarationTypesTable) { (importOrExport: DeclarationType) =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
         val id                          = DeclarationId("abc")

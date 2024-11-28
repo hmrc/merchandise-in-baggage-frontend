@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
+import org.mongodb.scala.ObservableFuture
 import com.mongodb.client.model.Indexes.ascending
 import org.mongodb.scala.model.Filters.equal
 import org.bson.BsonType
@@ -52,7 +53,7 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
         IndexModel(ascending(id), IndexOptions().name("primaryKey").unique(true)),
         IndexModel(
           ascending("createdAt"),
-          IndexOptions().name("timeToLive").unique(false).expireAfter(appConfig.mongoTTL, TimeUnit.SECONDS)
+          IndexOptions().name("timeToLive").unique(false).expireAfter(appConfig.mongoTTL.toLong, TimeUnit.SECONDS)
         )
       )
     ) {
@@ -67,7 +68,7 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
         declarationJourney,
         FindOneAndReplaceOptions().upsert(true).returnDocument(AFTER)
       )
-      .toFuture()
+      .head()
 
   def findCreatedAtString(updateLimit: Int): Future[Seq[ObjectId]] = {
     implicit val bsonObjectIdFormat: Format[ObjectId] = objectIdFormat
@@ -88,9 +89,9 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
     val selector = Filters.in("_id", documentIds: _*)
     val update   = Updates.set("createdAt", BsonDocument("$toDate" -> zdt.toInstant.toEpochMilli))
     val options  = UpdateOptions().upsert(false)
-    val result   = collection.updateMany(selector, Seq(update), options).toFuture()
+    val result   = collection.updateMany(selector, Seq(update), options).head()
     result
-      .map { updateResult: UpdateResult =>
+      .map { (updateResult: UpdateResult) =>
         Try(updateResult.getModifiedCount).getOrElse(0L)
       }
       .recover { case e: Exception =>

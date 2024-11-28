@@ -29,7 +29,7 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
   def controller(declarationJourney: DeclarationJourney): CannotUseServiceController =
     new CannotUseServiceController(controllerComponents, stubProvider(declarationJourney), view)
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
         .copy(maybeGoodsDestination = Some(GreatBritain))

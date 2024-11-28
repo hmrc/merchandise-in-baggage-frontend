@@ -46,7 +46,7 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
   private val journey: DeclarationJourney =
     DeclarationJourney(aSessionId, DeclarationType.Import, isAssistedDigital = false)
 
-  //TODO move content test in UI
+  // TODO move content test in UI
   "onPageLoad" should {
     "return 200 with radio buttons" in {
 
