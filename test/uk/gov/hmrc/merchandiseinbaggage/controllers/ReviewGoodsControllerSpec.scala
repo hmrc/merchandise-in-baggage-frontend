@@ -100,7 +100,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
             any[DeclarationId]
           )(any[HeaderCarrier])
         )
-          .thenReturn(OptionT[Future, ThresholdAllowance]) // (OptionT.none)
+          .thenReturn(OptionT(Future(None)))
 
         val result = controller(journey).onPageLoad()(request)
 
@@ -179,7 +179,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
           any[DeclarationId]
         )(any[HeaderCarrier])
       )
-        .thenReturn(OptionT.none)
+        .thenReturn(OptionT(Future(None)))
 
       val result = controller(journey).onSubmit()(request)
 

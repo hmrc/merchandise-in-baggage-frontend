@@ -21,7 +21,7 @@ import play.api.mvc.Results.Ok
 import play.api.test.Helpers.*
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.merchandiseinbaggage.BaseSpecWithApplication
+import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithAdminApplication, BaseSpecWithApplication}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -51,10 +51,15 @@ class StrideAuthActionSpec extends BaseSpecWithApplication {
 
       val result = action.invokeBlock(
         request,
-        (_: AuthRequest[_]) => Future.successful(Ok("200"))
+        { (authRequest: AuthRequest[_]) =>
+          authRequest.isAssistedDigital mustBe true
+          Future.successful(Ok("200"))
+        }
       )
 
       status(result) mustBe SEE_OTHER
     }
   }
 }
+
+class AdminStrideAuthActionSpec extends BaseSpecWithAdminApplication {}

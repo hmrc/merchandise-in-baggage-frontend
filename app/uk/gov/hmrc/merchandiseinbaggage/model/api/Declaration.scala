@@ -42,7 +42,7 @@ case class Declaration(
 )
 
 object Declaration {
-  implicit val format: OFormat[Declaration] = Json.format[Declaration]
+  given format: OFormat[Declaration] = Json.format[Declaration]
 
   def apply(
     declarationId: DeclarationId,

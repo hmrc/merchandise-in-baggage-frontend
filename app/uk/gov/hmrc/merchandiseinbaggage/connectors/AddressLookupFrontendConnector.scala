@@ -44,7 +44,6 @@ class AddressLookupFrontendConnector @Inject() (appConfig: AppConfig, http: Http
   ): Future[String] = {
     val callback      = appConfig.addressLookupCallbackUrl(isAssistedDigital)
     val addressConfig = Json.toJson(configAddressLookup(s"$callback${call.url}"))
-
     http.post(initJourneyUrl).withBody(addressConfig).execute[HttpResponse].map { response =>
       response.header(LOCATION).getOrElse {
         throw new RuntimeException("Response from AddressLookupFrontend did not contain LOCATION header.")

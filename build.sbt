@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
 import scala.collection.Seq
 
-ThisBuild / scalaVersion := "3.3.4"
+ThisBuild / scalaVersion := "3.5.1"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))

@@ -109,6 +109,73 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
     declarationJourneyRepository.upsert(declarationJourney).futureValue
 }
 
+trait BaseSpecWithAdminApplication extends BaseSpec with GuiceOneServerPerSuite with ScalaFutures {
+
+  override implicit val patienceConfig: PatienceConfig =
+    PatienceConfig(scaled(Span(5L, Seconds)), scaled(Span(500L, Milliseconds)))
+
+  lazy val defaultBuilder: DefaultActionBuilder = injector.instanceOf[DefaultActionBuilder]
+  implicit lazy val appConfig: AppConfig        = injector.instanceOf[AppConfig]
+
+  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
+
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
+  implicit val messages: Messages                           = messagesApi.preferred(fakeRequest)
+  implicit val headerCarrier: HeaderCarrier                 = HeaderCarrier()
+
+  lazy val injector: Injector = app.injector
+
+  override def fakeApplication(): Application =
+    new GuiceApplicationBuilder()
+      .configure(
+        "adminJourneyFilter.enabled" -> true
+      )
+      .overrides(
+        inject.bind[DocumentUpdateService].to[FakeDocumentUpdateService],
+        inject.bind[UpdateCreatedAtFieldsJob].to[FakeUpdateCreatedAtFieldsJob]
+      )
+      .configure(
+        Map(
+          "play.http.router"                                   -> "testOnlyDoNotUseInAppConf.Routes",
+          "microservice.services.address-lookup-frontend.port" -> WireMockSupport.port,
+          "microservice.services.payment.port"                 -> WireMockSupport.port,
+          "microservice.services.merchandise-in-baggage.port"  -> WireMockSupport.port,
+          "microservice.services.auth.port"                    -> WireMockSupport.port,
+          "adminJourneyFilter.enabled"                         -> true,
+          "microservice.services.tps-payments-backend.port"    -> WireMockSupport.port
+        )
+      )
+      .build()
+
+  lazy val declarationJourneyRepository: DeclarationJourneyRepository =
+    injector.instanceOf[DeclarationJourneyRepository]
+
+  def deleteAll(): Unit =
+    declarationJourneyRepository.collection.deleteMany(Filters.empty()).head().map(_ => ()).futureValue
+
+  override def beforeEach(): Unit = deleteAll()
+
+  private lazy val db = injector.instanceOf[MongoComponent]
+
+  lazy val stubRepo: DeclarationJourney => DeclarationJourneyRepository = declarationJourney =>
+    new DeclarationJourneyRepository(db, appConfig) {
+      override def findBySessionId(sessionId: SessionId): Future[Option[DeclarationJourney]] =
+        Future.successful(Some(declarationJourney))
+
+      override def upsert(declarationJourney: DeclarationJourney): Future[DeclarationJourney] =
+        Future.successful(declarationJourney)
+    }
+
+  lazy val stubStride: StrideAuthAction = injector.instanceOf[StrideAuthAction]
+
+  lazy val stubProvider: DeclarationJourney => DeclarationJourneyActionProvider = declarationJourney =>
+    new DeclarationJourneyActionProvider(defaultBuilder, stubRepo(declarationJourney), stubStride)
+
+  def givenADeclarationJourneyIsPersisted(declarationJourney: DeclarationJourney): DeclarationJourney =
+    declarationJourneyRepository.upsert(declarationJourney).futureValue
+}
+
 class FakeDocumentUpdateService extends DocumentUpdateService {
   override val jobName: String = "update-created-at-field-job"
 
