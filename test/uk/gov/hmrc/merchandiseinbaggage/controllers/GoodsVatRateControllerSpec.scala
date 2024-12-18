@@ -97,7 +97,7 @@ class GoodsVatRateControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
+      result must include(messages("error.summary.title"))
       result must include(messages("goodsVatRate.title", "clothes"))
       result must include(messages("goodsVatRate.heading", "clothes"))
     }

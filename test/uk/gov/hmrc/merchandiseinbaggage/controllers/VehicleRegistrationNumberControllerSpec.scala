@@ -84,7 +84,7 @@ class VehicleRegistrationNumberControllerSpec extends DeclarationJourneyControll
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe BAD_REQUEST
-        result must include(messageApi("error.summary.title"))
+        result must include(messages("error.summary.title"))
         result must include(messages("vehicleRegistrationNumber.error.required"))
       }
     }
