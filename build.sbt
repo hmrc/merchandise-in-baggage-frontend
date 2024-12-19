@@ -18,8 +18,7 @@ lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
       "uk.gov.hmrc.govukfrontend.views.html.components.*",
       "uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.*"
     ),
-    scalacOptions ++= List("-Wconf:src=routes/.*:s", "-Wconf:msg=unused import&src=html/.*:s"),
-    scalacOptions ++= List("-rewrite", "-source", "3.3-migration")
+    scalacOptions ++= List("-Wconf:src=routes/.*:s", "-Wconf:msg=unused import&src=html/.*:s")
   )
 lazy val it           = project
   .enablePlugins(PlayScala)
