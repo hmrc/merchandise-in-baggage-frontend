@@ -44,8 +44,8 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   ): DeclarationJourneyRequest[AnyContentAsEmpty.type] = {
     val baseRequest = FakeRequest(GET, url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
-      .withHeaders(headers: _*)
-      .withSession(sessionData: _*)
+      .withHeaders(headers*)
+      .withSession(sessionData*)
       .withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 
@@ -73,8 +73,8 @@ trait DeclarationJourneyControllerSpec extends BaseSpecWithApplication with Core
   ): DeclarationJourneyRequest[AnyContentAsEmpty.type] = {
     val baseRequest = FakeRequest(POST, url)
       .withSession(SessionKeys.sessionId -> sessionId.value)
-      .withHeaders(headers: _*)
-      .withFormUrlEncodedBody(formData: _*)
+      .withHeaders(headers*)
+      .withFormUrlEncodedBody(formData*)
       .withCSRFToken
       .asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
 

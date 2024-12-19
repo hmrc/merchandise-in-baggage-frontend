@@ -42,7 +42,7 @@ class NewOrExistingControllerSpec extends DeclarationJourneyControllerSpec {
       mockNavigator
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {

@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import play.api.libs.json._
+import play.api.libs.json.*
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.*
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibReferenceGenerator, PortService}
@@ -188,7 +188,7 @@ object DeclarationJourney {
   private def parseBigDecimal(bigDecimal: BigDecimal): JsResult[LocalDateTime] =
     LocalDateTime.ofInstant(Instant.ofEpochMilli(bigDecimal.toLong), ZoneOffset.UTC) match {
       case d: LocalDateTime => JsSuccess(d)
-      case _                => JsError("Unexpected LocalDateTime Format")
+      case null             => JsError("Unexpected LocalDateTime Format")
     }
 
   implicit val localDateTimeRead: Reads[LocalDateTime] = {

@@ -51,7 +51,7 @@ trait EnumEntryRadioItemSupport {
 
   protected val maybeHintMessageKey: Option[String] = None
 
-  def radioItem(form: Form[_], baseMessageKey: String)(implicit messages: Messages): RadioItem =
+  def radioItem(form: Form[?], baseMessageKey: String)(implicit messages: Messages): RadioItem =
     RadioItem(
       id = Some(entryName),
       value = Some(entryName),
@@ -63,9 +63,9 @@ trait EnumEntryRadioItemSupport {
     )
 }
 
-trait RadioSupport[A <: EnumEntry with EnumEntryRadioItemSupport] {
+trait RadioSupport[A <: EnumEntry & EnumEntryRadioItemSupport] {
   this: api.Enum[A] =>
-  def options(form: Form[_])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
+  def options(form: Form[?])(implicit messages: Messages): Seq[RadioItem] = values.map { value =>
     value.radioItem(form, baseMessageKey)(messages)
   }
 }

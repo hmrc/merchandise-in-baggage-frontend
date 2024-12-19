@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import LocalDateFormatter._
+import LocalDateFormatter.*
 
 import scala.util.{Failure, Success, Try}
 

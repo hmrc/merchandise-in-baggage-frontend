@@ -36,7 +36,7 @@ class RemoveGoodsController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call =
+  private def backButtonUrl(implicit request: DeclarationGoodsRequest[?]): Call =
     request.declarationJourney.declarationIfRequiredAndComplete
       .fold(routes.ReviewGoodsController.onPageLoad)(_ => routes.CheckYourAnswersController.onPageLoad)
 

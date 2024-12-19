@@ -186,7 +186,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
           case Amend =>
             when(
               mockAmendHandler
-                .onSubmitTps(any[DeclarationId], any[Amendment])(any[HeaderCarrier], any[Request[_]])
+                .onSubmitTps(any[DeclarationId], any[Amendment])(any[HeaderCarrier], any[Request[?]])
             )
               .thenReturn(Future.successful(Redirect("")))
         }

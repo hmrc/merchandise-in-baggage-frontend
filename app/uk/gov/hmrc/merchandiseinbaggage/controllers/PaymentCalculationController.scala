@@ -43,7 +43,7 @@ class PaymentCalculationController @Inject() (
   private val backButtonUrl: Call =
     ReviewGoodsController.onPageLoad
 
-  private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[_]): Call =
+  private def checkYourAnswersIfComplete(default: Call)(implicit request: DeclarationJourneyRequest[?]): Call =
     if (request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.journeyType == Amend) {
       CheckYourAnswersController.onPageLoad
     } else {
@@ -69,7 +69,7 @@ class PaymentCalculationController @Inject() (
   }
 
   private def importView(calculationResults: CalculationResults)(implicit
-    request: DeclarationJourneyRequest[_]
+    request: DeclarationJourneyRequest[?]
   ): Result =
     Ok(
       view(

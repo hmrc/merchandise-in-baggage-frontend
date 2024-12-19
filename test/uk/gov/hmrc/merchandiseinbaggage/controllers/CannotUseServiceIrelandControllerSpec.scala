@@ -29,7 +29,7 @@ class CannotUseServiceIrelandControllerSpec extends DeclarationJourneyController
   def controller(declarationJourney: DeclarationJourney): CannotUseServiceIrelandController =
     new CannotUseServiceIrelandController(controllerComponents, stubProvider(declarationJourney), view)
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
         .copy(maybeGoodsDestination = Some(GreatBritain))

@@ -36,6 +36,11 @@ object AddressLookupFrontendStub {
     server
       .stubFor(
         post(urlPathEqualTo("/api/v2/init"))
+          .withRequestBody(
+            equalToJson(
+              """{"version":2,"options":{"continueUrl":"http://localhost:8281/address-lookup-return"},"labels":{"en":{"appLevelLabels":{"navTitle":"Declare commercial goods carried in accompanied baggage or small vehicles"}},"cy":{"appLevelLabels":{"navTitle":"Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"}}}}""".stripMargin
+            )
+          )
           .willReturn(aResponse().withStatus(202).withHeader(LOCATION, "/blah"))
       )
 

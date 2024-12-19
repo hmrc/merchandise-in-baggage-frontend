@@ -17,12 +17,12 @@
 package uk.gov.hmrc.merchandiseinbaggage.auth
 
 import play.api.mvc.Results.{Forbidden, Unauthorized}
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.auth.core.AuthProvider.PrivilegedApplication
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve._
-import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
+import uk.gov.hmrc.auth.core.*
+import uk.gov.hmrc.auth.core.retrieve.*
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.play.http.HeaderCarrierConverter

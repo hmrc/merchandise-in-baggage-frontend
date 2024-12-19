@@ -47,7 +47,7 @@ object DeclarationJourneyLogger {
     }
   }
 
-  private def headerCarrier(implicit request: Request[_]): HeaderCarrier = HcProvider.headerCarrier
+  private def headerCarrier(implicit request: Request[?]): HeaderCarrier = HcProvider.headerCarrier
 
   private def sessionId(implicit r: RequestHeader): String = {
     val hc = r match {
@@ -62,7 +62,7 @@ object DeclarationJourneyLogger {
 
   private def context(implicit r: RequestHeader) = s"context: [${r.method} ${r.path}]] $sessionId $deviceId"
 
-  private def obfuscatedDeclarationJourney(declarationJourneyRequest: DeclarationJourneyRequest[_]) =
+  private def obfuscatedDeclarationJourney(declarationJourneyRequest: DeclarationJourneyRequest[?]) =
     s"declarationJourney: [${prettyPrint(toJson(declarationJourneyRequest.declarationJourney.obfuscated))}]"
 
   private def makeRichMessage(message: String)(implicit request: RequestHeader): String = request match {
@@ -74,5 +74,5 @@ object DeclarationJourneyLogger {
 }
 
 private object HcProvider extends FrontendHeaderCarrierProvider {
-  def headerCarrier(implicit request: Request[_]): HeaderCarrier = hc(request)
+  def headerCarrier(implicit request: Request[?]): HeaderCarrier = hc(request)
 }

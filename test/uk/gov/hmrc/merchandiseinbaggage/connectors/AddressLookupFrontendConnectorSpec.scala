@@ -37,4 +37,15 @@ class AddressLookupFrontendConnectorSpec extends BaseSpecWithApplication with Ev
     response mustBe "/blah"
 
   }
+
+  "init with wrong call should throw an exception" in {
+    givenInitJourney(wireMockServer)
+
+    val exception = intercept[Exception] {
+      connector.initJourney(Call("", ""), isAssistedDigital = true).futureValue
+    }
+
+    exception.getMessage must include("Response from AddressLookupFrontend did not contain LOCATION header.")
+
+  }
 }

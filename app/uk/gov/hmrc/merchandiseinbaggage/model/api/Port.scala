@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 case class Port(code: String, displayName: String, isGB: Boolean, portSynonyms: List[String])
 

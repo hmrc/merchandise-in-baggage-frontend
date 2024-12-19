@@ -1,6 +1,9 @@
+import sbt.Keys.scalacOptions
 import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
-ThisBuild / scalaVersion := "2.13.15"
+import scala.collection.Seq
+
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
@@ -12,13 +15,12 @@ lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
     libraryDependencies ++= AppDependencies(),
     TwirlKeys.templateImports ++= Seq(
       "uk.gov.hmrc.merchandiseinbaggage.config.AppConfig",
-      "uk.gov.hmrc.govukfrontend.views.html.components._",
-      "uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils._"
+      "uk.gov.hmrc.govukfrontend.views.html.components.*",
+      "uk.gov.hmrc.merchandiseinbaggage.views.ViewUtils.*"
     ),
-    scalacOptions ++= Seq("-Wconf:src=routes/.*:s", "-Wconf:cat=unused-imports&src=html/.*:s", "-feature")
+    scalacOptions ++= List("-Wconf:src=routes/.*:s", "-Wconf:msg=unused import&src=html/.*:s")
   )
-
-lazy val it = project
+lazy val it           = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(itSettings())

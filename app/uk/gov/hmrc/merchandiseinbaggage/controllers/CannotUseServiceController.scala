@@ -33,7 +33,7 @@ class CannotUseServiceController @Inject() (
 
   private val backUrl = Call("GET", "#")
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
     if (referer.contains(routes.ExciseAndRestrictedGoodsController.onPageLoad.url)) {
       routes.ExciseAndRestrictedGoodsController.onPageLoad

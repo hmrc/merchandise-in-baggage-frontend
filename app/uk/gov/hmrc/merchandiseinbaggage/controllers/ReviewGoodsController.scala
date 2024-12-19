@@ -47,7 +47,7 @@ class ReviewGoodsController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]): Call =
     request.declarationJourney.declarationType match {
       case Import => GoodsVatRateController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
       case Export => SearchGoodsCountryController.onPageLoad(request.declarationJourney.goodsEntries.entries.size)
@@ -83,7 +83,7 @@ class ReviewGoodsController @Inject() (
       }
   }
 
-  private def redirectTo(declareMoreGoods: YesNo)(implicit request: DeclarationJourneyRequest[_]): Future[Result] =
+  private def redirectTo(declareMoreGoods: YesNo)(implicit request: DeclarationJourneyRequest[?]): Future[Result] =
     (for {
       check <- checkThresholdIfAmending(request.declarationJourney)
       call  <- OptionT.liftF(
