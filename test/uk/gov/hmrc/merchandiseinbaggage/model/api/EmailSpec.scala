@@ -70,5 +70,18 @@ class EmailSpec extends AnyWordSpec with Matchers {
       val json = Json.toJson(validEmail)
       json.validate[Email] shouldBe JsSuccess(validEmail)
     }
+
+    "fail to deserialize" when {
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[Email] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[Email] shouldBe a[JsError]
+      }
+    }
   }
 }

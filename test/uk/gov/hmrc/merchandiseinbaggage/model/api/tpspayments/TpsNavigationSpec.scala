@@ -20,7 +20,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
 
 class TpsNavigationSpec extends AnyWordSpec with Matchers with CoreTestData {
 
@@ -77,6 +76,18 @@ class TpsNavigationSpec extends AnyWordSpec with Matchers with CoreTestData {
           "Extra"  -> true
         )
         json.validate[TpsNavigation] shouldBe JsSuccess(tpsNavigation)
+      }
+      "fail to deserialize invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+
+        json.validate[TpsNavigation] shouldBe a[JsError]
+      }
+      "fail to deserialize an empty JSON object" in {
+        val json = Json.obj()
+
+        json.validate[TpsNavigation] shouldBe a[JsError]
       }
     }
   }

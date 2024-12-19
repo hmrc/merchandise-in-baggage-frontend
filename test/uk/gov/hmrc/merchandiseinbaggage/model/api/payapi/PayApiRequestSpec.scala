@@ -20,8 +20,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsError, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.CoreTestData
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, MibReference, payapi}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckResponse
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi
 
 class PayApiRequestSpec extends AnyWordSpec with Matchers with CoreTestData {
 

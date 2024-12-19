@@ -189,6 +189,6 @@ class FakeUpdateCreatedAtFieldsJob @Inject() (
 ) extends UpdateCreatedAtFieldsJob {
 
   override def jobName: String                                       = "update-created-at-field-job"
-  override val scheduledMessage: SchedulingActor.ScheduledMessage[_] = UpdateDocumentsClass(service)
+  override val scheduledMessage: SchedulingActor.ScheduledMessage[?] = UpdateDocumentsClass(service)
   override val actorSystem: ActorSystem                              = ActorSystem(jobName)
 }

@@ -39,7 +39,7 @@ class StrideAuthActionSpec extends BaseSpecWithApplication {
 
       action.invokeBlock(
         request,
-        { (authRequest: AuthRequest[_]) =>
+        { (authRequest: AuthRequest[?]) =>
           authRequest.isAssistedDigital mustBe false
           Future.successful(Ok("200"))
         }
@@ -51,7 +51,7 @@ class StrideAuthActionSpec extends BaseSpecWithApplication {
 
       val result = action.invokeBlock(
         request,
-        { (authRequest: AuthRequest[_]) =>
+        { (authRequest: AuthRequest[?]) =>
           authRequest.isAssistedDigital mustBe true
           Future.successful(Ok("200"))
         }

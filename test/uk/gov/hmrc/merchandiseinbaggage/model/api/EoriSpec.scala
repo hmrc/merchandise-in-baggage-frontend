@@ -36,6 +36,10 @@ class EoriSpec extends AnyWordSpec with Matchers {
         val json = Json.obj("value" -> "GB123456789000")
         json.validate[Eori] shouldBe JsSuccess(validEori)
       }
+      "has an extra field" in {
+        val json = Json.obj("value" -> "GB123456789000", "extra" -> true)
+        json.validate[Eori] shouldBe JsSuccess(validEori)
+      }
     }
 
     "fail deserialization" when {
@@ -46,6 +50,16 @@ class EoriSpec extends AnyWordSpec with Matchers {
 
       "the value field is invalid" in {
         val json = Json.obj("value" -> 12345) // Invalid type
+        json.validate[Eori] shouldBe a[JsError]
+      }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[Eori] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
         json.validate[Eori] shouldBe a[JsError]
       }
     }

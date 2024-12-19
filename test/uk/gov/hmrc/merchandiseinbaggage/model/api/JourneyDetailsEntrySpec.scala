@@ -77,6 +77,16 @@ class JourneyDetailsEntrySpec extends AnyWordSpec with Matchers {
 
         json.validate[JourneyDetailsEntry] shouldBe a[JsError]
       }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[JourneyDetailsEntry] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[JourneyDetailsEntry] shouldBe a[JsError]
+      }
     }
 
     "handle round-trip serialization/deserialization" in {

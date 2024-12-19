@@ -40,7 +40,7 @@ class KeepAliveController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends FrontendBaseController {
 
-  implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
+  implicit def messages(implicit request: Request[?]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val onKeepAlive: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
     repo.upsert(request.declarationJourney).map { _ =>
@@ -58,6 +58,6 @@ class KeepAliveController @Inject() (
     removeSession(request)(Ok(serviceTimeoutView()))
   }
 
-  private def removeSession(implicit request: Request[_]): Result => Future[Result] = result =>
+  private def removeSession(implicit request: Request[?]): Result => Future[Result] = result =>
     Future.successful(result.removingFromSession(SessionKeys.sessionId))
 }

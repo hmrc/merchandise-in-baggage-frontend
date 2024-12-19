@@ -14,28 +14,38 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.merchandiseinbaggage.model.api
+package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import org.scalatest.matchers.should.Matchers.shouldBe
-import play.api.libs.json.{JsError, Json}
-import play.api.libs.json.Json.{parse, toJson}
+import play.api.libs.json.{JsError, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
-  "declaration" should {
-    "serialise and de-serialise" in {
-      parse(toJson(declaration).toString()).validate[Declaration].get mustBe declaration
+class RetrieveDeclarationSpec extends BaseSpecWithApplication with CoreTestData {
+  "RetrieveDeclaration" should {
+    "serialize to JSON" when {
+      "all fields are valid" in {
+        Json.toJson(RetrieveDeclaration(mibReference, eori)) shouldBe Json.obj(
+          "mibReference" -> "XAMB0000010000",
+          "eori"         -> Json.obj("value" -> "GB123456780000")
+        )
+      }
+    }
+    "deserialize to JSON" when {
+      "all fields are valid" in {
+        val json = Json.obj("mibReference" -> "XAMB0000010000", "eori" -> Json.obj("value" -> "GB123456780000"))
+        json.validate[RetrieveDeclaration] shouldBe JsSuccess(RetrieveDeclaration(mibReference, eori))
+      }
     }
     "fail to deserialize" when {
       "invalid JSON structure" in {
         val json = Json.arr(
           Json.obj("key" -> "value")
         )
-        json.validate[Declaration] shouldBe a[JsError]
+        json.validate[RetrieveDeclaration] shouldBe a[JsError]
       }
       "an empty JSON object" in {
         val json = Json.obj()
-        json.validate[Declaration] shouldBe a[JsError]
+        json.validate[RetrieveDeclaration] shouldBe a[JsError]
       }
     }
   }

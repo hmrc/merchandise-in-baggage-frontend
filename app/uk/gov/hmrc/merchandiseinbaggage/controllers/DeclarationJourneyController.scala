@@ -26,13 +26,13 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import scala.concurrent.{ExecutionContext, Future}
 
 trait DeclarationJourneyController extends FrontendBaseController {
-  implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
+  implicit def messages(implicit request: Request[?]): Messages = controllerComponents.messagesApi.preferred(request)
 
   val onPageLoad: Action[AnyContent]
 
   def backToCheckYourAnswersIfCompleteElse(
     backIfIncomplete: Call
-  )(implicit request: DeclarationJourneyRequest[_]): Call =
+  )(implicit request: DeclarationJourneyRequest[?]): Call =
     if (
       request.declarationJourney.declarationRequiredAndComplete || request.declarationJourney.amendmentRequiredAndComplete
     ) {
@@ -67,7 +67,7 @@ trait DeclarationJourneyUpdateController extends DeclarationJourneyController {
 }
 
 trait IndexedDeclarationJourneyController extends FrontendBaseController {
-  implicit def messages(implicit request: Request[_]): Messages = controllerComponents.messagesApi.preferred(request)
+  implicit def messages(implicit request: Request[?]): Messages = controllerComponents.messagesApi.preferred(request)
 
   def onPageLoad(idx: Int): Action[AnyContent]
 
@@ -83,7 +83,7 @@ trait IndexedDeclarationJourneyController extends FrontendBaseController {
         Future successful Redirect(routes.CannotAccessPageController.onPageLoad)
     }
 
-  def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[_]): Call =
+  def checkYourAnswersOrReviewGoodsElse(default: Call, index: Int)(implicit request: DeclarationGoodsRequest[?]): Call =
     (
       request.declarationJourney.declarationRequiredAndComplete,
       request.declarationJourney.goodsEntries.entries(index - 1).isComplete

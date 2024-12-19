@@ -125,6 +125,16 @@ class JourneyTypeSpec extends AnyWordSpec with Matchers {
 
         json.validate[JourneyInSmallVehicle] shouldBe a[JsError]
       }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[JourneyInSmallVehicle] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[JourneyInSmallVehicle] shouldBe a[JsError]
+      }
     }
 
     "handle edge cases" when {
@@ -215,6 +225,16 @@ class JourneyTypeSpec extends AnyWordSpec with Matchers {
           "registrationNumber" -> "AB123CD"
         )
 
+        json.validate[JourneyOnFoot] shouldBe a[JsError]
+      }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[JourneyOnFoot] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
         json.validate[JourneyOnFoot] shouldBe a[JsError]
       }
     }

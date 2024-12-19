@@ -78,7 +78,7 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
       .find[BsonDocument](Filters.bsonType("createdAt", BsonType.STRING))
       .limit(updateLimit)
       .projection(projection)
-      .map(bson => Codecs.fromBson[ObjectId](bson)(longReads))
+      .map(bson => Codecs.fromBson[ObjectId](bson)(using longReads))
       .toFuture()
   }
 
@@ -86,7 +86,7 @@ class DeclarationJourneyRepository @Inject() (mongo: MongoComponent, val appConf
     val time = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)
     val zdt  = ZonedDateTime.of(time, ZoneId.systemDefault())
 
-    val selector = Filters.in("_id", documentIds: _*)
+    val selector = Filters.in("_id", documentIds*)
     val update   = Updates.set("createdAt", BsonDocument("$toDate" -> zdt.toInstant.toEpochMilli))
     val options  = UpdateOptions().upsert(false)
     val result   = collection.updateMany(selector, Seq(update), options).head()

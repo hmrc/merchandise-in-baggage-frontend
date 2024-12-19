@@ -21,21 +21,21 @@ import play.api.libs.json.{JsError, Json}
 import play.api.libs.json.Json.{parse, toJson}
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
-class DeclarationSpec extends BaseSpecWithApplication with CoreTestData {
-  "declaration" should {
+class PurchaseDetailsSpec extends BaseSpecWithApplication with CoreTestData {
+  "PurchaseDetails" should {
     "serialise and de-serialise" in {
-      parse(toJson(declaration).toString()).validate[Declaration].get mustBe declaration
+      parse(toJson(aPurchaseDetails).toString()).validate[PurchaseDetails].get mustBe aPurchaseDetails
     }
     "fail to deserialize" when {
       "invalid JSON structure" in {
         val json = Json.arr(
           Json.obj("key" -> "value")
         )
-        json.validate[Declaration] shouldBe a[JsError]
+        json.validate[PurchaseDetails] shouldBe a[JsError]
       }
       "an empty JSON object" in {
         val json = Json.obj()
-        json.validate[Declaration] shouldBe a[JsError]
+        json.validate[PurchaseDetails] shouldBe a[JsError]
       }
     }
   }

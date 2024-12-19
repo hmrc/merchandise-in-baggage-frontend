@@ -225,6 +225,16 @@ class CountrySpec extends AnyWordSpec with Matchers {
 
         jsonMissingCode.validate[Country] shouldBe a[JsError]
       }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[Country] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[Country] shouldBe a[JsError]
+      }
 
     }
 

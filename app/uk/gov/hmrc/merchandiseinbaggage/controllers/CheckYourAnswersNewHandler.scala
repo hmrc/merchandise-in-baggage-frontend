@@ -45,7 +45,7 @@ class CheckYourAnswersNewHandler @Inject() (
 
   def onPageLoad(declaration: Declaration, isAgent: YesNo)(implicit
     hc: HeaderCarrier,
-    request: DeclarationJourneyRequest[_],
+    request: DeclarationJourneyRequest[?],
     messages: Messages
   ): Future[Result] =
     mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map {

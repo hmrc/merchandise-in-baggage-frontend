@@ -147,6 +147,16 @@ class CustomsAgentSpec extends AnyWordSpec with Matchers {
 
         json.validate[CustomsAgent] shouldBe a[JsError]
       }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[CustomsAgent] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[CustomsAgent] shouldBe a[JsError]
+      }
     }
 
     "handle round-trip serialization/deserialization" in {

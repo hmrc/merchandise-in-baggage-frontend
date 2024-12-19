@@ -3,7 +3,7 @@ import uk.gov.hmrc.DefaultBuildSettings.itSettings
 
 import scala.collection.Seq
 
-ThisBuild / scalaVersion := "3.5.1"
+ThisBuild / scalaVersion := "3.5.2"
 ThisBuild / majorVersion := 0
 
 lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
@@ -21,8 +21,7 @@ lazy val microservice = Project("merchandise-in-baggage-frontend", file("."))
     scalacOptions ++= List("-Wconf:src=routes/.*:s", "-Wconf:msg=unused import&src=html/.*:s"),
     scalacOptions ++= List("-rewrite", "-source", "3.3-migration")
   )
-
-lazy val it = project
+lazy val it           = project
   .enablePlugins(PlayScala)
   .dependsOn(microservice % "test->test") // the "test->test" allows reusing test code and test dependencies
   .settings(itSettings())

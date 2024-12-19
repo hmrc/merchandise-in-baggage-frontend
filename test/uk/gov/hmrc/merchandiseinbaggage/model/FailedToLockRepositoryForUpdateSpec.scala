@@ -18,7 +18,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import uk.gov.hmrc.merchandiseinbaggage.model.UpdateRequestNothingToUpdate.prefix
 
 class FailedToLockRepositoryForUpdateSpec extends AnyWordSpec with Matchers {
   val repositoryUpdateMessage: RepositoryUpdateMessage = FailedToLockRepositoryForUpdate

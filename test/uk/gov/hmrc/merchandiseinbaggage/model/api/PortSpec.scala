@@ -110,6 +110,16 @@ class PortSpec extends AnyWordSpec with Matchers {
 
         json.validate[Port] shouldBe a[JsError]
       }
+      "invalid JSON structure" in {
+        val json = Json.arr(
+          Json.obj("key" -> "value")
+        )
+        json.validate[Port] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[Port] shouldBe a[JsError]
+      }
     }
 
     "handle edge cases" when {

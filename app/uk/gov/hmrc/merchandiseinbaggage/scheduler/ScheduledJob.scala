@@ -26,7 +26,7 @@ import java.time.ZoneId
 import java.util.TimeZone
 
 trait ScheduledJob extends Logging {
-  val scheduledMessage: ScheduledMessage[_]
+  val scheduledMessage: ScheduledMessage[?]
   val config: Configuration
   val actorSystem: ActorSystem
   def jobName: String

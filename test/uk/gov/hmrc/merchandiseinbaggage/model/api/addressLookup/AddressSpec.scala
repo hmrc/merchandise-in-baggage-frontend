@@ -23,13 +23,23 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, Addres
 
 class AddressSpec extends AnyWordSpecLike with Matchers {
 
-  "AddressSpec" should {
+  "AddressSpec"          should {
     "serialize to JSON" when {
       "all fields are defined" in {
         val address = Address(Seq("test"), Some("NW10 6AD"), AddressLookupCountry("code", Some("name")))
 
         Json.toJson(address) shouldBe Json.obj(
           "lines"    -> JsArray(Seq(JsString("test"))),
+          "postcode" -> "NW10 6AD",
+          "country"  -> Json.obj("code" -> "code", "name" -> "name")
+        )
+      }
+
+      "lines are empty" in {
+        val address = Address(Seq(), Some("NW10 6AD"), AddressLookupCountry("code", Some("name")))
+
+        Json.toJson(address) shouldBe Json.obj(
+          "lines"    -> JsArray(),
           "postcode" -> "NW10 6AD",
           "country"  -> Json.obj("code" -> "code", "name" -> "name")
         )
@@ -66,7 +76,15 @@ class AddressSpec extends AnyWordSpecLike with Matchers {
           )
           .validate[Address] shouldBe JsSuccess(address)
       }
-
+      "has the wrong field type" in {
+        Json
+          .obj(
+            "lines"    -> JsString("test"),
+            "postcode" -> true,
+            "country"  -> true
+          )
+          .validate[Address] shouldBe a[JsError]
+      }
       "name is not defined" in {
         val address = Address(Seq("test"), Some("NW10 6AD"), AddressLookupCountry("code", None))
 
@@ -107,40 +125,52 @@ class AddressSpec extends AnyWordSpecLike with Matchers {
           )
           .validate[Address] shouldBe a[JsError]
       }
-      "an extra field is defined" in {
-        val address = Address(Seq("test"), Some("NW10 6AD"), AddressLookupCountry("code", Some("name")))
-
-        Json
-          .obj(
-            "lines"    -> JsArray(Seq(JsString("test"))),
-            "postcode" -> "NW10 6AD",
-            "country"  -> Json.obj("code" -> "code", "name" -> "name"),
-            "extra"    -> ""
-          )
-          .validate[Address] shouldBe JsSuccess(address)
+    }
+  }
+  "AddressLookupCountry" should {
+    "serialize to JSON" when {
+      "all fields are defined" in {
+        val address = AddressLookupCountry("code", Some("name"))
+        Json.toJson(address) shouldBe Json.obj("code" -> "code", "name" -> "name")
       }
-      "an extra field is defined in AddressLookupCountry" in {
-        val address = Address(Seq("test"), Some("NW10 6AD"), AddressLookupCountry("code", Some("name")))
 
+      "name is not defined" in {
+        val address = AddressLookupCountry("code", None)
+        Json.toJson(address) shouldBe Json.obj("code" -> "code")
+      }
+    }
+    "deserialize to AddressLookupCountry JSON" when {
+      "all fields are defined" in {
+        val address = AddressLookupCountry("code", Some("name"))
+        Json.obj("code" -> "code", "name" -> "name").validate[AddressLookupCountry] shouldBe JsSuccess(address)
+      }
+
+      "name is not defined" in {
+        val address = AddressLookupCountry("code", None)
+        Json.obj("code" -> "code").validate[AddressLookupCountry] shouldBe JsSuccess(address)
+      }
+
+      "an extra field is defined" in {
+        val address = AddressLookupCountry("code", Some("name"))
+        Json.obj("code" -> "code", "name" -> "name", "extra" -> true).validate[AddressLookupCountry] shouldBe JsSuccess(
+          address
+        )
+      }
+
+    }
+    "fail to deserialize" when {
+      "invalid Json key" in {
         Json
-          .obj(
-            "lines"    -> JsArray(Seq(JsString("test"))),
-            "postcode" -> "NW10 6AD",
-            "country"  -> Json.obj("code" -> "code", "name" -> "name", "extra" -> true)
-          )
-          .validate[Address] shouldBe JsSuccess(address)
+          .obj("code1" -> "code", "name" -> "name")
+          .validate[AddressLookupCountry] shouldBe a[JsError]
+      }
+      "an empty JSON object" in {
+        val json = Json.obj()
+        json.validate[AddressLookupCountry] shouldBe a[JsError]
       }
       "fail to deserialize invalid JSON structure" in {
-        val json = Json.arr(
-          Json.obj("key" -> "value")
-        )
-
-        json.validate[Address] shouldBe a[JsError]
-      }
-      "fail to deserialize an empty JSON object" in {
-        val json = Json.obj()
-
-        json.validate[Address] shouldBe a[JsError]
+        val json = Json.arr("key", "value")
+        json.validate[AddressLookupCountry] shouldBe a[JsError]
       }
     }
   }

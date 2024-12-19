@@ -89,7 +89,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
           id
         )
 
-        implicit val request: DeclarationJourneyRequest[_] =
+        implicit val request: DeclarationJourneyRequest[?] =
           buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val amendment = completedAmendment(importOrExport)
@@ -102,7 +102,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
 
       s"will calculate tax and send payment request to TPS for $importOrExport" in {
 
-        implicit val request: Request[_]          = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+        implicit val request: Request[?]          = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
         val id: DeclarationId                     = DeclarationId("xxx")
         val created: LocalDateTime                = LocalDateTime.now.withSecond(0).withNano(0)
         val journey: DeclarationJourney           = completedDeclarationJourney
@@ -165,7 +165,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
 
     val newAmendment = completedAmendment(Export)
 
-    implicit val request: Request[_] = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+    implicit val request: Request[?] = buildPost(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
 
     val eventualResult = amendHandler().onSubmit(stubbedId, newAmendment)
 

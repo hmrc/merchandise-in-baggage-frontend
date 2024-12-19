@@ -36,7 +36,7 @@ class GoodsInVehicleController @Inject() (
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]) =
     backToCheckYourAnswersIfCompleteElse(JourneyDetailsController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

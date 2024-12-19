@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.model.api.calculation
 
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.libs.json.{JsError, JsResultException, JsString, JsSuccess, Json}
+import play.api.libs.json.{JsString, JsSuccess, Json}
 
 class ThresholdCheckSpec extends AnyWordSpec with Matchers {
 

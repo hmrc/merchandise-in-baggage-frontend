@@ -35,7 +35,7 @@ class CustomsAgentController @Inject() (
   navigator: Navigator
 )(implicit ec: ExecutionContext, appConf: AppConfig)
     extends DeclarationJourneyUpdateController {
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]) =
     request.declarationJourney.declarationType match {
       case Import =>
         backToCheckYourAnswersIfCompleteElse(routes.PaymentCalculationController.onPageLoad)

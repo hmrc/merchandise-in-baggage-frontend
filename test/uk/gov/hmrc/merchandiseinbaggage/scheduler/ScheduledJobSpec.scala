@@ -46,7 +46,7 @@ class ScheduledJobSpec extends AnyWordSpecLike with Matchers {
     reset(mockActorSystem)
 
     val job: ScheduledJob = new ScheduledJob {
-      val scheduledMessage: SchedulingActor.ScheduledMessage[_] = UpdateDocumentsClass(mockService)
+      val scheduledMessage: SchedulingActor.ScheduledMessage[?] = UpdateDocumentsClass(mockService)
       override val config: Configuration                        = testConfig
       val actorSystem: ActorSystem                              = mockActorSystem
       override lazy val jobName: String                         = jobNameTest

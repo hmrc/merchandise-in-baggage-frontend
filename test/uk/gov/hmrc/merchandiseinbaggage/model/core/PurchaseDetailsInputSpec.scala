@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.model.core
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.checkeori.CheckEoriAddress
 
 class PurchaseDetailsInputSpec extends AnyWordSpec with Matchers {
   "PurchaseDetailsInput" should {
