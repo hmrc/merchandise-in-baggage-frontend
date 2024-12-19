@@ -57,7 +57,11 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(exportJourney.declarationIfRequiredAndComplete.get, id)
 
     val eventualResult = controller.onPageLoad()(request)
+    val result         = contentAsString(eventualResult)
+
     status(eventualResult) mustBe OK
+    result must include(messages("declarationConfirmation.title"))
+    result must include(messages("declarationConfirmation.banner.title"))
 
     import exportJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType, isAssistedDigital = false)
@@ -86,7 +90,11 @@ class DeclarationConfirmationControllerSpec extends DeclarationJourneyController
     givenPersistedDeclarationIsFound(declarationWithNoPaymentRequired, id)
 
     val eventualResult = controller.onPageLoad()(request)
+    val result         = contentAsString(eventualResult)
+
     status(eventualResult) mustBe OK
+    result must include(messages("declarationConfirmation.title"))
+    result must include(messages("declarationConfirmation.banner.title"))
 
     import importJourney._
     val resetJourney = DeclarationJourney(sessionId, declarationType, isAssistedDigital = false)

@@ -39,9 +39,9 @@ class CannotAccessPageControllerSpec extends DeclarationJourneyControllerSpec wi
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"invalidRequest.li1"))
-        result must include(messageApi(s"invalidRequest.li2"))
-        result must include(messageApi(s"invalidRequest.$importOrExport.restart"))
+        result must include(messages(s"invalidRequest.li1"))
+        result must include(messages(s"invalidRequest.li2"))
+        result must include(messages(s"invalidRequest.$importOrExport.restart"))
       }
     }
   }

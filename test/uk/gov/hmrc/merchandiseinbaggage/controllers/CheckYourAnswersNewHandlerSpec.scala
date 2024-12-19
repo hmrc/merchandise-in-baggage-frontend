@@ -72,7 +72,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
       mockTpsPaymentsService,
-      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
+      new PaymentService(testPaymentConnector, auditConnector),
       testMibConnector,
       importView,
       exportView
@@ -95,7 +95,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
         val result = newHandler().onPageLoad(declaration, YesNo.Yes)
 
         status(result) mustBe OK
-        contentAsString(result) must include(messageApi("checkYourAnswers.title"))
+        contentAsString(result) must include(messages("checkYourAnswers.title"))
       }
 
       s"return 303 for goods over threshold for $importOrExport" in {

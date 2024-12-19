@@ -90,7 +90,7 @@ class SearchGoodsCountryControllerSpec extends DeclarationJourneyControllerSpec 
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
+      result must include(messages("error.summary.title"))
       result must include(messages(s"searchGoodsCountry.title", "test good"))
       result must include(messages(s"searchGoodsCountry.heading", "test good"))
     }

@@ -56,11 +56,11 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi("journeyDetails.title"))
-        result must include(messageApi("journeyDetails.heading"))
-        result must include(messageApi(s"journeyDetails.port.$importOrExport.label"))
-        result must include(messageApi("journeyDetails.port.hint"))
-        result must include(messageApi(s"journeyDetails.dateOfTravel.$importOrExport.label"))
+        result must include(messages("journeyDetails.title"))
+        result must include(messages("journeyDetails.heading"))
+        result must include(messages(s"journeyDetails.port.$importOrExport.label"))
+        result must include(messages("journeyDetails.port.hint"))
+        result must include(messages(s"journeyDetails.dateOfTravel.$importOrExport.label"))
       }
     }
 
@@ -102,11 +102,11 @@ class JourneyDetailsControllerSpec extends DeclarationJourneyControllerSpec {
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe BAD_REQUEST
-        result must include(messageApi("journeyDetails.title"))
-        result must include(messageApi("journeyDetails.heading"))
-        result must include(messageApi(s"journeyDetails.port.$importOrExport.label"))
-        result must include(messageApi("journeyDetails.port.hint"))
-        result must include(messageApi(s"journeyDetails.dateOfTravel.$importOrExport.label"))
+        result must include(messages("journeyDetails.title"))
+        result must include(messages("journeyDetails.heading"))
+        result must include(messages(s"journeyDetails.port.$importOrExport.label"))
+        result must include(messages("journeyDetails.port.hint"))
+        result must include(messages(s"journeyDetails.dateOfTravel.$importOrExport.label"))
       }
     }
   }

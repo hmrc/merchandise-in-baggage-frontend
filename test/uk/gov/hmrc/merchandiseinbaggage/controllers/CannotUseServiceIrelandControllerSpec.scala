@@ -42,10 +42,10 @@ class CannotUseServiceIrelandControllerSpec extends DeclarationJourneyController
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"cannotUseServiceIreland.title"))
-        result must include(messageApi(s"cannotUseServiceIreland.heading"))
-        result must include(messageApi(s"cannotUseServiceIreland.p1"))
-        result must include(messageApi(s"cannotUseServiceIreland.p1.$importOrExport.a.text"))
+        result must include(messages(s"cannotUseServiceIreland.title"))
+        result must include(messages(s"cannotUseServiceIreland.heading"))
+        result must include(messages(s"cannotUseServiceIreland.p1"))
+        result must include(messages(s"cannotUseServiceIreland.p1.$importOrExport.a.text"))
       }
     }
   }

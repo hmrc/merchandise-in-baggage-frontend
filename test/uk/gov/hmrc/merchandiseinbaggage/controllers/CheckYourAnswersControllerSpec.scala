@@ -66,7 +66,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
     new CheckYourAnswersNewHandler(
       mockMibService,
       mockTpsService,
-      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
+      new PaymentService(testPaymentConnector, auditConnector),
       mibConnector,
       importView,
       exportView
@@ -77,7 +77,7 @@ class CheckYourAnswersControllerSpec extends DeclarationJourneyControllerSpec {
       actionBuilder,
       mockMibService,
       mockTpsService,
-      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
+      new PaymentService(testPaymentConnector, auditConnector),
       amendImportView,
       amendExportView
     )

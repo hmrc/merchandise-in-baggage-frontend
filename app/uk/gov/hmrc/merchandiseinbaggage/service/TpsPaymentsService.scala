@@ -16,25 +16,23 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.TpsPaymentsBackendConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
+import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 import uk.gov.hmrc.merchandiseinbaggage.model.api.tpspayments.TpsPaymentsRequest
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-
-import scala.concurrent.{ExecutionContext, Future}
-import play.api.i18n.MessagesApi
-import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiResponse
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
+import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class TpsPaymentsService @Inject() (
   connector: TpsPaymentsBackendConnector,
-  val auditConnector: AuditConnector,
-  val messagesApi: MessagesApi
+  val auditConnector: AuditConnector
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends Auditor {
 

@@ -56,10 +56,9 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   lazy val defaultBuilder: DefaultActionBuilder             = injector.instanceOf[DefaultActionBuilder]
   implicit lazy val appConfig: AppConfig                    = injector.instanceOf[AppConfig]
-  def messagesApi: MessagesApi                              = injector.instanceOf[MessagesApi]
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-  implicit val messages: Messages                           = messagesApi.preferred(fakeRequest)
+  implicit val messages: Messages                           = injector.instanceOf[MessagesApi].preferred(fakeRequest)
   implicit val headerCarrier: HeaderCarrier                 = HeaderCarrier()
 
   lazy val injector: Injector = app.injector

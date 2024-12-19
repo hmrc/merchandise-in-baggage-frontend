@@ -55,9 +55,9 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi("customsAgent.title"))
-      result must include(messageApi("customsAgent.heading"))
-      result must include(messageApi("customsAgent.hint"))
+      result must include(messages("customsAgent.title"))
+      result must include(messages("customsAgent.heading"))
+      result must include(messages("customsAgent.hint"))
     }
   }
 
@@ -93,9 +93,9 @@ class CustomsAgentControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
-      result must include(messageApi("customsAgent.title"))
-      result must include(messageApi("customsAgent.heading"))
+      result must include(messages("error.summary.title"))
+      result must include(messages("customsAgent.title"))
+      result must include(messages("customsAgent.heading"))
     }
   }
 }

@@ -54,11 +54,11 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi("importExportChoice.header"))
-      result must include(messageApi("importExportChoice.title"))
-      result must include(messageApi("importExportChoice.MakeImport"))
-      result must include(messageApi("importExportChoice.MakeExport"))
-      result must include(messageApi("importExportChoice.AddToExisting"))
+      result must include(messages("importExportChoice.header"))
+      result must include(messages("importExportChoice.title"))
+      result must include(messages("importExportChoice.MakeImport"))
+      result must include(messages("importExportChoice.MakeExport"))
+      result must include(messages("importExportChoice.AddToExisting"))
     }
   }
 
@@ -122,9 +122,9 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
-      result must include(messageApi("importExportChoice.header"))
-      result must include(messageApi("importExportChoice.error.required"))
+      result must include(messages("error.summary.title"))
+      result must include(messages("importExportChoice.header"))
+      result must include(messages("importExportChoice.error.required"))
     }
   }
 }
