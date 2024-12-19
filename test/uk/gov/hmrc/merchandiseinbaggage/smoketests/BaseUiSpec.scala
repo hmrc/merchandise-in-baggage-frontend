@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.smoketests
 
+import org.mongodb.scala.ObservableFuture
 import org.openqa.selenium.{By, WebElement}
 import org.scalatest.concurrent.Eventually
 import org.scalatestplus.selenium.{HtmlUnit, WebBrowser}
@@ -66,7 +67,7 @@ class BaseUiSpec extends BaseSpecWithApplication with HtmlUnit with Eventually w
         fail()
     }
 
-  //TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
+  // TODO smarter than before but we still could improve maybe by using a lib to capture/add session id
   def givenAJourneyWithSession(
     journeyType: JourneyType = New,
     declarationType: DeclarationType = Import,

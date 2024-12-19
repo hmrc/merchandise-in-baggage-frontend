@@ -25,7 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.{Amend, New}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, Declaration, JourneyType, NotRequired, Paid}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.*
 import uk.gov.hmrc.merchandiseinbaggage.views.html.DeclarationConfirmationView
 
 import scala.concurrent.{ExecutionContext, Future}

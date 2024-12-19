@@ -22,7 +22,7 @@ import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 
 trait FormSpec extends BaseSpec with OptionValues {
 
-  def checkForError(form: Form[_], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion =
+  def checkForError(form: Form[?], data: Map[String, String], expectedErrors: Seq[FormError]): Assertion =
     form
       .bind(data)
       .fold(

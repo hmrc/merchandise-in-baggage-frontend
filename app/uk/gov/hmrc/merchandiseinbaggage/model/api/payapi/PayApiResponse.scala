@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.api.payapi
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.URL
 

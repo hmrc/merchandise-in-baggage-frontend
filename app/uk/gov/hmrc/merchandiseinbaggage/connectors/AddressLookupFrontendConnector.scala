@@ -17,14 +17,15 @@
 package uk.gov.hmrc.merchandiseinbaggage.connectors
 
 import play.api.http.HeaderNames.LOCATION
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Call
-import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
-import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig._
+import uk.gov.hmrc.merchandiseinbaggage.config.AddressLookupConfig.*
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.Address
+import play.api.libs.ws.JsonBodyWritables.writeableOf_JsValue
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,7 +44,6 @@ class AddressLookupFrontendConnector @Inject() (appConfig: AppConfig, http: Http
   ): Future[String] = {
     val callback      = appConfig.addressLookupCallbackUrl(isAssistedDigital)
     val addressConfig = Json.toJson(configAddressLookup(s"$callback${call.url}"))
-
     http.post(initJourneyUrl).withBody(addressConfig).execute[HttpResponse].map { response =>
       response.header(LOCATION).getOrElse {
         throw new RuntimeException("Response from AddressLookupFrontend did not contain LOCATION header.")

@@ -18,10 +18,10 @@ import play.api.http.Status
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
-import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.*
+import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.*
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.*
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.*
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import java.time.LocalDateTime

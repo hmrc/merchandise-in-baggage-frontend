@@ -38,7 +38,7 @@ class ExciseAndRestrictedGoodsController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]): Call = {
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]): Call = {
     val backIfIncomplete =
       request.declarationJourney.journeyType match {
         case New   => GoodsDestinationController.onPageLoad

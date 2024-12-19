@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.auth
 
 import play.api.mvc.Result
-import play.api.mvc.Results._
+import play.api.mvc.Results.*
 import play.api.{Configuration, Environment, Mode}
 
 trait AuthRedirects {

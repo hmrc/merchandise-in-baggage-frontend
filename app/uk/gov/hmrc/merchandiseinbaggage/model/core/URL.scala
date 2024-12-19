@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.Format
 
 case class URL(value: String) extends AnyVal

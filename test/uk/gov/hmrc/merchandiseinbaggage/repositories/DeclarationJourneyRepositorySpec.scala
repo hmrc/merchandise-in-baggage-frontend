@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.repositories
 
+import org.mongodb.scala.ObservableFuture
 import org.bson.types.ObjectId
 import org.mongodb.scala.Document
 import org.mongodb.scala.model.{Filters, Updates}
@@ -73,14 +74,14 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
 
       val testDocumentId  = declarationJourneyRepository.collection
         .insertOne(completedDeclarationJourney)
-        .toFuture()
+        .head()
         .futureValue
         .getInsertedId
         .asObjectId()
-        .getValue //document without createdAt
+        .getValue // document without createdAt
       val testDocumentId2 = declarationJourneyRepository.collection
         .insertOne(declarationOtherJourney)
-        .toFuture()
+        .head()
         .futureValue
         .getInsertedId
         .asObjectId()
@@ -96,8 +97,8 @@ class DeclarationJourneyRepositorySpec extends BaseSpecWithApplication with Core
     }
 
     "return empty list of document ids if createdAt with type date exists for every record" in {
-      declarationJourneyRepository.upsert(completedDeclarationJourney).futureValue //document with createdAt type date
-      declarationJourneyRepository.upsert(declarationOtherJourney).futureValue //document with createdAt type date
+      declarationJourneyRepository.upsert(completedDeclarationJourney).futureValue // document with createdAt type date
+      declarationJourneyRepository.upsert(declarationOtherJourney).futureValue // document with createdAt type date
 
       declarationJourneyRepository.findCreatedAtString(2).futureValue mustBe Seq.empty
     }

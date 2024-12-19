@@ -78,7 +78,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
       exportView
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     "onPageLoad" should {
       s"return Ok with correct page content for $importOrExport" in {
         val sessionId                   = SessionId()
@@ -89,7 +89,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
         givenADeclarationJourneyIsPersisted(journey)
 
-        implicit val request: DeclarationJourneyRequest[_] =
+        implicit val request: DeclarationJourneyRequest[?] =
           buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val result = newHandler().onPageLoad(declaration, YesNo.Yes)
@@ -109,7 +109,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
         val overThresholdGoods = aCalculationResponse.copy(thresholdCheck = OverThreshold)
 
-        implicit val request: DeclarationJourneyRequest[_] =
+        implicit val request: DeclarationJourneyRequest[?] =
           buildGet(CheckYourAnswersController.onPageLoad.url, sessionId)
 
         val result = newHandler(overThresholdGoods).onPageLoad(declaration, YesNo.Yes)
@@ -138,7 +138,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
 
     "will calculate tax and send payment request to TPS for Imports" in {
       val sessionId                         = SessionId()
-      implicit val request: Request[_]      = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
+      implicit val request: Request[?]      = buildGet(routes.CheckYourAnswersController.onPageLoad.url, sessionId)
       val id                                = DeclarationId("xxx")
       val created                           = LocalDateTime.now.withSecond(0).withNano(0)
       val importJourney: DeclarationJourney = completedDeclarationJourney

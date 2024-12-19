@@ -39,7 +39,7 @@ class DeclarationJourneyLoggerSpec extends BaseSpec {
 
       DeclarationJourneyLogger.warn("Test")
 
-      //TODO Should there be an assertion for this or remove this test
+      // TODO Should there be an assertion for this or remove this test
     }
   }
 }

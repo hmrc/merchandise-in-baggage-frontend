@@ -20,8 +20,8 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.Paid
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.WithinThreshold
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{PurchaseDetailsInput, RetrieveDeclaration}
-import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages._
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.*
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.*
 
 class AdditionalDeclarationImportSpec extends BaseUiSpec {
 

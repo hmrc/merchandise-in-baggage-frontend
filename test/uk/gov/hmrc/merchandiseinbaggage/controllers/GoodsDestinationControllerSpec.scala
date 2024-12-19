@@ -45,7 +45,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
       view
     )
 
-  forAll(declarationTypesTable) { importOrExport: DeclarationType =>
+  forAll(declarationTypesTable) { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
     "onPageLoad" should {
       s"return 200 with radio buttons for $importOrExport" in {
