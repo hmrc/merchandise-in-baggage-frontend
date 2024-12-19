@@ -17,26 +17,23 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import com.google.inject.Singleton
-import play.api.i18n.MessagesApi
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.PaymentConnector
 import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
-
-import javax.inject.Inject
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.CalculationResults
 import uk.gov.hmrc.merchandiseinbaggage.model.api.payapi.PayApiRequest
-
-import scala.concurrent.{ExecutionContext, Future}
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class PaymentService @Inject() (
   connector: PaymentConnector,
-  val auditConnector: AuditConnector,
-  val messagesApi: MessagesApi
+  val auditConnector: AuditConnector
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends Auditor {
 

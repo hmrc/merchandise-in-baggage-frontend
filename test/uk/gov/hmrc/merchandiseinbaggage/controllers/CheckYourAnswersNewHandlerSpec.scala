@@ -72,7 +72,7 @@ class CheckYourAnswersNewHandlerSpec extends DeclarationJourneyControllerSpec {
     new CheckYourAnswersNewHandler(
       stubbedCalculation(paymentCalcs),
       mockTpsPaymentsService,
-      new PaymentService(testPaymentConnector, auditConnector, messagesApi),
+      new PaymentService(testPaymentConnector, auditConnector),
       testMibConnector,
       importView,
       exportView

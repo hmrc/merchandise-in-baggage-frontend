@@ -19,7 +19,6 @@ package uk.gov.hmrc.merchandiseinbaggage.service
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import org.scalatest.concurrent.ScalaFutures
-import play.api.i18n.MessagesApi
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -30,8 +29,7 @@ import scala.concurrent.Future
 
 class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures {
 
-  private val failed: Failure           = Failure("failed")
-  private val aMessagesApi: MessagesApi = mock(classOf[MessagesApi])
+  private val failed: Failure = Failure("failed")
 
   private implicit val aHeaderCarrier: HeaderCarrier = HeaderCarrier()
 
@@ -46,7 +44,6 @@ class AuditorSpec extends BaseSpec with CoreTestData with ScalaFutures {
 
         val auditService = new Auditor {
           override val auditConnector: AuditConnector = mockAuditConnector
-          override val messagesApi: MessagesApi       = aMessagesApi
         }
 
         auditService.auditDeclaration(declaration).futureValue mustBe a[Unit]
