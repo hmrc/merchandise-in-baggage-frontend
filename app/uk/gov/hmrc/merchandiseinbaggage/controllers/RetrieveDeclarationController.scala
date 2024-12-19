@@ -17,10 +17,11 @@
 package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import cats.implicits._
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.{ImportExportChoiceController, NewOrExistingController}
 import uk.gov.hmrc.merchandiseinbaggage.forms.RetrieveDeclarationForm.form
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
@@ -42,9 +43,12 @@ class RetrieveDeclarationController @Inject() (
 )(implicit appConfig: AppConfig, val ec: ExecutionContext)
     extends DeclarationJourneyUpdateController {
 
+  private def backLink(isAssistedDigital: Boolean): Call =
+    if (isAssistedDigital) ImportExportChoiceController.onPageLoad else NewOrExistingController.onPageLoad
+
   override val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>
     val preFilledForm = request.declarationJourney.maybeRetrieveDeclaration.fold(form)(form.fill)
-    Ok(view(preFilledForm, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType))
+    Ok(view(preFilledForm, backLink(request.isAssistedDigital), request.declarationJourney.declarationType))
   }
 
   override val onSubmit: Action[AnyContent] = actionProvider.journeyAction.async { implicit request =>
@@ -53,7 +57,7 @@ class RetrieveDeclarationController @Inject() (
       .fold(
         formWithErrors =>
           BadRequest(
-            view(formWithErrors, routes.NewOrExistingController.onPageLoad, request.declarationJourney.declarationType)
+            view(formWithErrors, backLink(request.isAssistedDigital), request.declarationJourney.declarationType)
           ).asFuture,
         retrieveDeclaration => processRequest(retrieveDeclaration)
       )
