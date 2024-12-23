@@ -53,8 +53,8 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi(s"goodsOrigin.title"))
-      result must include(messageApi(s"goodsOrigin.heading"))
+      result must include(messages(s"goodsOrigin.title"))
+      result must include(messages(s"goodsOrigin.heading"))
     }
   }
 
@@ -91,8 +91,8 @@ class GoodsOriginControllerSpec extends DeclarationJourneyControllerSpec {
     val result         = contentAsString(eventualResult)
 
     status(eventualResult) mustBe BAD_REQUEST
-    result must include(messageApi("error.summary.title"))
-    result must include(messageApi(s"goodsOrigin.title"))
-    result must include(messageApi(s"goodsOrigin.heading"))
+    result must include(messages("error.summary.title"))
+    result must include(messages(s"goodsOrigin.title"))
+    result must include(messages(s"goodsOrigin.heading"))
   }
 }

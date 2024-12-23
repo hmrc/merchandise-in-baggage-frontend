@@ -55,8 +55,8 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi("agentDetails.title"))
-      result must include(messageApi("agentDetails.heading"))
+      result must include(messages("agentDetails.title"))
+      result must include(messages("agentDetails.heading"))
     }
   }
 
@@ -93,8 +93,8 @@ class AgentDetailsControllerSpec extends DeclarationJourneyControllerSpec {
     val result                         = contentAsString(eventualResult)
 
     status(eventualResult) mustBe BAD_REQUEST
-    result must include(messageApi("error.summary.title"))
-    result must include(messageApi(s"agentDetails.title"))
-    result must include(messageApi(s"agentDetails.heading"))
+    result must include(messages("error.summary.title"))
+    result must include(messages(s"agentDetails.title"))
+    result must include(messages(s"agentDetails.heading"))
   }
 }

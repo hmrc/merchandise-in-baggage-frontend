@@ -55,12 +55,12 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"goodsDestination.$importOrExport.title"))
-        result must include(messageApi(s"goodsDestination.$importOrExport.heading"))
-        result must include(messageApi("goodsDestination.NorthernIreland"))
-        result must include(messageApi("goodsDestination.GreatBritain"))
+        result must include(messages(s"goodsDestination.$importOrExport.title"))
+        result must include(messages(s"goodsDestination.$importOrExport.heading"))
+        result must include(messages("goodsDestination.NorthernIreland"))
+        result must include(messages("goodsDestination.GreatBritain"))
 
-        result must include(messageApi(s"service.name.${importOrExport.entryName}.a.href"))
+        result must include(messages(s"service.name.${importOrExport.entryName}.a.href"))
       }
     }
 
@@ -97,7 +97,7 @@ class GoodsDestinationControllerSpec extends DeclarationJourneyControllerSpec wi
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
+      result must include(messages("error.summary.title"))
     }
   }
 }

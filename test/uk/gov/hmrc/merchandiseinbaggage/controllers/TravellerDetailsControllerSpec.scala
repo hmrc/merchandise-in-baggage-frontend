@@ -49,11 +49,11 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi("travellerDetails.title"))
-      result must include(messageApi("travellerDetails.heading"))
-      result must include(messageApi("travellerDetails.hint"))
-      result must include(messageApi("travellerDetails.firstName"))
-      result must include(messageApi("travellerDetails.lastName"))
+      result must include(messages("travellerDetails.title"))
+      result must include(messages("travellerDetails.heading"))
+      result must include(messages("travellerDetails.hint"))
+      result must include(messages("travellerDetails.firstName"))
+      result must include(messages("travellerDetails.lastName"))
     }
   }
 
@@ -85,13 +85,13 @@ class TravellerDetailsControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("travellerDetails.title"))
-      result must include(messageApi("travellerDetails.heading"))
-      result must include(messageApi("travellerDetails.hint"))
-      result must include(messageApi("travellerDetails.firstName"))
-      result must include(messageApi("travellerDetails.lastName"))
-      result must include(messageApi("travellerDetails.firstName.error.required"))
-      result must include(messageApi("travellerDetails.lastName.error.required"))
+      result must include(messages("travellerDetails.title"))
+      result must include(messages("travellerDetails.heading"))
+      result must include(messages("travellerDetails.hint"))
+      result must include(messages("travellerDetails.firstName"))
+      result must include(messages("travellerDetails.lastName"))
+      result must include(messages("travellerDetails.firstName.error.required"))
+      result must include(messages("travellerDetails.lastName.error.required"))
     }
   }
 }

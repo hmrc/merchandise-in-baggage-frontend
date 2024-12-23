@@ -40,10 +40,10 @@ class GoodsRemovedControllerSpec extends DeclarationJourneyControllerSpec {
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi(s"goodsRemoved.title"))
-      result must include(messageApi(s"goodsRemoved.heading"))
-      result must include(messageApi(s"goodsRemoved.p1"))
-      result must include(messageApi(s"goodsRemoved.link"))
+      result must include(messages(s"goodsRemoved.title"))
+      result must include(messages(s"goodsRemoved.heading"))
+      result must include(messages(s"goodsRemoved.p1"))
+      result must include(messages(s"goodsRemoved.link"))
     }
   }
 }

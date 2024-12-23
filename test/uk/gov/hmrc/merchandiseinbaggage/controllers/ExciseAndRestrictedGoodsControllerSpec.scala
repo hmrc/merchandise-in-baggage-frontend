@@ -53,9 +53,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
-        result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))
-        result must include(messageApi("exciseAndRestrictedGoods.details"))
+        result must include(messages(s"exciseAndRestrictedGoods.$importOrExport.title"))
+        result must include(messages(s"exciseAndRestrictedGoods.$importOrExport.heading"))
+        result must include(messages("exciseAndRestrictedGoods.details"))
       }
     }
 
@@ -92,9 +92,9 @@ class ExciseAndRestrictedGoodsControllerSpec extends DeclarationJourneyControlle
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
-      result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.title"))
-      result must include(messageApi(s"exciseAndRestrictedGoods.$importOrExport.heading"))
+      result must include(messages("error.summary.title"))
+      result must include(messages(s"exciseAndRestrictedGoods.$importOrExport.title"))
+      result must include(messages(s"exciseAndRestrictedGoods.$importOrExport.heading"))
     }
   }
 }
