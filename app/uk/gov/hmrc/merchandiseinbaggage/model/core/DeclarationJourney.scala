@@ -188,7 +188,7 @@ object DeclarationJourney {
   private def parseBigDecimal(bigDecimal: BigDecimal): JsResult[LocalDateTime] =
     LocalDateTime.ofInstant(Instant.ofEpochMilli(bigDecimal.toLong), ZoneOffset.UTC) match {
       case d: LocalDateTime => JsSuccess(d)
-      case null             => JsError("Unexpected LocalDateTime Format")
+      case _                => JsError("Unexpected LocalDateTime Format")
     }
 
   implicit val localDateTimeRead: Reads[LocalDateTime] = {
