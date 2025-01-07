@@ -97,7 +97,7 @@ class CheckYourAnswersAmendHandlerSpec extends DeclarationJourneyControllerSpec 
         val eventualResult = amendHandler().onPageLoad(journey, amendment, YesNo.No)
 
         status(eventualResult) mustBe OK
-        contentAsString(eventualResult) must include(messageApi("checkYourAnswers.amend.title"))
+        contentAsString(eventualResult) must include(messages("checkYourAnswers.amend.title"))
       }
 
       s"will calculate tax and send payment request to TPS for $importOrExport" in {

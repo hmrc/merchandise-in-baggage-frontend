@@ -41,9 +41,9 @@ class NoDeclarationNeededControllerSpec extends DeclarationJourneyControllerSpec
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
-      result must include(messageApi(s"noDeclarationNeeded.title"))
-      result must include(messageApi(s"noDeclarationNeeded.heading"))
-      result must include(messageApi(s"noDeclarationNeeded.p"))
+      result must include(messages(s"noDeclarationNeeded.title"))
+      result must include(messages(s"noDeclarationNeeded.heading"))
+      result must include(messages(s"noDeclarationNeeded.p"))
     }
   }
 }

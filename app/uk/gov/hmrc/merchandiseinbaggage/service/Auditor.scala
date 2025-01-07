@@ -17,7 +17,6 @@
 package uk.gov.hmrc.merchandiseinbaggage.service
 
 import play.api.Logging
-import play.api.i18n.MessagesApi
 import play.api.libs.json.Json.toJson
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration
@@ -30,7 +29,6 @@ import scala.util.control.NonFatal
 
 trait Auditor extends Logging {
   val auditConnector: AuditConnector
-  val messagesApi: MessagesApi
 
   def auditDeclaration(declaration: Declaration)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Unit] = {
     val eventType = "DeclarationPaymentAttempted"

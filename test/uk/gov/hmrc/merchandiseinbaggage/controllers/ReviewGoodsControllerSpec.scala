@@ -82,10 +82,10 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
 
         status(eventualResult) mustBe OK
         if (importOrExport == Import) {
-          result must include(messageApi("reviewGoods.list.vatRate"))
-          result must include(messageApi("reviewGoods.list.producedInEu"))
+          result must include(messages("reviewGoods.list.vatRate"))
+          result must include(messages("reviewGoods.list.producedInEu"))
         } else {
-          result must include(messageApi("reviewGoods.list.destination"))
+          result must include(messages("reviewGoods.list.destination"))
         }
       }
 
@@ -163,9 +163,9 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi("error.summary.title"))
-      result must include(messageApi("reviewGoods.New.title"))
-      result must include(messageApi("reviewGoods.New.heading"))
+      result must include(messages("error.summary.title"))
+      result must include(messages("reviewGoods.New.title"))
+      result must include(messages("reviewGoods.New.heading"))
     }
 
     s"redirect to CannotAccessPage when no ThresholdAllowance is received from mibService for $importOrExport" in {

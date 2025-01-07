@@ -23,7 +23,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.time.{Milliseconds, Seconds, Span}
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.{Lang, Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{ApplicationLifecycle, Injector}
 import play.api.mvc.{AnyContentAsEmpty, DefaultActionBuilder}
@@ -56,10 +56,12 @@ trait BaseSpecWithApplication extends BaseSpec with GuiceOneServerPerSuite with 
 
   lazy val defaultBuilder: DefaultActionBuilder             = injector.instanceOf[DefaultActionBuilder]
   implicit lazy val appConfig: AppConfig                    = injector.instanceOf[AppConfig]
-  def messagesApi: MessagesApi                              = injector.instanceOf[MessagesApi]
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("", "").withCSRFToken.asInstanceOf[FakeRequest[AnyContentAsEmpty.type]]
-  implicit val messages: Messages                           = messagesApi.preferred(fakeRequest)
+  lazy val messagesApi: MessagesApi                         = injector.instanceOf[MessagesApi]
+  private val lang: Lang                                    = Lang("en")
+  private val cyLang: Lang                                  = Lang("cy")
+  implicit val messages: Messages                           = injector.instanceOf[MessagesApi].preferred(Seq(lang, cyLang))
   implicit val headerCarrier: HeaderCarrier                 = HeaderCarrier()
 
   lazy val injector: Injector = app.injector

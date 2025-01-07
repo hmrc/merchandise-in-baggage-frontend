@@ -58,9 +58,9 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
           val result         = contentAsString(eventualResult)
 
           status(eventualResult) mustBe OK
-          result must include(messageApi(s"goodsType.$journeyType.title"))
-          result must include(messageApi(s"goodsType.$journeyType.heading"))
-          result must include(messageApi("goodsType.p"))
+          result must include(messages(s"goodsType.$journeyType.title"))
+          result must include(messages(s"goodsType.$journeyType.heading"))
+          result must include(messages("goodsType.p"))
         }
       }
 
@@ -106,10 +106,10 @@ class GoodsTypeControllerSpec extends DeclarationJourneyControllerSpec {
           val result         = contentAsString(eventualResult)
 
           status(eventualResult) mustBe BAD_REQUEST
-          result must include(messageApi("error.summary.title"))
-          result must include(messageApi(s"goodsType.$journeyType.title"))
-          result must include(messageApi(s"goodsType.$journeyType.heading"))
-          result must include(messageApi("goodsType.p"))
+          result must include(messages("error.summary.title"))
+          result must include(messages(s"goodsType.$journeyType.title"))
+          result must include(messages(s"goodsType.$journeyType.heading"))
+          result must include(messages("goodsType.p"))
         }
       }
     }

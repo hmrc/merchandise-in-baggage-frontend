@@ -62,15 +62,15 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
         val result         = contentAsString(eventualResult)
 
         status(eventualResult) mustBe OK
-        result must include(messageApi(s"retrieveDeclaration.title"))
-        result must include(messageApi(s"retrieveDeclaration.heading"))
-        result must include(messageApi(s"retrieveDeclaration.p"))
+        result must include(messages(s"retrieveDeclaration.title"))
+        result must include(messages(s"retrieveDeclaration.heading"))
+        result must include(messages(s"retrieveDeclaration.p"))
 
-        result must include(messageApi(s"retrieveDeclaration.mibReference.label"))
-        result must include(messageApi(s"retrieveDeclaration.mibReference.hint"))
+        result must include(messages(s"retrieveDeclaration.mibReference.label"))
+        result must include(messages(s"retrieveDeclaration.mibReference.hint"))
 
-        result must include(messageApi(s"retrieveDeclaration.eori.label"))
-        result must include(messageApi(s"retrieveDeclaration.eori.hint"))
+        result must include(messages(s"retrieveDeclaration.eori.label"))
+        result must include(messages(s"retrieveDeclaration.eori.hint"))
       }
     }
   }
@@ -124,8 +124,8 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
       val result         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe BAD_REQUEST
-      result must include(messageApi(s"retrieveDeclaration.mibReference.error.invalid"))
-      result must include(messageApi(s"retrieveDeclaration.eori.error.invalid"))
+      result must include(messages(s"retrieveDeclaration.mibReference.error.invalid"))
+      result must include(messages(s"retrieveDeclaration.eori.error.invalid"))
     }
   }
 }
