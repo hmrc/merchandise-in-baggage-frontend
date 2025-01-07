@@ -22,25 +22,48 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 class GoodsItemListSpec extends BaseSpec with CoreTestData {
-  "summaryList" in {
-    GoodsItemList.summaryList(Seq(aImportGoods))(messages) mustBe Seq(
-      SummaryList(
-        rows = Seq(
-          SummaryListRow(
-            key = Key(Text(messages("reviewGoods.list.item"))),
-            value = Value(Text(aImportGoods.category))
+  "summaryList" should {
+    "display imported goods" in {
+      GoodsItemList.summaryList(Seq(aImportGoods))(messages) mustBe Seq(
+        SummaryList(
+          rows = Seq(
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.item"))),
+              value = Value(Text(aImportGoods.category))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.producedInEu"))),
+              value = Value(Text(messages(aImportGoods.producedInEu.messageKey)))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.price"))),
+              value = Value(Text(messages(aImportGoods.purchaseDetails.formatted)))
+            )
           ),
-          SummaryListRow(
-            key = Key(Text(messages("reviewGoods.list.producedInEu"))),
-            value = Value(Text(messages(aImportGoods.producedInEu.messageKey)))
-          ),
-          SummaryListRow(
-            key = Key(Text(messages("reviewGoods.list.price"))),
-            value = Value(Text(messages(aImportGoods.purchaseDetails.formatted)))
-          )
-        ),
-        classes = "govuk-!-margin-bottom-1"
+          classes = "govuk-!-margin-bottom-1"
+        )
       )
-    )
+    }
+    "display exported goods" in {
+      GoodsItemList.summaryList(Seq(aExportGoods))(messages) mustBe Seq(
+        SummaryList(
+          rows = Seq(
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.item"))),
+              value = Value(Text(aExportGoods.category))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.destination"))),
+              value = Value(Text(messages(aExportGoods.destination.countryName)))
+            ),
+            SummaryListRow(
+              key = Key(Text(messages("reviewGoods.list.price"))),
+              value = Value(Text(messages(aExportGoods.purchaseDetails.formatted)))
+            )
+          ),
+          classes = "govuk-!-margin-bottom-1"
+        )
+      )
+    }
   }
 }

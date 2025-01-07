@@ -77,6 +77,9 @@ class JourneyDetailsFormSpec extends FieldBehaviours {
       importSubmittedForm.errors.head.message mustBe s"$dateInPastMessageKey.within.30.days"
       exportSubmittedForm.errors.head.message mustBe "journeyDetails.dateOfTravel.error.Export.dateInPast.within.30.days"
     }
+    "must unbind a touple with DeclarationType and LocalDate" in {
+      form.tupled((DeclarationType.Import, LocalDate.now())).hasErrors mustBe false
+    }
   }
 
   private val formData: LocalDate => Map[String, String] = dateOfArrival =>

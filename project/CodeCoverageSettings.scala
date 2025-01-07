@@ -4,7 +4,6 @@ import scoverage.ScoverageKeys.{coverageExcludedFiles, coverageFailOnMinimum, co
 object CodeCoverageSettings {
   private val excludedPackages: Seq[String] = Seq(
     "<empty>",
-    ".*components.*",
     ".*Routes.*",
     ".*testonly.*"
   )

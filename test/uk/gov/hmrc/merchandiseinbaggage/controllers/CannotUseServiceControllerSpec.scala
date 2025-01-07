@@ -34,8 +34,8 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
       DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
         .copy(maybeGoodsDestination = Some(GreatBritain))
 
-    "onPageLoad" should {
-      s"return 200 with radio buttons for $importOrExport" in {
+    s"onPageLoad for $importOrExport" should {
+      "return 200 with radio buttons" in {
 
         val request        = buildGet(routes.CannotUseServiceController.onPageLoad.url, aSessionId)
         val eventualResult = controller(journey).onPageLoad()(request)
@@ -45,6 +45,26 @@ class CannotUseServiceControllerSpec extends DeclarationJourneyControllerSpec {
         result must include(messageApi(s"cannotUseService.$importOrExport.title"))
         result must include(messageApi(s"cannotUseService.$importOrExport.heading"))
         result must include(messageApi(s"cannotUseService.$importOrExport.p1"))
+      }
+
+      "have different back url for different routes" in {
+        val requestExciseAndRestrictedGoodsController =
+          buildGet(routes.ExciseAndRestrictedGoodsController.onPageLoad.url, aSessionId)
+        val eventualResult                            = controller(journey).onPageLoad()(requestExciseAndRestrictedGoodsController)
+        val result                                    = contentAsString(eventualResult)
+        result must include("excise-and-restricted-goods")
+
+        val requestValueWeightOfGoodsController        =
+          buildGet(routes.ValueWeightOfGoodsController.onPageLoad.url, aSessionId)
+        val eventualResultValueWeightOfGoodsController =
+          controller(journey).onPageLoad()(requestValueWeightOfGoodsController)
+        val resultValueWeightOfGoodsController         = contentAsString(eventualResultValueWeightOfGoodsController)
+        resultValueWeightOfGoodsController must include("value-weight-of-goods")
+
+        val requestVehicleSizeController        = buildGet(routes.VehicleSizeController.onPageLoad.url, aSessionId)
+        val eventualResultVehicleSizeController = controller(journey).onPageLoad()(requestVehicleSizeController)
+        val resultVehicleSizeController         = contentAsString(eventualResultVehicleSizeController)
+        resultVehicleSizeController must include("vehicle-size")
       }
     }
   }
