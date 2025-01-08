@@ -50,7 +50,7 @@ class CheckYourAnswersAmendHandler @Inject() (
 
   def onPageLoad(declarationJourney: DeclarationJourney, amendment: Amendment, isAgent: YesNo)(implicit
     hc: HeaderCarrier,
-    request: DeclarationJourneyRequest[_],
+    request: DeclarationJourneyRequest[?],
     messages: Messages
   ): Future[Result] =
     (for {
@@ -67,7 +67,7 @@ class CheckYourAnswersAmendHandler @Inject() (
 
   def onSubmit(declarationId: DeclarationId, newAmendment: Amendment)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     mibService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
       maybeOriginalDeclaration.fold(actionProvider.invalidRequest(declarationNotFoundMessage).asFuture) {
@@ -114,7 +114,7 @@ class CheckYourAnswersAmendHandler @Inject() (
 
   def onSubmitTps(declarationId: DeclarationId, newAmendment: Amendment)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     mibService.findDeclaration(declarationId).flatMap { maybeOriginalDeclaration =>
       maybeOriginalDeclaration.fold(Future.successful(actionProvider.invalidRequest(declarationNotFoundMessage))) {
@@ -129,7 +129,7 @@ class CheckYourAnswersAmendHandler @Inject() (
     }
 
   private def persistAndRedirectToPaymentsTps(amendment: Amendment, originalDeclaration: Declaration)(implicit
-    request: Request[_],
+    request: Request[?],
     hc: HeaderCarrier
   ): Future[Result] =
     mibService.paymentCalculations(amendment.goods.goods, originalDeclaration.goodsDestination).flatMap {

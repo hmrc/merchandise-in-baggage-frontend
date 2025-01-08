@@ -42,7 +42,7 @@ object EnterEmailForm extends Mappings {
   val mandatoryForm: Form[Email] = Form(
     mapping(
       "email" -> text("enterEmail.error.required").verifying(emailAddress)
-    )(Email.apply)(Email.unapply)
+    )(Email.apply)(x => Option(x.email))
   )
 
   private val optionalEmailAddress: Constraint[Option[String]] = Constraint[Option[String]]("constraint.email") {

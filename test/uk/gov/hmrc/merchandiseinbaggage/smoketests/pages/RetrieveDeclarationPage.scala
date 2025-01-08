@@ -18,7 +18,7 @@ package uk.gov.hmrc.merchandiseinbaggage.smoketests.pages
 
 import org.openqa.selenium.htmlunit.HtmlUnitDriver
 import org.scalatest.Assertions.fail
-import org.scalatestplus.selenium.WebBrowser._
+import org.scalatestplus.selenium.WebBrowser.*
 import uk.gov.hmrc.merchandiseinbaggage.model.core.RetrieveDeclaration
 
 object RetrieveDeclarationPage extends Page {

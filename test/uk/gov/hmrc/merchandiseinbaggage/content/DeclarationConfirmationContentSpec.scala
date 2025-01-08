@@ -22,10 +22,10 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Export
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResult, CalculationResults}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{AmountInPence, NotRequired}
 import uk.gov.hmrc.merchandiseinbaggage.smoketests.pages.DeclarationConfirmationPage
-import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub._
+import uk.gov.hmrc.merchandiseinbaggage.stubs.MibBackendStub.*
 import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.LocalDateTimeOps
 
-import scala.jdk.CollectionConverters._
+import scala.jdk.CollectionConverters.*
 
 class DeclarationConfirmationContentSpec extends DeclarationConfirmationPage with CoreTestData {
 

@@ -21,10 +21,11 @@ import play.api.data.{Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.forms.FormSpec
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.LocalDateFormatter.{dayBlankErrorKey, monthBlankErrorKey, yearBlankErrorKey}
 import uk.gov.hmrc.merchandiseinbaggage.generators.Generators
+import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
 
 trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Generators {
 
-  def mandatoryField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+  def mandatoryField(form: Form[?], fieldName: String, requiredError: FormError): Unit = {
     s"not bind when key is not present at all with message $requiredError" in {
       val result = form.bind(emptyForm).apply(fieldName)
       result.errors mustEqual Seq(requiredError)
@@ -36,7 +37,7 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
     }
   }
 
-  def mandatoryEmailField(form: Form[_], fieldName: String, requiredError: FormError): Unit = {
+  def mandatoryEmailField(form: Form[Email], fieldName: String, requiredError: FormError): Unit = {
 
     "not bind when key is not present at all" in {
 
@@ -49,9 +50,17 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors mustEqual Seq(FormError(fieldName, "enterEmail.error.required"))
     }
+    "not bind space values" in {
+
+      val result = form.bind(Map(fieldName -> " ")).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, "enterEmail.error.required"))
+    }
+    "must unbind a Email" in {
+      form.fill(Email("abc@def")).hasErrors mustBe false
+    }
   }
 
-  def optionalEmailFieldIfAssistedDigital(form: Form[_], fieldName: String): Unit = {
+  def optionalEmailFieldIfAssistedDigital(form: Form[Option[Email]], fieldName: String): Unit = {
     "bind when key is present" in {
       val result = form.bind(Map(fieldName -> "xx@yyy")).apply(fieldName)
       result.errors mustEqual Seq()
@@ -61,9 +70,18 @@ trait FieldBehaviours extends FormSpec with ScalaCheckPropertyChecks with Genera
       val result = form.bind(Map(fieldName -> "")).apply(fieldName)
       result.errors mustEqual Seq()
     }
+
+    "bind when key is invalid" in {
+      val result = form.bind(Map(fieldName -> "xxyyy")).apply(fieldName)
+      result.errors mustEqual Seq(FormError(fieldName, "enterEmail.error.invalid"))
+    }
+
+    "must unbind a Email" in {
+      form.fill(Option(Email("abc@def"))).hasErrors mustBe false
+    }
   }
 
-  def aMandatoryDateField(form: Form[_], key: String): Unit =
+  def aMandatoryDateField(form: Form[?], key: String): Unit =
     "fail to bind an empty date" in {
       val result = form.bind(Map.empty[String, String])
 

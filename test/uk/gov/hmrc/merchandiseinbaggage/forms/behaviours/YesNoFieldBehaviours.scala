@@ -21,7 +21,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo._
 
 trait YesNoFieldBehaviours extends FieldBehaviours {
 
-  def yesNoField(form: Form[_], fieldName: String, invalidError: FormError): Unit = {
+  def yesNoField(form: Form[?], fieldName: String, invalidError: FormError): Unit = {
 
     "bind Yes" in {
       val result = form.bind(Map(fieldName -> "Yes"))

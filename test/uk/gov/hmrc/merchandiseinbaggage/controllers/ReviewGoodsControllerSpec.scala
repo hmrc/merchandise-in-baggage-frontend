@@ -20,16 +20,16 @@ import cats.data.OptionT
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.*
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.JourneyTypes.Amend
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationId, GoodsDestination, JourneyType}
 import uk.gov.hmrc.merchandiseinbaggage.model.core.{DeclarationJourney, GoodsEntries, ThresholdAllowance}
-import uk.gov.hmrc.merchandiseinbaggage.navigation._
+import uk.gov.hmrc.merchandiseinbaggage.navigation.*
 import uk.gov.hmrc.merchandiseinbaggage.service.MibService
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ReviewGoodsView
 
@@ -100,7 +100,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
             any[DeclarationId]
           )(any[HeaderCarrier])
         )
-          .thenReturn(OptionT.none)
+          .thenReturn(OptionT(Future(None)))
 
         val result = controller(journey).onPageLoad()(request)
 
@@ -179,7 +179,7 @@ class ReviewGoodsControllerSpec extends DeclarationJourneyControllerSpec with Pr
           any[DeclarationId]
         )(any[HeaderCarrier])
       )
-        .thenReturn(OptionT.none)
+        .thenReturn(OptionT(Future(None)))
 
       val result = controller(journey).onSubmit()(request)
 

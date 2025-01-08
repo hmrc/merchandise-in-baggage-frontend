@@ -37,7 +37,7 @@ class GoodsTypeController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends IndexedDeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationGoodsRequest[_]): Call = {
+  private def backButtonUrl(implicit request: DeclarationGoodsRequest[?]): Call = {
     val referer: String = request.headers.get(REFERER).getOrElse("")
     if (referer.contains(routes.CheckYourAnswersController.onPageLoad.url)) {
       routes.CheckYourAnswersController.onPageLoad

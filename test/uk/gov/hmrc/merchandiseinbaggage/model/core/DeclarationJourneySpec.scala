@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
-import play.api.libs.json.{JsError, JsString, JsSuccess, Json}
+import org.scalatest.matchers.should.Matchers.shouldBe
+import play.api.libs.json.{JsBoolean, JsError, JsString, JsSuccess, Json}
 import uk.gov.hmrc.merchandiseinbaggage.generators.PropertyBaseTables
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Import}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Email
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney.*
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpec, CoreTestData}
 
 import java.time.{LocalDate, LocalDateTime}
@@ -38,6 +39,32 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
         if (declarationType == Import) actual.goodsEntries mustBe GoodsEntries(ImportGoodsEntry())
         if (declarationType == Export) actual.goodsEntries mustBe GoodsEntries(ExportGoodsEntry())
       }
+    }
+  }
+
+  "fail to deserialize DeclarationJourney" when {
+    "invalid JSON structure" in {
+      val json = Json.arr(
+        Json.obj("key" -> "value")
+      )
+      json.validate[DeclarationJourney] shouldBe a[JsError]
+    }
+    "an empty JSON object" in {
+      val json = Json.obj()
+      json.validate[DeclarationJourney] shouldBe a[JsError]
+    }
+  }
+
+  "fail to deserialize GoodsEntries" when {
+    "invalid JSON structure" in {
+      val json = Json.arr(
+        Json.obj("key" -> "value")
+      )
+      json.validate[GoodsEntries] shouldBe a[JsError]
+    }
+    "an empty JSON object" in {
+      val json = Json.obj()
+      json.validate[GoodsEntries] shouldBe a[JsError]
     }
   }
 
@@ -97,6 +124,38 @@ class DeclarationJourneySpec extends BaseSpec with CoreTestData with PropertyBas
     "decode some json to a dateTime" in {
       val result = localDateTimeRead.reads(jsonMillis)
       result mustEqual JsSuccess(LocalDate.of(2018, 2, 1).atStartOfDay)
+    }
+    "not decode a random string" in {
+      val result = localDateTimeRead.reads(JsString("abc"))
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode null" in {
+      val result = localDateTimeRead.reads(null)
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode an boolean" in {
+      val result = localDateTimeRead.reads(JsBoolean(true))
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode an empty string" in {
+      val result = localDateTimeRead.reads(JsString(""))
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode an null string" in {
+      val result = localDateTimeRead.reads(JsString(null))
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode invalid JSON structure" in {
+      val result = localDateTimeRead.reads(
+        Json.arr(
+          Json.obj("key" -> "value")
+        )
+      )
+      result mustEqual JsError("Unexpected LocalDateTime Format")
+    }
+    "not decode an empty JSON object" in {
+      val result = localDateTimeRead.reads(Json.obj())
+      result mustEqual JsError("Unexpected LocalDateTime Format")
     }
   }
 }

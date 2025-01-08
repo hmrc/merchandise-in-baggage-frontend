@@ -36,7 +36,7 @@ class VehicleRegistrationNumberController @Inject() (
 )(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends DeclarationJourneyUpdateController {
 
-  private def backButtonUrl(implicit request: DeclarationJourneyRequest[_]) =
+  private def backButtonUrl(implicit request: DeclarationJourneyRequest[?]) =
     backToCheckYourAnswersIfCompleteElse(routes.VehicleSizeController.onPageLoad)
 
   val onPageLoad: Action[AnyContent] = actionProvider.journeyAction { implicit request =>

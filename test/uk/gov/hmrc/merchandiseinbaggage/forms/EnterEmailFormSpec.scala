@@ -30,6 +30,7 @@ class EnterEmailFormSpec extends FieldBehaviours {
       fieldName,
       requiredError = FormError(fieldName, "enterEmail.error.required")
     )
+
   }
 
   ".email optional if assisted digital" must {
