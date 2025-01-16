@@ -35,7 +35,7 @@ object AddressLookupConfig {
                   |    },
                   |    "cy": {
                   |      "appLevelLabels": {
-                  |        "navTitle": "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+                  |        "navTitle": "Datgan nwyddau masnachol a gaiff eu cludo mewn bagiau sy’n dod gyda chi neu gerbydau bach"
                   |      }
                   |    }
                   |  }

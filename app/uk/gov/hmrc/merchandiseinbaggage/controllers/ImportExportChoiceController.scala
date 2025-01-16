@@ -20,8 +20,9 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
+import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
 import uk.gov.hmrc.merchandiseinbaggage.forms.ImportExportChoiceForm._
+import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.AddToExisting
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
@@ -40,7 +41,12 @@ class ImportExportChoiceController @Inject() (
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.initJourneyAction { implicit request =>
-    Ok(view(form))
+    if (!request.isAssistedDigital) {
+      repo.upsert(DeclarationJourney(sessionId = SessionId(request.session(SessionKeys.sessionId)), declarationType = DeclarationType.Import, isAssistedDigital = request.isAssistedDigital))
+      Redirect(routes.PageNotFoundController.onPageLoad)
+    } else {
+      Ok(view(form))
+    }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.initJourneyAction.async { implicit request =>

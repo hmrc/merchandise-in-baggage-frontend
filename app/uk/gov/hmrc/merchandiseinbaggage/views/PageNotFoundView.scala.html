@@ -1,0 +1,39 @@
+@*
+ * Copyright 2024 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
+
+@this(layout: Layout, link: components.link, p: components.p)
+
+@()(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some(titleNoForm("pageNotFound.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
+<h1 class="govuk-heading-xl">@messages("pageNotFound.title")</h1>
+
+@p(Html(messages("pageNotFound.li1")))
+
+@p(Html(messages("pageNotFound.li2")))
+
+@p(Html(messages("pageNotFound.li3")))
+
+<ul class="govuk-list govuk-list--bullet">
+<li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("pageNotFound.Import.restart"), attrTarget = true)</li>
+<li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("pageNotFound.Export.restart"), attrTarget = true)</li>
+</ul>
+}
