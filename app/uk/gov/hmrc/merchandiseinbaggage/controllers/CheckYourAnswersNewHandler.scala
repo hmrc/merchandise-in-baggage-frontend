@@ -18,8 +18,8 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 
 import com.google.inject.{Inject, Singleton}
 import play.api.i18n.Messages
-import play.api.mvc.Results._
-import play.api.mvc._
+import play.api.mvc.Results.*
+import play.api.mvc.*
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 import uk.gov.hmrc.merchandiseinbaggage.connectors.MibConnector
@@ -28,7 +28,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.{Export, Impor
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResults, OverThreshold, WithinThreshold}
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{Declaration, YesNo}
 import uk.gov.hmrc.merchandiseinbaggage.service.{MibService, PaymentService, TpsPaymentsService}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.*
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{CheckYourAnswersExportView, CheckYourAnswersImportView}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +45,7 @@ class CheckYourAnswersNewHandler @Inject() (
 
   def onPageLoad(declaration: Declaration, isAgent: YesNo)(implicit
     hc: HeaderCarrier,
-    request: DeclarationJourneyRequest[_],
+    request: DeclarationJourneyRequest[?],
     messages: Messages
   ): Future[Result] =
     mibService.paymentCalculations(declaration.declarationGoods.goods, declaration.goodsDestination).map {

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.viewmodels
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases._
+import uk.gov.hmrc.govukfrontend.views.Aliases.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.merchandiseinbaggage.model.api.{ExportGoods, Goods, ImportGoods}
 

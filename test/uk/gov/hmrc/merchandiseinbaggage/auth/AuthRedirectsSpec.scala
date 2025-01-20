@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.auth
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.http.HeaderNames
 import play.api.http.Status.SEE_OTHER
 import play.api.mvc.Result

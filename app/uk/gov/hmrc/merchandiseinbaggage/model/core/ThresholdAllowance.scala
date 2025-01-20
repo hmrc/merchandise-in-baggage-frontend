@@ -17,7 +17,7 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import uk.gov.hmrc.merchandiseinbaggage.model.api.calculation.{CalculationResponse, ThresholdCheck}
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.*
 import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 
 import scala.util.Try
@@ -36,7 +36,7 @@ object ThresholdAllowance {
   private[core] val formatter = "%,.2f"
 
   implicit class ThresholdAllowanceLeft(allowance: ThresholdAllowance) {
-    import allowance._
+    import allowance.*
     def allowanceLeft: Double =
       allGoods.goods.headOption
         .map { g =>

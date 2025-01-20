@@ -40,7 +40,7 @@ class ValueWeightOfGoodsControllerSpec extends DeclarationJourneyControllerSpec 
       view
     )
 
-  declarationTypes.foreach { importOrExport: DeclarationType =>
+  declarationTypes.foreach { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney =
       DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
         .copy(maybeGoodsDestination = Some(GreatBritain))
