@@ -17,15 +17,14 @@
 package uk.gov.hmrc.merchandiseinbaggage.model.core
 
 import play.api.libs.json.Json.{parse, toJson}
-import uk.gov.hmrc.merchandiseinbaggage.model.api.Declaration._
 import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.api.GoodsDestinations.GreatBritain
 import uk.gov.hmrc.merchandiseinbaggage.model.api.YesNo.{No, Yes}
-import uk.gov.hmrc.merchandiseinbaggage.model.api._
+import uk.gov.hmrc.merchandiseinbaggage.model.api.*
 import uk.gov.hmrc.merchandiseinbaggage.model.api.addresslookup.{Address, AddressLookupCountry}
-import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
-import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils._
-import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate._
+import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched.*
+import uk.gov.hmrc.merchandiseinbaggage.utils.DateUtils.*
+import uk.gov.hmrc.merchandiseinbaggage.utils.Obfuscate.*
 import uk.gov.hmrc.merchandiseinbaggage.{BaseSpecWithApplication, CoreTestData}
 
 import java.time.temporal.ChronoUnit

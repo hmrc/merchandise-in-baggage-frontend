@@ -50,7 +50,7 @@ class TestOnlyController @Inject() (
     with Logging {
   private val form = formProvider()
 
-  def isFromAdminDomain()(implicit request: Request[_]): Boolean =
+  def isFromAdminDomain()(implicit request: Request[?]): Boolean =
     request.headers
       .get("x-forwarded-host")
       .exists(host => host.startsWith("admin") || host.startsWith("test-admin"))

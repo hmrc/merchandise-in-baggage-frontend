@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.forms.mappings
 
+import play.api.data.format.Formats.localDateFormat
+import play.api.data.format.Formats.bigDecimalFormat
 import enumeratum.EnumEntry
 import org.scalatest.OptionValues
-import play.api.data.{Form, FormError}
+import play.api.data.{FieldMapping, Form, FormError}
 import uk.gov.hmrc.merchandiseinbaggage.BaseSpec
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.MappingsSpec.Foos.Bar
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Enum
 
+import java.time.LocalDate
 import scala.collection.immutable
 
 object MappingsSpec {
@@ -62,5 +65,12 @@ class MappingsSpec extends BaseSpec with OptionValues with Mappings {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
     }
+  }
+
+  "local date" in {
+    localDate("abc") mustBe FieldMapping[LocalDate]()
+  }
+  "big decimal" in {
+    bigDecimal("a", "b") mustBe FieldMapping[BigDecimal]()
   }
 }

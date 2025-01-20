@@ -51,8 +51,8 @@ class RetrieveDeclarationControllerSpec extends DeclarationJourneyControllerSpec
 
   val journey: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = false)
 
-  //TODO create UI test for content
-  forAll(declarationTypesTable) { importOrExport: DeclarationType =>
+  // TODO create UI test for content
+  forAll(declarationTypesTable) { (importOrExport: DeclarationType) =>
     val journey: DeclarationJourney = DeclarationJourney(aSessionId, importOrExport, isAssistedDigital = false)
     "onPageLoad" should {
       s"return 200 with expected content for $importOrExport" in {
