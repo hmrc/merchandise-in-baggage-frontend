@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
 @import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
-@import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
+@import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 
 @this(layout: Layout, link: components.link, p: components.p)
 
-@()(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
 
-@layout(pageTitle = Some(titleNoForm("pageNotFound.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
+@layout(pageTitle = Some(titleNoForm("pageNotFound.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = false) {
 <h1 class="govuk-heading-xl">@messages("pageNotFound.title")</h1>
 
 @p(Html(messages("pageNotFound.li1")))

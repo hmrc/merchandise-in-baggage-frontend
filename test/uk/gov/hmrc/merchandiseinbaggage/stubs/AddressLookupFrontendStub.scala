@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ object AddressLookupFrontendStub {
         post(urlPathEqualTo("/api/v2/init"))
           .withRequestBody(
             equalToJson(
-              """{"version":2,"options":{"continueUrl":"http://localhost:8281/address-lookup-return"},"labels":{"en":{"appLevelLabels":{"navTitle":"Declare commercial goods carried in accompanied baggage or small vehicles"}},"cy":{"appLevelLabels":{"navTitle":"Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"}}}}""".stripMargin
+              """{"version":2,"options":{"continueUrl":"http://localhost:8281/address-lookup-return"},"labels":{"en":{"appLevelLabels":{"navTitle":"Declare commercial goods carried in accompanied baggage or small vehicles"}},"cy":{"appLevelLabels":{"navTitle":"Datgan nwyddau masnachol a gaiff eu cludo mewn bagiau sy’n dod gyda chi neu gerbydau bach"}}}}""".stripMargin
             )
           )
           .willReturn(aResponse().withStatus(202).withHeader(LOCATION, "/blah"))

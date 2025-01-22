@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,20 +20,21 @@ import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
-import uk.gov.hmrc.merchandiseinbaggage.model.api.{DeclarationType, SessionId}
-import uk.gov.hmrc.merchandiseinbaggage.forms.ImportExportChoiceForm._
-import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
+import uk.gov.hmrc.merchandiseinbaggage.model.api.SessionId
+import uk.gov.hmrc.merchandiseinbaggage.forms.ImportExportChoiceForm.*
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.AddToExisting
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
+import uk.gov.hmrc.merchandiseinbaggage.views.html.PageNotFoundView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ImportExportChoiceController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
-  view: ImportExportChoice,
+  importExportView: ImportExportChoice,
+  pageNotFoundView: PageNotFoundView,
   actionProvider: DeclarationJourneyActionProvider,
   val repo: DeclarationJourneyRepository,
   navigator: Navigator
@@ -42,10 +43,9 @@ class ImportExportChoiceController @Inject() (
 
   val onPageLoad: Action[AnyContent] = actionProvider.initJourneyAction { implicit request =>
     if (!request.isAssistedDigital) {
-      repo.upsert(DeclarationJourney(sessionId = SessionId(request.session(SessionKeys.sessionId)), declarationType = DeclarationType.Import, isAssistedDigital = request.isAssistedDigital))
-      Redirect(routes.PageNotFoundController.onPageLoad)
+      Forbidden(pageNotFoundView())
     } else {
-      Ok(view(form))
+      Ok(importExportView(form))
     }
   }
 
@@ -53,7 +53,7 @@ class ImportExportChoiceController @Inject() (
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors)),
+        formWithErrors => Future successful BadRequest(importExportView(formWithErrors)),
         choice =>
           navigator
             .nextPage(
