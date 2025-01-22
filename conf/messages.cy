@@ -1,4 +1,4 @@
-service.name = Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach
+service.name = Datgan nwyddau masnachol a gaiff eu cludo mewn bagiau sy’n dod gyda chi neu gerbydau bach
 service.homePageUrl = /declare-commercial-goods
 service.name.Import.a.href = https://www.gov.uk/guidance/declare-commercial-goods-youre-bringing-into-great-britain-in-your-accompanied-baggage-or-small-vehicles
 service.name.Export.a.href = https://www.gov.uk/guidance/declare-commercial-goods-youre-taking-out-of-great-britain-in-your-accompanied-baggage-or-small-vehicles
@@ -1106,3 +1106,11 @@ title.september = Medi
 title.october = Hydref
 title.november = Tachwedd
 title.december = Rhagfyr
+
+# Page not found request
+pageNotFound.title = Heb ddod o hyd i’r dudalen
+pageNotFound.li1 = Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+pageNotFound.li2 = Os gwnaethoch ludo’r cyfeiriad, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
+pageNotFound.li3 = Os oeddech chi’n ceisio gwneud datganiad, gallwch wneud un o’r canlynol:
+pageNotFound.Import.restart = datgan nwyddau masnachol yr ydych yn dod â nhw i Brydain Fawr
+pageNotFound.Export.restart = datgan nwyddau masnachol yr ydych yn mynd â nhw allan o Brydain Fawr

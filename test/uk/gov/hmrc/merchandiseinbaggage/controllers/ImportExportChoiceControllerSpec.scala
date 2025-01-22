@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +19,28 @@ package uk.gov.hmrc.merchandiseinbaggage.controllers
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{mock, when}
 import play.api.mvc.Result
-import play.api.test.Helpers._
-import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.*
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.{AddToExisting, MakeExport}
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
-import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
-import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
+import uk.gov.hmrc.merchandiseinbaggage.views.html.{ImportExportChoice, PageNotFoundView}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth.*
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
 
 class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec {
 
-  val view: ImportExportChoice                 = injector.instanceOf[ImportExportChoice]
+  val importExportView: ImportExportChoice     = injector.instanceOf[ImportExportChoice]
+  private val pageNotFoundView                 = app.injector.instanceOf[PageNotFoundView]
   val mockNavigator: Navigator                 = mock(classOf[Navigator])
   val journey: DeclarationJourney              = startedImportJourney.copy(isAssistedDigital = true)
   val controller: ImportExportChoiceController =
     new ImportExportChoiceController(
       controllerComponents,
-      view,
+      importExportView,
+      pageNotFoundView,
       actionBuilder,
       stubRepo(journey),
       mockNavigator
@@ -59,6 +61,24 @@ class ImportExportChoiceControllerSpec extends DeclarationJourneyControllerSpec 
       result must include(messages("importExportChoice.MakeImport"))
       result must include(messages("importExportChoice.MakeExport"))
       result must include(messages("importExportChoice.AddToExisting"))
+    }
+
+    "return 403 page not found" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
+
+      val journey: DeclarationJourney = startedImportJourney.copy(isAssistedDigital = false)
+      val request                     = buildGet(ImportExportChoiceController.onPageLoad.url, aSessionId, journey)
+
+      val eventualResult = controller.onPageLoad(request)
+      val result         = contentAsString(eventualResult)
+
+      status(eventualResult) mustBe FORBIDDEN
+      result must include(messages("pageNotFound.title"))
+      result must include(messages("pageNotFound.li1"))
+      result must include(messages("pageNotFound.li2"))
+      result must include(messages("pageNotFound.li3"))
+      result must include(messages("pageNotFound.Import.restart"))
+      result must include(messages("pageNotFound.Export.restart"))
     }
   }
 

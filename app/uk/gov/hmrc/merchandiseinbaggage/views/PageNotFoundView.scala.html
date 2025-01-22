@@ -15,31 +15,25 @@
  *@
 
 @import uk.gov.hmrc.merchandiseinbaggage.views.html.{Layout, components}
-@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.*
+@import uk.gov.hmrc.merchandiseinbaggage.config.AppConfig
+@import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.auth.AuthRequest
 
-@this(
-layout: Layout,
-formHelper: FormWithCSRF,
-h1: components.h1,
-p: components.p,
-link: components.link,
-button: components.button
-)
+@this(layout: Layout, link: components.link, p: components.p)
 
 @()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
 
+@layout(pageTitle = Some(titleNoForm("pageNotFound.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = false) {
+<h1 class="govuk-heading-xl">@messages("pageNotFound.title")</h1>
 
-@layout(pageTitle = Some(messages("timeOut.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = request.isAssistedDigital) {
+@p(Html(messages("pageNotFound.li1")))
 
-@h1(messages("timeOut.heading"))
-<br>
+@p(Html(messages("pageNotFound.li2")))
 
-@p(Html(messages("timeOut.guidance")), Some("expiredGuidanceId"))
-@p(Html(messages("timeOut.restart.p")), Some("expiredRestartId"))
+@p(Html(messages("pageNotFound.li3")))
 
 <ul class="govuk-list govuk-list--bullet">
-    <li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("timeOut.Import.restart"), attrTarget = true)</li>
-    <li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("timeOut.Export.restart"), attrTarget = true)</li>
+<li id="expiredUlIdOne">@link(StartImportController.onPageLoad.url, messages("pageNotFound.Import.restart"), attrTarget = true)</li>
+<li id="expiredUlIdTwo">@link(StartExportController.onPageLoad.url, messages("pageNotFound.Export.restart"), attrTarget = true)</li>
 </ul>
 }

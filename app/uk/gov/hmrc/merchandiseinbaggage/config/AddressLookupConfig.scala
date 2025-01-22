@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ object AddressLookupConfig {
                   |    },
                   |    "cy": {
                   |      "appLevelLabels": {
-                  |        "navTitle": "Datgan nwyddau masnachol sy’n cael eu cario mewn bagiau neu gerbydau bach"
+                  |        "navTitle": "Datgan nwyddau masnachol a gaiff eu cludo mewn bagiau sy’n dod gyda chi neu gerbydau bach"
                   |      }
                   |    }
                   |  }

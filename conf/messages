@@ -1117,3 +1117,11 @@ title.september = September
 title.october = October
 title.november = November
 title.december = December
+
+# Page not found request
+pageNotFound.title = Page not found
+pageNotFound.li1 = If you typed the web address, check it is correct.
+pageNotFound.li2 = If you pasted the address, check you copied the entire address.
+pageNotFound.li3 = If you were trying to make a declaration you can either:
+pageNotFound.Import.restart = declare commercial goods you are bringing into Great Britain
+pageNotFound.Export.restart = declare commercial goods you are taking out of Great Britain

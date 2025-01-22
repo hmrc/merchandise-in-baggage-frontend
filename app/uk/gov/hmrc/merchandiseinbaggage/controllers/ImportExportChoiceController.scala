@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,15 @@ import uk.gov.hmrc.merchandiseinbaggage.model.core.ImportExportChoices.AddToExis
 import uk.gov.hmrc.merchandiseinbaggage.navigation.ImportExportChoiceRequest
 import uk.gov.hmrc.merchandiseinbaggage.repositories.DeclarationJourneyRepository
 import uk.gov.hmrc.merchandiseinbaggage.views.html.ImportExportChoice
+import uk.gov.hmrc.merchandiseinbaggage.views.html.PageNotFoundView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ImportExportChoiceController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
-  view: ImportExportChoice,
+  importExportView: ImportExportChoice,
+  pageNotFoundView: PageNotFoundView,
   actionProvider: DeclarationJourneyActionProvider,
   val repo: DeclarationJourneyRepository,
   navigator: Navigator
@@ -40,14 +42,18 @@ class ImportExportChoiceController @Inject() (
     extends DeclarationJourneyUpdateController {
 
   val onPageLoad: Action[AnyContent] = actionProvider.initJourneyAction { implicit request =>
-    Ok(view(form))
+    if (!request.isAssistedDigital) {
+      Forbidden(pageNotFoundView())
+    } else {
+      Ok(importExportView(form))
+    }
   }
 
   val onSubmit: Action[AnyContent] = actionProvider.initJourneyAction.async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future successful BadRequest(view(formWithErrors)),
+        formWithErrors => Future successful BadRequest(importExportView(formWithErrors)),
         choice =>
           navigator
             .nextPage(
