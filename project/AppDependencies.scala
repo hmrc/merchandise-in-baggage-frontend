@@ -9,10 +9,10 @@ object AppDependencies {
     "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "12.0.0",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-30"         % "2.6.0",
     "com.beachape"               %% "enumeratum-play"            % "1.8.2",
-    "org.webjars.npm"             % "accessible-autocomplete"    % "3.0.0",
+    "org.webjars.npm"             % "accessible-autocomplete"    % "3.0.1",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.12",
     "org.typelevel"              %% "cats-core"                  % "2.13.0",
-    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.3.0-pekko-1.1.x"
+    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.2-pekko-1.0.x"
   )
 
   private val test: Seq[ModuleID] = Seq(
