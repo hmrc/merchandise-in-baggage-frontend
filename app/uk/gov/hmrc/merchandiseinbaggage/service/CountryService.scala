@@ -268,7 +268,7 @@ object CountryService {
     Country("SE", "title.sweden", "SE", isEu = true, Nil),
     Country("CH", "title.switzerland", "CH", isEu = false, List("Swiss")),
     Country("SY", "title.syria", "SY", isEu = false, Nil),
-    Country("TW", "title.taiwan_province_of_china", "TW", isEu = false, Nil),
+    Country("TW", "title.taiwan", "TW", isEu = false, Nil),
     Country("TJ", "title.tajikistan", "TJ", isEu = false, Nil),
     Country("TZ", "title.tanzania", "TZ", isEu = false, Nil),
     Country("ES1", "title.tenerife", "ES", isEu = false, List("Tennerife")),
