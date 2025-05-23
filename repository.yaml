@@ -1,4 +1,8 @@
+digital-service: MODS / Merchandising Online Declaration Service
+description: This service is for business travellers carrying commercial goods for both import or export. It has two modes; Public Facing and Assisted Digital i.e. Admin which requires stride login.
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
+type: Service
+service-type: Frontend
 test-repositories:
   - merchandise-in-baggage-performance-tests
   - merchandise-in-baggage-ui-tests
