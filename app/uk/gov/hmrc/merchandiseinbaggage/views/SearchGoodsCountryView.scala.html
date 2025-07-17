@@ -31,24 +31,9 @@ button: components.button
 
 @(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
-@scripts = {
-    <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-    <script @{CSPNonce.attr}>
-        var selectElementId = 'country'
-        var submitOnConfirm = false
-        var dataSource = @Html(exportCountriesJson)
-
-        enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm)
-
-        @if(form("country").error.isDefined) {
-            document.getElementById("country").setAttribute("style", "border: 2px solid #d4351c;")
-        }
-    </script>
-}
-
 @layout(
     pageTitle = Some(title(form, s"searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
-    scriptsBlock = Some(scripts),
+    scriptsBlock = None,
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import),
     isAssistedDigital = request.isAssistedDigital

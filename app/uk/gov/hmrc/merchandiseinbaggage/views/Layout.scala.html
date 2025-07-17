@@ -21,13 +21,19 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.*
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.*
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes.*
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteCss
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcAccessibleAutocompleteJavascript
+@import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 
 @this(
     govukLayout: layouts.govukLayout,
     hmrcHead: HmrcHead,
     hmrcInternalHead: HmrcInternalHead,
     hmrcScripts: HmrcScripts,
-    hmrcTimeoutDialog: HmrcTimeoutDialog
+    hmrcTimeoutDialog: HmrcTimeoutDialog,
+    autocompleteCss: HmrcAccessibleAutocompleteCss,
+    autocompleteJavascript: HmrcAccessibleAutocompleteJavascript
 )
 
 @(pageTitle: Option[String] = None,
@@ -62,6 +68,8 @@
                 }];
         </script>
     }
+@autocompleteCss()
+@autocompleteJavascript()
 }
 
 @defaultScripts = {
@@ -77,6 +85,7 @@
         pageTitle = pageTitle,
         headBlock = Some(hmrcInternalHead(headBlock = Some(defaultHead))),
         scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(defaultScripts))),
+        bodyEndBlock = Some(hmrcScripts(Some(autocompleteJavascript()))),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl,
         declarationType = None,
@@ -87,6 +96,7 @@
         pageTitle = pageTitle,
         headBlock = Some(hmrcHead(headBlock = Some(defaultHead))),
         scriptsBlock = Some(hmrcScripts(scriptsBlock = Some(defaultScripts))),
+        bodyEndBlock = Some(hmrcScripts(Some(autocompleteJavascript()))),
         beforeContentBlock = None,
         maybeBackButtonUrl = maybeBackButtonUrl,
         declarationType = maybeDeclarationType,
