@@ -25,6 +25,7 @@ import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.Import
 import uk.gov.hmrc.merchandiseinbaggage.model.core.DeclarationJourney
 import uk.gov.hmrc.merchandiseinbaggage.navigation._
 import uk.gov.hmrc.merchandiseinbaggage.views.html.{EnterEmailView, EnterOptionalEmailView}
+import uk.gov.hmrc.merchandiseinbaggage.wiremock.MockStrideAuth._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -54,6 +55,20 @@ class EnterEmailControllerSpec extends DeclarationJourneyControllerSpec {
       val request        = buildGet(EnterEmailController.onPageLoad.url, aSessionId, journey)
       val eventualResult = controller(journey).onPageLoad()(request)
       val result         = contentAsString(eventualResult)
+
+      status(eventualResult) mustBe OK
+      result must include(messages("enterEmail.title"))
+      result must include(messages("enterEmail.heading"))
+      result must include(messages("enterEmail.email"))
+      result must include(messages("enterEmail.hint"))
+    }
+
+    "return 200 with correct content for admin" in {
+      givenTheUserIsAuthenticatedAndAuthorised()
+      val journeyNew: DeclarationJourney = DeclarationJourney(aSessionId, Import, isAssistedDigital = true)
+      val request                        = buildGet(EnterEmailController.onPageLoad.url, aSessionId, journeyNew)
+      val eventualResult                 = controller(journeyNew).onPageLoad()(request)
+      val result                         = contentAsString(eventualResult)
 
       status(eventualResult) mustBe OK
       result must include(messages("enterEmail.title"))
