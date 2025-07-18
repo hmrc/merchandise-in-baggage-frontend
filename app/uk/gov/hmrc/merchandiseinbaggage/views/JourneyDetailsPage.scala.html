@@ -37,25 +37,9 @@ h1: components.h1)
 
 @(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
-@scripts = {
-    <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-    <script @{CSPNonce.attr}>
-        var selectElementId = 'port'
-        var submitOnConfirm = false
-        var dataSource = @Html( Json.toJson(PortService.getAllPorts.map(_.toAutoCompleteJson)).toString )
-
-       enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm)
-
-        @if(form("port").error.isDefined) {
-            document.getElementById("port").setAttribute("style", "border: 2px solid #d4351c;")
-        }
-    </script>
-}
-
-
 @layout(
     pageTitle = Some(title(form, "journeyDetails.title")),
-    scriptsBlock = Some(scripts),
+    scriptsBlock = None,
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(declarationType),
     isAssistedDigital = request.isAssistedDigital
