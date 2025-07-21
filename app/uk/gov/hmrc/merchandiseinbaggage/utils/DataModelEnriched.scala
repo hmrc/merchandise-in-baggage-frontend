@@ -61,6 +61,24 @@ object DataModelEnriched {
       CalculationRequest(goods, destination)
   }
 
+  implicit class CountryEnriched(country: Country) {
+    import country._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(countryName), "synonyms" -> countrySynonyms)
+  }
+
+  implicit class CurrencyEnriched(currency: Currency) {
+    import currency._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> currencySynonyms)
+  }
+
+  implicit class PortEnriched(port: Port) {
+    import port._
+    def toAutoCompleteJson(implicit messages: Messages): JsObject =
+      Json.obj("code" -> code, "displayName" -> messages(displayName), "synonyms" -> portSynonyms)
+  }
+
   implicit class ConversionRatePeriodEnriched(conversion: ConversionRatePeriod) {
     import conversion._
     def display: String = s"$rate ($currencyCode)"
