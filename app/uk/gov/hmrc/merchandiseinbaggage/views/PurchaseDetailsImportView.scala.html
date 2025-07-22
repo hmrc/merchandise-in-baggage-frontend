@@ -36,24 +36,9 @@ button: components.button
 
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
-@scripts = {
-    <script @{CSPNonce.attr} src="@routes.Assets.versioned("lib/accessible-autocomplete/dist/accessible-autocomplete.min.js")"></script>
-    <script @{CSPNonce.attr}>
-        var selectElementId = 'currency'
-        var submitOnConfirm = false
-        var dataSource = @Html( Json.toJson(CurrencyService.getAllCurrencies.map(_.toAutoCompleteJson)).toString )
-
-        enhanceSelectIntoAutoComplete(selectElementId, dataSource, submitOnConfirm)
-
-        @if(form("currency").error.isDefined) {
-            document.getElementById("currency").setAttribute("style", "border: 2px solid #d4351c;")
-        }
-    </script>
-}
-
 @layout(
     pageTitle = Some(title(form, "purchaseDetails.title")),
-    scriptsBlock = Some(scripts),
+    scriptsBlock = None,
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import),
     isAssistedDigital = request.isAssistedDigital

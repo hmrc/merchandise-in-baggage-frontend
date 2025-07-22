@@ -17,6 +17,8 @@
 @import play.api.i18n._
 @import views.html.helper._
 @import scala.::
+@import uk.gov.hmrc.govukfrontend.views.Implicits.RichSelect
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.accessibleautocomplete.AccessibleAutocomplete
 
 @this(govukSelect: GovukSelect)
 
@@ -52,4 +54,4 @@
     errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
     classes = classes.getOrElse(""),
     attributes = attributes
-))
+).asAccessibleAutocomplete())

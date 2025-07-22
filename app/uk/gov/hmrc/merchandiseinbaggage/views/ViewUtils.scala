@@ -41,9 +41,6 @@ object ViewUtils {
   private def errorPrefix(form: Form[?])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
 
-  def exportCountriesJson(implicit messages: Messages): String =
-    Json.toJson(exportCountries.map(_.toAutoCompleteJson)).toString
-
   lazy val exportCountries: List[Country] =
     CountryService.getAllCountries.filterNot(_.code == "GB")
 
