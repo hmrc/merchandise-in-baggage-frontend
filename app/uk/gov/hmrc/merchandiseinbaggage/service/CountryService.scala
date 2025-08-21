@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Country
 
 object CountryService {
@@ -25,6 +27,21 @@ object CountryService {
   def isValidCountryCode(code: String): Boolean = getCountryByCode(code).isDefined
 
   def getCountryByCode(code: String): Option[Country] = countries.find(_.code == code)
+
+  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] = {
+    countries.map { c =>
+      val canonicalLabel = messages(c.countryName)
+      val searchTerms = (c.countrySynonyms :+ canonicalLabel).mkString(", ")
+      SelectItem(
+        value = Some(c.code),
+        text = canonicalLabel,
+        selected = formValue.contains(c.code),
+        attributes = Map(
+          "data-search" -> searchTerms
+        )
+      )
+    }
+  }
 
   private val countries = List(
     Country("AF", "title.afghanistan", "AF", isEu = false, Nil),

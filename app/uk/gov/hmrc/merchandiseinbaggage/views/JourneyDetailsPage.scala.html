@@ -25,7 +25,7 @@
 @import play.api.libs.json.Json
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationJourneyRequest
-
+@import uk.gov.hmrc.govukfrontend.views.html.components.SelectItem
 @this(
 layout: Layout,
 formHelper: FormWithCSRF,
@@ -37,9 +37,15 @@ h1: components.h1)
 
 @(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
 
+@scripts = {
+<script @{CSPNonce.attr}>
+    document.addEventListener("DOMContentLoaded", initAutocompleteSelects);
+</script>
+}
+
 @layout(
     pageTitle = Some(title(form, "journeyDetails.title")),
-    scriptsBlock = None,
+    scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(declarationType),
     isAssistedDigital = request.isAssistedDigital
@@ -53,11 +59,7 @@ h1: components.h1)
           form = form,
           id = port,
           name = port,
-          items = PortService.getAllPorts.map(c => SelectItem(
-              value = Some(c.code),
-              text = messages(c.displayName),
-              selected = form("port").value.contains(c.code)
-          )),
+          items = PortService.getSelectItems(form("port").value),
           label = messages(s"journeyDetails.port.$declarationType.label"),
           isPageHeading = false,
           hint = Some("journeyDetails.port.hint"),

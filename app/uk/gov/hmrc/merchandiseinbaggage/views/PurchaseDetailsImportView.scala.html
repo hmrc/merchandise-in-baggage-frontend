@@ -23,6 +23,7 @@
 @import uk.gov.hmrc.merchandiseinbaggage.service.CurrencyService
 @import uk.gov.hmrc.merchandiseinbaggage.utils.DataModelEnriched._
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.SelectItem
 
 @this(
 layout: Layout,
@@ -36,9 +37,15 @@ button: components.button
 
 @(form: Form[PurchaseDetailsInput], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
+@scripts = {
+<script @{CSPNonce.attr}>
+    document.addEventListener("DOMContentLoaded", initAutocompleteSelects);
+</script>
+}
+
 @layout(
     pageTitle = Some(title(form, "purchaseDetails.title")),
-    scriptsBlock = None,
+    scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import),
     isAssistedDigital = request.isAssistedDigital
@@ -66,15 +73,12 @@ button: components.button
             form = form,
             id = "currency",
             name = "currency",
-            items = CurrencyService.getAllCurrencies.map(c => SelectItem(
-                value = Some(c.code),
-                text = messages(c.displayName),
-                selected = form("currency").value.contains(c.code)
-            )),
+            items = CurrencyService.getSelectItems(form("currency").value),
             label = messages(s"purchaseDetails.currency.label"),
             isPageHeading = false,
             labelOption = messages("purchaseDetails.currency.option.label")
         )
+
         </div>
 
         <p class="govuk-body">

@@ -16,7 +16,9 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import play.api.i18n.Messages
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Port
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 object PortService {
 
@@ -25,7 +27,21 @@ object PortService {
   def getPortByCode(code: String): Option[Port] = ports.find(c => c.code == code)
 
   def isValidPortCode(code: String): Boolean = getPortByCode(code).isDefined
-
+  
+  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] = {
+    ports.map { p =>
+      val canonicalLabel = messages(p.displayName)
+      val searchTerms = (p.portSynonyms :+ canonicalLabel).mkString(", ")
+      SelectItem(
+        value     = Some(p.code),
+        text      = canonicalLabel,
+        selected  = formValue.contains(p.code),
+        attributes = Map(
+          "data-search" -> searchTerms
+        )
+      )
+    }
+  }
   private val ports = List(
     Port("ABZ", "title.aberdeen_airport", isGB = true, Nil),
     Port("ABD", "title.aberdeen_port", isGB = true, Nil),

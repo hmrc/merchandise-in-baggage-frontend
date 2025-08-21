@@ -24,6 +24,62 @@ $(window).on('load', function () {
     }
 })
 
+function initAutocompleteSelects() {
+  // Find all <select> elements using our autocomplete module
+  document.querySelectorAll("select[data-module='hmrc-accessible-autocomplete']").forEach(select => {
+    const name = select.name;
+    const inputId = name;                      // input id will match the field name
+    const selectId = `${name}-select`;         // hidden select id
+    const label = document.querySelector(`label[for='${select.id || selectId}']`);
+    if (label) label.setAttribute("for", inputId); // attach label to input
+    select.id = selectId;
+    // Build options array including synonyms for search
+    const options = Array.from(select.options).map(o => ({
+      value: o.value,
+      label: o.text,
+      searchText: ((o.dataset.search || "") + " " + o.text).toLowerCase()
+    }));
+    // Helper: find exact match by label or synonyms
+    const findMatch = text => options.find(o =>
+      o.label.toLowerCase() === text.toLowerCase().trim() ||
+      o.searchText.split(/\s+/).some(s => s === text.toLowerCase().trim())
+    );
+    select.style.display = "none";           // hide the original <select>
+    // Create container for autocomplete input
+    const container = document.createElement("div");
+    select.parentNode.insertBefore(container, select);
+    // Remove any previously rendered autocomplete elements
+    select.parentElement.querySelectorAll(".hmrc-accessible-autocomplete, .autocomplete__wrapper")
+      .forEach(el => { if (!container.contains(el)) el.remove(); });
+    // Initialize HMRC Accessible Autocomplete
+    window.HMRCAccessibleAutocomplete({
+      element: container,
+      id: inputId,                           // input id
+      name: "",                              // no name to prevent duplicate submission
+      defaultValue: options.find(o => o.value === select.value)?.label || "",
+      showAllValues: false,
+      autoselect: false,
+      source: (query, populate) =>
+        populate(options.filter(o => o.searchText.includes((query || "").toLowerCase())).map(o => o.label)),
+      onConfirm: label => {
+        const match = label && findMatch(label);
+        select.value = match ? match.value : "";  // update hidden select
+        const input = document.getElementById(inputId);
+        if (match && input) input.value = match.label; // show canonical label
+      }
+    });
+    // Ensure autocomplete input has no name to avoid duplicate submission
+    const input = document.getElementById(inputId);
+    if (input) input.removeAttribute("name");
+    // On form submit: enforce exact match, clear if invalid
+    const form = select.closest("form");
+    if (form) form.addEventListener("submit", () =>
+      select.value = findMatch(input?.value || "")?.value || ""
+    );
+  });
+}
+
+
 function onKeypressButton(e) {
     // Need both, 'keyCode' and 'which' to work in all browsers.
     var code = e.keyCode || e.which,

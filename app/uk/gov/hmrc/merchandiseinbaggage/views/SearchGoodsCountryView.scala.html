@@ -19,6 +19,8 @@
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes._
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType._
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.DeclarationGoodsRequest
+@import uk.gov.hmrc.govukfrontend.views.html.components.SelectItem
+@import uk.gov.hmrc.merchandiseinbaggage.service.CountryService
 
 @this(
 layout: Layout,
@@ -31,9 +33,15 @@ button: components.button
 
 @(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
 
+@scripts = {
+<script @{CSPNonce.attr}>
+    document.addEventListener("DOMContentLoaded", initAutocompleteSelects);
+</script>
+}
+
 @layout(
     pageTitle = Some(title(form, s"searchGoodsCountry.title", titleMessageArgs = Seq(goodsCategory))),
-    scriptsBlock = None,
+    scriptsBlock = Some(scripts),
     maybeBackButtonUrl = Some(backButtonUrl),
     maybeDeclarationType = Some(Import),
     isAssistedDigital = request.isAssistedDigital
@@ -46,11 +54,7 @@ button: components.button
             form = form,
             id = "country",
             name = "country",
-            items = exportCountries.map(c => SelectItem(
-                value = Some(c.code),
-                text = messages(c.countryName),
-                selected = form("country").value.contains(c.code)
-            )),
+            items = CountryService.getSelectItems(form("country").value),
             label = messages(s"searchGoodsCountry.heading", goodsCategory),
             isPageHeading = true,
             labelOption = messages("searchGoodsCountry.option.label")
