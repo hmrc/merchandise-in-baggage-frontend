@@ -27,22 +27,21 @@ object PortService {
   def getPortByCode(code: String): Option[Port] = ports.find(c => c.code == code)
 
   def isValidPortCode(code: String): Boolean = getPortByCode(code).isDefined
-  
-  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] = {
+
+  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] =
     ports.map { p =>
       val canonicalLabel = messages(p.displayName)
-      val searchTerms = (p.portSynonyms :+ canonicalLabel).mkString(", ")
+      val searchTerms    = (p.portSynonyms :+ canonicalLabel).mkString(", ")
       SelectItem(
-        value     = Some(p.code),
-        text      = canonicalLabel,
-        selected  = formValue.contains(p.code),
+        value = Some(p.code),
+        text = canonicalLabel,
+        selected = formValue.contains(p.code),
         attributes = Map(
           "data-search" -> searchTerms
         )
       )
     }
-  }
-  private val ports = List(
+  private val ports                                                                                  = List(
     Port("ABZ", "title.aberdeen_airport", isGB = true, Nil),
     Port("ABD", "title.aberdeen_port", isGB = true, Nil),
     Port("AFK", "title.ashford", isGB = true, Nil),

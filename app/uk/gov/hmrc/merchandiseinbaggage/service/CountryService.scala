@@ -28,20 +28,19 @@ object CountryService {
 
   def getCountryByCode(code: String): Option[Country] = countries.find(_.code == code)
 
-  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] = {
-    countries.map { c =>
-      val canonicalLabel = messages(c.countryName)
-      val searchTerms = (c.countrySynonyms :+ canonicalLabel).mkString(", ")
-      SelectItem(
-        value = Some(c.code),
-        text = canonicalLabel,
-        selected = formValue.contains(c.code),
-        attributes = Map(
-          "data-search" -> searchTerms
+  def getExportSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] =
+    getAllCountries
+      .filterNot(_.code == "GB")
+      .map { c =>
+        val canonicalLabel = messages(c.countryName)
+        val searchTerms    = (c.countrySynonyms :+ canonicalLabel).mkString(", ")
+        SelectItem(
+          value = Some(c.code),
+          text = canonicalLabel,
+          selected = formValue.contains(c.code),
+          attributes = Map("data-search" -> searchTerms)
         )
-      )
-    }
-  }
+      }
 
   private val countries = List(
     Country("AF", "title.afghanistan", "AF", isEu = false, Nil),

@@ -54,7 +54,7 @@ button: components.button
             form = form,
             id = "country",
             name = "country",
-            items = CountryService.getSelectItems(form("country").value),
+            items = CountryService.getExportSelectItems(form("country").value),
             label = messages(s"searchGoodsCountry.heading", goodsCategory),
             isPageHeading = true,
             labelOption = messages("searchGoodsCountry.option.label")

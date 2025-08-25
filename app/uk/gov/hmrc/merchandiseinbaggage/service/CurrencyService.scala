@@ -26,10 +26,10 @@ object CurrencyService {
 
   def getCurrencyByCode(code: String): Option[Currency] = currencies.find(c => c.code == code)
 
-  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] = {
+  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] =
     currencies.map { c =>
       val canonicalLabel = messages(c.displayName)
-      val searchTerms = (c.currencySynonyms :+ canonicalLabel).mkString(", ")
+      val searchTerms    = (c.currencySynonyms :+ canonicalLabel).mkString(", ")
       SelectItem(
         value = Some(c.code),
         text = canonicalLabel,
@@ -39,8 +39,7 @@ object CurrencyService {
         )
       )
     }
-  }
-  
+
   private val currencies: List[Currency] = List(
     Currency(
       "AED",
