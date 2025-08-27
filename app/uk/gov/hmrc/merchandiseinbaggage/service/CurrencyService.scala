@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.merchandiseinbaggage.service
 
+import play.api.i18n.Messages
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Currency
 
 object CurrencyService {
@@ -23,6 +25,20 @@ object CurrencyService {
   def getAllCurrencies: List[Currency] = currencies
 
   def getCurrencyByCode(code: String): Option[Currency] = currencies.find(c => c.code == code)
+
+  def getSelectItems(formValue: Option[String] = None)(implicit messages: Messages): Seq[SelectItem] =
+    currencies.map { c =>
+      val canonicalLabel = messages(c.displayName)
+      val searchTerms    = (c.currencySynonyms :+ canonicalLabel).mkString(", ")
+      SelectItem(
+        value = Some(c.code),
+        text = canonicalLabel,
+        selected = formValue.contains(c.code),
+        attributes = Map(
+          "data-search" -> searchTerms
+        )
+      )
+    }
 
   private val currencies: List[Currency] = List(
     Currency(
