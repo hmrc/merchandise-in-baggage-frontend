@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.header.Header
 @import uk.gov.hmrc.hmrcfrontend.views.html.components.*
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.*
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.reporttechnicalissue.ReportTechnicalIssue
@@ -22,10 +21,11 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.*
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 
 @this(
         govukTemplate: GovukTemplate,
-        govukHeader: GovukHeader,
+        govukHeader: HmrcStandardHeader,
         hmrcInternalHeader: HmrcInternalHeader,
         govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
@@ -45,7 +45,7 @@
   maybeBackButtonUrl: Option[play.api.mvc.Call],
   declarationType: Option[DeclarationType],
   isAssistedDigital: Boolean
-)(contentBlock: Html)(implicit messages: Messages, request: RequestHeader)
+)(contentBlock: Html)(implicit messages: Messages, request: RequestHeader, appConfig: AppConfig)
 
 @headerDefault = {
     @if(isAssistedDigital) {
@@ -55,20 +55,17 @@
             serviceUrl = routes.ImportExportChoiceController.onPageLoad.url
         ))
     } else {
-        @headerBlock.getOrElse {
-        @govukHeader(Header(
-        homepageUrl = Some(messages("service.name.govuk.a.href")),
-        serviceUrl =  Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href")),
-        serviceName = Some(messages("service.name")),
-        attributes = Map(),
-        containerClasses = None))
-            }
-        }
+        @govukHeader(
+            serviceUrl =  Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href")),
+            serviceName = Some(messages("service.name")),
+            isWelshTranslationAvailable = if (appConfig.forceNavigation) true else false,
+        )
+    }
 }
 
 @beforeContentDefault = {
 
-@if(!isAssistedDigital) {
+@if(!isAssistedDigital && appConfig.forceNavigation) {
     @hmrcLanguageSelectHelper()
 }
 
