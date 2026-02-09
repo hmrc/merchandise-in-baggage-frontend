@@ -63,6 +63,9 @@ class AppConfig @Inject() (
   lazy val merchandiseInBaggageUrl: String  = servicesConfig.baseUrl("merchandise-in-baggage")
   lazy val addressLookupFrontendUrl: String = servicesConfig.baseUrl("address-lookup-frontend")
 
+  lazy val forceNavigation: Boolean =
+    config.getOptional[Boolean]("play-frontend-hmrc.forceServiceNavigation").getOrElse(false)
+
   def addressLookupCallbackUrl(isAssistedDigital: Boolean): String =
     if (isAssistedDigital) {
       config.get[String]("microservice.services.address-lookup-frontend.adminCallback")

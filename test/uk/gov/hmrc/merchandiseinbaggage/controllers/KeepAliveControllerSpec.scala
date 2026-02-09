@@ -71,7 +71,7 @@ class KeepAliveControllerSpec extends DeclarationJourneyControllerSpec with Core
       result must include(messages(s"timeOut.guidance"))
       result must include(messages(s"timeOut.restart.p"))
 
-      result must include(s"""href="https://www.gov.uk/" class="govuk-header__link""") // note: footer also has gov.uk
+      result must include(s"""href="https://www.gov.uk" class="govuk-header__link""") // note: footer also has gov.uk
     }
   }
 }
