@@ -6,13 +6,15 @@ object AppDependencies {
 
   private val compile: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                %% "bootstrap-frontend-play-30" % bootstrapVersion,
-    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "12.32.0",
+    "uk.gov.hmrc"                %% "play-frontend-hmrc-play-30" % "12.32.1",
     "uk.gov.hmrc.mongo"          %% "hmrc-mongo-play-30"         % "2.12.0",
-    "com.beachape"               %% "enumeratum-play"            % "1.9.6",
+    "com.beachape"               %% "enumeratum-play"            % "1.9.7",
     "org.webjars.npm"             % "accessible-autocomplete"    % "3.0.1",
     "com.softwaremill.quicklens" %% "quicklens"                  % "1.9.12",
     "org.typelevel"              %% "cats-core"                  % "2.13.0",
-    "io.github.samueleresca"     %% "pekko-quartz-scheduler"     % "1.2.2-pekko-1.0.x"
+    ("io.github.samueleresca"    %% "pekko-quartz-scheduler"     % "1.2.2-pekko-1.0.x")
+      .exclude("com.mchange", "c3p0")
+      .exclude("com.mchange", "mchange-commons-java")
   )
 
   private val test: Seq[ModuleID] = Seq(
