@@ -29,7 +29,7 @@
 
 @this(layout: Layout, formHelper: FormWithCSRF, link: link)
 
-@(declaration: Declaration, journeyType: JourneyType, totalTaxDue: AmountInPence)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(declaration: Declaration, journeyType: JourneyType, totalTaxDue: AmountInPence)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @printLink = {
  <script @{CSPNonce.attr}>

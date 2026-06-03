@@ -32,7 +32,7 @@ button: components.button,
 details: components.details
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[?], messages: Messages, appConfig: AppConfig)
 
 @inset = @{
   HtmlContent(s"""${messages("goodsOrigin.inset")} <span class="govuk-!-font-weight-bold">$goodsCategory</span>""")

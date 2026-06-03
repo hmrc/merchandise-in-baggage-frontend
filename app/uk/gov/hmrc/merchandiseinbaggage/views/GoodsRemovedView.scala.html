@@ -25,7 +25,7 @@ h1: components.h1,
 p: components.p
 )
 
-@(startAgainUrl: String, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(startAgainUrl: String, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm("goodsRemoved.title")), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1("goodsRemoved.heading")

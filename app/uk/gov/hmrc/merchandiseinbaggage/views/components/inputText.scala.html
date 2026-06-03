@@ -17,7 +17,7 @@
 @this(govukInput: GovukInput)
 
 @(
-        form: Form[_],
+        form: Form[?],
         id: String,
         name: String,
         label: String,
@@ -37,7 +37,7 @@
     attributes = attributes,
     classes = classes.fold("")(x => x),
     label = Label(
-        content = Text(messages(label, headingMessageArgs:_*)),
+        content = Text(messages(label, headingMessageArgs*)),
         isPageHeading = isPageHeading,
         classes = labelClasses.getOrElse(if(isPageHeading) "govuk-label--xl" else "")
     ),
@@ -46,5 +46,5 @@
     )),
     value = form(name).value,
     inputType = inputType,
-    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*))))
 ))

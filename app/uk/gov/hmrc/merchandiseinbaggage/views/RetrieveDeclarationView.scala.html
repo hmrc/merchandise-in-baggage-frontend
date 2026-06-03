@@ -29,7 +29,7 @@
     p: components.p
 )
 
-@(form: Form[_], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"retrieveDeclaration.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = RetrieveDeclarationController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

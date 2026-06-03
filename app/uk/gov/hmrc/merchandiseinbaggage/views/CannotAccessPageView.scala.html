@@ -21,7 +21,7 @@
 
 @this(layout: Layout, link: components.link, p: components.p)
 
-@()(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm("invalidRequest.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
   <h1 class="govuk-heading-xl">@messages("invalidRequest.title")</h1>

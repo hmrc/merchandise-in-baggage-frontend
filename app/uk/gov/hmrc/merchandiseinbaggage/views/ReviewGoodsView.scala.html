@@ -34,7 +34,7 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], allowance: ThresholdAllowance, backButtonUrl: Call, declarationType: DeclarationType, journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], allowance: ThresholdAllowance, backButtonUrl: Call, declarationType: DeclarationType, journeyType: JourneyType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"reviewGoods.$journeyType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = ReviewGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

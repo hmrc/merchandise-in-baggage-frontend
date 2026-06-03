@@ -27,7 +27,7 @@ p: components.p,
 link: components.link
 )
 
-@(declarationType: DeclarationType, goodsDestination: GoodsDestination, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(declarationType: DeclarationType, goodsDestination: GoodsDestination, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm(s"cannotUseService.$declarationType.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1(s"cannotUseService.$declarationType.heading")

@@ -28,7 +28,7 @@ button: components.button
 )
 
 
-@()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: AuthRequest[?], messages: Messages, appConfig: AppConfig)
 
 
 @layout(pageTitle = Some(messages("progressDeleted.title")),  maybeBackButtonUrl = None, maybeDeclarationType = None, timeOut = false, isAssistedDigital = request.isAssistedDigital) {

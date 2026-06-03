@@ -32,7 +32,7 @@ inputRadio: components.inputRadio,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], idx: Int, goodsCategory: String, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, "goodsVatRate.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = GoodsVatRateController.onSubmit(idx), Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

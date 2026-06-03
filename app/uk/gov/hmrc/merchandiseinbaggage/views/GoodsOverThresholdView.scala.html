@@ -30,7 +30,7 @@
     p: components.p
 )
 
-@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(dest: GoodsDestination, totalValue: AmountInPence, rates: Seq[ConversionRatePeriod], declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm(s"goodsOverThreshold.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = None, maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @h1(messages(s"goodsOverThreshold.${dest.toString}.heading", dest.threshold.formattedInPounds))

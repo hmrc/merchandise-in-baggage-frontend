@@ -29,7 +29,7 @@ text: components.inputText,
 h1: components.h1,
 p: components.p)
 
-@(form: Form[_], idx: Int, declarationType: DeclarationType, journeyType: JourneyType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], idx: Int, declarationType: DeclarationType, journeyType: JourneyType, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, if(idx == 1) s"goodsType.$journeyType.title" else s"goodsType.$journeyType.next.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
 

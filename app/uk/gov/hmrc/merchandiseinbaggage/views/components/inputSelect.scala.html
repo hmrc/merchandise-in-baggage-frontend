@@ -22,7 +22,7 @@
 @this(govukSelect: GovukSelect)
 
 @(
-        form: Form[_],
+        form: Form[?],
         id: String,
         name: String,
         items: Seq[SelectItem],
@@ -43,14 +43,14 @@
         SelectItem(disabled = true, selected = true, attributes = Map("label" -> labelOption))
     ) ++ items,
     label = Label(
-        content = Text(messages(label, headingMessageArgs:_*)),
+        content = Text(messages(label, headingMessageArgs*)),
         isPageHeading = isPageHeading,
         classes = labelClasses.getOrElse(if(isPageHeading) "govuk-label--xl" else "")
     ),
     hint = hint.map(hintKey => Hint(
         content = HtmlContent(messages(hintKey))
     )),
-    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*)))),
+    errorMessage = form(name).error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*)))),
     classes = classes.getOrElse(""),
     attributes = attributes ++ Map("data-module" -> "hmrc-accessible-autocomplete")
 ).asAccessibleAutocomplete())

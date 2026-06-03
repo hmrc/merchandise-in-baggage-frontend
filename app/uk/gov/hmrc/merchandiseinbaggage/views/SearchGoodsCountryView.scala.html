@@ -31,7 +31,7 @@ inputSelect: components.inputSelect,
 button: components.button
 )
 
-@(form: Form[_], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], idx: Int, goodsCategory: String, backButtonUrl: Call)(implicit request: DeclarationGoodsRequest[?], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
 <script @{CSPNonce.attr}>
