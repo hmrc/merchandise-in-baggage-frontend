@@ -1,7 +1,7 @@
 $govuk-assets-path: "/declare-commercial-goods/assets/lib/govuk-frontend/dist/govuk/assets/";
 $hmrc-assets-path: "/declare-commercial-goods/assets/lib/hmrc-frontend/hmrc/";
 
-@import "lib/govuk-frontend/dist/govuk/all";
+@import "lib/govuk-frontend/dist/govuk/index";
 @import "lib/hmrc-frontend/hmrc/all";
 
 .govuk-fieldset__legend--xl {

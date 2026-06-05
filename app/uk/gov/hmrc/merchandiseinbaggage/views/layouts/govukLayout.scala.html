@@ -22,15 +22,13 @@
 @import uk.gov.hmrc.merchandiseinbaggage.model.api.DeclarationType.*
 @import uk.gov.hmrc.merchandiseinbaggage.controllers.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichServiceNavigation
 
 @this(
         govukTemplate: GovukTemplate,
         govukHeader: HmrcStandardHeader,
         hmrcInternalHeader: HmrcInternalHeader,
-        govukFooter: GovukFooter,
         govukBackLink: GovukBackLink,
-        hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-govukServiceNavigation : GovukServiceNavigation,
         hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
         hmrcStandardFooter: HmrcStandardFooter,
         govukSkipLink: GovukSkipLink
@@ -59,16 +57,16 @@ govukServiceNavigation : GovukServiceNavigation,
         @govukHeader(
             serviceUrl =  Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href")),
             serviceName = Some(messages("service.name")),
-            isWelshTranslationAvailable = if (appConfig.forceNavigation) true else false,
+            isWelshTranslationAvailable = true,
+            serviceNavigation = Some(ServiceNavigation(
+                serviceName = Some(messages("service.name")),
+                serviceUrl = Some(messages( s"service.name.${declarationType.fold("govuk")(_.entryName)}.a.href"))
+            ).withLanguageToggle()),
         )
     }
 }
 
 @beforeContentDefault = {
-
-@if(!isAssistedDigital && appConfig.forceNavigation) {
-    @hmrcLanguageSelectHelper()
-}
 
 @{
     maybeBackButtonUrl.fold(Html("")) { call =>
