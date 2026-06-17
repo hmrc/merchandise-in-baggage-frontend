@@ -21,6 +21,7 @@ import play.api.data.Forms.*
 import play.api.data.validation.{Constraint, Invalid, Valid}
 import uk.gov.hmrc.merchandiseinbaggage.forms.mappings.Mappings
 import uk.gov.hmrc.merchandiseinbaggage.model.api.Name
+import play.api.data.validation.Constraints._
 
 object TravellerDetailsForm extends Mappings {
   val firstName = "firstName"
@@ -40,9 +41,11 @@ object TravellerDetailsForm extends Mappings {
     mapping(
       firstName ->
         text("travellerDetails.firstName.error.required")
+          .verifying(maxLength(35, "travellerDetails.firstName.error.maxLength"))
           .verifying(isValidName("travellerDetails.firstName.error.invalid")),
       lastName  ->
         text("travellerDetails.lastName.error.required")
+          .verifying(maxLength(35, "travellerDetails.lastName.error.maxLength"))
           .verifying(isValidName("travellerDetails.lastName.error.invalid"))
     )(Name.apply)(o => Some(Tuple.fromProductTyped(o)))
   )

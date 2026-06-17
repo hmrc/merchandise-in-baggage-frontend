@@ -315,8 +315,10 @@ travellerDetails.firstName = Enw cyntaf
 travellerDetails.lastName = Enw olaf
 travellerDetails.firstName.error.required = Nodwch enw cyntaf y person sy’n cludo’r nwyddau
 travellerDetails.firstName.error.invalid = Mae’n rhaid i’r enw cyntaf gynnwys y llythrennau a i z, collnodau, cysylltnodau neu fylchau yn unig
+travellerDetails.firstName.error.maxLength = Mae’n rhaid i’r enw cyntaf fod yn 35 cymeriad neu lai
 travellerDetails.lastName.error.required = Nodwch enw olaf y person sy’n cludo’r nwyddau
 travellerDetails.lastName.error.invalid = Mae’n rhaid i’r enw olaf gynnwys y llythrennau a i z, collnodau, cysylltnodau neu fylchau yn unig
+travellerDetails.lastName.error.maxLength = Mae’n rhaid i’r enw olaf fod yn 35 cymeriad neu lai
 
 
 # EnterEmail
