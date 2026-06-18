@@ -30,7 +30,7 @@ hint: components.hint,
 text: components.inputText,
 h1: components.h1)
 
-@(form: Form[Name], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Name], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, "travellerDetails.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
   @formHelper(action = TravellerDetailsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

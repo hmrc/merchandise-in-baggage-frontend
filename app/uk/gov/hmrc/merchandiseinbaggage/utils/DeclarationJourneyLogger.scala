@@ -51,7 +51,7 @@ object DeclarationJourneyLogger {
 
   private def sessionId(implicit r: RequestHeader): String = {
     val hc = r match {
-      case r: Request[_] => headerCarrier(r)
+      case r: Request[?] => headerCarrier(r)
       case r             => HeaderCarrierConverter.fromRequest(r)
     }
     s"sessionId: [${hc.sessionId.map(_.value).getOrElse("")}]"
@@ -66,7 +66,7 @@ object DeclarationJourneyLogger {
     s"declarationJourney: [${prettyPrint(toJson(declarationJourneyRequest.declarationJourney.obfuscated))}]"
 
   private def makeRichMessage(message: String)(implicit request: RequestHeader): String = request match {
-    case declarationJourneyRequest: DeclarationJourneyRequest[_] =>
+    case declarationJourneyRequest: DeclarationJourneyRequest[?] =>
       s"$message ${obfuscatedDeclarationJourney(declarationJourneyRequest)} $context"
     case _                                                       =>
       s"$message declarationJourney: [] $context"

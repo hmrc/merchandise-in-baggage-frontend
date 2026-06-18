@@ -28,7 +28,7 @@ text: components.inputText,
 button: components.button
 )
 
-@(form: Form[_], isAgent: YesNo, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], isAgent: YesNo, backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 

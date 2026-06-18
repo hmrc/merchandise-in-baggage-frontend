@@ -18,7 +18,7 @@
 
 @this(govukRadios: GovukRadios)
 
-@(      form: Form[_],
+@(      form: Form[?],
         legend: String,
         items: Seq[RadioItem],
         legendAsHeading: Boolean = true,
@@ -43,5 +43,5 @@
         classes = hintClasses
     )},
     items = items,
-    errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args:_*))))
+    errorMessage = form("value").error.map(err => ErrorMessage(content = Text(messages(err.message, err.args*))))
 ))

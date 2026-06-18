@@ -21,7 +21,7 @@
 
 @this(layout: Layout, link: components.link, p: components.p)
 
-@()(implicit request: AuthRequest[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: AuthRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm("pageNotFound.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = false) {
 <h1 class="govuk-heading-xl">@messages("pageNotFound.title")</h1>

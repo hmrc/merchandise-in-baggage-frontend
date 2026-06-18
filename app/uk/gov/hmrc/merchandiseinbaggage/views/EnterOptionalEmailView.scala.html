@@ -29,7 +29,7 @@ button: components.button,
 text: components.inputText,
 h1: components.h1)
 
-@(form: Form[Option[Email]], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[Option[Email]], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @notMatching = @{
 if(form.errors.find(_.message == "enterEmail.error.notMatching").isDefined) Some("confirmation")

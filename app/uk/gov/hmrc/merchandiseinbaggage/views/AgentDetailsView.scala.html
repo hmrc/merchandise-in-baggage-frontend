@@ -27,7 +27,7 @@ errorSummary: components.errorSummary,
 button: components.button,
 text: components.inputText)
 
-@(form: Form[_], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], backButtonUrl: Call, declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, "agentDetails.title")), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
 

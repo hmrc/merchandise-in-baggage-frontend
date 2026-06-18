@@ -29,7 +29,7 @@ table: GovukTable,
 button: components.button
 )
 
-@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(calculationResults: CalculationResults, next: Call, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @title = @{
  if(calculationResults.isNothingToPay)

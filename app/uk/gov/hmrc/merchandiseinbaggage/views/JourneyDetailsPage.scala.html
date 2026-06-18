@@ -35,7 +35,7 @@ inputSelect: components.inputSelect,
 date: components.inputDate,
 h1: components.h1)
 
-@(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[JourneyDetailsEntry], declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @scripts = {
 <script @{CSPNonce.attr}>

@@ -28,7 +28,7 @@ inputRadio: components.inputRadio,
 button: components.button
 )
 
-@(form: Form[_], declarationType: DeclarationType, backLink: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], declarationType: DeclarationType, backLink: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"goodsDestination.$declarationType.title")), maybeBackButtonUrl = Some(backLink), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = GoodsDestinationController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

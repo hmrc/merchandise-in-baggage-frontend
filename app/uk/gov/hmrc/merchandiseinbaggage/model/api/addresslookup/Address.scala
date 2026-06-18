@@ -20,12 +20,12 @@ import play.api.libs.json.{Json, OFormat}
 
 case class Address(lines: Seq[String], postcode: Option[String], country: AddressLookupCountry)
 
-object AddressLookupCountry {
-  implicit val formatAddressLookupCountry: OFormat[AddressLookupCountry] = Json.format[AddressLookupCountry]
-}
-
 object Address {
   implicit val formatAddress: OFormat[Address] = Json.format[Address]
 }
 
 case class AddressLookupCountry(code: String, name: Option[String])
+
+object AddressLookupCountry {
+  implicit val formatAddressLookupCountry: OFormat[AddressLookupCountry] = Json.format[AddressLookupCountry]
+}

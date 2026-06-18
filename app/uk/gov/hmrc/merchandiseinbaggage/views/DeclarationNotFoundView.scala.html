@@ -27,7 +27,7 @@
         link: components.link
 )
 
-@(declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(declarationType: DeclarationType)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(titleNoForm("declarationNotFound.title")), maybeBackButtonUrl = Some(RetrieveDeclarationController.onPageLoad), maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
 

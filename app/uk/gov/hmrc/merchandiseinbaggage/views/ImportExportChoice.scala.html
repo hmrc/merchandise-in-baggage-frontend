@@ -28,7 +28,7 @@
     button: components.button
 )
 
-@(form: Form[_])(implicit request: AuthRequest[_], messages: Messages, appConf: AppConfig)
+@(form: Form[?])(implicit request: AuthRequest[?], messages: Messages, appConf: AppConfig)
 
 @layout(pageTitle = Some(title(form, "importExportChoice.title")), maybeBackButtonUrl = None, maybeDeclarationType = None, isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = ImportExportChoiceController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {

@@ -26,7 +26,7 @@
 
 @this(layout: Layout, govukWarningText: GovukWarningText, formHelper: FormWithCSRF, errorSummary: components.errorSummary, summaryList: includes.goodsSummary, button: components.button)
 
-@(form: Form[_], amendment: Amendment, calculationResults: CalculationResults, outstandingBalance: AmountInPence, isAgent: YesNo)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], amendment: Amendment, calculationResults: CalculationResults, outstandingBalance: AmountInPence, isAgent: YesNo)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @agentOrTrader = @{if(YesNo.to(isAgent)) "agent" else "trader"}
 

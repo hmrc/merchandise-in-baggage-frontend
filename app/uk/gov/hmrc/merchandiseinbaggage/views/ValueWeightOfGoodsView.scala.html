@@ -30,7 +30,7 @@ inputYesNo: components.inputYesNo,
 button: components.button
 )
 
-@(form: Form[_], dest: GoodsDestination, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[_], messages: Messages, appConfig: AppConfig)
+@(form: Form[?], dest: GoodsDestination, declarationType: DeclarationType, backButtonUrl: Call)(implicit request: DeclarationJourneyRequest[?], messages: Messages, appConfig: AppConfig)
 
 @layout(pageTitle = Some(title(form, s"valueWeightOfGoods.${dest.toString}.title", titleMessageArgs = Seq(dest.threshold.formattedInPounds))), maybeBackButtonUrl = Some(backButtonUrl), maybeDeclarationType = Some(declarationType), isAssistedDigital = request.isAssistedDigital) {
     @formHelper(action = ValueWeightOfGoodsController.onSubmit, Symbol("autoComplete") -> "off", Symbol("novalidate") -> "novalidate") {
