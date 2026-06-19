@@ -26,10 +26,9 @@ class TravellerDetailsFormSpec extends FieldBehaviours {
     Set("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "!", ".", ",", "$")
 
   firstName must {
-    val requiredMessageKey = "travellerDetails.firstName.error.required"
-    val invalidMessageKey = "travellerDetails.firstName.error.invalid"
+    val requiredMessageKey  = "travellerDetails.firstName.error.required"
+    val invalidMessageKey   = "travellerDetails.firstName.error.invalid"
     val maxLengthMessageKey = "travellerDetails.firstName.error.maxLength"
-
 
     behave like mandatoryField(form, firstName, FormError(firstName, requiredMessageKey))
 
@@ -42,7 +41,7 @@ class TravellerDetailsFormSpec extends FieldBehaviours {
       }
     }
     "not allow more than 35 characters" in {
-      val validName = "a" * 35
+      val validName   = "a" * 35
       val invalidName = "a" * 36
       form.bind(Map(firstName -> validName, lastName -> nameMatchingRegex)).errors mustBe Seq.empty
       form.bind(Map(firstName -> invalidName, lastName -> nameMatchingRegex)).errors mustBe
@@ -51,8 +50,8 @@ class TravellerDetailsFormSpec extends FieldBehaviours {
   }
 
   lastName must {
-    val requiredMessageKey = "travellerDetails.lastName.error.required"
-    val invalidMessageKey = "travellerDetails.lastName.error.invalid"
+    val requiredMessageKey  = "travellerDetails.lastName.error.required"
+    val invalidMessageKey   = "travellerDetails.lastName.error.invalid"
     val maxLengthMessageKey = "travellerDetails.lastName.error.maxLength"
 
     behave like mandatoryField(form, lastName, FormError(lastName, requiredMessageKey))
@@ -67,7 +66,7 @@ class TravellerDetailsFormSpec extends FieldBehaviours {
     }
     "not allow more than 35 characters" in {
 
-      val validName = "a" * 35
+      val validName   = "a" * 35
       val invalidName = "a" * 36
       form.bind(Map(firstName -> nameMatchingRegex, lastName -> validName)).errors mustBe Seq.empty
       form.bind(Map(firstName -> nameMatchingRegex, lastName -> invalidName)).errors mustBe
