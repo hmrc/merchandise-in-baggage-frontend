@@ -12,7 +12,7 @@ feedback.link = adborth
 feedback.after = yn ein helpu i’w wella.
 
 error.browser.title.prefix = Gwall:
-error.summary.title = Mae problem wedi codi
+error.summary.title = Mae problem
 error.max.3.decimals = Nodwch rif yn y fformat cywir, er enghraifft, 25.60
 error.must.be.positive = Nodwch swm sy’n fwy na 0
 error.nonNumeric = Please enter a number
