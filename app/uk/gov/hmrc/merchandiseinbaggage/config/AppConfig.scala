@@ -49,7 +49,7 @@ class AppConfig @Inject() (
 
   val feedbackUrl: String = {
     val url = config.get[String]("microservice.services.feedback-frontend.url")
-    s"$url/$serviceIdentifier"
+    s"$url/$serviceIdentifier?useServiceNavigation"
   }
 
   private lazy val mibBaseUrl: String                   = "/declare-commercial-goods"

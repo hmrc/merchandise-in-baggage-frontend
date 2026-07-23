@@ -29,7 +29,7 @@ class FeedbackSurveyControllerSpec extends DeclarationJourneyControllerSpec {
       val eventualResult = controller.startSurvey()(request)
 
       status(eventualResult) mustBe SEE_OTHER
-      redirectLocation(eventualResult) mustBe Some("http://localhost:9514/feedback/mib")
+      redirectLocation(eventualResult) mustBe Some("http://localhost:9514/feedback/mib?useServiceNavigation")
     }
   }
 }
