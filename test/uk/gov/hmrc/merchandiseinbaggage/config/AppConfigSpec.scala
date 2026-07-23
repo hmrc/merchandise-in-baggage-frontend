@@ -47,7 +47,7 @@ class AppConfigSpec extends BaseSpecWithApplication {
 
       appConfig.mongoTTL mustBe 3600
 
-      appConfig.feedbackUrl mustBe "http://localhost:9514/feedback?useServiceNavigation/mib"
+      appConfig.feedbackUrl mustBe "http://localhost:9514/feedback/mib?useServiceNavigation"
 
       appConfig.mibDeclarationsUrl mustBe "/declare-commercial-goods/declarations"
       appConfig.mibCalculationsUrl mustBe "/declare-commercial-goods/calculations"
