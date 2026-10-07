@@ -3,6 +3,7 @@ description: This service is for business travellers carrying commercial goods f
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
 type: Service
 service-type: Frontend
+serviceNowMapping: SNSVC0005680
 test-repositories:
   - merchandise-in-baggage-performance-tests
   - merchandise-in-baggage-ui-tests
