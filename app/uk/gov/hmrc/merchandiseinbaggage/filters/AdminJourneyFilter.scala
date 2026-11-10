@@ -38,7 +38,7 @@ class AdminJourneyFilter @Inject() (
         rh.withHeaders(headers)
       }
       logger.info(
-        "[AdminJourneyFilter][apply] Request modified to add header 'x-forwarded-host: admin.tax.service.gov.uk' for testing purposes."
+        "Request modified to add header 'x-forwarded-host: admin.tax.service.gov.uk' for testing purposes."
       )
       f(rhWithAdminHeader)
     } else {

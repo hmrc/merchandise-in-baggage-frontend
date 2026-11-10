@@ -104,7 +104,7 @@ class MibService @Inject() (mibConnector: MibConnector)(implicit ec: ExecutionCo
 
   private def withLogging(response: CalculationResponse): CalculationResponse = {
     response.results.calculationResults.foreach(result =>
-      logger.info(s"[MibService][withLogging] Payment calculation for good [${result.goods}] gave result [$result]")
+      logger.info(s"Payment calculation for good [${result.goods}] gave result [$result]")
     )
     response
   }

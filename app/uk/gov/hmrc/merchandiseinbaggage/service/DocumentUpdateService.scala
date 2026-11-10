@@ -60,10 +60,10 @@ class DefaultDocumentUpdateService @Inject() (
   override def invoke(implicit ec: ExecutionContext): Future[Boolean] =
     lockService.withLock(updateMissingCreatedAtFields()).map {
       case Some(updateMessage) =>
-        logger.info(s"[DefaultDocumentUpdateService][invoke] ${updateMessage.message}")
+        logger.info(s"Document Update invoke ${updateMessage.message}")
         true
       case None                =>
-        logger.info(s"[DefaultDocumentUpdateService][invoke] ${FailedToLockRepositoryForUpdate.message}")
+        logger.info(s"Document Update invoke failed with ${FailedToLockRepositoryForUpdate.message}")
         false
     }
 }
