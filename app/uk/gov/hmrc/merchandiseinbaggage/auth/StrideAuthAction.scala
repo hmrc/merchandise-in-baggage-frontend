@@ -52,7 +52,7 @@ class StrideAuthAction @Inject() (
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def redirectToStrideLogin(message: String) = {
-      logger.warn(s"[StrideAuthAction][invokeBlock] user is not authenticated - redirecting user to login: $message")
+      logger.warn(s"User is not authenticated - redirecting user to login: $message")
       val uri = if (request.host.contains("localhost")) s"http://${request.host}${request.uri}" else s"${request.uri}"
       toStrideLogin(uri)
     }
@@ -85,7 +85,7 @@ class StrideAuthAction @Inject() (
           case e: InternalError          =>
             redirectToStrideLogin(e.getMessage)
           case e: AuthorisationException =>
-            logger.warn(s"[StrideAuthAction][invokeBlock] User is forbidden because of ${e.reason}, $e")
+            logger.warn(s"User is forbidden because of ${e.reason}, $e")
             Forbidden
         }
     }
